@@ -1,0 +1,18 @@
+services:
+  capture-module:
+    build: .
+    container_name: zap-har-capture
+    environment:
+      - TARGET_URL=http://example.com
+      - OUTPUT_FILE=/workspace/output/capture.har
+      - DISPLAY=:99
+    volumes:
+      - ./output:/workspace/output
+    ports:
+      - '8080:8080'
+    networks:
+      - zap-network
+
+networks:
+  zap-network:
+    driver: bridge
