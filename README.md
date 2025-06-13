@@ -1,22 +1,19 @@
-## Capture Module
+# aliptesis
 
-Nanti sekalian sama parse traffic (jadiin .json) trus dilempar ke llm
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmWazY73skM6JPdteLcK7-7d73LEPwVFCd2Q&s)
 
-1. Build and run:
+List module
 
-```bash
-docker-compose up --build
-```
+1. `capture-module`: Traffic capture & Preprocessing
+2. `reasoning-module`: LLM reasoning, identify potential vulns
+3. `exploitation-module`: Attempt to exploit identified vulns
+4. `reporting-module`: Aggregate result, create structured report (PDF)
 
-2. Custom target:
+Todo:
 
-```bash
-TARGET_URL={TARGET_URL} docker-compose up --build
-```
-
-3. Manual Docker run:
-
-```bash
-docker build -t zap-har-capture .
-docker run -v $(pwd)/output:/workspace/output -e TARGET_URL=https://your-target.com zap-har-capture
-```
+- [ ] `capture-module`
+- [ ] `reasoning-module`
+- [ ] `exploitation-module`
+- [ ] `reporting-module`
+- [ ] bikin pipeline semua
+- [ ] OPTIONAL: web interface, tapi urgensinya apa?
