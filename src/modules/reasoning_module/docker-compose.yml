@@ -12,7 +12,13 @@ services:
       - reasoning_module_data:/root/.ollama
     networks:
       - reasoning_module_net
-    # entrypoint: ['/bin/sh']
+    # deploy:
+    # resources:
+    # reservations:
+    # devices:
+    # - driver: nvidia # Enable GPU acceleration
+    #   count: all
+    #   capabilities: [gpu]
     entrypoint: ['/bin/sh', '/entrypoint.sh']
     tty: true
 
