@@ -1,0 +1,35 @@
+---
+config:
+  theme: base
+  themeVariables:
+    primaryColor: '#fff'
+    primaryTextColor: '#000'
+    primaryBorderColor: '#000'
+    lineColor: '#000'
+---
+sequenceDiagram
+    participant User
+    participant CaptureModule
+    participant ParserModule
+    participant ReasoningModule
+    participant VulnAnalysisModule
+    participant ExploitationModule
+    participant ReportingModule
+    participant DataStore
+
+    User->>CaptureModule: Start capture (+scope)
+    CaptureModule-->>DataStore: Save HAR file
+    CaptureModule-->>ParserModule: HAR file
+
+    ParserModule-->>ReasoningModule: Endpoint list (structured JSON)
+    ReasoningModule-->>VulnAnalysisModule: Test cases (endpoint + payloads)
+
+    loop each test case
+        VulnAnalysisModule-->>ExploitationModule: Suspected vuln + PoC
+        ExploitationModule-->>VulnAnalysisModule: Result (OK / FP)
+    end
+
+    VulnAnalysisModule-->>ReportingModule: Vulnerability findings + evidence
+    ExploitationModule-->>ReportingModule: Additional PoC evidence (req/res, screenshot)
+    ReportingModule-->>DataStore: Save report (text/HTML/PDF, CVSS)
+    ReportingModule-->>User: Final report (download link / e-mail)
