@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:0.5.11
+    container_name: reasoning_module
+    restart: always
+    ports:
+      - '11434:11434'
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh:ro
+      - reasoning_module_data:/root/.ollama
+    networks:
+      - reasoning_module_net
+    # entrypoint: ['/bin/sh']
+    entrypoint: ['/bin/sh', '/entrypoint.sh']
+    tty: true
+
+networks:
+  reasoning_module_net:
+    driver: bridge
+
+volumes:
+  reasoning_module_data:
+    driver: local

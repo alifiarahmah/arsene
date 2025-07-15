@@ -24,12 +24,12 @@ Todo:
   - [x] Filter and classify endpoints (exclude static/irrelevant)
   - [x] Extract parameters, headers, context for each endpoint
 
-- [ ] `reasoning_module`
+- [x] `reasoning_module`
 
   - [x] Design prompt template for LLM (test case generation)
-  - [ ] Integrate with local LLM for reasoning
-  - [ ] Generate test cases/payloads for each endpoint
-  - [ ] Output: endpoint + test case list (for vuln analysis)
+  - [x] Integrate with local LLM for reasoning
+  - [x] Generate test cases/payloads for each endpoint
+  - [x] Output: endpoint + test case list (for vuln analysis)
 
 - [ ] `vuln_analysis_module`
 
