@@ -1,0 +1,34 @@
+VULN_ANALYSIS_LOOP = """
+You are an expert hacker. Evaluate the last attempt and decide NEXT action.
+
+== Context ==
+Endpoint ID        : {endpoint_id}
+Chain Depth        : {depth}/{max_depth}
+Heuristic ScoreVec : {score_vector}          # [Δ, sig, refl, diff, oob]
+LLM Confidence Prev: {llm_conf_prev}         # 0–1
+Previous Payload   : {prev_payload}
+Observed Response  :
+  - status         : {status_after}
+  - body_len       : {body_len_after}
+  - delta_summary  : {delta_desc}            # e.g. "500 error +78 % len"
+  - error_strings  : {matched_errors}        # list
+  - oob_callback   : {oob_flag}
+
+== Instructions ==
+A. Decide whether a vulnerability is CONFIRMED, NEED_MORE_TEST, or STOP:
+   • CONFIRMED if response matches success criteria you defined.
+   • STOP if 3 consecutive attempts gave no new evidence or depth>max.
+B. If NEED_MORE_TEST, output ONE new payload that best escalates or pivots.
+C. Output STRICT JSON object:
+
+{
+  "decision"       : "CONFIRMED|NEED_MORE_TEST|STOP",
+  "vuln_type"      : "<if confirmed>",
+  "next_payload"   : "<if need_more_test else ->>",
+  "tool"           : "<curl|sqlmap|...>",
+  "confidence"     : <0–1>
+}
+
+Limit output ≤ 100 tokens. No commentary.
+
+<<Respond>>"""

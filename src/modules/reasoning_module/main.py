@@ -12,15 +12,20 @@ def analyze_endpoint(json_file_path):
 
     # Send to your LLM here
     r = requests.post(
-        url='http://localhost:11434/api/generate',
+        url='http://61.71.33.195:54012/v1/completions',
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": "Bearer cd4744b1831ee7a580c7e5fe38a2e2a9d9c777d65608bb36745d6f6fd9910dfe"
+        },
         data=json.dumps({
-            "model": "phi3:mini",
+            "model": "mixtral:8x7b",
             "prompt": formatted_prompt,
-            "stream": False
+            "stream": False,
+            "temperature": 0.1
         })
     )
 
-    response = r.json()['response']
+    response = r.json()['choices'][0]['text']
     return response
 
 def export_result(result, output_path: str):
@@ -33,6 +38,6 @@ if __name__ == "__main__":
     try:
       res = analyze_endpoint('../../json/har_example.json')
       print(res)
-      export_result(res, 'output/a.txt')
+      export_result(res, 'a.txt')
     except BaseException as e:
       print(e)
