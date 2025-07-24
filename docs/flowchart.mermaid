@@ -1,0 +1,45 @@
+---
+config:
+  theme: base
+  themeVariables:
+    primaryColor: '#fff'
+    primaryTextColor: '#000'
+    primaryBorderColor: '#000'
+    lineColor: '#000'
+---
+flowchart TD
+    A([Start • Input Target])
+    B[Collect Baseline] --> C{{For each fuzz payload}}
+
+    C --> D[Run Heuristic Checks] --> E[Skor s]
+
+    E -->|s < T_low| X[Discard & Next]
+
+    %% ---------- Zona Tinggi ----------
+    E -->|s > T_high| H[Light PoC Validation]
+    H -->|PoC positif| L[High Confidence → Exploitation]
+    H -->|PoC gagal| G[Send to LLM]
+
+    %% ---------- Zona Ambigu ----------
+    E -->|T_low ≤ s ≤ T_high| G
+
+    %% ---------- LLM path ----------
+    subgraph LLM
+        G --> I[LLM 4-bit<br>max_tokens = 256]
+        I --> J{{LLM verdict}}
+    end
+
+    %% ---------- Consensus ----------
+    H -. "PoC gagal" .-> J
+    J --> K{{Consensus Validator}}
+
+    K -->|Tinggi| L
+    K -->|Menengah| M[Manual Review List]
+    K -->|Rendah| N[Ignore]
+
+    %% ---------- Reporting ----------
+    L --> R[Append to Report]
+    M --> R
+    N --> P[Log]
+
+    C -->|loop| C
