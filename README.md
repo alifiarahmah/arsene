@@ -1,6 +1,11 @@
 # aliptesis
 
-List module
+first things first before local development
+```sh
+ssh -p 23870 root@ssh6.vast.ai  -L 8080:localhost:8080 -L 11434:localhost:11434
+```
+
+## List module
 
 1. `capture_module`: Traffic capture & preprocessing
 2. `parser_module`: Parse captured traffic, identify endpoints
@@ -9,13 +14,13 @@ List module
 5. `exploitation_module`: Attempt to exploit identified vulns
 6. `reporting_module`: Aggregate result, create structured report
 
-Todo:
+## Todo:
 
 - [ ] `capture_module`
 
   - [ ] Integrate with ZAP CLI or custom proxy for HTTP/HTTPS capture
   - [ ] Export traffic to HAR format
-  - [ ] (Optional) Preprocess HAR to remove obvious noise/static assets
+  - [ ] (Optional) Preprocess HAR to remove external static resources
   - [ ] Store captured HAR in DataStore
 
 - [x] `parser_module`
