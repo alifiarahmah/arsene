@@ -8,38 +8,49 @@ config:
     lineColor: '#000'
 ---
 flowchart TD
+    %% ---------- Inisialisasi ----------
     A([Start • Input Target])
-    B[Collect Baseline] --> C{{For each fuzz payload}}
+    B[Collect Baseline]
+    A --> B
 
-    C --> D[Run Heuristic Checks] --> E[Skor s]
+    %% ---------- Antrian Test Case ----------
+    B --> C{{Process Test Case}}
 
-    E -->|s < T_low| X[Discard & Next]
+    C --> D[Run Heuristic Checks]
+    D --> E[Compute score s]
+
+    %% ---------- Zona Rendah ----------
+    E -->|s &lt; T_low| X[Discard & Next]
 
     %% ---------- Zona Tinggi ----------
-    E -->|s > T_high| H[Light PoC Validation]
+    E -->|s &gt; T_high| H[Light PoC Validation]
     H -->|PoC positif| L[High Confidence → Exploitation]
     H -->|PoC gagal| G[Send to LLM]
 
     %% ---------- Zona Ambigu ----------
     E -->|T_low ≤ s ≤ T_high| G
 
-    %% ---------- LLM path ----------
-    subgraph LLM
-        G --> I[LLM 4-bit<br>max_tokens = 256]
+    %% ---------- Jalur LLM ----------
+    subgraph LLM_Path
+        G --> I[LLM Analysis payload + endpoint]
         I --> J{{LLM verdict}}
     end
 
-    %% ---------- Consensus ----------
+    %% ---------- Konsensus ----------
     H -. "PoC gagal" .-> J
     J --> K{{Consensus Validator}}
 
     K -->|Tinggi| L
-    K -->|Menengah| M[Manual Review List]
-    K -->|Rendah| N[Ignore]
+    K -->|Rendah| N[Ignore / Log]
+
+    %% ---------- Iterasi Otomatis ----------
+    K -->|Menengah| D0{{depth &lt; 3?}}
+    D0 -->|Yes| C
+    D0 -->|No| N
 
     %% ---------- Reporting ----------
     L --> R[Append to Report]
-    M --> R
     N --> P[Log]
 
-    C -->|loop| C
+    %% ---------- Penanda loop ----------
+    C -->|next item in queue| C

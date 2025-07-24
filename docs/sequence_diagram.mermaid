@@ -8,6 +8,7 @@ config:
     lineColor: '#000'
 ---
 sequenceDiagram
+    autonumber
     participant User
     participant CaptureModule
     participant ParserModule
@@ -17,19 +18,32 @@ sequenceDiagram
     participant ReportingModule
     participant DataStore
 
-    User->>CaptureModule: Start capture (+scope)
+    %% ---------- Inisialisasi ----------
+    User->>CaptureModule: Start capture
     CaptureModule-->>DataStore: Save HAR file
     CaptureModule-->>ParserModule: HAR file
 
-    ParserModule-->>ReasoningModule: Endpoint list (structured JSON)
-    ReasoningModule-->>VulnAnalysisModule: Test cases (endpoint + payloads)
+    %% ---------- Enumerasi awal ----------
+    ParserModule-->>ReasoningModule: Endpoint list
+    ReasoningModule-->>VulnAnalysisModule: Initial test cases
+    VulnAnalysisModule->>DataStore: Save baseline per-endpoint
 
-    loop each test case
-        VulnAnalysisModule-->>ExploitationModule: Suspected vuln + PoC
-        ExploitationModule-->>VulnAnalysisModule: Result (OK / FP)
+    %% ---------- Loop fuzz / eksplorasi ----------
+    loop for each test case in queue
+        VulnAnalysisModule->>ExploitationModule: Light PoC validation
+        ExploitationModule-->>VulnAnalysisModule: Result (High / Ambiguous / Low)
+
+        alt High-confidence finding
+            VulnAnalysisModule->>ReportingModule: Confirmed vuln + evidence
+        else Ambiguous AND depth < 3
+            VulnAnalysisModule->>ReasoningModule: Context (req/resp, depth)
+            ReasoningModule-->>VulnAnalysisModule: New test cases (depth + 1)
+            %% note over VulnAnalysisModule: Enqueue only unseen endpoints/payloads
+        else Low-confidence OR depth ≥ 3
+            VulnAnalysisModule->>ReportingModule: FP / ignored
+        end
     end
 
-    VulnAnalysisModule-->>ReportingModule: Vulnerability findings + evidence
-    ExploitationModule-->>ReportingModule: Additional PoC evidence (req/res, screenshot)
-    ReportingModule-->>DataStore: Save report (text/HTML/PDF, CVSS)
-    ReportingModule-->>User: Final report (download link / e-mail)
+    %% ---------- Pelaporan ----------
+    ReportingModule-->>DataStore: Save report
+    ReportingModule-->>User: Final report
