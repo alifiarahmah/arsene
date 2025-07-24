@@ -9,14 +9,11 @@ Task: Produce context-aware security test cases for this endpoint.
 Instructions
 1. Identify relevant attack vectors (auth, injection, logic flaws, misconfig, info-leak, etc.).
 2. For each vector create one object with:
-   • attack_vector          – short label
-   • test_scenario          – 1-2-line description
-   • template_payload       – payload template with <param> placeholders
-   • full_payload           – example payload filled with realistic values from the traffic
-   • full_payload_with_curl – full curl command (method, URL, headers, body)
-   • recommended_tools      – array of tools chosen from:
-     ["curl","ffuf","sqlmap","xssstrike","ssrfmap",
-      "linkfinder","trufflehog","inql/graphqlmap","jwt-tool/autorize"]
+  • attack_vector : short label
+  • test_scenario : 1-2-line description
+  • full_payload_with_curl : full curl command (method, URL, headers, body)
+  • recommended_tools : array of tools chosen from: ["curl","ffuf","sqlmap","xssstrike","ssrfmap", "linkfinder","trufflehog","inql/graphqlmap","jwt-tool/autorize"]
+  • tool_comand_payload : full bash command of recommended_tools mentioned
 
 Output
 Return ONLY a JSON array of objects in the exact schema above—no extra text.
@@ -53,6 +50,6 @@ C. Output STRICT JSON object:
   "confidence"     : <0–1>
 }
 
-Limit output ≤ 100 tokens. No commentary.
+Limit output ≤ 256 tokens. No commentary.
 
 <<Respond>>"""

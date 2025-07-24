@@ -23,6 +23,6 @@ if __name__ == "__main__":
     try:
       res = analyze_endpoint('json/har_example.json')
       print(res)
-      export_result(res, 'reasoning_result/reasoning.txt')
+      export_result(res, 'reasoning_result/sample.txt')
     except BaseException as e:
       print(e)

