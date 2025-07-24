@@ -1,6 +1,9 @@
+from prompts import REASONING_PROMPT
+from dotenv import load_dotenv
+from config import config
+
 import json
 import requests
-from prompts import REASONING_PROMPT
 
 def analyze_endpoint(json_file_path):
     with open(json_file_path, 'r') as f:
@@ -12,16 +15,16 @@ def analyze_endpoint(json_file_path):
 
     # Send to your LLM here
     r = requests.post(
-        url='http://localhost:11434/api/generate',
+        url=f'{config['URI']}/api/generate',
         headers={
             "Content-Type": "application/json",
-            "Authorization": "Bearer be77fef88ddb58dbe9b3f94e5a9b300101da1b8a51ece515c17cd2de058bab9e"
+            "Authorization": f"Bearer {config['BEARER_TOKEN']}"
         },
         data=json.dumps({
-          "model": "mistral:7b-instruct-v0.2-q8_0",
+          "model": config['MODEL'],
           "prompt": formatted_prompt,
           "stream": False,
-          "max_tokens": 128,
+          "max_tokens": 512,
           "temperature": 0.1
       })
     )
@@ -37,8 +40,8 @@ def export_result(result, output_path: str):
 if __name__ == "__main__":
     print('requesting...')
     try:
-      res = analyze_endpoint('../json/har_example.json')
+      res = analyze_endpoint('json/har_example.json')
       print(res)
-      export_result(res, '../reasoning_result/reasoning.txt')
+      export_result(res, 'reasoning_result/reasoning.txt')
     except BaseException as e:
       print(e)
