@@ -1,2 +1,8 @@
+# venv directories
+tesisenv/
+
+# Python cache files
+__pycache__/
+
+# .env files
 .env
-ssh_azure.pem
