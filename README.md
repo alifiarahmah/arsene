@@ -38,6 +38,7 @@ ssh -p 23870 root@ssh6.vast.ai  -L 8080:localhost:8080 -L 11434:localhost:11434
 
 - [ ] `vuln_analysis_module`
 
+  - [x] Parse test cases and prepare for execution
   - [ ] Execute generated test cases (HTTP requests, payload injection)
   - [ ] Integrate with tools (curl, sqlmap, XSStrike, SSRFmap)
     - [ ] Create docker image containing all tools
