@@ -1,5 +1,5 @@
 # venv directories
-tesisenv/
+venv/
 
 # Python cache files
 __pycache__/
