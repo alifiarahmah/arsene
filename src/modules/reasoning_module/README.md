@@ -20,25 +20,14 @@ docker logs reasoning-module -f
 
 # Test API
 
-token webui alip: cd4744b1831ee7a580c7e5fe38a2e2a9d9c777d65608bb36745d6f6fd9910dfe
-
+## localhost
 ```sh
-curl http://localhost:11434/api/generate -d '{
-  "model": "phi3:mini",
-  "prompt": "Hello world",
-  "stream": false
-}'
-```
-
-```sh
-curl http://61.71.33.195:54012/v1/completions \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer cd4744b1831ee7a580c7e5fe38a2e2a9d9c777d65608bb36745d6f6fd9910dfe" \
-    -d '{
-      "model": "mixtral:8x7b",
-      "prompt": "San Francisco is a",
+curl http://localhost:11434/api/generate -H "Content-Type: application/json" -H "Authorization: Bearer be77fef88ddb58dbe9b3f94e5a9b300101da1b8a51ece515c17cd2de058bab9e" -d '{
+      "model": "mistral:7b-instruct-v0.2-q8_0",
+      "prompt": "hello, who are you?",
+      "stream": false,
       "max_tokens": 128,
-      "temperature": 0.6
+      "temperature": 0.1
     }'
 ```
 

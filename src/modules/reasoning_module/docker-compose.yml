@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   ollama:
     image: ollama/ollama:0.5.11
@@ -12,13 +10,6 @@ services:
       - reasoning_module_data:/root/.ollama
     networks:
       - reasoning_module_net
-    # deploy:
-    # resources:
-    # reservations:
-    # devices:
-    # - driver: nvidia # Enable GPU acceleration
-    #   count: all
-    #   capabilities: [gpu]
     entrypoint: ['/bin/sh', '/entrypoint.sh']
     tty: true
 

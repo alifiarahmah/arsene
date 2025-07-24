@@ -12,20 +12,21 @@ def analyze_endpoint(json_file_path):
 
     # Send to your LLM here
     r = requests.post(
-        url='http://61.71.33.195:54012/v1/completions',
+        url='http://localhost:11434/api/generate',
         headers={
             "Content-Type": "application/json",
-            "Authorization": "Bearer cd4744b1831ee7a580c7e5fe38a2e2a9d9c777d65608bb36745d6f6fd9910dfe"
+            "Authorization": "Bearer be77fef88ddb58dbe9b3f94e5a9b300101da1b8a51ece515c17cd2de058bab9e"
         },
         data=json.dumps({
-            "model": "mixtral:8x7b",
-            "prompt": formatted_prompt,
-            "stream": False,
-            "temperature": 0.1
-        })
+          "model": "mistral:7b-instruct-v0.2-q8_0",
+          "prompt": formatted_prompt,
+          "stream": False,
+          "max_tokens": 128,
+          "temperature": 0.1
+      })
     )
 
-    response = r.json()['choices'][0]['text']
+    response = r.json()['response']
     return response
 
 def export_result(result, output_path: str):
@@ -36,8 +37,8 @@ def export_result(result, output_path: str):
 if __name__ == "__main__":
     print('requesting...')
     try:
-      res = analyze_endpoint('../../json/har_example.json')
+      res = analyze_endpoint('../json/har_example.json')
       print(res)
-      export_result(res, 'a.txt')
+      export_result(res, '../reasoning_result/reasoning.txt')
     except BaseException as e:
       print(e)

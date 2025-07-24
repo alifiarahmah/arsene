@@ -7,11 +7,12 @@ echo "🚀 Starting Ollama server..."
 echo "========================================"
 
 # Start ollama server in background, wait for server to be ready
+export OLLAMA_HOST=0.0.0.0:11434
+
 /bin/ollama serve &
 sleep 5
 
-# model_name="deepseek-r1:1.5b"
-model_name="phi3:mini" # for rapid prototyping
+model_name="phi3.5:3.8b" # for rapid prototyping
 
 echo "========================================"
 echo "⬇️ DOWNLOADING $model_name model ⬇️"

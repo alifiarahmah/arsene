@@ -256,7 +256,7 @@ def main():
         output_file = 'captured_traffic.har'
 
     # Run capture
-    capture = ZAPHARCapture()
+    capture = CaptureModule()
     success = capture.run(target_url, output_file)
 
     if success:

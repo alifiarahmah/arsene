@@ -1,3 +1,6 @@
+markdown-pdf
+
 selenium==4.15.2
 python-owasp-zap-v2.4==0.0.21
 requests==2.31.0
+zapv2==0.0.21
