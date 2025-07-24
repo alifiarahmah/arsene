@@ -1,9 +1,6 @@
 from prompts import REASONING_PROMPT
-from dotenv import load_dotenv
-from config import config
-
+from utils import call_llm
 import json
-import requests
 
 def analyze_endpoint(json_file_path):
     with open(json_file_path, 'r') as f:
@@ -13,23 +10,7 @@ def analyze_endpoint(json_file_path):
         data=json.dumps(endpoint_data, indent=2)
     )
 
-    # Send to your LLM here
-    r = requests.post(
-        url=f'{config['URI']}/api/generate',
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {config['BEARER_TOKEN']}"
-        },
-        data=json.dumps({
-          "model": config['MODEL'],
-          "prompt": formatted_prompt,
-          "stream": False,
-          "max_tokens": 512,
-          "temperature": 0.1
-      })
-    )
-
-    response = r.json()['response']
+    response = call_llm(formatted_prompt)
     return response
 
 def export_result(result, output_path: str):
