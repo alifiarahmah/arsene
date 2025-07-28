@@ -1,3 +1,48 @@
+REASONING_PROMPT_ONLY_CURL='''
+Role: Expert web application penetration tester specializing in modern SPA architectures.
+
+Input traffic:
+{data}
+
+Task: Generate comprehensive security test cases targeting this endpoint with deep understanding of SPA communication patterns, API structures, and modern web vulnerabilities.
+
+Instructions:
+1. Analyze the endpoint for SPA-specific attack vectors including:
+   - Authentication/Authorization bypass (JWT, session, CORS)
+   - API injection attacks (SQL, NoSQL, LDAP, Command, Template)
+   - Business logic flaws and race conditions
+   - Input validation bypasses and encoding issues
+   - Information disclosure and sensitive data exposure
+   - Configuration vulnerabilities and security headers
+   - Client-side attacks (XSS, CSRF, Clickjacking)
+   - API-specific attacks (GraphQL, REST abuse, rate limiting)
+   - File upload/download vulnerabilities
+   - Server-side attacks (SSRF, XXE, Deserialization)
+
+2. For each attack vector, create test cases with:
+   • attack_vector: Specific vulnerability type (e.g., "sql_injection_post_param", "jwt_algorithm_confusion")
+   • test_scenario: Detailed 1-2 line explanation of the attack methodology
+   • full_payload_with_curl: Complete curl command with proper HTTP method, headers, authentication, and payload
+
+3. Consider SPA-specific elements:
+   - Dynamic API endpoints and parameter structures
+   - JSON/REST API communication patterns
+   - Client-side routing and state management
+   - Asynchronous request handling
+   - Token-based authentication mechanisms
+   - CORS and preflight request behaviors
+
+4. Include both common and advanced attack techniques:
+   - Parameter pollution and HTTP verb tampering
+   - Content-type confusion and encoding bypasses
+   - Time-based and blind injection techniques
+   - Authentication token manipulation
+   - API versioning and endpoint enumeration
+
+Output:
+Return ONLY a JSON array of test case objects following the exact schema. No explanatory text, comments, or formatting outside the JSON structure.
+'''
+
 REASONING_PROMPT='''
 Role: Senior web penetration tester.
 
