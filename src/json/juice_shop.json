@@ -1,0 +1,3777 @@
+[
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-version",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-version",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-version"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Challenges/",
+    "full_url": "https://demo.owasp-juice.shop/api/Challenges/?name=Score%20Board",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [
+        "name"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/languages",
+    "full_url": "https://demo.owasp-juice.shop/rest/languages",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-version",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-version",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-version"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Challenges/",
+    "full_url": "https://demo.owasp-juice.shop/api/Challenges/?name=Score%20Board",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [
+        "name"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Quantitys/",
+    "full_url": "https://demo.owasp-juice.shop/api/Quantitys/",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/search",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/search?q=",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBTT6B&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "40",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/socket.io/",
+    "full_url": "wss://demo.owasp-juice.shop/socket.io/?EIO=4&transport=websocket&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {},
+    "request_body": null,
+    "response_status": 0,
+    "response_body_snippet": null,
+    "response_headers": {},
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/1/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/1/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "1"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/1/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/1/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "1"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/1/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/1/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "1"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/24/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/24/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "24"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/24/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/24/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "24"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/6/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/6/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "6"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/6/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/6/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "6"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/6/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/6/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "6"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/42/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/42/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "42"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/42/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/42/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "42"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/42/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/42/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "42"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/15/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/15/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "15"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/15/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/15/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "15"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/21/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/21/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "21"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/21/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/21/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "21"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/29/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/29/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "29"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/29/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/29/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "29"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBTZCU&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/4/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/4/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "4"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/4/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/4/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "4"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/rest/user/login",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/login",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "email": "aaaaaa@mail.com",
+      "password": "aaa"
+    },
+    "response_status": 401,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": [
+        "email",
+        "password"
+      ]
+    },
+    "context": "public endpoint, API endpoint, error response (401), state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/rest/user/login",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/login",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "email": "aaaaaa@mail.com",
+      "password": "aaa"
+    },
+    "response_status": 401,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": [
+        "email",
+        "password"
+      ]
+    },
+    "context": "public endpoint, API endpoint, error response (401), state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBTfOG&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/SecurityQuestions/",
+    "full_url": "https://demo.owasp-juice.shop/api/SecurityQuestions/",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "SecurityQuestions"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBTlaF&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/api/Users/",
+    "full_url": "https://demo.owasp-juice.shop/api/Users/",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "email": "aaaaa@mail.com",
+      "password": "aaaaa",
+      "passwordRepeat": "aaaaa",
+      "securityQuestion": {
+        "id": 2,
+        "question": "Mother's maiden name?",
+        "createdAt": "2025-07-27T09:10:53.875Z",
+        "updatedAt": "2025-07-27T09:10:53.875Z"
+      },
+      "securityAnswer": "aaaaa"
+    },
+    "response_status": 201,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "location": "/api/Users/1364",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": [
+        "email",
+        "password",
+        "passwordRepeat",
+        "securityQuestion",
+        "securityQuestion.id",
+        "securityQuestion.question",
+        "securityQuestion.createdAt",
+        "securityQuestion.updatedAt",
+        "securityAnswer"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/api/SecurityAnswers/",
+    "full_url": "https://demo.owasp-juice.shop/api/SecurityAnswers/",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "UserId": 1364,
+      "answer": "aaaaa",
+      "SecurityQuestionId": 2
+    },
+    "response_status": 201,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "location": "/api/SecurityAnswers/33",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "SecurityAnswers"
+      ],
+      "body": [
+        "UserId",
+        "answer",
+        "SecurityQuestionId"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/rest/user/login",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/login",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "email": "aaaaa@mail.com",
+      "password": "aaaa"
+    },
+    "response_status": 401,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": [
+        "email",
+        "password"
+      ]
+    },
+    "context": "public endpoint, API endpoint, error response (401), state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/rest/user/login",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/login",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "email": "aaaaa@mail.com",
+      "password": "aaaaa"
+    },
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": [
+        "email",
+        "password"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Quantitys/",
+    "full_url": "https://demo.owasp-juice.shop/api/Quantitys/",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/search",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/search?q=",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/order-history",
+    "full_url": "https://demo.owasp-juice.shop/rest/order-history",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "order-history"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBTrm5&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Quantitys/",
+    "full_url": "https://demo.owasp-juice.shop/api/Quantitys/",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/search",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/search?q=",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/1/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/1/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "1"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/1/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/1/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "1"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/1/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/1/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "1"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "PUT",
+    "url": "/rest/products/1/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/1/reviews",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "message": "aaaa",
+      "author": "aaaaa@mail.com"
+    },
+    "response_status": 201,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "1"
+      ],
+      "body": [
+        "message",
+        "author"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/1/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/1/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "1"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/1/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/1/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "1"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/1/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/1/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "1"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/api/BasketItems/",
+    "full_url": "https://demo.owasp-juice.shop/api/BasketItems/",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "ProductId": 1,
+      "BasketId": "11",
+      "quantity": 1
+    },
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "BasketItems"
+      ],
+      "body": [
+        "ProductId",
+        "BasketId",
+        "quantity"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Products/1",
+    "full_url": "https://demo.owasp-juice.shop/api/Products/1?d=Sun%20Jul%2027%202025",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [
+        "d"
+      ],
+      "path": [
+        "1"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/api/BasketItems/",
+    "full_url": "https://demo.owasp-juice.shop/api/BasketItems/",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "ProductId": 24,
+      "BasketId": "11",
+      "quantity": 1
+    },
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "BasketItems"
+      ],
+      "body": [
+        "ProductId",
+        "BasketId",
+        "quantity"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Products/24",
+    "full_url": "https://demo.owasp-juice.shop/api/Products/24?d=Sun%20Jul%2027%202025",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [
+        "d"
+      ],
+      "path": [
+        "24"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/BasketItems/14",
+    "full_url": "https://demo.owasp-juice.shop/api/BasketItems/14",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "BasketItems",
+        "14"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "PUT",
+    "url": "/api/BasketItems/14",
+    "full_url": "https://demo.owasp-juice.shop/api/BasketItems/14",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "quantity": 2
+    },
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "BasketItems",
+        "14"
+      ],
+      "body": [
+        "quantity"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBTxxr&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "DELETE",
+    "url": "/api/BasketItems/13",
+    "full_url": "https://demo.owasp-juice.shop/api/BasketItems/13",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "BasketItems",
+        "13"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Addresss",
+    "full_url": "https://demo.owasp-juice.shop/api/Addresss",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/api/Addresss/",
+    "full_url": "https://demo.owasp-juice.shop/api/Addresss/",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "country": "aaaa",
+      "fullName": "aaaa",
+      "mobileNum": 821314124,
+      "zipCode": "1234",
+      "streetAddress": "aaaa street no 2",
+      "city": "aaaa",
+      "state": "aaaa"
+    },
+    "response_status": 201,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "location": "/api/Addresss/7",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": [
+        "country",
+        "fullName",
+        "mobileNum",
+        "zipCode",
+        "streetAddress",
+        "city",
+        "state"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Addresss",
+    "full_url": "https://demo.owasp-juice.shop/api/Addresss",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBU27k&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Addresss/7",
+    "full_url": "https://demo.owasp-juice.shop/api/Addresss/7",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "7"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Deliverys",
+    "full_url": "https://demo.owasp-juice.shop/api/Deliverys",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Deliverys/3",
+    "full_url": "https://demo.owasp-juice.shop/api/Deliverys/3",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "3"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/wallet/balance",
+    "full_url": "https://demo.owasp-juice.shop/rest/wallet/balance",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Cards",
+    "full_url": "https://demo.owasp-juice.shop/api/Cards",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/api/Cards/",
+    "full_url": "https://demo.owasp-juice.shop/api/Cards/",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "fullName": "aaaa",
+      "cardNum": 1412321333331111,
+      "expMonth": "11",
+      "expYear": "2095"
+    },
+    "response_status": 201,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "location": "/api/Cards/7",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": [
+        "fullName",
+        "cardNum",
+        "expMonth",
+        "expYear"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Cards",
+    "full_url": "https://demo.owasp-juice.shop/api/Cards",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBU8Jd&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Deliverys/3",
+    "full_url": "https://demo.owasp-juice.shop/api/Deliverys/3",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "3"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Addresss/7",
+    "full_url": "https://demo.owasp-juice.shop/api/Addresss/7",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "7"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Cards/7",
+    "full_url": "https://demo.owasp-juice.shop/api/Cards/7",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "7"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/rest/basket/11/checkout",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11/checkout",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "couponData": "bnVsbA==",
+      "orderDetails": {
+        "paymentId": "7",
+        "addressId": "7",
+        "deliveryMethodId": "3"
+      }
+    },
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": [
+        "couponData",
+        "orderDetails",
+        "orderDetails.paymentId",
+        "orderDetails.addressId",
+        "orderDetails.deliveryMethodId"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/track-order/fdee-5a03fb40d186eb42",
+    "full_url": "https://demo.owasp-juice.shop/rest/track-order/fdee-5a03fb40d186eb42",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "track-order",
+        "fdee-5a03fb40d186eb42"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Addresss/7",
+    "full_url": "https://demo.owasp-juice.shop/api/Addresss/7",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "7"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/basket/11",
+    "full_url": "https://demo.owasp-juice.shop/rest/basket/11",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "11"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBUEby&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/order-history",
+    "full_url": "https://demo.owasp-juice.shop/rest/order-history",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "order-history"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/track-order/fdee-5a03fb40d186eb42",
+    "full_url": "https://demo.owasp-juice.shop/rest/track-order/fdee-5a03fb40d186eb42",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "track-order",
+        "fdee-5a03fb40d186eb42"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/order-history",
+    "full_url": "https://demo.owasp-juice.shop/rest/order-history",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "order-history"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Products/24",
+    "full_url": "https://demo.owasp-juice.shop/api/Products/24?d=Sun%20Jul%2027%202025",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [
+        "d"
+      ],
+      "path": [
+        "24"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/24/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/24/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "24"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/24/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/24/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "24"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "PUT",
+    "url": "/rest/products/24/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/24/reviews",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "message": "dd",
+      "author": "aaaaa@mail.com"
+    },
+    "response_status": 201,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "24"
+      ],
+      "body": [
+        "message",
+        "author"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/24/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/24/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "24"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/24/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/24/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "24"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/products/24/reviews",
+    "full_url": "https://demo.owasp-juice.shop/rest/products/24/reviews",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "24"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/rest/user/data-export",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/data-export",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "format": "1"
+    },
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "data-export"
+      ],
+      "body": [
+        "format"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/image-captcha/",
+    "full_url": "https://demo.owasp-juice.shop/rest/image-captcha/",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "image-captcha"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBUKnp&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/rest/user/data-export",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/data-export",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "answer": "BUhNo",
+      "format": "1"
+    },
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "data-export"
+      ],
+      "body": [
+        "answer",
+        "format"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/image-captcha/",
+    "full_url": "https://demo.owasp-juice.shop/rest/image-captcha/",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "image-captcha"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Recycles/",
+    "full_url": "https://demo.owasp-juice.shop/api/Recycles/",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Addresss",
+    "full_url": "https://demo.owasp-juice.shop/api/Addresss",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/api/Recycles/",
+    "full_url": "https://demo.owasp-juice.shop/api/Recycles/",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "UserId": 1364,
+      "AddressId": 7,
+      "quantity": 33
+    },
+    "response_status": 201,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "location": "/api/Recycles/10",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": [
+        "UserId",
+        "AddressId",
+        "quantity"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Addresss",
+    "full_url": "https://demo.owasp-juice.shop/api/Addresss",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/whoami",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/whoami",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Addresss",
+    "full_url": "https://demo.owasp-juice.shop/api/Addresss",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBUQzW&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Cards",
+    "full_url": "https://demo.owasp-juice.shop/api/Cards",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/wallet/balance",
+    "full_url": "https://demo.owasp-juice.shop/rest/wallet/balance",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/wallet/balance",
+    "full_url": "https://demo.owasp-juice.shop/rest/wallet/balance",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/api/Cards",
+    "full_url": "https://demo.owasp-juice.shop/api/Cards",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "PUT",
+    "url": "/rest/wallet/balance",
+    "full_url": "https://demo.owasp-juice.shop/rest/wallet/balance",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "request_body": {
+      "balance": 333,
+      "paymentId": 7
+    },
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": [
+        "balance",
+        "paymentId"
+      ]
+    },
+    "context": "public endpoint, API endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/wallet/balance",
+    "full_url": "https://demo.owasp-juice.shop/rest/wallet/balance",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBUX9K&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/2fa/status",
+    "full_url": "https://demo.owasp-juice.shop/rest/2fa/status",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/admin/application-configuration",
+    "full_url": "https://demo.owasp-juice.shop/rest/admin/application-configuration",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [],
+      "path": [
+        "application-configuration"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/change-password",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/change-password?current=aaaaa&new=bbbbb&repeat=bbbbb",
+    "headers": {},
+    "request_body": null,
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "application/json; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [
+        "current",
+        "new",
+        "repeat"
+      ],
+      "path": [
+        "change-password"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBUdL8&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  },
+  {
+    "method": "GET",
+    "url": "/rest/user/change-password",
+    "full_url": "https://demo.owasp-juice.shop/rest/user/change-password?current=bbbbb&new=aaaaa&repeat=aaaaa",
+    "headers": {},
+    "request_body": null,
+    "response_status": 401,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html; charset=utf-8",
+      "x-frame-options": "SAMEORIGIN"
+    },
+    "params": {
+      "query": [
+        "current",
+        "new",
+        "repeat"
+      ],
+      "path": [
+        "change-password"
+      ],
+      "body": []
+    },
+    "context": "public endpoint, API endpoint, error response (401)",
+    "timestamp": ""
+  },
+  {
+    "method": "POST",
+    "url": "/socket.io/",
+    "full_url": "https://demo.owasp-juice.shop/socket.io/?EIO=4&transport=polling&t=PXBUjX4&sid=lDhN6ANvweWQmNJuACnB",
+    "headers": {
+      "content-type": "text/plain;charset=UTF-8"
+    },
+    "request_body": "3",
+    "response_status": 200,
+    "response_body_snippet": null,
+    "response_headers": {
+      "content-type": "text/html"
+    },
+    "params": {
+      "query": [
+        "EIO",
+        "transport",
+        "t",
+        "sid"
+      ],
+      "path": [],
+      "body": []
+    },
+    "context": "public endpoint, state-changing operation",
+    "timestamp": ""
+  }
+]
