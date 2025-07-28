@@ -1,6 +1,6 @@
 import json
 import re
-from urllib.parse import urlparse, parse_qs
+import subprocess
 from dataclasses import dataclass
 from typing import List, Dict, Any, Optional
 
@@ -39,47 +39,6 @@ class VulnerabilityAnalysisModule:
             print(f"JSON parsing error: {e}")
         except Exception as e:
             print(f"Other error: {e}")
-
-    def parse_http_request(self, full_payload: str) -> Dict[str, Any]:
-        """Parse HTTP request from full_payload_with_curl"""
-        if not full_payload.strip():
-            return {}
-
-        lines = full_payload.split('\r\n')
-        if not lines:
-            return {}
-
-        # Parse request line
-        request_line = lines[0]
-        parts = request_line.split(' ')
-        if len(parts) < 3:
-            return {}
-
-        method = parts[0]
-        path = parts[1]
-
-        # Parse headers
-        headers = {}
-        body = ""
-        body_start = False
-
-        for line in lines[1:]:
-            if line.strip() == "":
-                body_start = True
-                continue
-            if body_start:
-                body += line
-            elif ':' in line:
-                key, value = line.split(':', 1)
-                headers[key.strip()] = value.strip()
-
-        return {
-            'method': method,
-            'path': path,
-            'headers': headers,
-            'body': body,
-            'full_url': f"https://{headers.get('Host', '')}{path}"
-        }
 
     def calculate_heuristic_score(self, baseline: BaselineMetrics, response: Dict[str, Any]) -> float:
         """Hitung skor heuristik berdasarkan perubahan dari baseline"""
@@ -179,8 +138,21 @@ class VulnerabilityAnalysisModuleOutput:
         }
 
 if __name__ == "__main__":
-    filepath = 'reasoning_result/sample.txt'
-    vuln_analysis_module = VulnerabilityAnalysisModule()
+    filename = input('Enter filename (reasoning_result/<name>.txt): ')
+    VA = VulnerabilityAnalysisModule()
 
-    result = vuln_analysis_module.read_reasoning_result(filepath)
-    print(result)
+    result = VA.read_reasoning_result(f'reasoning_result/{filename}.txt')
+
+    for res in result: # type: ignore
+
+        print(res['curl_baseline'])
+        result = subprocess.run(res['curl_baseline'], shell=True, capture_output=True, text=True)
+        print("STDOUT:", result.stdout)
+        print("STDERR:", result.stderr)
+        print("Return code:", result.returncode)
+
+        print(res['curl_payload'])
+        result = subprocess.run(res['curl_payload'], shell=True, capture_output=True, text=True)
+        print("STDOUT:", result.stdout)
+        print("STDERR:", result.stderr)
+        print("Return code:", result.returncode)
