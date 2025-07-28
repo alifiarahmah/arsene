@@ -310,8 +310,8 @@ class ParserModule:
             json.dump(endpoints, f, indent=2, ensure_ascii=False)
 
 if __name__ == "__main__":
-  filename = 'har_example'
+  filename = 'juice_shop'
   parser = ParserModule()
-  endpoints = parser.parse_har_file('../hars/' + filename + '.har')
+  endpoints = parser.parse_har_file('hars/' + filename + '.har')
   filtered_endpoints = parser.filter_endpoints(endpoints)
-  parser.export_endpoints(filtered_endpoints, '../json/' + filename + '.json')
+  parser.export_endpoints(filtered_endpoints, 'json/' + filename + '.json')
