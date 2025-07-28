@@ -37,8 +37,8 @@ if __name__ == "__main__":
     print("==== [2/3] REASONING ====")
     RM = ReasoningModule()
     res = RM.analyze_endpoint('parsed_hars/' + filename + '.json')
-    RM.export_result(res, f'reasoning_result/{filename}.txt')
-    print(f'Result saved as reasoning_result/{filename}.txt')
+    RM.export_result(res, f'reasoning_result/{filename}.json')
+    print(f'Result saved as reasoning_result/{filename}.json')
 
     # VulnAnalysisModule
     print("==== [3/3] VULN ANALYSIS ====")
