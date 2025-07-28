@@ -1,6 +1,6 @@
 import json
 import re
-import subprocess
+import requests
 from dataclasses import dataclass
 from typing import List, Dict, Any, Optional
 
@@ -33,12 +33,27 @@ class VulnerabilityAnalysisModule:
         with open(path, 'r') as f:
             file = f.read()
         try:
-            reasoning_output_new = json.loads(file)
-            return reasoning_output_new
+            reasoning_output = json.loads(file)
+            return reasoning_output
         except json.JSONDecodeError as e:
             print(f"JSON parsing error: {e}")
         except Exception as e:
             print(f"Other error: {e}")
+
+    def make_request(self, reasoning_output):
+        for items in reasoning_output:
+            for i in [items['baseline_request'], items['payload_request']]:
+                print(i['url'])
+                r = requests.request(
+                    method= i['method'],
+                    url= i['url'],
+                    headers= i['headers'],
+                    params= i['params'],
+                    data= i['body']
+                )
+                res = r
+                print(res)
+
 
     def calculate_heuristic_score(self, baseline: BaselineMetrics, response: Dict[str, Any]) -> float:
         """Hitung skor heuristik berdasarkan perubahan dari baseline"""
@@ -138,21 +153,11 @@ class VulnerabilityAnalysisModuleOutput:
         }
 
 if __name__ == "__main__":
-    filename = input('Enter filename (reasoning_result/<name>.txt): ')
+    filename = input('Enter filename (reasoning_result/<name>.json): ')
     VA = VulnerabilityAnalysisModule()
 
-    result = VA.read_reasoning_result(f'reasoning_result/{filename}.txt')
+    result = VA.read_reasoning_result(f'reasoning_result/{filename}.json')
+    # print(result)
 
-    for res in result: # type: ignore
-
-        print(res['curl_baseline'])
-        result = subprocess.run(res['curl_baseline'], shell=True, capture_output=True, text=True)
-        print("STDOUT:", result.stdout)
-        print("STDERR:", result.stderr)
-        print("Return code:", result.returncode)
-
-        print(res['curl_payload'])
-        result = subprocess.run(res['curl_payload'], shell=True, capture_output=True, text=True)
-        print("STDOUT:", result.stdout)
-        print("STDERR:", result.stderr)
-        print("Return code:", result.returncode)
+    res = VA.make_request(result)
+    print(res)
