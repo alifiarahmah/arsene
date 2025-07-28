@@ -16,12 +16,12 @@ ssh -p 23870 root@ssh6.vast.ai  -L 8080:localhost:8080 -L 11434:localhost:11434
 
 ## Todo:
 
-- [ ] `capture_module`
+- [x] `capture_module`
 
-  - [ ] Integrate with ZAP CLI or custom proxy for HTTP/HTTPS capture
-  - [ ] Export traffic to HAR format
-  - [ ] (Optional) Preprocess HAR to remove external static resources
-  - [ ] Store captured HAR in DataStore
+  - [x] Integrate with ZAP CLI or custom proxy for HTTP/HTTPS capture
+  - [x] Export traffic to HAR format
+  - [x] (Optional) Preprocess HAR to remove external static resources
+  - [x] Store captured HAR in
 
 - [x] `parser_module`
 
@@ -55,7 +55,7 @@ ssh -p 23870 root@ssh6.vast.ai  -L 8080:localhost:8080 -L 11434:localhost:11434
   - [ ] Aggregate results from analysis and exploitation
   - [ ] Generate structured report (text/HTML/PDF)
   - [ ] Include evidence, CVSS scoring, and recommendations
-  - [ ] Store and/or export report to DataStore
+  - [ ] Store and/or export report
 
 ## Requirements
 
