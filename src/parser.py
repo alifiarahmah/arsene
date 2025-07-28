@@ -381,4 +381,4 @@ if __name__ == "__main__":
             print(f"   Potential Params: {endpoint.potential_parameters[:5]}")
 
     # Export to JSON
-    PM.export_to_json(endpoints, f'json/{filename}.json')
+    PM.export_to_json(endpoints, f'parsed_hars/{filename}.json')
