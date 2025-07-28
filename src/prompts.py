@@ -20,9 +20,17 @@ Instructions:
    - Server-side attacks (SSRF, XXE, Deserialization)
 
 2. For each attack vector, create test cases with:
-   • attack_vector: Specific vulnerability type (e.g., "sql_injection_post_param", "jwt_algorithm_confusion")
-   • test_scenario: Detailed 1-2 line explanation of the attack methodology
-   • full_payload_with_curl: Complete curl command with proper HTTP method, headers, authentication, and payload
+   * attack_vector: Specific vulnerability type (e.g., "sql_injection_post_param", "jwt_algorithm_confusion")
+   * test_scenario: 1-2 line explanation of the attack methodology
+   * baseline_request: Object with method, url, headers, params, body as seen in input traffic
+   * payload_request: Object with method, url, headers, params, body mutated for the attack
+
+   Each request object must have:
+     - method: HTTP method (e.g., "POST")
+     - url: Full endpoint URL
+     - headers: JSON object of HTTP headers
+     - params: JSON object of query parameters (if any)
+     - body: String or JSON object for request body (if any)
 
 3. Consider SPA-specific elements:
    - Dynamic API endpoints and parameter structures
@@ -41,27 +49,30 @@ Instructions:
 
 Output:
 Return ONLY a JSON array of test case objects following the exact schema. No explanatory text, comments, or formatting outside the JSON structure.
-'''
 
-REASONING_PROMPT='''
-Role: Senior web penetration tester.
+Schema example:
+[
+  {{
+    "attack_vector": "sql_injection_post_param",
+    "test_scenario": "Injects SQL payload into POST body parameter to test for SQLi.",
+    "baseline_request": {{
+      "method": "POST",
+      "url": "https://example.com/api/login",
+      "headers": {{"Content-Type": "application/json"}},
+      "params": {{}},
+      "body": "{{\\"username\\": \\"admin\\", \\"password\\": \\"password\\"}}"
+    }},
+    "payload_request": {{
+      "method": "POST",
+      "url": "https://example.com/api/login",
+      "headers": {{"Content-Type": "application/json"}},
+      "params": {{}},
+      "body": "{{\\"username\\": \\"admin' OR 1=1 --\\", \\"password\\": \\"password\\"}}"
+    }}
+  }}
+]
 
-Input traffic:
-{data}
-
-Task: Produce context-aware security test cases for this endpoint.
-
-Instructions
-1. Identify relevant attack vectors (auth, injection, logic flaws, misconfig, info-leak, etc.).
-2. For each vector create one object with:
-  • attack_vector : short label
-  • test_scenario : 1-2-line description
-  • full_payload_with_curl : full curl command (method, URL, headers, body)
-  • recommended_tools : array of tools chosen from: ["curl","ffuf","sqlmap","xssstrike","ssrfmap", "linkfinder","trufflehog","inql/graphqlmap","jwt-tool/autorize"]
-  • tool_comand_payload : full bash command of recommended_tools mentioned
-
-Output
-Return ONLY a JSON array of objects in the exact schema above—no extra text.
+IMPORTANT: Output must be valid JSON. All strings must use double quotes. No comments or extra text.
 '''
 
 VULN_ANALYSIS_LOOP = """
@@ -82,8 +93,8 @@ Observed Response  :
 
 == Instructions ==
 A. Decide whether a vulnerability is CONFIRMED, NEED_MORE_TEST, or STOP:
-   • CONFIRMED if response matches success criteria you defined.
-   • STOP if 3 consecutive attempts gave no new evidence or depth>max.
+   * CONFIRMED if response matches success criteria you defined.
+   * STOP if 3 consecutive attempts gave no new evidence or depth>max.
 B. If NEED_MORE_TEST, output ONE new payload that best escalates or pivots.
 C. Output STRICT JSON object:
 
