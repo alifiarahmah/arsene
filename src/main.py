@@ -27,7 +27,6 @@ if __name__ == "__main__":
     # ParserModule
     PM = ParserModule()
     endpoints = PM.parse_har_file(f'hars/{filename}.har')
-    # filtered_endpoints = PM.filter_endpoints(endpoints)
     PM.export_to_json(endpoints, f'json/{filename}.json')
     print(f'Result saved as json/{filename}.json')
 
