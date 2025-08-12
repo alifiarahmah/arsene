@@ -107,37 +107,29 @@ Initial tests:
 
 '''
 
-VULN_ANALYSIS_LOOP = """
-You are an expert hacker. Evaluate the last attempt and decide NEXT action.
+VULN_ANALYSIS_PROMPT = """
+Analyze this potential vulnerability test result:
 
-== Context ==
-Endpoint ID        : {endpoint_id}
-Chain Depth        : {depth}/{max_depth}
-Heuristic ScoreVec : {score_vector}          # [Δ, sig, refl, diff, oob]
-LLM Confidence Prev: {llm_conf_prev}         # 0–1
-Previous Payload   : {prev_payload}
-Observed Response  :
-  - status         : {status_after}
-  - body_len       : {body_len_after}
-  - delta_summary  : {delta_desc}            # e.g. "500 error +78 % len"
-  - error_strings  : {matched_errors}        # list
-  - oob_callback   : {oob_flag}
+Attack Vector: {attack_vector}
+Test Scenario: {test_scenario}
+Heuristic Score: {heuristic_score}
 
-== Instructions ==
-A. Decide whether a vulnerability is CONFIRMED, NEED_MORE_TEST, or STOP:
-   * CONFIRMED if response matches success criteria you defined.
-   * STOP if 3 consecutive attempts gave no new evidence or depth>max.
-B. If NEED_MORE_TEST, output ONE new payload that best escalates or pivots.
-C. Output STRICT JSON object:
+Baseline Response:
+- Status: {baseline_status}
+- Body Length: {baseline_body_length}
 
-{
-  "decision"       : "CONFIRMED|NEED_MORE_TEST|STOP",
-  "vuln_type"      : "<if confirmed>",
-  "next_payload"   : "<if need_more_test else ->>",
-  "tool"           : "<curl|sqlmap|...>",
-  "confidence"     : <0–1>
-}
+Actual Response:
+- Status: {actual_status}
+- Body Length: {actual_body_length}
+- Body Sample: {actual_body_sample}
 
-Limit output ≤ 256 tokens. No commentary.
+Request Details:
+- Method: {method}
+- URL: {url}
+- Body: {payload_body}
 
-<<Respond>>"""
+Based on the differences and response patterns, is this likely a true positive vulnerability?
+Provide analysis and recommend: "EXPLOIT" (high confidence), "MANUAL_REVIEW" (uncertain), or "FALSE_POSITIVE" (likely benign).
+
+Output format: {{"analysis": "...", "recommendation": "EXPLOIT|MANUAL_REVIEW|FALSE_POSITIVE", "confidence": "high|medium|low"}}
+"""
