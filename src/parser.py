@@ -146,7 +146,7 @@ class ParserModule:
             # Extract response body (truncated for large responses)
             response_body = None
             if 'content' in response and 'text' in response['content']:
-                response_body = response['content']['text'][:5000]  # Limit to 5KB
+                response_body = response['content']['text']  # Limit to 5KB
 
             # Classify endpoint type
             endpoint_type = self._classify_endpoint(url, method, content_type, headers)
@@ -280,7 +280,7 @@ class ParserModule:
                 matches = re.findall(pattern, response_body)
                 params.update(matches)
 
-        return list(params)[:20]  # Limit to 20 parameters
+        return list(params)  # Limit to 20 parameters
 
     def _extract_json_keys(self, data: Any, prefix: str = '') -> List[str]:
         """Recursively extract keys from JSON data"""
@@ -322,14 +322,14 @@ class ParserModule:
         return False
 
     def export_to_json(self, endpoints: List[ParsedEndpoint], output_file: str):
-        """Export parsed endpoints to JSON file"""
-        data = []
+        """Export parsed endpoints to JSON file with proper structure for LLM"""
+        endpoint_data = []
 
         for endpoint in endpoints:
             if endpoint.endpoint_type == EndpointType.THIRD_PARTY or endpoint.endpoint_type == EndpointType.UNIMPORTANT_STATIC_ASSET:
                 continue
 
-            data.append({
+            endpoint_data.append({
                 'url': endpoint.url,
                 'method': endpoint.method,
                 'endpoint_type': endpoint.endpoint_type.value,
@@ -340,17 +340,22 @@ class ParserModule:
                 'request_body': endpoint.request_body,
                 'response_status': endpoint.response_status,
                 'response_headers': endpoint.response_headers,
-                'response_body': endpoint.response_body[:500] if endpoint.response_body else None,
+                'response_body': endpoint.response_body if endpoint.response_body else None,
                 'content_type': endpoint.content_type,
                 'is_sensitive': endpoint.is_sensitive,
                 'authentication_indicators': endpoint.authentication_indicators,
                 'potential_parameters': endpoint.potential_parameters
             })
 
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        # Wrap in 'data' field as expected by LLM prompt
+        output_structure = {
+            'data': endpoint_data
+        }
 
-        print(f"[INFO] Exported {len(data)} endpoints to {output_file}")
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(output_structure, f, indent=2, ensure_ascii=False)
+
+        print(f"[INFO] Exported {len(endpoint_data)} endpoints to {output_file}")
 
 if __name__ == "__main__":
     PM = ParserModule()
@@ -378,7 +383,7 @@ if __name__ == "__main__":
         if endpoint.authentication_indicators:
             print(f"   Auth Indicators: {endpoint.authentication_indicators}")
         if endpoint.potential_parameters:
-            print(f"   Potential Params: {endpoint.potential_parameters[:5]}")
+            print(f"   Potential Params: {endpoint.potential_parameters}")
 
     # Export to JSON
     PM.export_to_json(endpoints, f'parsed_hars/{filename}.json')
