@@ -1,5 +1,6 @@
 from prompts import REASONING_INIT, REASONING_TRAFFIC_ANALYSIS, REASONING_ATTACK_VECTOR_ENUM, REASONING_TESTCASE_GENERATION, REASONING_CHAINING_CONTEXTUALIZATION
 from utils import call_llm, init_conversation
+from string import Template
 import json
 
 class ReasoningModule():
@@ -8,13 +9,14 @@ class ReasoningModule():
         init_conversation(REASONING_INIT)
 
     def traffic_analysis(self, json_file_path):
-        with open(json_file_path, 'r') as f:
+        with open(json_file_path, 'r', encoding='utf-8') as f:
             endpoint_data = json.load(f)
-        prompt = REASONING_TRAFFIC_ANALYSIS.format(
+        prompt = Template(REASONING_TRAFFIC_ANALYSIS).safe_substitute(
             data=json.dumps(endpoint_data, indent=2)
         )
 
-        traffic_analysis_res = call_llm(prompt, format_json=True)
+        traffic_analysis_res = call_llm(prompt)
+        # print("traffic analysis:", traffic_analysis_res)
         return traffic_analysis_res
 
     def attack_vector_enum(self, traffic_analysis_res):
@@ -23,8 +25,9 @@ class ReasoningModule():
         else:
             data_str = json.dumps(traffic_analysis_res, indent=2)
 
-        prompt = REASONING_ATTACK_VECTOR_ENUM.format(data=data_str)
-        attack_vector_enum_res = call_llm(prompt, format_json=True)
+        prompt = Template(REASONING_ATTACK_VECTOR_ENUM).safe_substitute(data=data_str)
+        attack_vector_enum_res = call_llm(prompt)
+        # print("attack_vector_enum:", attack_vector_enum_res)
         return attack_vector_enum_res
 
     def tc_gen(self, attack_vector_enum_res):
@@ -33,12 +36,13 @@ class ReasoningModule():
         else:
             data_str = json.dumps(attack_vector_enum_res, indent=2)
 
-        prompt = REASONING_TESTCASE_GENERATION.format(data=data_str)
-        tc_gen_res = call_llm(prompt, format_json=True)
+        prompt = Template(REASONING_TESTCASE_GENERATION).safe_substitute(data=data_str)
+        tc_gen_res = call_llm(prompt)
+        # print("tc_gen_res:", tc_gen_res)
         return tc_gen_res
 
     def contextualization(self, json_file_path, tc_gen_res):
-        with open(json_file_path, 'r') as f:
+        with open(json_file_path, 'r', encoding='utf-8') as f:
             endpoint_data = json.load(f)
 
         endpoint_str = json.dumps(endpoint_data, indent=2)
@@ -47,11 +51,12 @@ class ReasoningModule():
         else:
             test_str = json.dumps(tc_gen_res, indent=2)
 
-        prompt = REASONING_CHAINING_CONTEXTUALIZATION.format(
+        prompt = Template(REASONING_CHAINING_CONTEXTUALIZATION).safe_substitute(
             endpoint_data=endpoint_str,
             test_data=test_str
         )
-        contextualization_response = call_llm(prompt, format_json=True)
+        contextualization_response = call_llm(prompt)
+        # print("contextualization:", contextualization_response)
         return contextualization_response
 
     def export_result(self, result, output_path: str):

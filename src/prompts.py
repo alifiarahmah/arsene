@@ -41,7 +41,7 @@ REASONING_TRAFFIC_ANALYSIS='''
 Analyze the following web traffic and extract a list of unique API endpoints, HTTP methods, parameters, and authentication mechanisms observed. Identify any sequences of requests that appear to be part of a multi-step process (e.g., login, then data fetch).
 
 Input:
-{data}
+$data
 
 Output:
 Return a JSON array of endpoint objects with format specified below
@@ -62,7 +62,7 @@ REASONING_ATTACK_VECTOR_ENUM='''
 For each endpoint object below, list relevant attack vectors considering SPA and modern API patterns (e.g., SQLi, XSS, auth bypass, etc.).
 
 Input:
-{data}
+$data
 
 Output:
 Return a JSON array of objects with format specified below
@@ -83,7 +83,7 @@ For each endpoint and attack vector below, generate a test case object with:
 - payload_request
 
 Input:
-{data}
+$data
 
 Output:
 [
@@ -100,10 +100,10 @@ REASONING_CHAINING_CONTEXTUALIZATION='''
 Given the following sequence of requests (with sequence_id), generate test cases that consider the context and dependencies between steps (e.g., use token from login in subsequent requests).
 
 Sequences:
-{endpoint_data}
+$endpoint_data
 
 Initial tests:
-{test_data}
+$test_data
 
 '''
 
