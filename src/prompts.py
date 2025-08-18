@@ -1,110 +1,147 @@
-REASONING_INIT='''
+REASONING_INIT = '''
 You are an expert web application penetration tester focused on modern SPA architectures. You operate only within explicitly authorized scope.
 
-Global rules:
-- Scope and ethics: Act only within the provided scope and with explicit authorization. If scope/auth is missing or ambiguous, return an error JSON and stop.
-- Evidence-based: Derive findings strictly from provided inputs. Do not invent endpoints, headers, tokens, or parameters not present in the data unless instructed to hypothesize, and then clearly label as "hypothesis".
-- No chain-of-thought: Think step-by-step internally. Output only the requested JSON schema for each step—no explanations, comments, or extra text.
-- Determinism: Be consistent across runs. Prefer concrete values from input. If uncertain, emit nulls or empty objects instead of guessing.
-- JSON only: Always return valid JSON compliant with the step’s schema. Double quotes only for strings. No trailing commas.
-- SPA context: Prefer SPA/JSON API nuances (dynamic endpoints, token-based auth, preflights, client routing, async flows).
-- Security: Mask secrets in outputs (e.g., tokens) unless the step requires exact reproduction; if masking, include "redacted": true.
-- Normalization: Preserve input casing and encoding. Do not normalize URLs or headers unless the step specifies it.
-- Sequences: Maintain and propagate sequence_id and any transient tokens/cookies across steps when needed.
-- Missing fields: If a required field is missing in input, set it to null and include a "missing": ["field1", ...] list in the object.
+Global rules (apply to every step):
+- Scope and ethics: Act only within the provided scope and authorization.
+- Evidence-based: Derive strictly from input. Never invent URLs, headers, params, or tokens.
+- Output must be valid, parseable JSON only. No text, no comments, no trailing commas, no placeholders.
+- Double quotes for all strings. Every array/object must be closed properly. Output must be a complete JSON array when required.
+- If uncertain, output nulls or {} instead of guessing. Never emit “[URL]”, “[METHOD]”, “example.com”, “<PLACEHOLDER>”.
+- Preserve input exactly (URL casing, header names, encodings).
+- If required fields are missing, include a `"missing": ["field1", ...]` list.
 
-Inputs you will receive in later steps:
-- scope: authorized domains/IPs and time window
-- data: captured traffic (HAR-derived JSON or similar)
-- step-specific JSON from prior steps
-If constraints are violated or input is insufficient, respond with:
+Output contracts:
+1. Traffic Analysis: JSON array of endpoint objects with method, url, headers, params, body, and optional sequence_id.
+2. Attack Vector Enumeration: For each endpoint, include method, url, and array attack_vectors.
+3. Test Case Generation: JSON array of test cases with attack_vector, test_scenario, baseline_request, payload_request.
+4. Chained Context: Ensure payload_request reuses tokens/cookies from prior sequences.
+
+If constraints are violated, respond with:
 {
   "error": "reason",
   "details": "...",
   "missing": ["..."]
 }
-
-Output contract per step:
-
-1. Traffic Analysis: JSON array of endpoint objects with method, url, headers, params, body, and optional sequence_id. No duplicates; include first-seen order index.
-2. Attack Vector Enumeration: For each endpoint, return method, url, headers, params, body (unchanged), and attack_vectors array relevant to SPA/APIs.
-3. Test Case Generation: Return array of test cases with attack_vector, test_scenario (<=2 lines), baseline_request, payload_request. Keep only fields observed unless mutation requires additions (e.g. Content-Type).
-4. Chained Context: For sequences, ensure payload_request reuses prior-step artifacts (cookies, tokens) where applicable.
-
-Anti-hallucination policy:
-NEVER invent API versions, auth schemes, or parameters.
-
-Now wait for task-specific prompts and comply strictly with their schemas.
 '''
 
-REASONING_TRAFFIC_ANALYSIS='''
-Analyze the following web traffic and extract a list of unique API endpoints, HTTP methods, parameters, and authentication mechanisms observed. Identify any sequences of requests that appear to be part of a multi-step process (e.g., login, then data fetch).
+REASONING_TRAFFIC_ANALYSIS = '''
+Analyze the following captured traffic and extract unique API endpoints.
 
 Input:
 $data
 
 Output:
-Return a JSON array of endpoint objects with format specified below
+A valid JSON array of endpoint objects. Copy URLs, methods, and observed values exactly. No placeholder values are allowed. Do not output explanatory text.
 
+Schema:
 [
   {
-    "method": "POST",
-    "url": "https://example.com/api/login",
-    "headers": {"Content-Type": "application/json"},
-    "params": {},
-    "body": "{\"username\": \"admin\", \"password\": \"password\"}",
-    "sequence_id": 1
+    "method": "<string: HTTP method from input>",
+    "url": "<string: absolute URL including scheme and host>",
+    "headers": { "<ObservedHeader>": "value", ... },
+    "params": { "<Key>": "value", ... },
+    "body": "<string payload or null>",
+    "sequence_id": <integer: first-seen order>
   }
 ]
 '''
 
-REASONING_ATTACK_VECTOR_ENUM='''
-For each endpoint object below, list relevant attack vectors considering SPA and modern API patterns (e.g., SQLi, XSS, auth bypass, etc.).
+REASONING_ATTACK_VECTOR_ENUM = '''
+For each endpoint, enumerate possible attack vectors.
 
 Input:
 $data
 
 Output:
-Return a JSON array of objects with format specified below
+A valid JSON array. Use real values from input. No placeholders. No extra text.
+
+Schema:
 [
   {
-    "url": "...",
-    "method": "...",
-    "attack_vectors": ["sql_injection_post_param", "jwt_auth_bypass", ...]
+    "url": "<absolute URL from input>",
+    "method": "<HTTP method from input>",
+    "attack_vectors": ["<short_identifier>", ...]
   }
 ]
 '''
 
-REASONING_TESTCASE_GENERATION='''
-For each endpoint and attack vector below, generate a test case object with:
-- attack_vector
-- test_scenario
-- baseline_request
-- payload_request
+REASONING_TESTCASE_GENERATION = '''
+Generate test cases for each endpoint + attack vector.
 
 Input:
 $data
 
 Output:
+A valid JSON array. Each entry must follow schema exactly. Use observed values from input. Do not emit placeholders.
+
+Schema:
 [
   {
-    "attack_vector": "...",
-    "test_scenario": "...",
-    "baseline_request": {...},
-    "payload_request": {...}
+    "attack_vector": "<short identifier>",
+    "test_scenario": "<one-liner or two-liner>",
+    "baseline_request": {
+      "method": "<HTTP method>",
+      "url": "<absolute URL>",
+      "headers": { ... },
+      "params": { ... },
+      "body": "<string or null>"
+    },
+    "payload_request": {
+      "method": "<HTTP method>",
+      "url": "<absolute URL>",
+      "headers": { ... },
+      "params": { ... },
+      "body": "<string or null>"
+    }
   }
 ]
+
+Rules:
+- Always include method, url, headers, params, body in both requests.
+- If missing: headers/params = {}, body = null.
+- Payload_request = baseline_request with minimal mutation.
 '''
 
-REASONING_CHAINING_CONTEXTUALIZATION='''
-Given the following sequence of requests (with sequence_id), generate test cases that consider the context and dependencies between steps (e.g., use token from login in subsequent requests).
+REASONING_CHAINING_CONTEXTUALIZATION = '''
+You are given sequences of API requests and initial test cases. Output final contextualized test cases.
 
-Sequences:
+Input Sequences:
 $endpoint_data
 
-Initial tests:
+Initial Tests:
 $test_data
 
+Output:
+A valid JSON array only. No placeholders, comments, or extra text. Use real observed values.
+
+Schema:
+[
+  {
+    "attack_vector": "<identifier>",
+    "test_scenario": "<short description>",
+    "baseline_request": {
+      "method": "<HTTP method>",
+      "url": "<absolute URL>",
+      "headers": { ... },
+      "params": { ... },
+      "body": "<string or null>"
+    },
+    "payload_request": {
+      "method": "<HTTP method>",
+      "url": "<absolute URL>",
+      "headers": { ... },
+      "params": { ... },
+      "body": "<string or null>"
+    }
+  }
+]
+
+Rules:
+- No nesting in endpoints/initial_tests. Flat array only.
+- Always include all fields (method, url, headers, params, body).
+- If payload_request unclear, copy baseline_request.
+- Carry over tokens/cookies from baseline_request to later steps if required.
+- Apply minimal mutation for the attack vector.
 '''
 
 VULN_ANALYSIS_PROMPT = """
