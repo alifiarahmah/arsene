@@ -186,9 +186,6 @@ Inputs:
 - AttackVectors:
 <<ATTACK_VECTORS_JSON>>
 
-- Optional Heuristic Config (to align oracle thresholds; may be empty):
-<<HEURISTIC_CONFIG_JSON>>
-
 Produce a JSON object matching the VulnHypotheses schema only.
 """
 

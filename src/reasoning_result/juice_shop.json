@@ -1,86 +1,40 @@
-[
-  {
-    "attack_vector": "GET user with invalid ID",
-    "test_scenario": "Send a GET request to the /rest/users/{id} endpoint with an invalid user ID.",
-    "baseline_request": {
-      "method": "GET",
-      "url": "http://localhost:3000/rest/users/1",
-      "headers": [],
-      "params": {
-        "id": "1"
-      },
-      "body": null
-    },
-    "payload_request": {
-      "method": "GET",
-      "url": "http://localhost:3000/rest/users/invalidID",
-      "headers": [],
-      "params": {
-        "id": "invalidID"
-      },
-      "body": null
-    }
-  },
-  {
-    "attack_vector": "GET order with invalid ID",
-    "test_scenario": "Send a GET request to the /rest/orders/{id} endpoint with an invalid order ID.",
-    "baseline_request": {
-      "method": "GET",
-      "url": "http://localhost:3000/rest/orders/456",
-      "headers": [],
-      "params": {
-        "id": "456"
-      },
-      "body": null
-    },
-    "payload_request": {
-      "method": "GET",
-      "url": "http://localhost:3000/rest/orders/invalidID",
-      "headers": [],
-      "params": {
-        "id": "invalidID"
-      },
-      "body": null
-    }
-  },
-  {
-    "attack_vector": "GET items with invalid order ID",
-    "test_scenario": "Send a GET request to the /rest/orders/{orderID}/items endpoint with an invalid order ID.",
-    "baseline_request": {
-      "method": "GET",
-      "url": "http://localhost:3000/rest/orders/456/items",
-      "headers": [],
-      "params": {
-        "orderID": "456"
-      },
-      "body": null
-    },
-    "payload_request": {
-      "method": "GET",
-      "url": "http://localhost:3000/rest/orders/invalidID/items",
-      "headers": [],
-      "params": {
-        "orderID": "invalidID"
-      },
-      "body": null
-    }
-  },
-  {
-    "attack_vector": "POST new order with empty data",
-    "test_scenario": "Send a POST request to the /rest/orders/new endpoint without any data.",
-    "baseline_request": {
-      "method": "POST",
-      "url": "http://localhost:3000/rest/orders/new",
-      "headers": [],
-      "params": {},
-      "body": null
-    },
-    "payload_request": {
-      "method": "POST",
-      "url": "http://localhost:3000/rest/orders/new",
-      "headers": [],
-      "params": {},
-      "body": ""
-    }
+{
+  "finalPlan": {
+    "scenarios": [
+      {
+        "id": "default",
+        "tests": [
+          {
+            "testId": "GET:/rest/continue-code:control",
+            "preconditions": {},
+            "payloads": [],
+            "oracles": [
+              {
+                "signal": "status_code",
+                "threshold": 200,
+                "pass_logic": "equal"
+              },
+              {
+                "signal": "response_length",
+                "threshold": null,
+                "pass_logic": "less_than"
+              }
+            ],
+            "safety": {
+              "idempotent_required": true,
+              "destructive_ok": false
+            },
+            "notes": "Benign control payload for differential analysis.",
+            "runtimeTelemetry": {}
+          }
+        ],
+        "chains": [],
+        "prioritization": 0.5,
+        "stopOnSuccess": false,
+        "backoff": {
+          "perHostRPS": 1
+        }
+      }
+    ]
   }
-]
+}

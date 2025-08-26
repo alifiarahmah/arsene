@@ -1,0 +1,123 @@
+{
+  "testCases": [
+    {
+      "id": "GET:/rest/continue-code:control",
+      "method": "GET",
+      "endpoint": "/rest/continue-code",
+      "parameters": [],
+      "preconditions": {
+        "auth_context": null,
+        "csrf_token": false
+      },
+      "payloads": [
+        {
+          "value": "",
+          "notes": "Benign control payload for differential analysis."
+        }
+      ],
+      "oracles": [
+        {
+          "signal": "status_code",
+          "threshold": 200,
+          "pass_logic": "equal"
+        },
+        {
+          "signal": "response_length",
+          "threshold": null,
+          "pass_logic": "less_than"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false
+      }
+    },
+    {
+      "id": "GET:/rest/continue-code:continueCode:injection_sql",
+      "method": "GET",
+      "endpoint": "/rest/continue-code",
+      "parameters": [
+        {
+          "name": "continueCode",
+          "valueTemplate": "{injected_payload}",
+          "location": "query"
+        }
+      ],
+      "preconditions": {
+        "auth_context": null,
+        "csrf_token": false
+      },
+      "payloads": [],
+      "oracles": [
+        {
+          "signal": "status_code",
+          "threshold": 500,
+          "pass_logic": "greater_than"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false
+      },
+      "notes": "Possible SQL injection vulnerability. Use a safe payload for testing."
+    },
+    {
+      "id": "GET:/rest/continue-code:continueCode:authz_bypass",
+      "method": "GET",
+      "endpoint": "/rest/continue-code/{continueCode}",
+      "parameters": [
+        {
+          "name": "continueCode",
+          "valueTemplate": "{malicious_id}",
+          "location": "path"
+        }
+      ],
+      "preconditions": {
+        "auth_context": null,
+        "csrf_token": false
+      },
+      "payloads": [],
+      "oracles": [
+        {
+          "signal": "status_code",
+          "threshold": 200,
+          "pass_logic": "equal"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false
+      },
+      "notes": "Possible authorization bypass vulnerability. Use a valid ID for testing."
+    },
+    {
+      "id": "GET:/profile:description:xss_stored",
+      "method": "GET",
+      "endpoint": "/profile",
+      "parameters": [
+        {
+          "name": "description",
+          "valueTemplate": "<script>alert('XSS')</script>",
+          "location": "query"
+        }
+      ],
+      "preconditions": {
+        "auth_context": null,
+        "csrf_token": false
+      },
+      "payloads": [],
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": true,
+          "pass_logic": "equal"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false
+      },
+      "notes": "Possible XSS vulnerability. Use a safe payload for testing."
+    }
+  ]
+}
