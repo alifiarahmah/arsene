@@ -1,0 +1,1253 @@
+{
+"vectors": [
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "others",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": "",
+"category": "sensitive_data_exposure",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_sql",
+"expected_signals": ["status_code_change"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_nosql",
+"expected_signals": ["status_code_change"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_xpath",
+"expected_signals": ["status_code_change"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_reflected",
+"expected_signals": ["response_length_diff"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_stored",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_dom",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "ssrf",
+"expected_signals": ["out_of_band_call"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "command_injection",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "file_inclusion",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "deserialization",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "insecure_direct_object_reference",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "authz_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "authn_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "csrf",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "open_redirect",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/rest/continue-code",
+"parameter": "continueCode",
+"param_location": "query",
+"sample_value": null,
+"category": "xxe",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "sensitive_data_exposure",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_sql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_nosql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_xpath",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_reflected",
+"expected_signals": ["response_length_diff"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_stored",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_dom",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "ssrf",
+"expected_signals": ["out_of_band_call"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "command_injection",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "file_inclusion",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "deserialization",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "insecure_direct_object_reference",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "authz_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "authn_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "csrf",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "open_redirect",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "description",
+"param_location": "query",
+"sample_value": null,
+"category": "xxe",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "sensitive_data_exposure",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_sql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_nosql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_xpath",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_reflected",
+"expected_signals": ["response_length_diff"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_stored",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_dom",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "ssrf",
+"expected_signals": ["out_of_band_call"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "command_injection",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "file_inclusion",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "deserialization",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "insecure_direct_object_reference",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "authz_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "authn_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "csrf",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "open_redirect",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "query",
+"sample_value": null,
+"category": "xxe",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "sensitive_data_exposure",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "injection_sql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "injection_nosql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "injection_xpath",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "xss_reflected",
+"expected_signals": ["response_length_diff"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "xss_stored",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "xss_dom",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "ssrf",
+"expected_signals": ["out_of_band_call"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "command_injection",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "file_inclusion",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "deserialization",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "insecure_direct_object_reference",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "authz_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "header",
+"sample_value": null,
+"category": "authn_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "sensitive_data_exposure",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "injection_sql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "injection_nosql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "injection_xpath",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "xss_reflected",
+"expected_signals": ["response_length_diff"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "xss_stored",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "xss_dom",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "ssrf",
+"expected_signals": ["out_of_band_call"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "command_injection",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "file_inclusion",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "deserialization",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "insecure_direct_object_reference",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "authz_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "keywords",
+"param_location": "cookie",
+"sample_value": null,
+"category": "authn_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "sensitive_data_exposure",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_sql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_nosql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "injection_xpath",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_reflected",
+"expected_signals": ["response_length_diff"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_stored",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "xss_dom",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "ssrf",
+"expected_signals": ["out_of_band_call"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "command_injection",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "file_inclusion",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "deserialization",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "insecure_direct_object_reference",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "authz_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "query",
+"sample_value": null,
+"category": "authn_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "sensitive_data_exposure",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "injection_sql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "injection_nosql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "injection_xpath",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "xss_reflected",
+"expected_signals": ["response_length_diff"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "xss_stored",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "xss_dom",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "ssrf",
+"expected_signals": ["out_of_band_call"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "command_injection",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "file_inclusion",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "deserialization",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "insecure_direct_object_reference",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "authz_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "header",
+"sample_value": null,
+"category": "authn_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "sensitive_data_exposure",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "injection_sql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "injection_nosql",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "injection_xpath",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "xss_reflected",
+"expected_signals": ["response_length_diff"],
+"needs_observation": false
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "xss_stored",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "xss_dom",
+"expected_signals": ["none"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "ssrf",
+"expected_signals": ["out_of_band_call"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "command_injection",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "file_inclusion",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "deserialization",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "insecure_direct_object_reference",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "authz_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+},
+{
+"method": "GET",
+"endpoint": "/profile",
+"parameter": "location",
+"param_location": "cookie",
+"sample_value": null,
+"category": "authn_bypass",
+"expected_signals": ["status_code_change"],
+"needs_observation": true
+}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

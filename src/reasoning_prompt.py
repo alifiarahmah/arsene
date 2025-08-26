@@ -3,13 +3,17 @@
 # =========================
 
 STEP1_SYSTEM_PROMPT = """
-You are a senior web application penetration testing planner.
-Rules:
-- Output only valid JSON when asked to output; no prose; no code fences; no comments.
-- Follow schemas and enums provided. If information is unknown, use null or [] and set needs_observation=true where applicable.
-- Never invent endpoints, parameters, or roles beyond provided evidence.
-- Prefer idempotent probes; destructive actions forbidden unless explicitly allowed.
-- Keep outputs minimal and machine-parseable.
+You are an expert offensive penetration tester targeting modern Single Page Applications (SPA).
+You act only in red‑team capacity — no blue team, no defense, no mitigation.
+
+Constraints / Contract:
+- SPA means web traffic is often async, with REST/GraphQL APIs behind the scenes, JSON bodies, non‑conventional params, and token‑based auth (JWT, cookies, OAuth).
+- Output ONLY valid JSON that strictly matches the AttackVectors schema provided.
+- Scope‑strict: Act only within provided inputs.
+- Evidence‑based: Derive ONLY from HAR and user input; never invent endpoints or values.
+- No prose, no markdown, no placeholders like [URL] or <TOKEN>.
+- If data unclear → return null or [] and set needs_observation=true.
+- Downstream system expects atomic JSON, no extra text.
 """
 
 # =========================
@@ -17,15 +21,16 @@ Rules:
 # =========================
 
 STEP2_CONTEXT_SYSTEM_PROMPT = """
-From the parsed HAR summary, extract and contextualize endpoints into a structured JSON object.
+You are parsing HAR from an SPA into structured offensive context.
 
-Constraints:
-- Output only valid JSON that conforms to the provided schema.
-- Base everything strictly on the given HAR summary; do not invent endpoints, parameters, or roles.
-- If data is missing or unclear, set values to null or [] and set needs_observation=true for the endpoint or global_observations.
-- Do not generate payloads, exploits, or test cases at this stage.
+Rules:
+- Output only valid JSON strictly matching schema.
+- Extract endpoints, parameters, header tokens, auth flows.
 - Deduplicate endpoints by method + templated path.
-- Provide only contextual classification (auth schemes, CSRF type, roles, side-effects, protocols, anti-automation hints, etc.).
+- Very important: include `sample_value` for any observed parameter from actual request
+  (e.g., GET /users/1 → parameter=userId, location=path, sample_value="1").
+- If a param lacks observed value, use null and needs_observation=true.
+- No payloads, no attacks, no mitigations at this stage.
 """
 
 STEP2_CONTEXT_USER_PROMPT = """
@@ -41,17 +46,11 @@ Schema (Context):
         "properties": {
           "method": { "type": "string", "enum": ["GET","POST","PUT","DELETE","PATCH","OPTIONS","HEAD"] },
           "path_template": { "type": "string" },
-          "auth_schemes": {
-            "type": "array",
-            "items": { "type": "string", "enum": ["cookie","jwt","oauth2","api_key_header","api_key_query","basic_auth","none"] }
-          },
+          "auth_schemes": { "type": "array","items": {"type":"string","enum":["cookie","jwt","oauth2","api_key_header","api_key_query","basic_auth","none"]} },
           "roles": { "type": "array", "items": { "type": "string" } },
           "csrf_protection": { "type": ["string","null"], "enum": ["token_in_form","double_submit_cookie","same_site_cookie","none",null] },
           "side_effect": { "type": ["string","null"], "enum": ["read_only","state_changing","unknown",null] },
-          "anti_automation": {
-            "type": "array",
-            "items": { "type": "string", "enum": ["captcha","rate_limit","user_agent_checks","ip_blocking","csrf","none"] }
-          },
+          "anti_automation": { "type": "array", "items": {"type":"string","enum":["captcha","rate_limit","user_agent_checks","ip_blocking","csrf","none"]} },
           "protocol": { "type": ["string","null"], "enum": ["http","https",null] },
           "content_types": { "type": "array", "items": { "type": "string" } },
           "parameters": {
@@ -89,7 +88,8 @@ Input (Parsed HAR Summary):
 <<PARSED_HAR_SUMMARY_JSON>>
 
 Instruction:
-Produce a single JSON object matching the schema above. Nothing else.
+- Output only JSON object matching schema.
+- Parameters must always include `sample_value` when concrete values are found in observed requests (e.g., path /users/1/orders/123 → userId="1", orderId="123").
 """
 
 # =========================
@@ -97,19 +97,23 @@ Produce a single JSON object matching the schema above. Nothing else.
 # =========================
 
 STEP3_VECTORS_SYSTEM_PROMPT = """
-You are mapping endpoint+parameter types to plausible attack vectors.
-Constraints:
-- Output only JSON conforming to AttackVectors schema.
-- Don’t output concrete payloads.
-- Ground vectors in observed Context: param types, auth context, side effects, protocols.
-- Enumerate expected observable effects strictly from the Signal enum.
-- Use needs_observation=true when insufficient evidence blocks confident mapping.
+You are an offensive reasoning module.
+You take endpoint context (with parameters+sample_values) and map them to plausible SPA attack vectors.
 
-Output: AttackVectors
+Rules:
+- Output ONLY JSON that validates against AttackVectors schema.
+- Allowed fields: ["endpoint","parameter","param_location","sample_value","category","expected_signals","needs_observation"].
+- No prose, no descriptions, no mitigations, no extra keys.
+- Treat path template variables as attack surfaces: /users/:id with sample_value=1 → likely IDOR/authz_bypass.
+- Treat query/body as injection or XSS surface depending on type.
+- Use sample_value to anchor reasoning (e.g., observed "1" → numeric id → IDOR, observed "redirect=google.com" → open_redirect).
+- If cannot classify confidently, set needs_observation=true.
+- expected_signals must only come from enum provided.
+- Deduplicate by endpoint+parameter+category.
 """
 
 STEP3_VECTORS_USER_PROMPT = """
-Schemas & Enums:
+Schema (AttackVectors):
 {
   "type": "object",
   "title": "AttackVectors",
@@ -119,54 +123,25 @@ Schemas & Enums:
       "items": {
         "type": "object",
         "properties": {
-          "endpoint": { "type": "string", "description": "method+path_template identifier (e.g., GET /users/{id})" },
-          "parameter": { "type": ["string", "null"], "description": "Name of parameter if applicable, else null" },
-          "param_location": { "type": ["string", "null"], "enum": ["query", "path", "header", "cookie", "body", null] },
-          "category": {
-            "type": "string",
-            "enum": [
-              "injection_sql",
-              "injection_nosql",
-              "injection_xpath",
-              "xss_reflected",
-              "xss_stored",
-              "xss_dom",
-              "ssrf",
-              "command_injection",
-              "file_inclusion",
-              "deserialization",
-              "insecure_direct_object_reference",
-              "authz_bypass",
-              "authn_bypass",
-              "csrf",
-              "open_redirect",
-              "xxe",
-              "sensitive_data_exposure",
-              "business_logic",
-              "others"
-            ]
-          },
-          "expected_signals": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "status_code_change",
-                "response_length_diff",
-                "error_signature",
-                "reflected_input",
-                "timing_variation",
-                "out_of_band_call",
-                "header_injection",
-                "token_reuse_failure",
-                "state_change_observed",
-                "none"
-              ]
-            }
-          },
-          "needs_observation": { "type": "boolean", "default": false }
+          "method": { "type": "string" },
+          "endpoint": { "type": "string" },
+          "parameter": { "type": ["string","null"] },
+          "param_location": { "type": ["string","null"], "enum": ["query","path","header","cookie","body",null] },
+          "sample_value": { "type": ["string","null"] },
+          "category": { "type": "string", "enum": [
+            "injection_sql","injection_nosql","injection_xpath","xss_reflected","xss_stored","xss_dom",
+            "ssrf","command_injection","file_inclusion","deserialization","insecure_direct_object_reference",
+            "authz_bypass","authn_bypass","csrf","open_redirect","xxe",
+            "sensitive_data_exposure","business_logic","others"
+          ] },
+          "expected_signals": { "type": "array", "items": { "type": "string", "enum": [
+            "status_code_change","response_length_diff","error_signature",
+            "reflected_input","timing_variation","out_of_band_call",
+            "header_injection","token_reuse_failure","state_change_observed","none"
+          ] } },
+          "needs_observation": { "type": "boolean" }
         },
-        "required": ["endpoint", "category", "expected_signals", "needs_observation"]
+        "required": ["endpoint","parameter","param_location","category","expected_signals","needs_observation"]
       }
     }
   },
@@ -176,7 +151,14 @@ Schemas & Enums:
 Input Context:
 <<CONTEXT_JSON>>
 
-Produce a JSON object matching the AttackVectors schema only.
+Instruction:
+- For each endpoint parameter, output vectors with offensive categories.
+- Always include parameter and sample_value.
+- Do not drop method. Each vector must have method + endpoint (path).
+- Example: GET /users/:userId → param=userId, sample_value=1, category=authz_bypass.
+- If uncertain, needs_observation=true.
+- Output only a single JSON object matching schema, with vectors array.
+- Include HTTP method as a separate field.
 """
 
 # =========================
