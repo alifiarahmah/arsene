@@ -1,10 +1,7 @@
 import json
 import urllib.parse
-from typing import List, Dict, Any, Optional
-
-import json
-import urllib.parse
-from typing import Dict, List, Any, Optional
+import re
+from typing import Counter, Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
 
@@ -36,6 +33,12 @@ class ParsedEndpoint:
     potential_parameters: List[str]
 
 class ParserModule:
+    MAX_PARAM_KEYS = 20
+    RESPONSE_BODY_SNIFF_LIMIT = 1200
+    MAX_GROUPS = 250
+    SHARD_SIZE = 250
+    INCLUDE_STATIC_ASSETS = False
+
     def __init__(self):
         self.third_party_domains = {
             'fonts.googleapis.com', 'fonts.gstatic.com', 'google.com',
@@ -86,9 +89,8 @@ class ParserModule:
                     endpoint = self._parse_entry(entry)
                     if endpoint:
                         parsed_endpoints.append(endpoint)
-                        print(f"[DEBUG] Parsed entry {i+1}: {endpoint.method} {endpoint.url}")
-                    else:
-                        print(f"[DEBUG] Skipped entry {i+1}")
+                        if (i + 1) % 50 == 0:
+                            print(f"[DEBUG] Parsed up to entry {i+1}")
                 except Exception as e:
                     print(f"[ERROR] Failed to parse entry {i+1}: {e}")
                     continue
@@ -106,7 +108,7 @@ class ParserModule:
             request = entry.get('request', {})
             response = entry.get('response', {})
 
-            # Extract basic request info
+            # basic request info
             url = request.get('url', '')
             method = request.get('method', 'GET').upper()
 
@@ -115,51 +117,64 @@ class ParserModule:
 
             parsed_url = urllib.parse.urlparse(url)
 
-            # Extract query parameters
-            query_params = {}
+            # query parameters
+            query_params: Dict[str, str] = {}
             for param in request.get('queryString', []):
-                query_params[param.get('name', '')] = param.get('value', '')
+                name = param.get('name', '')
+                if name:
+                    query_params[name] = param.get('value', '')
 
-            # Extract headers
-            headers = {}
+            # headers
+            headers: Dict[str, str] = {}
             for header in request.get('headers', []):
-                headers[header.get('name', '').lower()] = header.get('value', '')
+                name = header.get('name', '')
+                if name:
+                    headers[name.lower()] = header.get('value', '')
 
-            # Extract cookies
-            cookies = {}
+            # cookies
+            cookies: Dict[str, str] = {}
             for cookie in request.get('cookies', []):
-                cookies[cookie.get('name', '')] = cookie.get('value', '')
+                name = cookie.get('name', '')
+                if name:
+                    cookies[name] = cookie.get('value', '')
 
-            # Extract response headers
-            response_headers = {}
+            # response headers
+            response_headers: Dict[str, str] = {}
             for header in response.get('headers', []):
-                response_headers[header.get('name', '').lower()] = header.get('value', '')
+                name = header.get('name', '')
+                if name:
+                    response_headers[name.lower()] = header.get('value', '')
 
-            # Determine content type
-            content_type = response_headers.get('content-type', '').split(';')[0].strip()
+            # determine content type
+            content_type = response_headers.get('content-type', '')
+            if not content_type:
+                content_type = response.get('content', {}).get('mimeType', '')
+            content_type = content_type.split(';')[0].strip().lower()
 
-            # Extract request body
+            # request body
             request_body = None
             if 'postData' in request:
                 request_body = request['postData'].get('text', '')
 
-            # Extract response body (truncated for large responses)
+            # response body (truncated for large responses)
             response_body = None
             if 'content' in response and 'text' in response['content']:
-                response_body = response['content']['text']  # Limit to 5KB
+                rb = response['content']['text']
+                if isinstance(rb, str) and rb:
+                    response_body = rb[: self.RESPONSE_BODY_SNIFF_LIMIT]
 
-            # Classify endpoint type
+            # classify endpoint type
             endpoint_type = self._classify_endpoint(url, method, content_type, headers)
 
-            # Check for authentication indicators
+            # check for authentication indicators
             auth_indicators = self._detect_auth_indicators(url, headers, cookies)
 
-            # Extract potential parameters for testing
+            # potential parameters for testing
             potential_params = self._extract_potential_parameters(
                 url, headers, request_body, response_body
             )
 
-            # Determine if endpoint is sensitive
+            # determine if endpoint is sensitive
             is_sensitive = self._is_sensitive_endpoint(url, headers, cookies, auth_indicators)
 
             return ParsedEndpoint(
@@ -185,58 +200,56 @@ class ParserModule:
             return None
 
     def _classify_endpoint(self, url: str, method: str, content_type: str, headers: Dict[str, str]) -> EndpointType:
-        """Classify endpoint berdasarkan karakteristiknya"""
         parsed_url = urllib.parse.urlparse(url)
         domain = parsed_url.netloc.lower()
         path = parsed_url.path.lower()
 
-        # Check if third party
+        # Third party
         if any(tp_domain in domain for tp_domain in self.third_party_domains):
             return EndpointType.THIRD_PARTY
         if any(tp_path in path for tp_path in self.third_party_indicators):
             return EndpointType.THIRD_PARTY
 
-        # Check if unimportant static asset
+        # Unimportant static
         if any(path.endswith(ext) for ext in self.unimportant_static_extensions):
             return EndpointType.UNIMPORTANT_STATIC_ASSET
 
-        # Check if static asset
+        # Static asset
         if any(path.endswith(ext) for ext in self.important_static_extensions):
             return EndpointType.STATIC_ASSET
 
-        # Check if API endpoint
+        # API endpoint
         if any(indicator in url.lower() for indicator in self.api_indicators):
             return EndpointType.API_ENDPOINT
 
-        # Check if authentication related
+        # Authentication related
         if any(indicator in url.lower() for indicator in self.auth_indicators):
             return EndpointType.AUTHENTICATION
 
-        # Check if form submission
-        if method in ['POST', 'PUT', 'PATCH'] and 'form' in content_type:
+        # Form submission
+        if method in ['POST', 'PUT', 'PATCH'] and ('form' in content_type or 'x-www-form-urlencoded' in content_type):
             return EndpointType.FORM_SUBMISSION
 
         # Default to page request
         return EndpointType.PAGE_REQUEST
 
     def _detect_auth_indicators(self, url: str, headers: Dict[str, str], cookies: Dict[str, str]) -> List[str]:
-        """Detect authentication indicators"""
         indicators = []
 
-        # Check URL
+        # check URL
         url_lower = url.lower()
         for auth_term in self.auth_indicators:
             if auth_term in url_lower:
                 indicators.append(f"url_contains_{auth_term}")
 
-        # Check headers
+        # check headers
         for header_name, header_value in headers.items():
             if 'authorization' in header_name.lower():
                 indicators.append("authorization_header")
-            if 'bearer' in header_value.lower():
+            if isinstance(header_value, str) and 'bearer' in header_value.lower():
                 indicators.append("bearer_token")
 
-        # Check cookies
+        # check cookies
         for cookie_name in cookies.keys():
             cookie_lower = cookie_name.lower()
             if any(term in cookie_lower for term in ['session', 'auth', 'token', 'sid']):
@@ -246,124 +259,385 @@ class ParserModule:
 
     def _extract_potential_parameters(self, url: str, headers: Dict[str, str],
                                     request_body: Optional[str], response_body: Optional[str]) -> List[str]:
-        """Extract potential parameters untuk testing"""
         params = set()
 
-        # Extract from URL query parameters
+        # from URL query parameters
         parsed_url = urllib.parse.urlparse(url)
         query_params = urllib.parse.parse_qs(parsed_url.query)
         params.update(query_params.keys())
 
-        # Extract from request body (JSON/form data)
+        # from request body (JSON/form)
         if request_body:
             try:
-                if request_body.startswith('{'):
-                    json_data = json.loads(request_body)
+                body = request_body.strip()
+                if body.startswith('{') or body.startswith('['):
+                    json_data = json.loads(body)
                     params.update(self._extract_json_keys(json_data))
-                elif '=' in request_body:
-                    form_data = urllib.parse.parse_qs(request_body)
+                elif '=' in body:
+                    form_data = urllib.parse.parse_qs(body)
                     params.update(form_data.keys())
-            except:
+            except Exception:
                 pass
 
-        # Extract from response body (look for input names, API fields)
+        # from response body (look for input names, API fields)
         if response_body:
-            # Simple regex patterns untuk common parameter names
-            import re
-            patterns = [
-                r'name=["\']([^"\']+)["\']',
-                r'id=["\']([^"\']+)["\']',
-                r'"([a-zA-Z_][a-zA-Z0-9_]*)":\s*["\'{]',
-            ]
+            try:
+                patterns = [
+                    r'name=["\']([^"\']+)["\']',
+                    r'id=["\']([^"\']+)["\']',
+                    r'"([a-zA-Z_][a-zA-Z0-9_]*)":\s*["\'{]'
+                ]
+                for pattern in patterns:
+                    for m in re.findall(pattern, response_body):
+                        params.add(m)
+            except Exception:
+                pass
 
-            for pattern in patterns:
-                matches = re.findall(pattern, response_body)
-                params.update(matches)
-
-        return list(params)  # Limit to 20 parameters
+        # Enforce limit
+        out = sorted(list(params))
+        if len(out) > self.MAX_PARAM_KEYS:
+            out = out[: self.MAX_PARAM_KEYS]
+        return out
 
     def _extract_json_keys(self, data: Any, prefix: str = '') -> List[str]:
-        """Recursively extract keys from JSON data"""
-        keys = []
+        keys: List[str] = []
         if isinstance(data, dict):
-            for key, value in data.items():
-                full_key = f"{prefix}.{key}" if prefix else key
-                keys.append(full_key)
-                if isinstance(value, (dict, list)):
-                    keys.extend(self._extract_json_keys(value, full_key))
+            for k, v in data.items():
+                full = f"{prefix}.{k}" if prefix else k
+                keys.append(full)
+                if isinstance(v, (dict, list)):
+                    keys.extend(self._extract_json_keys(v, full))
         elif isinstance(data, list) and data:
             keys.extend(self._extract_json_keys(data[0], prefix))
         return keys
 
-    def _is_sensitive_endpoint(self, url: str, headers: Dict[str, str],
-                             cookies: Dict[str, str], auth_indicators: List[str]) -> bool:
-        """Determine if endpoint potentially sensitive"""
+    def _is_sensitive_endpoint(self, url: str, headers: Dict[str, str], cookies: Dict[str, str], auth_indicators: List[str]) -> bool:
         sensitive_patterns = [
             'admin', 'login', 'password', 'token', 'key', 'secret',
             'private', 'internal', 'config', 'settings', 'user',
             'account', 'profile', 'payment', 'billing'
         ]
-
         url_lower = url.lower()
-
-        # Check URL for sensitive patterns
-        if any(pattern in url_lower for pattern in sensitive_patterns):
+        if any(p in url_lower for p in sensitive_patterns):
             return True
-
-        # Check if has authentication indicators
         if auth_indicators:
             return True
-
-        # Check if has sensitive cookies
         for cookie_name in cookies.keys():
-            if any(pattern in cookie_name.lower() for pattern in sensitive_patterns):
+            if any(p in cookie_name.lower() for p in sensitive_patterns):
                 return True
-
         return False
 
-    def export_to_json(self, endpoints: List[ParsedEndpoint], output_file: str):
-        """Export parsed endpoints to JSON file with proper structure for LLM"""
-        endpoint_data = []
+    @staticmethod
+    def _normalize_path(path: str) -> str:
+        """
+        Replace dynamic segments with placeholders to group similar endpoints:
+        - UUIDs -> :uuid
+        - long hex -> :hex
+        - integers -> :int
+        - emails -> :email
+        """
+        s = path
+        s = re.sub(r'\b[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}\b', ':uuid', s)
+        s = re.sub(r'\b[0-9a-fA-F]{16,}\b', ':hex', s)
+        s = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', ':email', s)
+        s = re.sub(r'(?<=/)\d+(?=/|$)', ':int', s)
+        return s
 
-        for endpoint in endpoints:
-            if endpoint.endpoint_type == EndpointType.THIRD_PARTY or endpoint.endpoint_type == EndpointType.UNIMPORTANT_STATIC_ASSET:
-                continue
+    @staticmethod
+    def _status_bucket(status: int) -> str:
+        if status >= 500:
+            return '5xx'
+        if status >= 400:
+            return '4xx'
+        if status >= 300:
+            return '3xx'
+        if status >= 200:
+            return '2xx'
+        return 'other'
 
-            endpoint_data.append({
-                'url': endpoint.url,
-                'method': endpoint.method,
-                'endpoint_type': endpoint.endpoint_type.value,
-                'path': endpoint.path,
-                'query_params': endpoint.query_params,
-                'headers': endpoint.headers,
-                'cookies': endpoint.cookies,
-                'request_body': endpoint.request_body,
-                'response_status': endpoint.response_status,
-                'response_headers': endpoint.response_headers,
-                'response_body': endpoint.response_body if endpoint.response_body else None,
-                'content_type': endpoint.content_type,
-                'is_sensitive': endpoint.is_sensitive,
-                'authentication_indicators': endpoint.authentication_indicators,
-                'potential_parameters': endpoint.potential_parameters
-            })
+    def _is_textual_content_type(self, ct: str) -> bool:
+        if not ct:
+            return False
+        ct = ct.lower()
+        return (
+            ct.startswith('text/') or
+            'json' in ct or
+            'xml' in ct or
+            'html' in ct or
+            'javascript' in ct or
+            'x-www-form-urlencoded' in ct
+        )
 
-        # Wrap in 'data' field as expected by LLM prompt
-        output_structure = {
-            'data': endpoint_data
+    def _score_endpoint(self, ep: ParsedEndpoint) -> float:
+        score = 0.0
+        if ep.is_sensitive:
+            score += 3.0
+        if ep.authentication_indicators:
+            score += 2.0
+        if ep.endpoint_type in (EndpointType.API_ENDPOINT, EndpointType.FORM_SUBMISSION, EndpointType.AUTHENTICATION):
+            score += 1.5
+        if ep.method in ('POST', 'PUT', 'PATCH', 'DELETE'):
+            score += 1.0
+        if self._is_textual_content_type(ep.content_type):
+            score += 0.5
+        if ep.response_status >= 400:
+            score += 1.2
+        elif ep.response_status >= 300:
+            score += 0.5
+        score += min(len(ep.potential_parameters), 10) * 0.05
+        return round(score, 2)
+
+    def _filter_for_reasoning(self, endpoints: List[ParsedEndpoint]) -> List[ParsedEndpoint]:
+        filtered = [
+            ep for ep in endpoints
+            if ep.endpoint_type not in (EndpointType.THIRD_PARTY, EndpointType.UNIMPORTANT_STATIC_ASSET)
+        ]
+        if not self.INCLUDE_STATIC_ASSETS:
+            filtered = [ep for ep in filtered if ep.endpoint_type != EndpointType.STATIC_ASSET]
+        return filtered
+
+    def export_ultra_compact_json(
+        self,
+        endpoints: List[ParsedEndpoint],
+        output_file: str,
+        max_groups: Optional[int] = None,
+        include_static_assets: Optional[bool] = None
+    ):
+        """
+        Export minimal, deduplicated JSON suitable for LLM reasoning.
+        Schema:
+        {
+          "requests": [
+            {
+              "id": "GET:/api/products/:int",
+              "method": "GET",
+              "normalizedPath": "/api/products/:int",
+              "hosts": ["example.com"],
+              "endpointTypes": ["api_endpoint"],
+              "count": 3,
+              "statusHistogram": {"2xx": 2, "4xx": 1},
+              "isSensitiveAny": true,
+              "authIndicatorsAny": ["authorization_header"],
+              "potentialParametersAny": ["q", "limit"],
+              "score": 5.4
+            },
+            ...
+          ],
+          "scores": {"avg": 3.72, "total": 3.72, "min": 1.1, "max": 6.25}
         }
+        """
+        if include_static_assets is not None:
+            # temporarily override class default for this call
+            orig = self.INCLUDE_STATIC_ASSETS
+            self.INCLUDE_STATIC_ASSETS = include_static_assets
+
+        filtered = self._filter_for_reasoning(endpoints)
+
+        groups: Dict[Tuple[str, str], Dict[str, Any]] = {}
+        for ep in filtered:
+            norm = self._normalize_path(ep.path or '/')
+            key = (ep.method, norm)
+            if key not in groups:
+                groups[key] = {
+                    "method": ep.method,
+                    "normalizedPath": norm,
+                    "hosts": set(),
+                    "endpointTypes": set(),
+                    "count": 0,
+                    "statusHistogram": Counter(),
+                    "isSensitiveAny": False,
+                    "authIndicatorsAny": set(),
+                    "potentialParametersAny": set(),
+                    "score": 0.0,  # will store best score seen
+                }
+            g = groups[key]
+            g["count"] += 1
+            # hosts
+            try:
+                host = urllib.parse.urlparse(ep.url).netloc
+                if host:
+                    g["hosts"].add(host)
+            except Exception:
+                pass
+            # types
+            g["endpointTypes"].add(ep.endpoint_type.value)
+            # sensitivity / auth / params
+            g["isSensitiveAny"] = g["isSensitiveAny"] or ep.is_sensitive
+            for ai in ep.authentication_indicators:
+                g["authIndicatorsAny"].add(ai)
+            for p in ep.potential_parameters:
+                g["potentialParametersAny"].add(p)
+            # status
+            bucket = self._status_bucket(ep.response_status)
+            g["statusHistogram"][bucket] += 1
+            # score: keep the best representative
+            s = self._score_endpoint(ep)
+            if s > g["score"]:
+                g["score"] = s
+
+        # Flatten
+        flat: List[Dict[str, Any]] = []
+        for (method, norm_path), g in groups.items():
+            req = {
+                "id": f"{method}:{norm_path}",
+                "method": method,
+                "normalizedPath": norm_path,
+                "hosts": sorted(list(g["hosts"]))[:3],
+                "endpointTypes": sorted(list(g["endpointTypes"])),
+                "count": g["count"],
+                "statusHistogram": {k: v for k, v in g["statusHistogram"].items() if v > 0} or {"other": 0},
+                "isSensitiveAny": g["isSensitiveAny"],
+                "authIndicatorsAny": sorted(list(g["authIndicatorsAny"]))[:10],
+                "potentialParametersAny": sorted(list(g["potentialParametersAny"]))[: self.MAX_PARAM_KEYS],
+                "score": round(g["score"], 2),
+            }
+            flat.append(req)
+
+        # Sort by score desc, then count desc, then method/path
+        flat.sort(key=lambda x: (x["score"], x["count"], x["method"], x["normalizedPath"]), reverse=True)
+
+        # Cap groups
+        cap = max_groups if max_groups is not None else self.MAX_GROUPS
+        if len(flat) > cap:
+            flat = flat[:cap]
+
+        # Score summary
+        if flat:
+            scores = [r["score"] for r in flat]
+            summary = {
+                "avg": round(sum(scores) / len(scores), 2),
+                "total": round(sum(scores) / len(scores), 2),  # alias for compatibility
+                "min": min(scores),
+                "max": max(scores)
+            }
+        else:
+            summary = {"avg": 0.0, "total": 0.0, "min": 0.0, "max": 0.0}
+
+        output = {"requests": flat, "scores": summary}
 
         with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(output_structure, f, indent=2, ensure_ascii=False)
+            json.dump(output, f, ensure_ascii=False, indent=2)
 
-        print(f"[INFO] Exported {len(endpoint_data)} endpoints to {output_file}")
+        print(f"[INFO] Ultra-compact export: {len(flat)} requests -> {output_file}")
+
+        if include_static_assets is not None:
+            self.INCLUDE_STATIC_ASSETS = orig
+
+    def export_ultra_compact_sharded(
+        self,
+        endpoints: List[ParsedEndpoint],
+        output_prefix: str,
+        max_groups_per_file: Optional[int] = None,
+        include_static_assets: Optional[bool] = None
+    ) -> List[str]:
+        """
+        Write multiple small files like <prefix>_page_1.json, <prefix>_page_2.json, ...
+        Returns list of filenames.
+        """
+        if include_static_assets is not None:
+            orig = self.INCLUDE_STATIC_ASSETS
+            self.INCLUDE_STATIC_ASSETS = include_static_assets
+
+        filtered = self._filter_for_reasoning(endpoints)
+
+        # Build all groups once
+        groups: Dict[Tuple[str, str], Dict[str, Any]] = {}
+        for ep in filtered:
+            norm = self._normalize_path(ep.path or '/')
+            key = (ep.method, norm)
+            if key not in groups:
+                groups[key] = {
+                    "method": ep.method,
+                    "normalizedPath": norm,
+                    "hosts": set(),
+                    "endpointTypes": set(),
+                    "count": 0,
+                    "statusHistogram": Counter(),
+                    "isSensitiveAny": False,
+                    "authIndicatorsAny": set(),
+                    "potentialParametersAny": set(),
+                    "score": 0.0,
+                }
+            g = groups[key]
+            g["count"] += 1
+            try:
+                host = urllib.parse.urlparse(ep.url).netloc
+                if host:
+                    g["hosts"].add(host)
+            except Exception:
+                pass
+            g["endpointTypes"].add(ep.endpoint_type.value)
+            g["isSensitiveAny"] = g["isSensitiveAny"] or ep.is_sensitive
+            for ai in ep.authentication_indicators:
+                g["authIndicatorsAny"].add(ai)
+            for p in ep.potential_parameters:
+                g["potentialParametersAny"].add(p)
+            bucket = self._status_bucket(ep.response_status)
+            g["statusHistogram"][bucket] += 1
+            s = self._score_endpoint(ep)
+            if s > g["score"]:
+                g["score"] = s
+
+        flat: List[Dict[str, Any]] = []
+        for (method, norm_path), g in groups.items():
+            flat.append({
+                "id": f"{method}:{norm_path}",
+                "method": method,
+                "normalizedPath": norm_path,
+                "hosts": sorted(list(g["hosts"]))[:3],
+                "endpointTypes": sorted(list(g["endpointTypes"])),
+                "count": g["count"],
+                "statusHistogram": {k: v for k, v in g["statusHistogram"].items() if v > 0} or {"other": 0},
+                "isSensitiveAny": g["isSensitiveAny"],
+                "authIndicatorsAny": sorted(list(g["authIndicatorsAny"]))[:10],
+                "potentialParametersAny": sorted(list(g["potentialParametersAny"]))[: self.MAX_PARAM_KEYS],
+                "score": round(g["score"], 2),
+            })
+
+        flat.sort(key=lambda x: (x["score"], x["count"], x["method"], x["normalizedPath"]), reverse=True)
+
+        per_file = max_groups_per_file if max_groups_per_file is not None else self.SHARD_SIZE
+        files: List[str] = []
+        if not flat:
+            # still write one empty page for predictable pipeline
+            filename = f"{output_prefix}_page_1.json"
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump({"requests": [], "scores": {"avg": 0, "total": 0, "min": 0, "max": 0}}, f, indent=2, ensure_ascii=False)
+            files.append(filename)
+            print(f"[INFO] Wrote empty shard {filename}")
+        else:
+            for i in range(0, len(flat), per_file):
+                chunk = flat[i:i+per_file]
+                scores = [r["score"] for r in chunk]
+                summary = {
+                    "avg": round(sum(scores)/len(scores), 2),
+                    "total": round(sum(scores)/len(scores), 2),
+                    "min": min(scores),
+                    "max": max(scores)
+                }
+                page_idx = (i // per_file) + 1
+                filename = f"{output_prefix}_page_{page_idx}.json"
+                with open(filename, 'w', encoding='utf-8') as f:
+                    json.dump({"requests": chunk, "scores": summary}, f, indent=2, ensure_ascii=False)
+                files.append(filename)
+                print(f"[INFO] Shard {page_idx}: {len(chunk)} requests -> {filename}")
+
+        if include_static_assets is not None:
+            self.INCLUDE_STATIC_ASSETS = orig
+
+        return files
+
+    # Backward-compatible alias
+    def export_to_json(self, endpoints: List[ParsedEndpoint], output_file: str):
+        self.export_ultra_compact_json(endpoints, output_file, max_groups=self.MAX_GROUPS)
+
+# ===================== CLI =====================
 
 if __name__ == "__main__":
     PM = ParserModule()
-
-    filename = input('Enter filename (hars/<name>.har): ')
+    filename = input('Enter filename (hars/<name>.har): ').strip()
     endpoints = PM.parse_har_file(f'hars/{filename}.har')
 
-    # Print summary
     print(f"\n=== PARSING SUMMARY ===")
     print(f"Total endpoints parsed: {len(endpoints)}")
 
@@ -372,18 +646,10 @@ if __name__ == "__main__":
         if count > 0:
             print(f"{endpoint_type.value}: {count}")
 
-    # Print detailed info for each endpoint
-    print(f"\n=== DETAILED ENDPOINTS ===")
-    for i, endpoint in enumerate(endpoints, 1):
-        print(f"\n{i}. {endpoint.method} {endpoint.url}")
-        print(f"   Type: {endpoint.endpoint_type.value}")
-        print(f"   Status: {endpoint.response_status}")
-        print(f"   Content-Type: {endpoint.content_type}")
-        print(f"   Sensitive: {endpoint.is_sensitive}")
-        if endpoint.authentication_indicators:
-            print(f"   Auth Indicators: {endpoint.authentication_indicators}")
-        if endpoint.potential_parameters:
-            print(f"   Potential Params: {endpoint.potential_parameters}")
+    # Default: ultra-compact single file
+    out_path = f'parsed_hars/{filename}.json'
+    PM.export_to_json(endpoints, out_path)
 
-    # Export to JSON
-    PM.export_to_json(endpoints, f'parsed_hars/{filename}.json')
+    # Optional: also write shards if you expect a lot of endpoints
+    # Uncomment to shard:
+    # PM.export_ultra_compact_sharded(endpoints, f'parsed_hars/{filename}', max_groups_per_file=250)

@@ -1,0 +1,630 @@
+{
+"endpoints": [
+{
+"id": "GET:/socket.io/",
+"method": "GET",
+"normalizedPath": "/socket.io/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["page_request"],
+"count": 8,
+"statusHistogram": {"2xx": 8},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["auth_cookie_token"],
+"potentialParametersAny": ["EIO", "sid", "t", "transport"],
+"score": 5.7
+},
+{
+"id": "GET:/",
+"method": "GET",
+"normalizedPath": "/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["page_request"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["auth_cookie_token"],
+"potentialParametersAny": ["background", "button", "description", "favicon", "palette", "popup", "position", "text", "theme", "viewport"],
+"score": 6.0
+},
+{
+"id": "GET:/profile",
+"method": "GET",
+"normalizedPath": "/profile",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["page_request"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["auth_cookie_token"],
+"potentialParametersAny": ["description", "keywords", "viewport"],
+"score": 5.65
+},
+{
+"id": "POST:/api/Users/",
+"method": "POST",
+"normalizedPath": "/api/Users/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 1,
+"statusHistogram": {"2xx": 1},
+"isSensitiveAny": false,
+"authIndicatorsAny": [],
+"potentialParametersAny": ["createdAt", "data", "deluxeToken", "email", "lastLoginIp", "password", "passwordRepeat", "profileImage", "role", "securityAnswer", "securityQuestion", "securityQuestion.createdAt", "securityQuestion.id", "securityQuestion.question", "securityQuestion.updatedAt", "status", "updatedAt", "username"],
+"score": 6.5
+},
+{
+"id": "GET:/socket.io/",
+"method": "GET",
+"normalizedPath": "/socket.io/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["page_request"],
+"count": 6,
+"statusHistogram": {"2xx": 6},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["auth_cookie_token"],
+"potentialParametersAny": ["EIO", "sid", "t", "transport"],
+"score": 5.7
+},
+{
+"id": "POST:/api/Feedbacks/",
+"method": "POST",
+"normalizedPath": "/api/Feedbacks/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 4,
+"statusHistogram": {"2xx": 2, "4xx": 1},
+"isSensitiveAny": false,
+"authIndicatorsAny": [],
+"potentialParametersAny": ["captcha", "captchaId", "comment", "createdAt", "data", "rating", "status", "updatedAt"],
+"score": 4.4
+},
+{
+"id": "POST:/api/SecurityAnswers/",
+"method": "POST",
+"normalizedPath": "/api/SecurityAnswers/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 1,
+"statusHistogram": {"2xx": 1},
+"isSensitiveAny": false,
+"authIndicatorsAny": [],
+"potentialParametersAny": ["SecurityQuestionId", "UserId", "answer", "createdAt", "data", "status", "updatedAt"],
+"score": 3.35
+},
+{
+"id": "GET:/rest/products/:int/reviews",
+"method": "GET",
+"normalizedPath": "/rest/products/:int/reviews",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 13,
+"statusHistogram": {"2xx": 13},
+"isSensitiveAny": false,
+"authIndicatorsAny": [],
+"potentialParametersAny": ["_id", "author", "message", "status"],
+"score": 2.2
+},
+{
+"id": "GET:/api/SecurityQuestions/",
+"method": "GET",
+"normalizedPath": "/api/SecurityQuestions/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 1,
+"statusHistogram": {"2xx": 1},
+"isSensitiveAny": false,
+"authIndicatorsAny": [],
+"potentialParametersAny": ["createdAt", "question", "status", "updatedAt"],
+"score": 2.2
+},
+{
+"id": "GET:/api/Feedbacks/",
+"method": "GET",
+"normalizedPath": "/api/Feedbacks/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 1,
+"statusHistogram": {"2xx": 1},
+"isSensitiveAny": false,
+"authIndicatorsAny": [],
+"potentialParametersAny": ["comment", "createdAt", "status", "updatedAt"],
+"score": 2.2
+},
+{
+"id": "GET:/rest/captcha/",
+"method": "GET",
+"normalizedPath": "/rest/captcha/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 3,
+"statusHistogram": {"2xx": 3},
+"isSensitiveAny": false,
+"authIndicatorsAny": [],
+"potentialParametersAny": ["answer", "captcha"],
+"score": 2.1
+},
+{
+"id": "GET:/rest/order-history",
+"method": "GET",
+"normalizedPath": "/rest/order-history",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 1,
+"statusHistogram": {"2xx": 1},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["auth_cookie_token", "authorization_header", "bearer_token"],
+"potentialParametersAny": ["status"],
+"score": 7.05
+},
+{
+"id": "GET:/rest/image-captcha/",
+"method": "GET",
+"normalizedPath": "/rest/image-captcha/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 1,
+"statusHistogram": {"2xx": 1},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["auth_cookie_token", "authorization_header", "bearer_token"],
+"potentialParametersAny": ["image"],
+"score": 7.05
+},
+{
+"id": "GET:/rest/continue-code",
+"method": "GET",
+"normalizedPath": "/rest/continue-code",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 1,
+"statusHistogram": {"2xx": 1},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["auth_cookie_token", "authorization_header", "bearer_token"],
+"potentialParametersAny": ["continueCode"],
+"score": 7.05
+},
+{
+"id": "POST:/socket.io/",
+"method": "POST",
+"normalizedPath": "/socket.io/",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["page_request"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": [],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:id",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:id",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:id/orders",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:id/orders",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId/items",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId/items",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId/shipping-addresses",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId/shipping-addresses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId/billing-addresses",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId/billing-addresses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId/payment-methods",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId/payment-methods",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId/statuses",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId/statuses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/items",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/items",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/shipping-addresses",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/shipping-addresses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/billing-addresses",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/billing-addresses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/payment-methods",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/payment-methods",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/statuses",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/statuses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId/items",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId/items",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId/shipping-addresses",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId/shipping-addresses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId/billing-addresses",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId/billing-addresses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId/payment-methods",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId/payment-methods",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/orders/:orderId/statuses",
+"method": "GET",
+"normalizedPath": "/api/v1/orders/:orderId/statuses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/items",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/items",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/shipping-addresses",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/shipping-addresses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/billing-addresses",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/billing-addresses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/payment-methods",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/payment-methods",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/statuses",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/statuses",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/items/:itemId",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/items/:itemId",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/shipping-addresses/:addressId",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/shipping-addresses/:addressId",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/billing-addresses/:addressId",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/billing-addresses/:addressId",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/payment-methods/:paymentMethodId",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/payment-methods/:paymentMethodId",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+},
+{
+"id": "GET:/api/v1/users/:userId/orders/:orderId/statuses/:statusId",
+"method": "GET",
+"normalizedPath": "/api/v1/users/:userId/orders/:orderId/statuses/:statusId",
+"hosts": ["localhost:3000"],
+"endpointTypes": ["api_endpoint"],
+"count": 2,
+"statusHistogram": {"2xx": 2},
+"isSensitiveAny": true,
+"authIndicatorsAny": ["authorization_header", "bearer_token"],
+"potentialParametersAny": [],
+"score": 7.0
+}
+]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
