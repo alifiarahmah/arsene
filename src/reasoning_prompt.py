@@ -141,32 +141,55 @@ Output: JSON object matching VulnHypotheses schema exactly."""
 # STEP 5: Test Case Generation (from vuln hypotheses)
 # =========================
 
-STEP5_TESTCASES_SYSTEM_PROMPT = """
-You are generating safe, idempotent-first test cases with incremental payload tiers.
-Constraints:
-- Output only JSON conforming to TestCases schema.
-- Include a benign control payload for differential analysis.
-- Use sequence prerequisites for states (e.g., login) and CSRF/JWT handling (extract+bind).
-- Default to idempotent endpoints; for non-idempotent, generate validation-safe probes only.
-- Include oracle rules aligned to the hypotheses (Signal-based).
-- Provide "notes" for rate limiting/backoff hints if observed.
+STEP5_TESTCASES_SYSTEM_PROMPT = """You are generating comprehensive, safety-first test cases with incremental payload progression and precise detection logic.
 
-Output: TestCases
-"""
+Your responsibilities:
+1. Create complete test cases from vulnerability hypotheses
+2. Generate payload tiers: benign (baseline) → probe → exploit → destructive (if safe)
+3. Define precise oracle rules with measurable conditions
+4. Handle authentication, CSRF, and session state through prerequisites
+5. Ensure safety constraints are respected
 
-STEP5_TESTCASES_USER_PROMPT = """
-Schemas & Enums:
+Test Case Generation Rules:
+- ALWAYS start with benign payload for baseline comparison
+- Use probe payloads for safe vulnerability detection
+- Only include exploit/destructive payloads if safety.destructive_ok=true
+- Map hypothesis oracles to executable oracle_rules with specific conditions
+- Include prerequisites for auth context, CSRF tokens, session management
+- Set appropriate delays and retry logic for rate limiting
+
+Oracle Rule Examples:
+- Status change: "response.status_code != baseline.status_code"
+- Timing: "response.time_ms > baseline.time_ms + threshold.timing_ms"
+- Reflection: "payload_value in response.body"
+- Length change: "abs(len(response.body) - len(baseline.body)) / len(baseline.body) > threshold.body_length_delta_pct / 100"
+
+Safety Priorities:
+1. Respect idempotent_required flag
+2. Never exceed max_requests limit
+3. Include rate limiting hints in notes
+4. Use validation-safe probes for non-idempotent endpoints"""
+
+STEP5_TESTCASES_USER_PROMPT = """Generate executable test cases from vulnerability hypotheses with complete payload progression and detection logic.
+
+Available Schemas & Enums:
 <<SCHEMAS_AND_ENUMS_JSON>>
 
-Inputs:
-- Context (for parameter models, auth, CSRF, protocols):
+Context (authentication, CSRF, parameter models):
 <<CONTEXT_JSON>>
 
-- VulnHypotheses:
+Vulnerability Hypotheses to convert:
 <<VULN_HYPOTHESES_JSON>>
 
-Produce a JSON object matching the TestCases schema only.
-"""
+Requirements:
+- Each test case must include benign baseline payload first
+- Map hypothesis oracles to executable oracle_rules with specific conditions
+- Include all necessary prerequisites (auth, CSRF, session state)
+- Respect safety constraints from hypotheses
+- Add execution hints for rate limiting and timing considerations
+- Use incremental payload tiers based on safety settings
+
+Output: Complete TestCases JSON matching schema exactly."""
 
 # =========================
 # STEP 6: Chaining & Re-contextualization

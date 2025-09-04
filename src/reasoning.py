@@ -1,7 +1,7 @@
 
 from pydantic import BaseModel
 from reasoning_prompt import STEP1_SYSTEM_PROMPT, STEP2_CONTEXT_SYSTEM_PROMPT, STEP2_CONTEXT_USER_PROMPT, STEP3_VECTORS_SYSTEM_PROMPT, STEP3_VECTORS_USER_PROMPT, STEP4_VULNS_SYSTEM_PROMPT, STEP4_VULNS_USER_PROMPT, STEP5_TESTCASES_SYSTEM_PROMPT, STEP5_TESTCASES_USER_PROMPT, STEP6_CHAIN_SYSTEM_PROMPT, STEP6_CHAIN_USER_PROMPT
-from schemas import AttackVectorsContext, TrafficAnalysisContext
+from schemas import AttackVectorsContext, TestCasesContext, TrafficAnalysisContext, VulnHypothesesContext
 from utils import call_llm, fill
 import json
 
@@ -44,7 +44,10 @@ class ReasoningModule():
             STEP4_VULNS_USER_PROMPT,
             ATTACK_VECTORS_JSON=attack_vectors_json.model_dump_json()
         )})
-        vuln_hypotheses_json = call_llm(messages=vh_messages)
+        vuln_hypotheses_json = call_llm(
+            messages=vh_messages,
+            response_format=VulnHypothesesContext
+            )
         return vuln_hypotheses_json
 
     def tc_gen(self, context_json, vuln_hypotheses_json):
@@ -52,10 +55,13 @@ class ReasoningModule():
         tc_gen_messages.append({"role": "system", "content": STEP5_TESTCASES_SYSTEM_PROMPT})
         tc_gen_messages.append({"role": "user", "content": fill(
             STEP5_TESTCASES_USER_PROMPT,
-            CONTEXT_JSON=context_json,
+            CONTEXT_JSON=context_json.model_dump_json(),
             VULN_HYPOTHESES_JSON=vuln_hypotheses_json.model_dump_json()
         )})
-        testcases_json = call_llm(messages=tc_gen_messages)
+        testcases_json = call_llm(
+            messages=tc_gen_messages,
+            response_format=TestCasesContext
+            )
         return testcases_json
 
     def chain_tc_context(self, context_json, testcases_json):
@@ -63,7 +69,7 @@ class ReasoningModule():
         final_plan_messages.append({"role": "system", "content": STEP6_CHAIN_SYSTEM_PROMPT})
         final_plan_messages.append({"role": "user", "content": fill(
             STEP6_CHAIN_USER_PROMPT,
-            CONTEXT_JSON=context_json,
+            CONTEXT_JSON=context_json.model_dump_json(),
             TESTCASES_JSON=testcases_json.model_dump_json()
         )})
         final_plan_json = call_llm(messages=final_plan_messages)
@@ -84,9 +90,9 @@ class ReasoningModule():
         self.export_result(result=vh_result, output_path='reasoning_result/vuln_hypotheses_result/' + filename + '.json')
         print(vh_result)
 
-        # tc_gen_result = self.tc_gen(ta_result, vh_result)
-        # self.export_result(result=tc_gen_result, output_path='reasoning_result/tc_gen_result/' + filename + '.json')
-        # print(tc_gen_result)
+        tc_gen_result = self.tc_gen(ta_result, vh_result)
+        self.export_result(result=tc_gen_result, output_path='reasoning_result/tc_gen_result/' + filename + '.json')
+        print(tc_gen_result)
 
         # final_plan_json = self.chain_tc_context(ta_result, tc_gen_result)
         # self.export_result(result=final_plan_json, output_path='reasoning_result/' + filename + '.json')

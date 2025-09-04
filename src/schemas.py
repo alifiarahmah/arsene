@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional, Literal, Dict, Any
+from typing import List, Optional, Literal, Dict, Any, Union
 from enum import Enum
 
 class HttpMethod(str, Enum):
@@ -185,6 +185,73 @@ class VulnHypothesis(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in this hypothesis (0.0-1.0)")
     priority: int = Field(ge=1, le=5, description="Testing priority (1=highest, 5=lowest)")
 
-class VulnHypotheses(BaseModel):
+class VulnHypothesesContext(BaseModel):
     hypotheses: List[VulnHypothesis]
+    metadata: Optional[Dict[str, Any]] = Field(default=None, description="Additional metadata")
+
+class PayloadTier(str, Enum):
+    BENIGN = "benign"           # Control/baseline payload
+    PROBE = "probe"             # Safe detection payload
+    EXPLOIT = "exploit"         # Proof-of-concept payload
+    DESTRUCTIVE = "destructive" # Potentially harmful payload
+
+class PrerequisiteType(str, Enum):
+    LOGIN = "login"
+    CSRF_TOKEN = "csrf_token"
+    JWT_REFRESH = "jwt_refresh"
+    SESSION_STATE = "session_state"
+    CUSTOM = "custom"
+
+class OracleRule(BaseModel):
+    signal: Signal  # Reuse from VulnHypotheses
+    condition: str = Field(description="Condition logic (e.g., 'response.status_code != baseline.status_code')")
+    threshold: Optional[Dict[str, Any]] = Field(default=None, description="Numeric thresholds for evaluation")
+    weight: float = Field(default=1.0, ge=0.0, le=1.0, description="Weight in final scoring (0.0-1.0)")
+
+class Prerequisite(BaseModel):
+    type: PrerequisiteType
+    description: str
+    extract_from: Optional[str] = Field(default=None, description="Where to extract value (e.g., 'response.headers.X-CSRF-Token')")
+    bind_to: Optional[str] = Field(default=None, description="Where to inject value (e.g., 'request.headers.X-CSRF-Token')")
+    custom_logic: Optional[str] = Field(default=None, description="Custom prerequisite logic")
+
+class TestPayload(BaseModel):
+    tier: PayloadTier
+    value: Union[str, Dict[str, Any]] = Field(description="Payload content (string or structured)")
+    description: str = Field(description="Human-readable payload description")
+    encoding: Optional[str] = Field(default=None, description="Payload encoding (url, base64, etc.)")
+    content_type: Optional[str] = Field(default=None, description="Content-Type override if needed")
+
+class TestCase(BaseModel):
+    id: str = Field(description="Unique test case identifier")
+    hypothesis_id: str = Field(description="Reference to source VulnHypothesis")
+
+    # HTTP Request details
+    method: str
+    endpoint: str
+    parameter: str
+    param_location: str  # body, query, header, path
+
+    # Test configuration
+    payloads: List[TestPayload] = Field(description="Ordered list of payloads (benign first)")
+    prerequisites: List[Prerequisite] = Field(default_factory=list, description="Required setup steps")
+
+    # Detection rules
+    oracle_rules: List[OracleRule] = Field(description="Detection logic aligned with hypothesis")
+    pass_logic: PassLogic = Field(default=PassLogic.ANY, description="How to combine oracle results")
+
+    # Safety and execution
+    safety: SafetyConfig = Field(description="Safety constraints from hypothesis")
+    max_retries: int = Field(default=3, description="Maximum retry attempts")
+    delay_between_requests: float = Field(default=1.0, description="Delay in seconds between requests")
+
+    # Metadata
+    notes: Optional[str] = Field(default=None, description="Rate limiting, backoff hints, special considerations")
+    tags: List[str] = Field(default_factory=list, description="Categorization tags")
+    estimated_duration: Optional[int] = Field(default=None, description="Estimated execution time in seconds")
+
+class TestCasesContext(BaseModel):
+    test_cases: List[TestCase]
+    global_prerequisites: List[Prerequisite] = Field(default_factory=list, description="Prerequisites for all test cases")
+    execution_hints: Optional[Dict[str, Any]] = Field(default=None, description="Global execution guidance")
     metadata: Optional[Dict[str, Any]] = Field(default=None, description="Additional metadata")

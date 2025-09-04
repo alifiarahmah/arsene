@@ -8,7 +8,7 @@
       "category": "xss_stored",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -20,7 +20,7 @@
       "category": "xss_stored",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -40,9 +40,10 @@
       "endpoint": "/api/Addresss/",
       "parameter": "data",
       "param_location": "body",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -51,9 +52,10 @@
       "endpoint": "/api/Addresss/",
       "parameter": "fullName",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
+      "category": "xss_stored",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -76,7 +78,7 @@
       "category": "xss_stored",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -85,9 +87,9 @@
       "endpoint": "/api/Addresss/",
       "parameter": "status",
       "param_location": "body",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -99,7 +101,7 @@
       "category": "xss_stored",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -119,10 +121,10 @@
       "endpoint": "/api/Addresss/",
       "parameter": "zipCode",
       "param_location": "body",
-      "category": "xss_stored",
+      "category": "injection_nosql",
       "expected_signals": [
-        "reflected_input",
-        "response_length_diff"
+        "error_signature",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -133,7 +135,7 @@
       "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "none"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -153,9 +155,10 @@
       "endpoint": "/api/Cards/",
       "parameter": "data",
       "param_location": "body",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -166,7 +169,7 @@
       "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "none"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -177,7 +180,7 @@
       "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "none"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -186,9 +189,10 @@
       "endpoint": "/api/Cards/",
       "parameter": "fullName",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
+      "category": "xss_stored",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -197,9 +201,9 @@
       "endpoint": "/api/Cards/",
       "parameter": "status",
       "param_location": "body",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -219,9 +223,10 @@
       "endpoint": "/api/BasketItems/",
       "parameter": "BasketId",
       "param_location": "body",
-      "category": "business_logic",
+      "category": "insecure_direct_object_reference",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change",
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -230,9 +235,10 @@
       "endpoint": "/api/BasketItems/",
       "parameter": "ProductId",
       "param_location": "body",
-      "category": "business_logic",
+      "category": "insecure_direct_object_reference",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change",
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -252,9 +258,10 @@
       "endpoint": "/api/BasketItems/",
       "parameter": "data",
       "param_location": "body",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -265,7 +272,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -274,9 +281,9 @@
       "endpoint": "/api/BasketItems/",
       "parameter": "status",
       "param_location": "body",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -307,9 +314,10 @@
       "endpoint": "/rest/user/change-password",
       "parameter": "current",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "authn_bypass",
       "expected_signals": [
-        "response_length_diff"
+        "status_code_change",
+        "token_reuse_failure"
       ],
       "needs_observation": true
     },
@@ -351,9 +359,10 @@
       "endpoint": "/rest/user/change-password",
       "parameter": "new",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "authn_bypass",
       "expected_signals": [
-        "response_length_diff"
+        "status_code_change",
+        "token_reuse_failure"
       ],
       "needs_observation": true
     },
@@ -373,9 +382,10 @@
       "endpoint": "/rest/user/change-password",
       "parameter": "profileImage",
       "param_location": "query",
-      "category": "others",
+      "category": "xss_reflected",
       "expected_signals": [
-        "none"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -384,9 +394,10 @@
       "endpoint": "/rest/user/change-password",
       "parameter": "repeat",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "authn_bypass",
       "expected_signals": [
-        "response_length_diff"
+        "status_code_change",
+        "token_reuse_failure"
       ],
       "needs_observation": true
     },
@@ -429,9 +440,8 @@
       "endpoint": "/rest/user/change-password",
       "parameter": "user",
       "param_location": "query",
-      "category": "authz_bypass",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
-        "status_code_change",
         "response_length_diff"
       ],
       "needs_observation": true
@@ -466,7 +476,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -477,6 +487,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
+        "status_code_change",
         "state_change_observed"
       ],
       "needs_observation": true
@@ -486,9 +497,10 @@
       "endpoint": "/rest/basket/:int/checkout",
       "parameter": "orderDetails",
       "param_location": "body",
-      "category": "business_logic",
+      "category": "insecure_direct_object_reference",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change",
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -497,9 +509,10 @@
       "endpoint": "/rest/basket/:int/checkout",
       "parameter": "orderDetails.addressId",
       "param_location": "body",
-      "category": "business_logic",
+      "category": "insecure_direct_object_reference",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change",
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -508,9 +521,10 @@
       "endpoint": "/rest/basket/:int/checkout",
       "parameter": "orderDetails.deliveryMethodId",
       "param_location": "body",
-      "category": "business_logic",
+      "category": "insecure_direct_object_reference",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change",
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -519,9 +533,10 @@
       "endpoint": "/rest/basket/:int/checkout",
       "parameter": "orderDetails.paymentId",
       "param_location": "body",
-      "category": "business_logic",
+      "category": "insecure_direct_object_reference",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change",
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -553,9 +568,10 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "data",
       "param_location": "body",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -566,7 +582,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -575,9 +591,9 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "status",
       "param_location": "body",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -633,10 +649,10 @@
       "endpoint": "/rest/user/login",
       "parameter": "token",
       "param_location": "body",
-      "category": "authn_bypass",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
-        "status_code_change",
-        "token_reuse_failure"
+        "token_reuse_failure",
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -657,8 +673,9 @@
       "endpoint": "/rest/user/data-export",
       "parameter": "confirmation",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
+      "category": "business_logic",
       "expected_signals": [
+        "status_code_change",
         "state_change_observed"
       ],
       "needs_observation": true
@@ -668,9 +685,9 @@
       "endpoint": "/rest/user/data-export",
       "parameter": "format",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
+      "category": "others",
       "expected_signals": [
-        "state_change_observed"
+        "none"
       ],
       "needs_observation": true
     },
@@ -681,6 +698,7 @@
       "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
+        "response_length_diff",
         "state_change_observed"
       ],
       "needs_observation": true
@@ -693,7 +711,7 @@
       "category": "insecure_direct_object_reference",
       "expected_signals": [
         "status_code_change",
-        "state_change_observed"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -702,9 +720,10 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "data",
       "param_location": "body",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -713,9 +732,10 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "status",
       "param_location": "body",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change",
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -746,9 +766,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "avatar",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -757,9 +778,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "basePath",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -768,9 +790,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "baseUrl",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -779,9 +802,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "blueSkyUrl",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -790,9 +814,9 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "chatBot",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "others",
       "expected_signals": [
-        "response_length_diff"
+        "none"
       ],
       "needs_observation": true
     },
@@ -801,9 +825,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "config",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "deserialization",
       "expected_signals": [
-        "response_length_diff"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -823,9 +848,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "defaultResponse",
       "param_location": "query",
-      "category": "others",
+      "category": "xss_reflected",
       "expected_signals": [
-        "none"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -834,9 +860,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "domain",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -845,9 +872,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "facebookUrl",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -856,9 +884,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "favicon",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -870,7 +899,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -879,9 +908,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "logo",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -890,9 +920,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "mastodonUrl",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -904,7 +935,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -913,9 +944,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "nftUrl",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -924,9 +956,10 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "pressKitUrl",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -949,7 +982,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -972,7 +1005,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -984,7 +1017,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -993,9 +1026,10 @@
       "endpoint": "/api/Challenges/",
       "parameter": "hintUrl",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1004,9 +1038,9 @@
       "endpoint": "/api/Challenges/",
       "parameter": "key",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "others",
       "expected_signals": [
-        "response_length_diff"
+        "none"
       ],
       "needs_observation": true
     },
@@ -1018,7 +1052,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1027,9 +1061,9 @@
       "endpoint": "/api/Challenges/",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1041,7 +1075,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1076,7 +1110,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1088,7 +1122,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1108,9 +1142,10 @@
       "endpoint": "/api/Addresss/:int",
       "parameter": "data",
       "param_location": "query",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -1119,9 +1154,10 @@
       "endpoint": "/api/Addresss/:int",
       "parameter": "fullName",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1133,7 +1169,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1142,9 +1178,9 @@
       "endpoint": "/api/Addresss/:int",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1156,7 +1192,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1176,10 +1212,10 @@
       "endpoint": "/api/Addresss/:int",
       "parameter": "zipCode",
       "param_location": "query",
-      "category": "xss_reflected",
+      "category": "injection_nosql",
       "expected_signals": [
-        "reflected_input",
-        "response_length_diff"
+        "error_signature",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1191,7 +1227,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1203,7 +1239,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1223,9 +1259,10 @@
       "endpoint": "/api/Addresss",
       "parameter": "fullName",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1237,7 +1274,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1246,9 +1283,9 @@
       "endpoint": "/api/Addresss",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1260,7 +1297,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1280,17 +1317,17 @@
       "endpoint": "/api/Addresss",
       "parameter": "zipCode",
       "param_location": "query",
-      "category": "xss_reflected",
+      "category": "injection_nosql",
       "expected_signals": [
-        "reflected_input",
-        "response_length_diff"
+        "error_signature",
+        "status_code_change"
       ],
       "needs_observation": true
     },
     {
       "method": "GET",
       "endpoint": "/rest/track-order/789a-:hex",
-      "parameter": "id",
+      "parameter": "hex",
       "param_location": "path",
       "category": "insecure_direct_object_reference",
       "expected_signals": [
@@ -1352,7 +1389,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1361,8 +1398,9 @@
       "endpoint": "/rest/track-order/789a-:hex",
       "parameter": "orderId",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "insecure_direct_object_reference",
       "expected_signals": [
+        "status_code_change",
         "response_length_diff"
       ],
       "needs_observation": true
@@ -1372,8 +1410,9 @@
       "endpoint": "/rest/track-order/789a-:hex",
       "parameter": "paymentId",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "insecure_direct_object_reference",
       "expected_signals": [
+        "status_code_change",
         "response_length_diff"
       ],
       "needs_observation": true
@@ -1385,7 +1424,7 @@
       "param_location": "query",
       "category": "business_logic",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1394,9 +1433,9 @@
       "endpoint": "/rest/track-order/789a-:hex",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1417,9 +1456,10 @@
       "endpoint": "/rest/basket/:int",
       "parameter": "BasketItem",
       "param_location": "query",
-      "category": "others",
+      "category": "xss_reflected",
       "expected_signals": [
-        "none"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1439,9 +1479,10 @@
       "endpoint": "/rest/basket/:int",
       "parameter": "data",
       "param_location": "query",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -1453,7 +1494,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1462,9 +1503,10 @@
       "endpoint": "/rest/basket/:int",
       "parameter": "image",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1476,7 +1518,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1485,9 +1527,9 @@
       "endpoint": "/rest/basket/:int",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1541,9 +1583,10 @@
       "endpoint": "/api/Products/:int",
       "parameter": "data",
       "param_location": "query",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -1555,7 +1598,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1564,9 +1607,10 @@
       "endpoint": "/api/Products/:int",
       "parameter": "image",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1578,7 +1622,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1587,9 +1631,9 @@
       "endpoint": "/api/Products/:int",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1623,7 +1667,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1632,9 +1676,10 @@
       "endpoint": "/rest/products/search",
       "parameter": "image",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "ssrf",
       "expected_signals": [
-        "response_length_diff"
+        "out_of_band_call",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1646,7 +1691,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1655,9 +1700,9 @@
       "endpoint": "/rest/products/search",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1699,9 +1744,10 @@
       "endpoint": "/rest/user/whoami",
       "parameter": "profileImage",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1744,9 +1790,10 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "data",
       "param_location": "query",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -1755,9 +1802,9 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1788,9 +1835,10 @@
       "endpoint": "/rest/languages",
       "parameter": "key",
       "param_location": "query",
-      "category": "others",
+      "category": "xss_reflected",
       "expected_signals": [
-        "none"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1799,9 +1847,10 @@
       "endpoint": "/rest/languages",
       "parameter": "lang",
       "param_location": "query",
-      "category": "others",
+      "category": "xss_reflected",
       "expected_signals": [
-        "none"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1833,9 +1882,10 @@
       "endpoint": "/api/Deliverys/:int",
       "parameter": "data",
       "param_location": "query",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -1844,9 +1894,10 @@
       "endpoint": "/api/Deliverys/:int",
       "parameter": "icon",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1858,7 +1909,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1867,9 +1918,9 @@
       "endpoint": "/api/Deliverys/:int",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1901,9 +1952,10 @@
       "endpoint": "/api/Cards/:int",
       "parameter": "data",
       "param_location": "query",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -1912,9 +1964,10 @@
       "endpoint": "/api/Cards/:int",
       "parameter": "fullName",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1923,9 +1976,9 @@
       "endpoint": "/api/Cards/:int",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1945,9 +1998,9 @@
       "endpoint": "/api/Quantitys/",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1978,9 +2031,10 @@
       "endpoint": "/api/Cards",
       "parameter": "fullName",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1989,9 +2043,9 @@
       "endpoint": "/api/Cards",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2013,8 +2067,7 @@
       "param_location": "query",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff",
-        "token_reuse_failure"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -2025,8 +2078,7 @@
       "param_location": "query",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff",
-        "token_reuse_failure"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -2035,9 +2087,10 @@
       "endpoint": "/api/Recycles/",
       "parameter": "data",
       "param_location": "query",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -2057,9 +2110,9 @@
       "endpoint": "/api/Recycles/",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2068,9 +2121,10 @@
       "endpoint": "/api/Deliverys",
       "parameter": "icon",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2082,7 +2136,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2091,9 +2145,9 @@
       "endpoint": "/api/Deliverys",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2113,9 +2167,9 @@
       "endpoint": "/rest/wallet/balance",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2124,9 +2178,9 @@
       "endpoint": "/rest/order-history",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2135,9 +2189,9 @@
       "endpoint": "/rest/image-captcha/",
       "parameter": "image",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2146,9 +2200,9 @@
       "endpoint": "/rest/continue-code",
       "parameter": "continueCode",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2170,8 +2224,8 @@
       "param_location": "body",
       "category": "authn_bypass",
       "expected_signals": [
-        "status_code_change",
-        "token_reuse_failure"
+        "token_reuse_failure",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2213,9 +2267,10 @@
       "endpoint": "/api/Users/",
       "parameter": "data",
       "param_location": "body",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -2269,9 +2324,9 @@
       "endpoint": "/api/Users/",
       "parameter": "passwordRepeat",
       "param_location": "body",
-      "category": "others",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
-        "none"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -2280,9 +2335,10 @@
       "endpoint": "/api/Users/",
       "parameter": "profileImage",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
+      "category": "xss_stored",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2325,9 +2381,9 @@
       "endpoint": "/api/Users/",
       "parameter": "status",
       "param_location": "body",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2361,7 +2417,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2373,7 +2429,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2385,7 +2441,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2394,9 +2450,10 @@
       "endpoint": "/",
       "parameter": "favicon",
       "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "category": "xss_reflected",
       "expected_signals": [
-        "response_length_diff"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2416,9 +2473,10 @@
       "endpoint": "/",
       "parameter": "popup",
       "param_location": "query",
-      "category": "others",
+      "category": "xss_reflected",
       "expected_signals": [
-        "none"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2441,7 +2499,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2485,8 +2543,8 @@
       "param_location": "query",
       "category": "authn_bypass",
       "expected_signals": [
-        "status_code_change",
-        "token_reuse_failure"
+        "token_reuse_failure",
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2520,7 +2578,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2532,7 +2590,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2552,9 +2610,9 @@
       "endpoint": "/api/Feedbacks/",
       "parameter": "captcha",
       "param_location": "body",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2563,9 +2621,9 @@
       "endpoint": "/api/Feedbacks/",
       "parameter": "captchaId",
       "param_location": "body",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2577,7 +2635,7 @@
       "category": "xss_stored",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2597,9 +2655,10 @@
       "endpoint": "/api/Feedbacks/",
       "parameter": "data",
       "param_location": "body",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -2610,7 +2669,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "state_change_observed"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2619,9 +2678,9 @@
       "endpoint": "/api/Feedbacks/",
       "parameter": "status",
       "param_location": "body",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2641,8 +2700,9 @@
       "endpoint": "/api/SecurityAnswers/",
       "parameter": "SecurityQuestionId",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
+      "category": "insecure_direct_object_reference",
       "expected_signals": [
+        "status_code_change",
         "response_length_diff"
       ],
       "needs_observation": true
@@ -2686,9 +2746,10 @@
       "endpoint": "/api/SecurityAnswers/",
       "parameter": "data",
       "param_location": "body",
-      "category": "others",
+      "category": "deserialization",
       "expected_signals": [
-        "none"
+        "error_signature",
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -2697,9 +2758,9 @@
       "endpoint": "/api/SecurityAnswers/",
       "parameter": "status",
       "param_location": "body",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2745,7 +2806,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2757,7 +2818,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2766,9 +2827,9 @@
       "endpoint": "/rest/products/:int/reviews",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2791,7 +2852,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2800,9 +2861,9 @@
       "endpoint": "/api/SecurityQuestions/",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2825,7 +2886,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2845,9 +2906,9 @@
       "endpoint": "/api/Feedbacks/",
       "parameter": "status",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2867,9 +2928,9 @@
       "endpoint": "/rest/captcha/",
       "parameter": "answer",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -2878,9 +2939,9 @@
       "endpoint": "/rest/captcha/",
       "parameter": "captcha",
       "param_location": "query",
-      "category": "others",
+      "category": "business_logic",
       "expected_signals": [
-        "none"
+        "status_code_change"
       ],
       "needs_observation": true
     }
