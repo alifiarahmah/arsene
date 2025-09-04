@@ -72,7 +72,8 @@ class ReasoningModule():
             CONTEXT_JSON=context_json.model_dump_json(),
             TESTCASES_JSON=testcases_json.model_dump_json()
         )})
-        final_plan_json = call_llm(messages=final_plan_messages)
+        final_plan_json = call_llm(
+            messages=final_plan_messages, response_format=TestCasesContext)
         return final_plan_json
 
     def do_reasoning_chain(self, filename):
@@ -94,26 +95,14 @@ class ReasoningModule():
         self.export_result(result=tc_gen_result, output_path='reasoning_result/tc_gen_result/' + filename + '.json')
         print(tc_gen_result)
 
-        # final_plan_json = self.chain_tc_context(ta_result, tc_gen_result)
-        # self.export_result(result=final_plan_json, output_path='reasoning_result/' + filename + '.json')
-        # print(final_plan_json)
-        # pass
+        final_plan_json = self.chain_tc_context(ta_result, tc_gen_result)
+        self.export_result(result=final_plan_json, output_path='reasoning_result/' + filename + '.json')
+        print(final_plan_json)
 
     def export_result(self, result, output_path):
         with open(output_path, 'w', encoding='utf-8') as f:
             if isinstance(result, BaseModel):
                 f.write(result.model_dump_json(indent=2, exclude_none=True))
-            # elif isinstance(result, str):
-            #     # If it's a string, try to parse it first
-            #     try:
-            #         parsed_result = json.loads(result)
-            #         json.dump(parsed_result, f, indent=2, ensure_ascii=False)
-            #     except json.JSONDecodeError:
-            #         # If parsing fails, just write the raw string
-            #         f.write(result)
-            # else:
-            #     # If it's already a Python object, dump normally
-            #     json.dump(result, f, indent=2, ensure_ascii=False)
 
 if __name__ == "__main__":
     RM = ReasoningModule()

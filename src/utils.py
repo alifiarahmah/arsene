@@ -18,7 +18,8 @@ def call_llm(model=config['MODEL'], messages=[], response_format=None, format_js
         completion = openai_client.chat.completions.parse(
             model=model,
             messages=messages,
-            response_format=response_format
+            response_format=response_format,
+            reasoning_effort='minimal'
         )
         result = completion.choices[0].message.parsed
         print('call_llm result:', result)

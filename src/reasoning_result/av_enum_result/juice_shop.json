@@ -29,9 +29,10 @@
       "endpoint": "/api/Addresss/",
       "parameter": "createdAt",
       "param_location": "body",
-      "category": "others",
+      "category": "injection_nosql",
       "expected_signals": [
-        "none"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -40,10 +41,10 @@
       "endpoint": "/api/Addresss/",
       "parameter": "data",
       "param_location": "body",
-      "category": "deserialization",
+      "category": "injection_nosql",
       "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -64,9 +65,10 @@
       "endpoint": "/api/Addresss/",
       "parameter": "mobileNum",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
+      "category": "injection_nosql",
       "expected_signals": [
-        "response_length_diff"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -89,7 +91,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -110,9 +112,10 @@
       "endpoint": "/api/Addresss/",
       "parameter": "updatedAt",
       "param_location": "body",
-      "category": "others",
+      "category": "injection_nosql",
       "expected_signals": [
-        "none"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -121,10 +124,10 @@
       "endpoint": "/api/Addresss/",
       "parameter": "zipCode",
       "param_location": "body",
-      "category": "injection_nosql",
+      "category": "xss_stored",
       "expected_signals": [
-        "error_signature",
-        "status_code_change"
+        "reflected_input",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -135,7 +138,7 @@
       "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
+        "none"
       ],
       "needs_observation": true
     },
@@ -144,9 +147,10 @@
       "endpoint": "/api/Cards/",
       "parameter": "createdAt",
       "param_location": "body",
-      "category": "others",
+      "category": "injection_nosql",
       "expected_signals": [
-        "none"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -155,10 +159,10 @@
       "endpoint": "/api/Cards/",
       "parameter": "data",
       "param_location": "body",
-      "category": "deserialization",
+      "category": "injection_nosql",
       "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -167,9 +171,9 @@
       "endpoint": "/api/Cards/",
       "parameter": "expMonth",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
+      "category": "business_logic",
       "expected_signals": [
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -178,9 +182,9 @@
       "endpoint": "/api/Cards/",
       "parameter": "expYear",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
+      "category": "business_logic",
       "expected_signals": [
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -203,7 +207,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -212,9 +216,10 @@
       "endpoint": "/api/Cards/",
       "parameter": "updatedAt",
       "param_location": "body",
-      "category": "others",
+      "category": "injection_nosql",
       "expected_signals": [
-        "none"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -226,7 +231,7 @@
       "category": "insecure_direct_object_reference",
       "expected_signals": [
         "status_code_change",
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -238,7 +243,7 @@
       "category": "insecure_direct_object_reference",
       "expected_signals": [
         "status_code_change",
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -247,9 +252,10 @@
       "endpoint": "/api/BasketItems/",
       "parameter": "createdAt",
       "param_location": "body",
-      "category": "others",
+      "category": "injection_nosql",
       "expected_signals": [
-        "none"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -258,10 +264,10 @@
       "endpoint": "/api/BasketItems/",
       "parameter": "data",
       "param_location": "body",
-      "category": "deserialization",
+      "category": "injection_nosql",
       "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -272,7 +278,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -283,7 +289,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -292,20 +298,10 @@
       "endpoint": "/api/BasketItems/",
       "parameter": "updatedAt",
       "param_location": "body",
-      "category": "others",
+      "category": "injection_nosql",
       "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "createdAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -318,39 +314,6 @@
       "expected_signals": [
         "status_code_change",
         "token_reuse_failure"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "deluxeToken",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "email",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "lastLoginIp",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -373,99 +336,19 @@
       "param_location": "query",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "profileImage",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "repeat",
-      "param_location": "query",
-      "category": "authn_bypass",
-      "expected_signals": [
-        "status_code_change",
-        "token_reuse_failure"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "role",
-      "param_location": "query",
-      "category": "authz_bypass",
-      "expected_signals": [
-        "status_code_change",
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "totpSecret",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
         "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "user",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "username",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
       ],
       "needs_observation": true
     },
     {
       "method": "POST",
       "endpoint": "/rest/basket/:int/checkout",
-      "parameter": "id",
+      "parameter": "basketId",
       "param_location": "path",
       "category": "insecure_direct_object_reference",
       "expected_signals": [
         "status_code_change",
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -476,7 +359,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -487,7 +370,6 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change",
         "state_change_observed"
       ],
       "needs_observation": true
@@ -497,10 +379,10 @@
       "endpoint": "/rest/basket/:int/checkout",
       "parameter": "orderDetails",
       "param_location": "body",
-      "category": "insecure_direct_object_reference",
+      "category": "injection_nosql",
       "expected_signals": [
         "status_code_change",
-        "response_length_diff"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -512,7 +394,7 @@
       "category": "insecure_direct_object_reference",
       "expected_signals": [
         "status_code_change",
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -521,10 +403,9 @@
       "endpoint": "/rest/basket/:int/checkout",
       "parameter": "orderDetails.deliveryMethodId",
       "param_location": "body",
-      "category": "insecure_direct_object_reference",
+      "category": "business_logic",
       "expected_signals": [
-        "status_code_change",
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -533,10 +414,9 @@
       "endpoint": "/rest/basket/:int/checkout",
       "parameter": "orderDetails.paymentId",
       "param_location": "body",
-      "category": "insecure_direct_object_reference",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
-        "status_code_change",
-        "response_length_diff"
+        "none"
       ],
       "needs_observation": true
     },
@@ -548,7 +428,7 @@
       "category": "insecure_direct_object_reference",
       "expected_signals": [
         "status_code_change",
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -557,9 +437,10 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "createdAt",
       "param_location": "body",
-      "category": "others",
+      "category": "injection_nosql",
       "expected_signals": [
-        "none"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -568,10 +449,10 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "data",
       "param_location": "body",
-      "category": "deserialization",
+      "category": "injection_nosql",
       "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -582,7 +463,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -593,7 +474,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -602,21 +483,10 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "updatedAt",
       "param_location": "body",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/rest/user/login",
-      "parameter": "authentication",
-      "param_location": "body",
-      "category": "authn_bypass",
+      "category": "injection_nosql",
       "expected_signals": [
         "status_code_change",
-        "token_reuse_failure"
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -649,18 +519,6 @@
       "endpoint": "/rest/user/login",
       "parameter": "token",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "token_reuse_failure",
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/rest/user/login",
-      "parameter": "umail",
-      "param_location": "body",
       "category": "authn_bypass",
       "expected_signals": [
         "status_code_change",
@@ -675,7 +533,6 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change",
         "state_change_observed"
       ],
       "needs_observation": true
@@ -685,9 +542,10 @@
       "endpoint": "/rest/user/data-export",
       "parameter": "format",
       "param_location": "body",
-      "category": "others",
+      "category": "injection_nosql",
       "expected_signals": [
-        "none"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -698,8 +556,7 @@
       "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff",
-        "state_change_observed"
+        "none"
       ],
       "needs_observation": true
     },
@@ -711,7 +568,7 @@
       "category": "insecure_direct_object_reference",
       "expected_signals": [
         "status_code_change",
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -720,10 +577,10 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "data",
       "param_location": "body",
-      "category": "deserialization",
+      "category": "injection_nosql",
       "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -734,54 +591,7 @@
       "param_location": "body",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change",
         "state_change_observed"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "altcoinName",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "application",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "avatar",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "basePath",
-      "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -790,68 +600,9 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "baseUrl",
       "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "blueSkyUrl",
-      "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "chatBot",
-      "param_location": "query",
-      "category": "others",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
         "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "config",
-      "param_location": "query",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "customMetricsPrefix",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "defaultResponse",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
       ],
       "needs_observation": true
     },
@@ -860,138 +611,7 @@
       "endpoint": "/rest/admin/application-configuration",
       "parameter": "domain",
       "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "facebookUrl",
-      "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "favicon",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "greeting",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "logo",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "mastodonUrl",
-      "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "name",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "nftUrl",
-      "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "pressKitUrl",
-      "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "privacyContactEmail",
-      "param_location": "query",
       "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Challenges/",
-      "parameter": "category",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Challenges/",
-      "parameter": "createdAt",
-      "param_location": "query",
-      "category": "others",
       "expected_signals": [
         "none"
       ],
@@ -999,37 +619,12 @@
     },
     {
       "method": "GET",
-      "endpoint": "/api/Challenges/",
-      "parameter": "description",
+      "endpoint": "/rest/admin/application-configuration",
+      "parameter": "customMetricsPrefix",
       "param_location": "query",
-      "category": "xss_reflected",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Challenges/",
-      "parameter": "hint",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Challenges/",
-      "parameter": "hintUrl",
-      "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
+        "none"
       ],
       "needs_observation": true
     },
@@ -1038,53 +633,7 @@
       "endpoint": "/api/Challenges/",
       "parameter": "key",
       "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Challenges/",
-      "parameter": "name",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Challenges/",
-      "parameter": "status",
-      "param_location": "query",
       "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Challenges/",
-      "parameter": "tags",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Challenges/",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
       "expected_signals": [
         "none"
       ],
@@ -1095,7 +644,7 @@
       "endpoint": "/api/Addresss/:int",
       "parameter": "id",
       "param_location": "path",
-      "category": "insecure_direct_object_reference",
+      "category": "authz_bypass",
       "expected_signals": [
         "status_code_change",
         "response_length_diff"
@@ -1104,223 +653,13 @@
     },
     {
       "method": "GET",
-      "endpoint": "/api/Addresss/:int",
-      "parameter": "city",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss/:int",
-      "parameter": "country",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss/:int",
-      "parameter": "createdAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss/:int",
-      "parameter": "data",
-      "param_location": "query",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss/:int",
-      "parameter": "fullName",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss/:int",
-      "parameter": "state",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss/:int",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss/:int",
-      "parameter": "streetAddress",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss/:int",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss/:int",
-      "parameter": "zipCode",
-      "param_location": "query",
-      "category": "injection_nosql",
-      "expected_signals": [
-        "error_signature",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
       "endpoint": "/api/Addresss",
       "parameter": "city",
       "param_location": "query",
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss",
-      "parameter": "country",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss",
-      "parameter": "createdAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss",
-      "parameter": "fullName",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss",
-      "parameter": "state",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss",
-      "parameter": "streetAddress",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Addresss",
-      "parameter": "zipCode",
-      "param_location": "query",
-      "category": "injection_nosql",
-      "expected_signals": [
-        "error_signature",
-        "status_code_change"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -1329,218 +668,22 @@
       "endpoint": "/rest/track-order/789a-:hex",
       "parameter": "hex",
       "param_location": "path",
-      "category": "insecure_direct_object_reference",
+      "category": "authz_bypass",
       "expected_signals": [
         "status_code_change",
         "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/track-order/789a-:hex",
-      "parameter": "_id",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/track-order/789a-:hex",
-      "parameter": "addressId",
-      "param_location": "query",
-      "category": "insecure_direct_object_reference",
-      "expected_signals": [
-        "status_code_change",
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/track-order/789a-:hex",
-      "parameter": "email",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/track-order/789a-:hex",
-      "parameter": "eta",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/track-order/789a-:hex",
-      "parameter": "name",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/track-order/789a-:hex",
-      "parameter": "orderId",
-      "param_location": "query",
-      "category": "insecure_direct_object_reference",
-      "expected_signals": [
-        "status_code_change",
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/track-order/789a-:hex",
-      "parameter": "paymentId",
-      "param_location": "query",
-      "category": "insecure_direct_object_reference",
-      "expected_signals": [
-        "status_code_change",
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/track-order/789a-:hex",
-      "parameter": "promotionalAmount",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/track-order/789a-:hex",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
       ],
       "needs_observation": true
     },
     {
       "method": "GET",
       "endpoint": "/rest/basket/:int",
-      "parameter": "id",
+      "parameter": "basketId",
       "param_location": "path",
-      "category": "insecure_direct_object_reference",
+      "category": "authz_bypass",
       "expected_signals": [
         "status_code_change",
         "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/basket/:int",
-      "parameter": "BasketItem",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/basket/:int",
-      "parameter": "createdAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/basket/:int",
-      "parameter": "data",
-      "param_location": "query",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/basket/:int",
-      "parameter": "description",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/basket/:int",
-      "parameter": "image",
-      "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/basket/:int",
-      "parameter": "name",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/basket/:int",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/basket/:int",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
       ],
       "needs_observation": true
     },
@@ -1549,7 +692,7 @@
       "endpoint": "/api/Products/:int",
       "parameter": "id",
       "param_location": "path",
-      "category": "insecure_direct_object_reference",
+      "category": "authz_bypass",
       "expected_signals": [
         "status_code_change",
         "response_length_diff"
@@ -1558,195 +701,12 @@
     },
     {
       "method": "GET",
-      "endpoint": "/api/Products/:int",
-      "parameter": "createdAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Products/:int",
-      "parameter": "d",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Products/:int",
-      "parameter": "data",
-      "param_location": "query",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Products/:int",
-      "parameter": "description",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Products/:int",
-      "parameter": "image",
-      "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Products/:int",
-      "parameter": "name",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Products/:int",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Products/:int",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/products/search",
-      "parameter": "createdAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/products/search",
-      "parameter": "description",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/products/search",
-      "parameter": "image",
-      "param_location": "query",
-      "category": "ssrf",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
       "endpoint": "/rest/products/search",
       "parameter": "name",
       "param_location": "query",
-      "category": "xss_reflected",
+      "category": "injection_nosql",
       "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/products/search",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/products/search",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/whoami",
-      "parameter": "email",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/whoami",
-      "parameter": "lastLoginIp",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/user/whoami",
-      "parameter": "profileImage",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
+        "status_code_change",
         "error_signature"
       ],
       "needs_observation": true
@@ -1758,7 +718,7 @@
       "param_location": "query",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
+        "none"
       ],
       "needs_observation": true
     },
@@ -1767,78 +727,10 @@
       "endpoint": "/api/BasketItems/:int",
       "parameter": "id",
       "param_location": "path",
-      "category": "insecure_direct_object_reference",
+      "category": "authz_bypass",
       "expected_signals": [
         "status_code_change",
         "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/BasketItems/:int",
-      "parameter": "createdAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/BasketItems/:int",
-      "parameter": "data",
-      "param_location": "query",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/BasketItems/:int",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/BasketItems/:int",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/languages",
-      "parameter": "gauge",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/languages",
-      "parameter": "key",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
       ],
       "needs_observation": true
     },
@@ -1850,29 +742,6 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/languages",
-      "parameter": "shortKey",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Deliverys/:int",
-      "parameter": "id",
-      "param_location": "path",
-      "category": "insecure_direct_object_reference",
-      "expected_signals": [
-        "status_code_change",
         "response_length_diff"
       ],
       "needs_observation": true
@@ -1880,56 +749,9 @@
     {
       "method": "GET",
       "endpoint": "/api/Deliverys/:int",
-      "parameter": "data",
-      "param_location": "query",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Deliverys/:int",
-      "parameter": "icon",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Deliverys/:int",
-      "parameter": "name",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Deliverys/:int",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Cards/:int",
       "parameter": "id",
       "param_location": "path",
-      "category": "insecure_direct_object_reference",
+      "category": "authz_bypass",
       "expected_signals": [
         "status_code_change",
         "response_length_diff"
@@ -1939,46 +761,12 @@
     {
       "method": "GET",
       "endpoint": "/api/Cards/:int",
-      "parameter": "cardNum",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
+      "parameter": "id",
+      "param_location": "path",
+      "category": "authz_bypass",
       "expected_signals": [
+        "status_code_change",
         "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Cards/:int",
-      "parameter": "data",
-      "param_location": "query",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Cards/:int",
-      "parameter": "fullName",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Cards/:int",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
       ],
       "needs_observation": true
     },
@@ -1987,31 +775,10 @@
       "endpoint": "/api/Quantitys/",
       "parameter": "createdAt",
       "param_location": "query",
-      "category": "others",
+      "category": "injection_nosql",
       "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Quantitys/",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Quantitys/",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
+        "status_code_change",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2022,52 +789,7 @@
       "param_location": "query",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Cards",
-      "parameter": "fullName",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Cards",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/2fa/status",
-      "parameter": "email",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/2fa/status",
-      "parameter": "secret",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
+        "none"
       ],
       "needs_observation": true
     },
@@ -2078,19 +800,7 @@
       "param_location": "query",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Recycles/",
-      "parameter": "data",
-      "param_location": "query",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
+        "token_reuse_failure"
       ],
       "needs_observation": true
     },
@@ -2099,32 +809,9 @@
       "endpoint": "/api/Recycles/",
       "parameter": "err",
       "param_location": "query",
-      "category": "others",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
         "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Recycles/",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Deliverys",
-      "parameter": "icon",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
       ],
       "needs_observation": true
     },
@@ -2136,18 +823,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Deliverys",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -2156,7 +832,7 @@
       "endpoint": "/rest/admin/application-version",
       "parameter": "version",
       "param_location": "query",
-      "category": "others",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
         "none"
       ],
@@ -2169,7 +845,7 @@
       "param_location": "query",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change"
+        "none"
       ],
       "needs_observation": true
     },
@@ -2180,7 +856,7 @@
       "param_location": "query",
       "category": "business_logic",
       "expected_signals": [
-        "status_code_change"
+        "none"
       ],
       "needs_observation": true
     },
@@ -2189,9 +865,9 @@
       "endpoint": "/rest/image-captcha/",
       "parameter": "image",
       "param_location": "query",
-      "category": "business_logic",
+      "category": "others",
       "expected_signals": [
-        "status_code_change"
+        "out_of_band_call"
       ],
       "needs_observation": true
     },
@@ -2200,9 +876,10 @@
       "endpoint": "/rest/continue-code",
       "parameter": "continueCode",
       "param_location": "query",
-      "category": "business_logic",
+      "category": "authn_bypass",
       "expected_signals": [
-        "status_code_change"
+        "status_code_change",
+        "token_reuse_failure"
       ],
       "needs_observation": true
     },
@@ -2210,10 +887,11 @@
       "method": "POST",
       "endpoint": "/socket.io/",
       "parameter": "EIO",
-      "param_location": "body",
-      "category": "others",
+      "param_location": "query",
+      "category": "ssrf",
       "expected_signals": [
-        "none"
+        "out_of_band_call",
+        "timing_variation"
       ],
       "needs_observation": true
     },
@@ -2221,67 +899,11 @@
       "method": "POST",
       "endpoint": "/socket.io/",
       "parameter": "sid",
-      "param_location": "body",
-      "category": "authn_bypass",
+      "param_location": "query",
+      "category": "authz_bypass",
       "expected_signals": [
-        "token_reuse_failure",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/socket.io/",
-      "parameter": "t",
-      "param_location": "body",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/socket.io/",
-      "parameter": "transport",
-      "param_location": "body",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "createdAt",
-      "param_location": "body",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "data",
-      "param_location": "body",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "deluxeToken",
-      "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
+        "status_code_change",
+        "token_reuse_failure"
       ],
       "needs_observation": true
     },
@@ -2292,18 +914,7 @@
       "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "lastLoginIp",
-      "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
+        "none"
       ],
       "needs_observation": true
     },
@@ -2312,182 +923,10 @@
       "endpoint": "/api/Users/",
       "parameter": "password",
       "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff",
-        "token_reuse_failure"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "passwordRepeat",
-      "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "profileImage",
-      "param_location": "body",
-      "category": "xss_stored",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "role",
-      "param_location": "body",
-      "category": "authz_bypass",
+      "category": "authn_bypass",
       "expected_signals": [
         "status_code_change",
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "securityAnswer",
-      "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "securityQuestion",
-      "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "status",
-      "param_location": "body",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "updatedAt",
-      "param_location": "body",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "username",
-      "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "background",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "button",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "description",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "favicon",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "palette",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "popup",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "position",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
+        "token_reuse_failure"
       ],
       "needs_observation": true
     },
@@ -2499,63 +938,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "theme",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "viewport",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/socket.io/",
-      "parameter": "EIO",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/socket.io/",
-      "parameter": "sid",
-      "param_location": "query",
-      "category": "authn_bypass",
-      "expected_signals": [
-        "token_reuse_failure",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/socket.io/",
-      "parameter": "t",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -2564,9 +947,10 @@
       "endpoint": "/socket.io/",
       "parameter": "transport",
       "param_location": "query",
-      "category": "others",
+      "category": "ssrf",
       "expected_signals": [
-        "none"
+        "out_of_band_call",
+        "timing_variation"
       ],
       "needs_observation": true
     },
@@ -2578,52 +962,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/profile",
-      "parameter": "keywords",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/profile",
-      "parameter": "viewport",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "captcha",
-      "param_location": "body",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "captchaId",
-      "param_location": "body",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -2642,52 +981,7 @@
     {
       "method": "POST",
       "endpoint": "/api/Feedbacks/",
-      "parameter": "createdAt",
-      "param_location": "body",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "data",
-      "param_location": "body",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "rating",
-      "param_location": "body",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "status",
-      "param_location": "body",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "updatedAt",
+      "parameter": "captcha",
       "param_location": "body",
       "category": "others",
       "expected_signals": [
@@ -2703,7 +997,7 @@
       "category": "insecure_direct_object_reference",
       "expected_signals": [
         "status_code_change",
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -2715,7 +1009,7 @@
       "category": "insecure_direct_object_reference",
       "expected_signals": [
         "status_code_change",
-        "response_length_diff"
+        "state_change_observed"
       ],
       "needs_observation": true
     },
@@ -2726,51 +1020,6 @@
       "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/SecurityAnswers/",
-      "parameter": "createdAt",
-      "param_location": "body",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/SecurityAnswers/",
-      "parameter": "data",
-      "param_location": "body",
-      "category": "deserialization",
-      "expected_signals": [
-        "error_signature",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/SecurityAnswers/",
-      "parameter": "status",
-      "param_location": "body",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/SecurityAnswers/",
-      "parameter": "updatedAt",
-      "param_location": "body",
-      "category": "others",
-      "expected_signals": [
         "none"
       ],
       "needs_observation": true
@@ -2778,69 +1027,12 @@
     {
       "method": "GET",
       "endpoint": "/rest/products/:int/reviews",
-      "parameter": "id",
+      "parameter": "productId",
       "param_location": "path",
-      "category": "insecure_direct_object_reference",
+      "category": "authz_bypass",
       "expected_signals": [
         "status_code_change",
         "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/products/:int/reviews",
-      "parameter": "_id",
-      "param_location": "query",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/products/:int/reviews",
-      "parameter": "author",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/products/:int/reviews",
-      "parameter": "message",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/products/:int/reviews",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/SecurityQuestions/",
-      "parameter": "createdAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
       ],
       "needs_observation": true
     },
@@ -2852,29 +1044,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/SecurityQuestions/",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/SecurityQuestions/",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -2886,51 +1056,7 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "createdAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "status",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "updatedAt",
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/captcha/",
-      "parameter": "answer",
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -2939,9 +1065,9 @@
       "endpoint": "/rest/captcha/",
       "parameter": "captcha",
       "param_location": "query",
-      "category": "business_logic",
+      "category": "others",
       "expected_signals": [
-        "status_code_change"
+        "out_of_band_call"
       ],
       "needs_observation": true
     }

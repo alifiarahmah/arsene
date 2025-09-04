@@ -5,8 +5,8 @@
       "path_template": "/api/Addresss/",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "state_changing",
@@ -14,7 +14,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "city",
@@ -73,8 +75,8 @@
       "path_template": "/api/Cards/",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "state_changing",
@@ -82,7 +84,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "cardNum",
@@ -129,8 +133,8 @@
       "path_template": "/api/BasketItems/",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "state_changing",
@@ -138,7 +142,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "BasketId",
@@ -181,16 +187,18 @@
       "path_template": "/rest/user/change-password",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
-      "side_effect": "read_only",
+      "side_effect": "unknown",
       "anti_automation": [
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "createdAt",
@@ -261,8 +269,8 @@
       "path_template": "/rest/basket/:int/checkout",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "state_changing",
@@ -270,10 +278,12 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
-          "name": "id",
+          "name": "basketId",
           "location": "path"
         },
         {
@@ -313,8 +323,8 @@
       "path_template": "/api/BasketItems/:int",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "state_changing",
@@ -322,7 +332,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "id",
@@ -360,15 +372,20 @@
       "method": "POST",
       "path_template": "/rest/user/login",
       "auth_schemes": [
-        "cookie"
+        "cookie",
+        "none"
       ],
       "roles": [],
+      "csrf_protection": "token_in_form",
       "side_effect": "state_changing",
       "anti_automation": [
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json",
+        "application/x-www-form-urlencoded"
+      ],
       "parameters": [
         {
           "name": "authentication",
@@ -392,8 +409,7 @@
         }
       ],
       "tokens_observed": [
-        "auth_cookie_token",
-        "url_contains_login"
+        "auth_cookie_token"
       ],
       "needs_observation": true
     },
@@ -402,8 +418,8 @@
       "path_template": "/rest/user/data-export",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "state_changing",
@@ -411,7 +427,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "confirmation",
@@ -438,8 +456,8 @@
       "path_template": "/api/BasketItems/:int",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "state_changing",
@@ -447,7 +465,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "id",
@@ -474,8 +494,8 @@
       "path_template": "/rest/admin/application-configuration",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -483,7 +503,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "altcoinName",
@@ -578,8 +600,8 @@
       "path_template": "/api/Challenges/",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -587,7 +609,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "category",
@@ -642,8 +666,8 @@
       "path_template": "/api/Addresss/:int",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -651,7 +675,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "id",
@@ -710,8 +736,8 @@
       "path_template": "/api/Addresss",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -719,7 +745,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "city",
@@ -770,8 +798,8 @@
       "path_template": "/rest/track-order/789a-:hex",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -779,10 +807,12 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
-          "name": "orderId",
+          "name": "hex",
           "location": "path"
         },
         {
@@ -803,6 +833,10 @@
         },
         {
           "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "orderId",
           "location": "query"
         },
         {
@@ -830,8 +864,8 @@
       "path_template": "/rest/basket/:int",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -839,10 +873,12 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
-          "name": "id",
+          "name": "basketId",
           "location": "path"
         },
         {
@@ -890,8 +926,8 @@
       "path_template": "/api/Products/:int",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -899,7 +935,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "id",
@@ -950,8 +988,8 @@
       "path_template": "/rest/products/search",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -959,7 +997,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "createdAt",
@@ -998,8 +1038,8 @@
       "path_template": "/rest/user/whoami",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1007,7 +1047,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "email",
@@ -1031,15 +1073,15 @@
         "authorization_header",
         "bearer_token"
       ],
-      "needs_observation": true
+      "needs_observation": false
     },
     {
       "method": "GET",
       "path_template": "/api/BasketItems/:int",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1047,7 +1089,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "id",
@@ -1082,8 +1126,8 @@
       "path_template": "/rest/languages",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1091,7 +1135,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "gauge",
@@ -1122,8 +1168,8 @@
       "path_template": "/api/Deliverys/:int",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1131,7 +1177,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "id",
@@ -1166,8 +1214,8 @@
       "path_template": "/api/Cards/:int",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1175,7 +1223,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "id",
@@ -1210,8 +1260,8 @@
       "path_template": "/api/Quantitys/",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1219,7 +1269,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "createdAt",
@@ -1246,8 +1298,8 @@
       "path_template": "/api/Cards",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1255,7 +1307,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "cardNum",
@@ -1282,8 +1336,8 @@
       "path_template": "/rest/2fa/status",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1291,7 +1345,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "email",
@@ -1318,8 +1374,8 @@
       "path_template": "/api/Recycles/",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1327,7 +1383,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "data",
@@ -1354,8 +1412,8 @@
       "path_template": "/api/Deliverys",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1363,7 +1421,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "icon",
@@ -1390,8 +1450,8 @@
       "path_template": "/rest/admin/application-version",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1399,7 +1459,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "version",
@@ -1418,8 +1480,8 @@
       "path_template": "/rest/wallet/balance",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1427,7 +1489,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "status",
@@ -1446,8 +1510,8 @@
       "path_template": "/rest/order-history",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1455,7 +1519,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "status",
@@ -1474,8 +1540,8 @@
       "path_template": "/rest/image-captcha/",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1483,7 +1549,11 @@
         "captcha"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "image/png",
+        "image/jpeg",
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "image",
@@ -1502,16 +1572,18 @@
       "path_template": "/rest/continue-code",
       "auth_schemes": [
         "cookie",
-        "api_key_header",
-        "jwt"
+        "jwt",
+        "api_key_header"
       ],
       "roles": [],
-      "side_effect": "read_only",
+      "side_effect": "unknown",
       "anti_automation": [
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "continueCode",
@@ -1537,23 +1609,26 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json",
+        "text/plain"
+      ],
       "parameters": [
         {
           "name": "EIO",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "sid",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "t",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "transport",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
@@ -1573,7 +1648,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "createdAt",
@@ -1647,7 +1724,10 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "text/html",
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "background",
@@ -1707,7 +1787,10 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json",
+        "text/plain"
+      ],
       "parameters": [
         {
           "name": "EIO",
@@ -1743,7 +1826,10 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "text/html",
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "description",
@@ -1772,10 +1858,13 @@
       "roles": [],
       "side_effect": "state_changing",
       "anti_automation": [
-        "captcha"
+        "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json",
+        "application/x-www-form-urlencoded"
+      ],
       "parameters": [
         {
           "name": "captcha",
@@ -1825,7 +1914,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "SecurityQuestionId",
@@ -1871,10 +1962,12 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
-          "name": "id",
+          "name": "productId",
           "location": "path"
         },
         {
@@ -1909,7 +2002,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "createdAt",
@@ -1943,7 +2038,9 @@
         "none"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json"
+      ],
       "parameters": [
         {
           "name": "comment",
@@ -1977,7 +2074,11 @@
         "captcha"
       ],
       "protocol": "http",
-      "content_types": [],
+      "content_types": [
+        "application/json",
+        "image/png",
+        "image/jpeg"
+      ],
       "parameters": [
         {
           "name": "answer",

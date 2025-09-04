@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, Extra
 from typing import List, Optional, Literal, Dict, Any, Union
 from enum import Enum
 
@@ -57,35 +57,6 @@ class AuthFlow(str, Enum):
     SAML = "saml"
     NONE = "none"
 
-class Parameter(BaseModel):
-    name: str
-    location: ParamLocation
-    sample_value: Optional[str] = None
-
-class Endpoint(BaseModel):
-    method: HttpMethod
-    path_template: str
-    auth_schemes: List[AuthScheme] = []
-    roles: List[str] = []
-    csrf_protection: Optional[CSRFProtection] = None
-    side_effect: Optional[SideEffect] = None
-    anti_automation: List[AntiAutomation] = []
-    protocol: Optional[Literal["http", "https"]] = None
-    content_types: List[str] = []
-    parameters: List[Parameter] = []
-    tokens_observed: List[str] = []
-    needs_observation: bool = False
-
-class GlobalObservations(BaseModel):
-    session_management: Optional[SessionManagement] = None
-    token_lifetime_estimate: Optional[int] = None
-    auth_flow: Optional[AuthFlow] = None
-    needs_observation: bool = False
-
-class TrafficAnalysisContext(BaseModel):
-    endpoints: List[Endpoint]
-    global_observations: GlobalObservations
-
 class AttackCategory(str, Enum):
     INJECTION_SQL = "injection_sql"
     INJECTION_NOSQL = "injection_nosql"
@@ -119,6 +90,69 @@ class ExpectedSignal(str, Enum):
     STATE_CHANGE_OBSERVED = "state_change_observed"
     NONE = "none"
 
+class Signal(str, Enum):
+    REFLECTED_INPUT = "reflected_input"
+    RESPONSE_LENGTH_DIFF = "response_length_diff"
+    STATUS_CODE_CHANGE = "status_code_change"
+    ERROR_SIGNATURE = "error_signature"
+    TIMING_ANOMALY = "timing_anomaly"
+    HEADER_CHANGE = "header_change"
+    XSS_PAYLOAD_EXECUTED = "xss_payload_executed"
+    SQL_ERROR_LEAKED = "sql_error_leaked"
+    DIRECTORY_LISTING = "directory_listing"
+    SENSITIVE_DATA_EXPOSED = "sensitive_data_exposed"
+    AUTHENTICATION_BYPASSED = "authentication_bypassed"
+    AUTHORIZATION_BYPASSED = "authorization_bypassed"
+    DNS_CALLBACK = "dns_callback"
+    HTTP_CALLBACK = "http_callback"
+    SMTP_CALLBACK = "smtp_callback"
+
+class PassLogic(str, Enum):
+    ANY = "any"
+    ALL = "all"
+
+class PayloadTier(str, Enum):
+    BENIGN = "benign"
+    PROBE = "probe"
+    EXPLOIT = "exploit"
+    DESTRUCTIVE = "destructive"
+
+class PrerequisiteType(str, Enum):
+    LOGIN = "login"
+    CSRF_TOKEN = "csrf_token"
+    JWT_REFRESH = "jwt_refresh"
+    SESSION_STATE = "session_state"
+    CUSTOM = "custom"
+
+class Parameter(BaseModel):
+    name: str
+    location: ParamLocation
+    sample_value: Optional[str] = None
+
+class Endpoint(BaseModel):
+    method: HttpMethod
+    path_template: str
+    auth_schemes: List[AuthScheme] = []
+    roles: List[str] = []
+    csrf_protection: Optional[CSRFProtection] = None
+    side_effect: Optional[SideEffect] = None
+    anti_automation: List[AntiAutomation] = []
+    protocol: Optional[Literal["http", "https"]] = None
+    content_types: List[str] = []
+    parameters: List[Parameter] = []
+    tokens_observed: List[str] = []
+    needs_observation: bool = False
+
+class GlobalObservations(BaseModel):
+    session_management: Optional[SessionManagement] = None
+    token_lifetime_estimate: Optional[int] = None
+    auth_flow: Optional[AuthFlow] = None
+    needs_observation: bool = False
+
+class TrafficAnalysisContext(BaseModel):
+    endpoints: List[Endpoint]
+    global_observations: GlobalObservations
+
 class AttackVector(BaseModel):
     method: Optional[str] = None
     endpoint: str
@@ -132,126 +166,103 @@ class AttackVector(BaseModel):
 class AttackVectorsContext(BaseModel):
     vectors: List[AttackVector]
 
-class Signal(str, Enum):
-    # Response analysis
-    REFLECTED_INPUT = "reflected_input"
-    RESPONSE_LENGTH_DIFF = "response_length_diff"
-    STATUS_CODE_CHANGE = "status_code_change"
-    ERROR_SIGNATURE = "error_signature"
-    TIMING_ANOMALY = "timing_anomaly"
-    HEADER_CHANGE = "header_change"
+class SafetyConfig(BaseModel, extra=Extra.forbid):
+    idempotent_required: bool = Field(default=True)
+    destructive_ok: bool = Field(default=False)
+    max_requests: int = Field(default=10, ge=1)
 
-    # Security-specific
-    XSS_PAYLOAD_EXECUTED = "xss_payload_executed"
-    SQL_ERROR_LEAKED = "sql_error_leaked"
-    DIRECTORY_LISTING = "directory_listing"
-    SENSITIVE_DATA_EXPOSED = "sensitive_data_exposed"
-    AUTHENTICATION_BYPASSED = "authentication_bypassed"
-    AUTHORIZATION_BYPASSED = "authorization_bypassed"
+class Threshold(BaseModel, extra=Extra.forbid):
+    timing_ms: Optional[int] = None
+    body_length_delta_pct: Optional[float] = None
+    expected_codes: Optional[List[int]] = None
 
-    # Out-of-band
-    DNS_CALLBACK = "dns_callback"
-    HTTP_CALLBACK = "http_callback"
-    SMTP_CALLBACK = "smtp_callback"
-
-class PassLogic(str, Enum):
-    ANY = "any"  # At least one signal triggers
-    ALL = "all"  # All signals must trigger
-
-class SafetyConfig(BaseModel):
-    idempotent_required: bool = Field(default=True, description="Requires read-only operations")
-    destructive_ok: bool = Field(default=False, description="Allows potentially destructive operations")
-    max_requests: int = Field(default=10, description="Maximum requests for this hypothesis")
-
-class Oracle(BaseModel):
+class Oracle(BaseModel, extra=Extra.forbid):
     signal: Signal
-    threshold: Optional[Dict[str, Any]] = Field(default=None, description="Numeric thresholds (e.g., {'timing_ms': 5000, 'body_length_delta_pct': 30})")
-    description: Optional[str] = Field(default=None, description="Human-readable oracle description")
+    threshold: Optional[Threshold] = None
+    description: Optional[str] = None
 
-class VulnHypothesis(BaseModel):
-    id: str = Field(description="Unique identifier for this hypothesis")
-    method: str = Field(description="HTTP method")
-    endpoint: str = Field(description="Target endpoint")
-    parameter: str = Field(description="Target parameter name")
-    param_location: str = Field(description="Parameter location: body, query, header, path")
-    category: str = Field(description="Vulnerability category (e.g., xss_stored, sqli, idor)")
+class KeyValue(BaseModel, extra=Extra.forbid):
+    key: str
+    value: str
 
-    oracles: List[Oracle] = Field(description="List of detection oracles")
-    pass_logic: PassLogic = Field(default=PassLogic.ANY, description="Logic for combining oracle results")
+class VulnHypothesis(BaseModel, extra=Extra.forbid):
+    id: str
+    method: str
+    endpoint: str
+    parameter: str
+    param_location: str
+    category: str
 
-    preconditions: Optional[Dict[str, Any]] = Field(default=None, description="Required context (auth_context, csrf_token, etc.)")
+    oracles: List[Oracle]
+    pass_logic: PassLogic = PassLogic.ANY
+
+    preconditions: Optional[List[KeyValue]] = None
     safety: SafetyConfig = Field(default_factory=SafetyConfig)
 
-    confidence: float = Field(ge=0.0, le=1.0, description="Confidence in this hypothesis (0.0-1.0)")
-    priority: int = Field(ge=1, le=5, description="Testing priority (1=highest, 5=lowest)")
+    confidence: float = Field(ge=0.0, le=1.0)
+    priority: int = Field(ge=1, le=5)
 
-class VulnHypothesesContext(BaseModel):
+class VulnHypothesesContext(BaseModel, extra=Extra.forbid):
     hypotheses: List[VulnHypothesis]
-    metadata: Optional[Dict[str, Any]] = Field(default=None, description="Additional metadata")
+    metadata: Optional[List[KeyValue]] = None
 
-class PayloadTier(str, Enum):
-    BENIGN = "benign"           # Control/baseline payload
-    PROBE = "probe"             # Safe detection payload
-    EXPLOIT = "exploit"         # Proof-of-concept payload
-    DESTRUCTIVE = "destructive" # Potentially harmful payload
+class OracleThreshold(BaseModel, extra=Extra.forbid):
+    timing_ms: Optional[int] = None
+    body_length_delta_pct: Optional[float] = None
+    expected_codes: Optional[List[int]] = None
+    numeric_value: Optional[float] = None
+    string_value: Optional[str] = None
 
-class PrerequisiteType(str, Enum):
-    LOGIN = "login"
-    CSRF_TOKEN = "csrf_token"
-    JWT_REFRESH = "jwt_refresh"
-    SESSION_STATE = "session_state"
-    CUSTOM = "custom"
+class OracleRule(BaseModel, extra=Extra.forbid):
+    signal: Signal
+    condition: str
+    threshold: Optional[OracleThreshold] = None
+    weight: float = Field(default=1.0, ge=0.0, le=1.0)
 
-class OracleRule(BaseModel):
-    signal: Signal  # Reuse from VulnHypotheses
-    condition: str = Field(description="Condition logic (e.g., 'response.status_code != baseline.status_code')")
-    threshold: Optional[Dict[str, Any]] = Field(default=None, description="Numeric thresholds for evaluation")
-    weight: float = Field(default=1.0, ge=0.0, le=1.0, description="Weight in final scoring (0.0-1.0)")
-
-class Prerequisite(BaseModel):
+class Prerequisite(BaseModel, extra=Extra.forbid):
     type: PrerequisiteType
     description: str
-    extract_from: Optional[str] = Field(default=None, description="Where to extract value (e.g., 'response.headers.X-CSRF-Token')")
-    bind_to: Optional[str] = Field(default=None, description="Where to inject value (e.g., 'request.headers.X-CSRF-Token')")
-    custom_logic: Optional[str] = Field(default=None, description="Custom prerequisite logic")
+    extract_from: Optional[str] = None
+    bind_to: Optional[str] = None
+    custom_logic: Optional[str] = None
 
-class TestPayload(BaseModel):
+class TestPayload(BaseModel, extra=Extra.forbid):
     tier: PayloadTier
-    value: Union[str, Dict[str, Any]] = Field(description="Payload content (string or structured)")
-    description: str = Field(description="Human-readable payload description")
-    encoding: Optional[str] = Field(default=None, description="Payload encoding (url, base64, etc.)")
-    content_type: Optional[str] = Field(default=None, description="Content-Type override if needed")
+    value: str
+    description: str
+    encoding: Optional[str] = None
+    content_type: Optional[str] = None
 
-class TestCase(BaseModel):
-    id: str = Field(description="Unique test case identifier")
-    hypothesis_id: str = Field(description="Reference to source VulnHypothesis")
+class TestCase(BaseModel, extra=Extra.forbid):
+    id: str
+    hypothesis_id: str
 
     # HTTP Request details
     method: str
     endpoint: str
     parameter: str
-    param_location: str  # body, query, header, path
+    param_location: str
 
     # Test configuration
-    payloads: List[TestPayload] = Field(description="Ordered list of payloads (benign first)")
-    prerequisites: List[Prerequisite] = Field(default_factory=list, description="Required setup steps")
+    payloads: List[TestPayload]
+    prerequisites: List[Prerequisite] = Field(default_factory=list)
 
     # Detection rules
-    oracle_rules: List[OracleRule] = Field(description="Detection logic aligned with hypothesis")
-    pass_logic: PassLogic = Field(default=PassLogic.ANY, description="How to combine oracle results")
+    oracle_rules: List[OracleRule]
+    pass_logic: PassLogic = PassLogic.ANY
 
     # Safety and execution
-    safety: SafetyConfig = Field(description="Safety constraints from hypothesis")
-    max_retries: int = Field(default=3, description="Maximum retry attempts")
-    delay_between_requests: float = Field(default=1.0, description="Delay in seconds between requests")
+    safety: SafetyConfig
+    max_retries: int = Field(default=3, ge=1)
+    delay_between_requests: float = Field(default=1.0, ge=0.0)
 
     # Metadata
-    notes: Optional[str] = Field(default=None, description="Rate limiting, backoff hints, special considerations")
-    tags: List[str] = Field(default_factory=list, description="Categorization tags")
-    estimated_duration: Optional[int] = Field(default=None, description="Estimated execution time in seconds")
+    notes: Optional[str] = None
+    tags: List[str] = Field(default_factory=list)
+    estimated_duration: Optional[int] = None
 
-class TestCasesContext(BaseModel):
+class TestCasesContext(BaseModel, extra=Extra.forbid):
     test_cases: List[TestCase]
-    global_prerequisites: List[Prerequisite] = Field(default_factory=list, description="Prerequisites for all test cases")
-    execution_hints: Optional[Dict[str, Any]] = Field(default=None, description="Global execution guidance")
-    metadata: Optional[Dict[str, Any]] = Field(default=None, description="Additional metadata")
+    global_prerequisites: List[Prerequisite] = Field(default_factory=list)
+    execution_hints: Optional[List[KeyValue]] = None
+    metadata: Optional[List[KeyValue]] = None
