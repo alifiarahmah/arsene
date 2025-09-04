@@ -1,8 +1,29 @@
 from config import config
 import requests
 import json
+from openai import OpenAI
+from pydantic import BaseModel
 
-def call_llm(messages, format_json=True, temperature=0.2, seed=42, num_ctx=4096):
+openai_client = OpenAI(
+    api_key=config['OPENAI_KEY']
+)
+
+class GenericResponse(BaseModel):
+    content: str
+
+def call_llm(model=config['MODEL'], messages=[], response_format=None, format_json=True, temperature=0.2, seed=42, num_ctx=4096):
+    if model.startswith('gpt-'):
+        if response_format is None:
+          response_format = GenericResponse
+        completion = openai_client.chat.completions.parse(
+            model=model,
+            messages=messages,
+            response_format=response_format
+        )
+        result = completion.choices[0].message.parsed
+        print('call_llm result:', result)
+        return result
+
     payload = {
         "model": config['MODEL'],
         "messages": messages,

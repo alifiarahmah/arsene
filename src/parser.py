@@ -368,34 +368,6 @@ class ParserModule:
             'x-www-form-urlencoded' in ct
         )
 
-    def _score_endpoint(self, ep: ParsedEndpoint) -> float:
-        score = 0.0
-        if ep.is_sensitive:
-            score += 3.0
-        if ep.authentication_indicators:
-            score += 2.0
-        if ep.endpoint_type in (EndpointType.API_ENDPOINT, EndpointType.FORM_SUBMISSION, EndpointType.AUTHENTICATION):
-            score += 1.5
-        if ep.method in ('POST', 'PUT', 'PATCH', 'DELETE'):
-            score += 1.0
-        if self._is_textual_content_type(ep.content_type):
-            score += 0.5
-        if ep.response_status >= 400:
-            score += 1.2
-        elif ep.response_status >= 300:
-            score += 0.5
-        score += min(len(ep.potential_parameters), 10) * 0.05
-        return round(score, 2)
-
-    def _filter_for_reasoning(self, endpoints: List[ParsedEndpoint]) -> List[ParsedEndpoint]:
-        filtered = [
-            ep for ep in endpoints
-            if ep.endpoint_type not in (EndpointType.THIRD_PARTY, EndpointType.UNIMPORTANT_STATIC_ASSET)
-        ]
-        if not self.INCLUDE_STATIC_ASSETS:
-            filtered = [ep for ep in filtered if ep.endpoint_type != EndpointType.STATIC_ASSET]
-        return filtered
-
     def export_ultra_compact_json(
         self,
         endpoints: List[ParsedEndpoint],
@@ -403,38 +375,13 @@ class ParserModule:
         max_groups: Optional[int] = None,
         include_static_assets: Optional[bool] = None
     ):
-        """
-        Export minimal, deduplicated JSON suitable for LLM reasoning.
-        Schema:
-        {
-          "requests": [
-            {
-              "id": "GET:/api/products/:int",
-              "method": "GET",
-              "normalizedPath": "/api/products/:int",
-              "hosts": ["example.com"],
-              "endpointTypes": ["api_endpoint"],
-              "count": 3,
-              "statusHistogram": {"2xx": 2, "4xx": 1},
-              "isSensitiveAny": true,
-              "authIndicatorsAny": ["authorization_header"],
-              "potentialParametersAny": ["q", "limit"],
-              "score": 5.4
-            },
-            ...
-          ],
-          "scores": {"avg": 3.72, "total": 3.72, "min": 1.1, "max": 6.25}
-        }
-        """
         if include_static_assets is not None:
             # temporarily override class default for this call
             orig = self.INCLUDE_STATIC_ASSETS
             self.INCLUDE_STATIC_ASSETS = include_static_assets
 
-        filtered = self._filter_for_reasoning(endpoints)
-
         groups: Dict[Tuple[str, str], Dict[str, Any]] = {}
-        for ep in filtered:
+        for ep in endpoints:
             norm = self._normalize_path(ep.path or '/')
             key = (ep.method, norm)
             if key not in groups:
@@ -470,10 +417,6 @@ class ParserModule:
             # status
             bucket = self._status_bucket(ep.response_status)
             g["statusHistogram"][bucket] += 1
-            # score: keep the best representative
-            s = self._score_endpoint(ep)
-            if s > g["score"]:
-                g["score"] = s
 
         # Flatten
         flat: List[Dict[str, Any]] = []
@@ -627,11 +570,8 @@ class ParserModule:
 
         return files
 
-    # Backward-compatible alias
     def export_to_json(self, endpoints: List[ParsedEndpoint], output_file: str):
         self.export_ultra_compact_json(endpoints, output_file, max_groups=self.MAX_GROUPS)
-
-# ===================== CLI =====================
 
 if __name__ == "__main__":
     PM = ParserModule()

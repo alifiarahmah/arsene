@@ -1,93 +1,1850 @@
 {
-  "data": [
+  "endpoints": [
     {
-      "id": "GET:/rest/continue-code",
-      "method": "GET",
-      "normalizedPath": "/rest/continue-code",
-      "hosts": [
-        "localhost:3000"
-      ],
-      "endpointTypes": [
-        "api_endpoint"
-      ],
-      "count": 1,
-      "statusHistogram": {
-        "2xx": 1
-      },
-      "isSensitiveAny": true,
-      "authIndicatorsAny": [
-        "auth_cookie_token"
-      ],
-      "potentialParametersAny": [
-        "continueCode"
-      ],
-      "score": 7.05,
-      "sample_value": {
-        "continueCode": ""
-      }
-    },
-    {
-      "id": "POST:/socket.io/",
       "method": "POST",
-      "normalizedPath": "/socket.io/",
-      "hosts": [
-        "localhost:3000"
+      "path_template": "/api/Addresss/",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
       ],
-      "endpointTypes": [
-        "page_request"
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "city",
+          "location": "body"
+        },
+        {
+          "name": "country",
+          "location": "body"
+        },
+        {
+          "name": "createdAt",
+          "location": "body"
+        },
+        {
+          "name": "data",
+          "location": "body"
+        },
+        {
+          "name": "fullName",
+          "location": "body"
+        },
+        {
+          "name": "mobileNum",
+          "location": "body"
+        },
+        {
+          "name": "state",
+          "location": "body"
+        },
+        {
+          "name": "status",
+          "location": "body"
+        },
+        {
+          "name": "streetAddress",
+          "location": "body"
+        },
+        {
+          "name": "updatedAt",
+          "location": "body"
+        },
+        {
+          "name": "zipCode",
+          "location": "body"
+        }
       ],
-      "count": 2,
-      "statusHistogram": {
-        "2xx": 2
-      },
-      "isSensitiveAny": true,
-      "authIndicatorsAny": [
-        "auth_cookie_token"
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
       ],
-      "potentialParametersAny": [
-        "EIO",
-        "sid",
-        "t",
-        "transport"
-      ],
-      "score": 6.7,
-      "sample_value": {
-        "EIO": "",
-        "sid": "",
-        "t": "",
-        "transport": ""
-      }
+      "needs_observation": true
     },
     {
-      "id": "GET:/profile",
+      "method": "POST",
+      "path_template": "/api/Cards/",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "cardNum",
+          "location": "body"
+        },
+        {
+          "name": "createdAt",
+          "location": "body"
+        },
+        {
+          "name": "data",
+          "location": "body"
+        },
+        {
+          "name": "expMonth",
+          "location": "body"
+        },
+        {
+          "name": "expYear",
+          "location": "body"
+        },
+        {
+          "name": "fullName",
+          "location": "body"
+        },
+        {
+          "name": "status",
+          "location": "body"
+        },
+        {
+          "name": "updatedAt",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/api/BasketItems/",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "BasketId",
+          "location": "body"
+        },
+        {
+          "name": "ProductId",
+          "location": "body"
+        },
+        {
+          "name": "createdAt",
+          "location": "body"
+        },
+        {
+          "name": "data",
+          "location": "body"
+        },
+        {
+          "name": "quantity",
+          "location": "body"
+        },
+        {
+          "name": "status",
+          "location": "body"
+        },
+        {
+          "name": "updatedAt",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
       "method": "GET",
-      "normalizedPath": "/profile",
-      "hosts": [
-        "localhost:3000"
+      "path_template": "/rest/user/change-password",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
       ],
-      "endpointTypes": [
-        "page_request"
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "current",
+          "location": "query"
+        },
+        {
+          "name": "deluxeToken",
+          "location": "query"
+        },
+        {
+          "name": "email",
+          "location": "query"
+        },
+        {
+          "name": "lastLoginIp",
+          "location": "query"
+        },
+        {
+          "name": "new",
+          "location": "query"
+        },
+        {
+          "name": "password",
+          "location": "query"
+        },
+        {
+          "name": "profileImage",
+          "location": "query"
+        },
+        {
+          "name": "repeat",
+          "location": "query"
+        },
+        {
+          "name": "role",
+          "location": "query"
+        },
+        {
+          "name": "totpSecret",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        },
+        {
+          "name": "user",
+          "location": "query"
+        },
+        {
+          "name": "username",
+          "location": "query"
+        }
       ],
-      "count": 2,
-      "statusHistogram": {
-        "2xx": 2
-      },
-      "isSensitiveAny": true,
-      "authIndicatorsAny": [
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/rest/basket/:int/checkout",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "couponData",
+          "location": "body"
+        },
+        {
+          "name": "orderConfirmation",
+          "location": "body"
+        },
+        {
+          "name": "orderDetails",
+          "location": "body"
+        },
+        {
+          "name": "orderDetails.addressId",
+          "location": "body"
+        },
+        {
+          "name": "orderDetails.deliveryMethodId",
+          "location": "body"
+        },
+        {
+          "name": "orderDetails.paymentId",
+          "location": "body"
+        },
+        {
+          "name": "id",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "PUT",
+      "path_template": "/api/BasketItems/:int",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "createdAt",
+          "location": "body"
+        },
+        {
+          "name": "data",
+          "location": "body"
+        },
+        {
+          "name": "quantity",
+          "location": "body"
+        },
+        {
+          "name": "status",
+          "location": "body"
+        },
+        {
+          "name": "updatedAt",
+          "location": "body"
+        },
+        {
+          "name": "id",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/rest/user/login",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "authentication",
+          "location": "body"
+        },
+        {
+          "name": "email",
+          "location": "body"
+        },
+        {
+          "name": "password",
+          "location": "body"
+        },
+        {
+          "name": "token",
+          "location": "body"
+        },
+        {
+          "name": "umail",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "url_contains_login"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/rest/user/data-export",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "confirmation",
+          "location": "body"
+        },
+        {
+          "name": "format",
+          "location": "body"
+        },
+        {
+          "name": "userData",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "DELETE",
+      "path_template": "/api/BasketItems/:int",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "data",
+          "location": "body"
+        },
+        {
+          "name": "status",
+          "location": "body"
+        },
+        {
+          "name": "id",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/admin/application-configuration",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "altcoinName",
+          "location": "query"
+        },
+        {
+          "name": "application",
+          "location": "query"
+        },
+        {
+          "name": "avatar",
+          "location": "query"
+        },
+        {
+          "name": "basePath",
+          "location": "query"
+        },
+        {
+          "name": "baseUrl",
+          "location": "query"
+        },
+        {
+          "name": "blueSkyUrl",
+          "location": "query"
+        },
+        {
+          "name": "chatBot",
+          "location": "query"
+        },
+        {
+          "name": "config",
+          "location": "query"
+        },
+        {
+          "name": "customMetricsPrefix",
+          "location": "query"
+        },
+        {
+          "name": "defaultResponse",
+          "location": "query"
+        },
+        {
+          "name": "domain",
+          "location": "query"
+        },
+        {
+          "name": "facebookUrl",
+          "location": "query"
+        },
+        {
+          "name": "favicon",
+          "location": "query"
+        },
+        {
+          "name": "greeting",
+          "location": "query"
+        },
+        {
+          "name": "logo",
+          "location": "query"
+        },
+        {
+          "name": "mastodonUrl",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "nftUrl",
+          "location": "query"
+        },
+        {
+          "name": "pressKitUrl",
+          "location": "query"
+        },
+        {
+          "name": "privacyContactEmail",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Challenges/",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "category",
+          "location": "query"
+        },
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "description",
+          "location": "query"
+        },
+        {
+          "name": "hint",
+          "location": "query"
+        },
+        {
+          "name": "hintUrl",
+          "location": "query"
+        },
+        {
+          "name": "key",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "tags",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Addresss/:int",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "city",
+          "location": "query"
+        },
+        {
+          "name": "country",
+          "location": "query"
+        },
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "fullName",
+          "location": "query"
+        },
+        {
+          "name": "state",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "streetAddress",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        },
+        {
+          "name": "zipCode",
+          "location": "query"
+        },
+        {
+          "name": "id",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Addresss",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "city",
+          "location": "query"
+        },
+        {
+          "name": "country",
+          "location": "query"
+        },
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "fullName",
+          "location": "query"
+        },
+        {
+          "name": "state",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "streetAddress",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        },
+        {
+          "name": "zipCode",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/track-order/789a-:hex",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "_id",
+          "location": "query"
+        },
+        {
+          "name": "addressId",
+          "location": "query"
+        },
+        {
+          "name": "email",
+          "location": "query"
+        },
+        {
+          "name": "eta",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "orderId",
+          "location": "query"
+        },
+        {
+          "name": "paymentId",
+          "location": "query"
+        },
+        {
+          "name": "promotionalAmount",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "hex",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/basket/:int",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "BasketItem",
+          "location": "query"
+        },
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "description",
+          "location": "query"
+        },
+        {
+          "name": "image",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        },
+        {
+          "name": "id",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Products/:int",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "d",
+          "location": "query"
+        },
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "description",
+          "location": "query"
+        },
+        {
+          "name": "image",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        },
+        {
+          "name": "id",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/products/search",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "description",
+          "location": "query"
+        },
+        {
+          "name": "image",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/user/whoami",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "email",
+          "location": "query"
+        },
+        {
+          "name": "lastLoginIp",
+          "location": "query"
+        },
+        {
+          "name": "profileImage",
+          "location": "query"
+        },
+        {
+          "name": "user",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/BasketItems/:int",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        },
+        {
+          "name": "id",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/languages",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "gauge",
+          "location": "query"
+        },
+        {
+          "name": "key",
+          "location": "query"
+        },
+        {
+          "name": "lang",
+          "location": "query"
+        },
+        {
+          "name": "shortKey",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Deliverys/:int",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "icon",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "id",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Cards/:int",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "cardNum",
+          "location": "query"
+        },
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "fullName",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "id",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Quantitys/",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Cards",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "cardNum",
+          "location": "query"
+        },
+        {
+          "name": "fullName",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/2fa/status",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "email",
+          "location": "query"
+        },
+        {
+          "name": "secret",
+          "location": "query"
+        },
+        {
+          "name": "setupToken",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Recycles/",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "err",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Deliverys",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "icon",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/admin/application-version",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "version",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/wallet/balance",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "status",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/order-history",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "status",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/image-captcha/",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha"
+      ],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "image",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/continue-code",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "continueCode",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/socket.io/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "EIO",
+          "location": "body"
+        },
+        {
+          "name": "sid",
+          "location": "body"
+        },
+        {
+          "name": "t",
+          "location": "body"
+        },
+        {
+          "name": "transport",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [
-        "description",
-        "keywords",
-        "viewport"
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/api/Users/",
+      "auth_schemes": [
+        "none"
       ],
-      "score": 5.65
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "createdAt",
+          "location": "body"
+        },
+        {
+          "name": "data",
+          "location": "body"
+        },
+        {
+          "name": "deluxeToken",
+          "location": "body"
+        },
+        {
+          "name": "email",
+          "location": "body"
+        },
+        {
+          "name": "lastLoginIp",
+          "location": "body"
+        },
+        {
+          "name": "password",
+          "location": "body"
+        },
+        {
+          "name": "passwordRepeat",
+          "location": "body"
+        },
+        {
+          "name": "profileImage",
+          "location": "body"
+        },
+        {
+          "name": "role",
+          "location": "body"
+        },
+        {
+          "name": "securityAnswer",
+          "location": "body"
+        },
+        {
+          "name": "securityQuestion",
+          "location": "body"
+        },
+        {
+          "name": "status",
+          "location": "body"
+        },
+        {
+          "name": "updatedAt",
+          "location": "body"
+        },
+        {
+          "name": "username",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "background",
+          "location": "query"
+        },
+        {
+          "name": "button",
+          "location": "query"
+        },
+        {
+          "name": "description",
+          "location": "query"
+        },
+        {
+          "name": "favicon",
+          "location": "query"
+        },
+        {
+          "name": "palette",
+          "location": "query"
+        },
+        {
+          "name": "popup",
+          "location": "query"
+        },
+        {
+          "name": "position",
+          "location": "query"
+        },
+        {
+          "name": "text",
+          "location": "query"
+        },
+        {
+          "name": "theme",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/socket.io/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "EIO",
+          "location": "query"
+        },
+        {
+          "name": "sid",
+          "location": "query"
+        },
+        {
+          "name": "t",
+          "location": "query"
+        },
+        {
+          "name": "transport",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/profile",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "description",
+          "location": "query"
+        },
+        {
+          "name": "keywords",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_token"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/api/Feedbacks/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "captcha"
+      ],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "captcha",
+          "location": "body"
+        },
+        {
+          "name": "captchaId",
+          "location": "body"
+        },
+        {
+          "name": "comment",
+          "location": "body"
+        },
+        {
+          "name": "createdAt",
+          "location": "body"
+        },
+        {
+          "name": "data",
+          "location": "body"
+        },
+        {
+          "name": "rating",
+          "location": "body"
+        },
+        {
+          "name": "status",
+          "location": "body"
+        },
+        {
+          "name": "updatedAt",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/api/SecurityAnswers/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "SecurityQuestionId",
+          "location": "body"
+        },
+        {
+          "name": "UserId",
+          "location": "body"
+        },
+        {
+          "name": "answer",
+          "location": "body"
+        },
+        {
+          "name": "createdAt",
+          "location": "body"
+        },
+        {
+          "name": "data",
+          "location": "body"
+        },
+        {
+          "name": "status",
+          "location": "body"
+        },
+        {
+          "name": "updatedAt",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/products/:int/reviews",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "_id",
+          "location": "query"
+        },
+        {
+          "name": "author",
+          "location": "query"
+        },
+        {
+          "name": "message",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "id",
+          "location": "path"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/SecurityQuestions/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "question",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Feedbacks/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "comment",
+          "location": "query"
+        },
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/captcha/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha"
+      ],
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "answer",
+          "location": "query"
+        },
+        {
+          "name": "captcha",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
     }
   ],
-  "scores": {
-    "avg": 6.7,
-    "total": 6.7,
-    "min": 2.1,
-    "max": 8.5
+  "global_observations": {
+    "session_management": "cookie",
+    "auth_flow": "form_login",
+    "needs_observation": true
   }
 }

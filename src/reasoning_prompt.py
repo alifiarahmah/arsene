@@ -14,6 +14,8 @@ Constraints / Contract:
 - No prose, no markdown, no placeholders like [URL] or <TOKEN>.
 - If data unclear → return null or [] and set needs_observation=true.
 - Downstream system expects atomic JSON, no extra text.
+
+return OK if you understand
 """
 
 # =========================
@@ -34,62 +36,31 @@ Rules:
 """
 
 STEP2_CONTEXT_USER_PROMPT = """
-Schema (Context):
-{
-  "type": "object",
-  "title": "Context",
-  "properties": {
-    "endpoints": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "method": { "type": "string", "enum": ["GET","POST","PUT","DELETE","PATCH","OPTIONS","HEAD"] },
-          "path_template": { "type": "string" },
-          "auth_schemes": { "type": "array","items": {"type":"string","enum":["cookie","jwt","oauth2","api_key_header","api_key_query","basic_auth","none"]} },
-          "roles": { "type": "array", "items": { "type": "string" } },
-          "csrf_protection": { "type": ["string","null"], "enum": ["token_in_form","double_submit_cookie","same_site_cookie","none",null] },
-          "side_effect": { "type": ["string","null"], "enum": ["read_only","state_changing","unknown",null] },
-          "anti_automation": { "type": "array", "items": {"type":"string","enum":["captcha","rate_limit","user_agent_checks","ip_blocking","csrf","none"]} },
-          "protocol": { "type": ["string","null"], "enum": ["http","https",null] },
-          "content_types": { "type": "array", "items": { "type": "string" } },
-          "parameters": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": { "type": "string" },
-                "location": { "type": "string", "enum": ["query","path","header","cookie","body"] },
-                "sample_value": { "type": ["string","null"] }
-              },
-              "required": ["name","location"]
-            }
-          },
-          "tokens_observed": { "type": "array", "items": { "type": "string" } },
-          "needs_observation": { "type": "boolean", "default": false }
-        },
-        "required": ["method","path_template","needs_observation"]
-      }
-    },
-    "global_observations": {
-      "type": "object",
-      "properties": {
-        "session_management": { "type": ["string","null"], "enum": ["cookie","jwt","url_rewrite",null] },
-        "token_lifetime_estimate": { "type": ["integer","null"] },
-        "auth_flow": { "type": ["string","null"], "enum": ["form_login","oauth2","saml","none",null] },
-        "needs_observation": { "type": "boolean", "default": false }
-      }
-    }
-  },
-  "required": ["endpoints","global_observations"]
-}
-
 Input (Parsed HAR Summary):
 <<PARSED_HAR_SUMMARY_JSON>>
 
 Instruction:
-- Output only JSON object matching schema.
-- Parameters must always include `sample_value` when concrete values are found in observed requests (e.g., path /users/1/orders/123 → userId="1", orderId="123").
+- Extract all endpoints and global observations from the summary.
+- For each endpoint include:
+  - HTTP method (GET, POST, PUT, DELETE, PATCH, OPTIONS, or HEAD).
+  - Path template (generalized with placeholders).
+  - Authentication schemes if observed (cookie, jwt, oauth2, api_key_header, api_key_query, basic_auth, none).
+  - Roles if applicable.
+  - CSRF protection mechanism if present (token_in_form, double_submit_cookie, same_site_cookie, none).
+  - Side effects (read_only, state_changing, unknown).
+  - Anti-automation mechanisms detected (captcha, rate_limit, user_agent_checks, ip_blocking, csrf, none).
+  - Protocol (http or https).
+  - Content types accepted/responses.
+  - Parameters with name, location (query, path, header, cookie, body), and sample_value if concrete values were observed.
+  - Tokens observed.
+  - needs_observation: true if more traffic capture is required.
+- For global observations include:
+  - Session management method (cookie, jwt, url_rewrite, none).
+  - Estimated token lifetime if observed (integer, in seconds).
+  - Authentication flow (form_login, oauth2, saml, none).
+  - needs_observation: true if more traffic capture is required.
+- Always output only a single valid JSON object matching the expected structure.
+- Ensure `sample_value` is populated with concrete values from requests/responses whenever available (example: path `/users/1/orders/123` → userId="1", orderId="123").
 """
 
 # =========================
@@ -113,41 +84,6 @@ Rules:
 """
 
 STEP3_VECTORS_USER_PROMPT = """
-Schema (AttackVectors):
-{
-  "type": "object",
-  "title": "AttackVectors",
-  "properties": {
-    "vectors": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "method": { "type": "string" },
-          "endpoint": { "type": "string" },
-          "parameter": { "type": ["string","null"] },
-          "param_location": { "type": ["string","null"], "enum": ["query","path","header","cookie","body",null] },
-          "sample_value": { "type": ["string","null"] },
-          "category": { "type": "string", "enum": [
-            "injection_sql","injection_nosql","injection_xpath","xss_reflected","xss_stored","xss_dom",
-            "ssrf","command_injection","file_inclusion","deserialization","insecure_direct_object_reference",
-            "authz_bypass","authn_bypass","csrf","open_redirect","xxe",
-            "sensitive_data_exposure","business_logic","others"
-          ] },
-          "expected_signals": { "type": "array", "items": { "type": "string", "enum": [
-            "status_code_change","response_length_diff","error_signature",
-            "reflected_input","timing_variation","out_of_band_call",
-            "header_injection","token_reuse_failure","state_change_observed","none"
-          ] } },
-          "needs_observation": { "type": "boolean" }
-        },
-        "required": ["endpoint","parameter","param_location","category","expected_signals","needs_observation"]
-      }
-    }
-  },
-  "required": ["vectors"]
-}
-
 Input Context:
 <<CONTEXT_JSON>>
 
@@ -165,29 +101,41 @@ Instruction:
 # STEP 4: Identify Vulnerabilities (from vectors)
 # =========================
 
-STEP4_VULNS_SYSTEM_PROMPT = """
-You are converting attack vectors into concrete vulnerability hypotheses.
-Constraints:
-- Output only JSON conforming to VulnHypotheses schema.
-- Define measurable oracles using Signal enum; add numeric thresholds where relevant (e.g., timing_ms, body_length_delta_pct).
-- Set safety.idempotent_required=true by default; destructive_ok=false unless explicitly allowed.
-- Include preconditions from Context (e.g., auth_context:role, CSRF token needed).
-- Use pass_logic "any" unless a strict confirm requires "all".
-- No payloads at this step.
+STEP4_VULNS_SYSTEM_PROMPT = """You are converting attack vectors into concrete vulnerability hypotheses with measurable detection criteria.
 
-Output: VulnHypotheses
+Your task:
+1. Transform each attack vector into a testable hypothesis with specific oracles
+2. Define measurable detection thresholds using numeric values where applicable
+3. Set appropriate safety constraints and preconditions
+4. Assign confidence and priority scores
+
+Constraints:
+- Output ONLY valid JSON conforming to VulnHypotheses schema
+- Use Signal enum values for oracles (e.g., "reflected_input", "timing_anomaly")
+- Set numeric thresholds in oracle.threshold (e.g., {"timing_ms": 5000, "body_length_delta_pct": 30})
+- Default safety.idempotent_required=true, destructive_ok=false unless explicitly safe
+- Include preconditions from context (auth_context, csrf_token requirements)
+- Use pass_logic="any" unless strict confirmation needs "all" signals
+- NO payloads in this step - only detection criteria
+
+Signal threshold examples:
+- timing_anomaly: {"timing_ms": 5000}
+- response_length_diff: {"body_length_delta_pct": 30}
+- status_code_change: {"expected_codes": [200, 404]}
 """
 
-STEP4_VULNS_USER_PROMPT = """
-Schemas & Enums:
-<<SCHEMAS_AND_ENUMS_JSON>>
+STEP4_VULNS_USER_PROMPT = """Convert these attack vectors into vulnerability hypotheses with measurable detection oracles.
 
-Inputs:
-- AttackVectors:
+Input AttackVectors:
 <<ATTACK_VECTORS_JSON>>
 
-Produce a JSON object matching the VulnHypotheses schema only.
-"""
+Requirements:
+- Each hypothesis must have specific oracles with thresholds
+- Set confidence (0.0-1.0) and priority (1-5) based on attack vector reliability
+- Include preconditions if authentication/CSRF tokens are needed
+- Use appropriate safety settings
+
+Output: JSON object matching VulnHypotheses schema exactly."""
 
 # =========================
 # STEP 5: Test Case Generation (from vuln hypotheses)
