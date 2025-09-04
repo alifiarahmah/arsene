@@ -1,0 +1,134 @@
+{
+  "hypotheses": [
+    {
+      "id": "H1-root-query-reflection",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "config",
+      "param_location": "query",
+      "category": "xss_reflection",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Reflected content appearing in HTML response when injecting benign marker into 'config' parameter"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.25,
+      "priority": 2
+    },
+    {
+      "id": "H2-root-query-reflection-description",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "description",
+      "param_location": "query",
+      "category": "xss_reflection",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Reflected content appearing in HTML response when injecting benign marker into 'description' parameter"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.25,
+      "priority": 2
+    },
+    {
+      "id": "H3-root-query-reflection-theme-color",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "theme-color",
+      "param_location": "query",
+      "category": "xss_reflection",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Reflected content appearing in HTML response when injecting benign marker into 'theme-color' parameter"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.2,
+      "priority": 2
+    },
+    {
+      "id": "H4-root-query-reflection-viewport",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "viewport",
+      "param_location": "query",
+      "category": "xss_reflection",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Reflected content appearing in HTML response when injecting benign marker into 'viewport' parameter"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.2,
+      "priority": 2
+    },
+    {
+      "id": "H5-root-session-cookie-predictable",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "connect.sid",
+      "param_location": "cookie",
+      "category": "session_management_weakness",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Observation of session cookie in responses and potential reuse across requests"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "requires_valid_connect.sid_cookie"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.4,
+      "priority": 3
+    }
+  ],
+  "metadata": [
+    {
+      "key": "observed_hosts",
+      "value": "brokencrystals.com"
+    },
+    {
+      "key": "page_content_type",
+      "value": "text/html"
+    },
+    {
+      "key": "needs_observation",
+      "value": "true"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path_template": "/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html"
+      ],
+      "parameters": [
+        {
+          "name": "config",
+          "location": "query"
+        },
+        {
+          "name": "description",
+          "location": "query"
+        },
+        {
+          "name": "theme-color",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        },
+        {
+          "name": "connect.sid",
+          "location": "cookie",
+          "sample_value": "auth_cookie_connect.sid"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_connect.sid"
+      ],
+      "needs_observation": true
+    }
+  ],
+  "global_observations": {
+    "session_management": "cookie",
+    "auth_flow": "none",
+    "needs_observation": true
+  }
+}

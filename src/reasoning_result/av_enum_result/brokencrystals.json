@@ -1,0 +1,65 @@
+{
+  "vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "config",
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "description",
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "theme-color",
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "viewport",
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "connect.sid",
+      "param_location": "cookie",
+      "sample_value": "auth_cookie_connect.sid",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "token_reuse_failure",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    }
+  ]
+}
