@@ -45,6 +45,7 @@
   ],
   "global_observations": {
     "session_management": "cookie",
+    "auth_flow": "none",
     "needs_observation": true
   }
 }

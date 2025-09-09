@@ -10,7 +10,8 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "response_length_diff",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -24,7 +25,8 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "response_length_diff",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -38,7 +40,8 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
+        "response_length_diff",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -52,21 +55,8 @@
       "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": [
-        "connect.sid"
-      ],
-      "param_location": "cookie",
-      "category": "authn_bypass",
-      "expected_signals": [
-        "token_reuse_failure",
-        "state_change_observed"
+        "response_length_diff",
+        "error_signature"
       ],
       "needs_observation": true
     },
@@ -82,8 +72,22 @@
       "param_location": "query",
       "category": "business_logic",
       "expected_signals": [
-        "response_length_diff",
+        "state_change_observed",
         "none"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "connect.sid"
+      ],
+      "param_location": "cookie",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "token_reuse_failure",
+        "status_code_change"
       ],
       "needs_observation": true
     }

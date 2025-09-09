@@ -1,7 +1,7 @@
 {
   "hypotheses": [
     {
-      "id": "hyp-1",
+      "id": "H1-GET-/-query-config-xss",
       "method": "GET",
       "endpoint": "/",
       "parameters": [
@@ -14,33 +14,28 @@
       "oracles": [
         {
           "signal": "reflected_input",
-          "description": "Search for exact reflection of injected config value in HTML response (case-sensitive)."
+          "threshold": {},
+          "description": "Reflected input of injected payload in HTML response body"
         },
         {
           "signal": "response_length_diff",
           "threshold": {
             "body_length_delta_pct": 20.0
           },
-          "description": "Significant body length change when injecting unique marker into config query parameter."
+          "description": "Significant body length change when injecting payload vs baseline"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "cookie_authenticated (connect.sid)"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
         "max_requests": 50
       },
-      "confidence": 0.35,
+      "confidence": 0.45,
       "priority": 3
     },
     {
-      "id": "hyp-2",
+      "id": "H2-GET-/-query-description-xss",
       "method": "GET",
       "endpoint": "/",
       "parameters": [
@@ -53,33 +48,28 @@
       "oracles": [
         {
           "signal": "reflected_input",
-          "description": "Look for raw inclusion of description value in HTML response."
+          "threshold": {},
+          "description": "Reflected input of injected payload in HTML response body"
         },
         {
           "signal": "response_length_diff",
           "threshold": {
-            "body_length_delta_pct": 15.0
+            "body_length_delta_pct": 20.0
           },
-          "description": "Body length changes when altering description payload."
+          "description": "Significant body length change when injecting payload vs baseline"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "cookie_authenticated (connect.sid)"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
         "max_requests": 50
       },
-      "confidence": 0.3,
+      "confidence": 0.45,
       "priority": 3
     },
     {
-      "id": "hyp-3",
+      "id": "H3-GET-/-query-theme-color-xss",
       "method": "GET",
       "endpoint": "/",
       "parameters": [
@@ -88,37 +78,32 @@
       "param_locations": [
         "query"
       ],
-      "category": "css_injection",
+      "category": "reflected_xss",
       "oracles": [
         {
           "signal": "reflected_input",
-          "description": "Check for inclusion of theme-color value in style or meta tags."
+          "threshold": {},
+          "description": "Reflected input of injected payload in HTML response body"
         },
         {
           "signal": "response_length_diff",
           "threshold": {
-            "body_length_delta_pct": 10.0
+            "body_length_delta_pct": 20.0
           },
-          "description": "Detectable body change when setting theme-color to unique value."
+          "description": "Significant body length change when injecting payload vs baseline"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "cookie_authenticated (connect.sid)"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 30
+        "max_requests": 50
       },
-      "confidence": 0.25,
+      "confidence": 0.35,
       "priority": 2
     },
     {
-      "id": "hyp-4",
+      "id": "H4-GET-/-query-viewport-xss",
       "method": "GET",
       "endpoint": "/",
       "parameters": [
@@ -127,67 +112,63 @@
       "param_locations": [
         "query"
       ],
-      "category": "html_injection",
+      "category": "reflected_xss",
       "oracles": [
         {
           "signal": "reflected_input",
-          "description": "Observe viewport parameter reflected in meta viewport tag or HTML."
+          "threshold": {},
+          "description": "Reflected input of injected payload in HTML response body"
         },
         {
           "signal": "response_length_diff",
           "threshold": {
-            "body_length_delta_pct": 10.0
+            "body_length_delta_pct": 20.0
           },
-          "description": "Response size changes when modifying viewport parameter."
+          "description": "Significant body length change when injecting payload vs baseline"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "cookie_authenticated (connect.sid)"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 30
+        "max_requests": 50
       },
-      "confidence": 0.2,
+      "confidence": 0.35,
       "priority": 2
     },
     {
-      "id": "hyp-5",
+      "id": "H5-GET-/-cookie-connect.sid-auth-bypass-session-fixation",
       "method": "GET",
       "endpoint": "/",
       "parameters": [
-        "config",
-        "description",
-        "theme-color",
-        "viewport"
+        "connect.sid"
       ],
       "param_locations": [
-        "query",
-        "query",
-        "query",
-        "query"
+        "cookie"
       ],
-      "category": "dom_xss_composite",
+      "category": "authentication_bypassed",
       "oracles": [
         {
-          "signal": "xss_payload_executed",
-          "description": "Detect execution of injected payloads when multiple query params are manipulated together (DOM context)."
+          "signal": "authentication_bypassed",
+          "description": "Access granted or session accepted when altering or replaying connect.sid cookie"
         },
         {
-          "signal": "reflected_input",
-          "description": "Multiple parameters reflected into the same DOM-sourced sink."
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Different status codes when using valid vs invalid or missing cookie"
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
           "key": "auth_context",
-          "value": "cookie_authenticated (connect.sid)"
+          "value": "requires valid session cookie"
         }
       ],
       "safety": {
@@ -195,21 +176,29 @@
         "destructive_ok": false,
         "max_requests": 20
       },
-      "confidence": 0.2,
-      "priority": 3
+      "confidence": 0.5,
+      "priority": 4
     }
   ],
   "metadata": [
     {
-      "key": "observed_tokens",
-      "value": "auth_cookie_connect.sid"
+      "key": "observed_host",
+      "value": "brokencrystals.com"
+    },
+    {
+      "key": "protocol",
+      "value": "https"
+    },
+    {
+      "key": "content_types",
+      "value": "text/html"
     },
     {
       "key": "session_management",
       "value": "cookie"
     },
     {
-      "key": "global_needs_observation",
+      "key": "needs_observation",
       "value": "true"
     }
   ]

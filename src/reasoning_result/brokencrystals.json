@@ -1,8 +1,8 @@
 {
   "test_cases": [
     {
-      "id": "tc-hyp-1",
-      "hypothesis_id": "hyp-1",
+      "id": "TC-H1-GET-/-config-xss",
+      "hypothesis_id": "H1-GET-/-query-config-xss",
       "base_url": "https://brokencrystals.com",
       "method": "GET",
       "endpoint": "/",
@@ -13,36 +13,49 @@
           "payloads": [
             {
               "location": "query",
-              "value": "config=baseline"
+              "value": "test"
             }
           ],
-          "description": "Baseline benign request with harmless config value"
+          "description": "Baseline benign value"
         },
         {
           "tier": "probe",
           "payloads": [
             {
               "location": "query",
-              "value": "config=<INJECT-REFLECT-TEST-12345>"
+              "value": "<script>/*probe*/</script>"
             }
           ],
-          "description": "Probe for reflection of unique marker in response"
+          "description": "Probe XSS payload with harmless script tag for reflection detection",
+          "content_type": "text/html"
         },
         {
           "tier": "exploit",
           "payloads": [
             {
               "location": "query",
-              "value": "config=<script>/*xss*/alert(1)</script>"
+              "value": "\"><img src=x onerror=console.log(1)>"
             }
           ],
-          "description": "XSS-style payload to test for HTML/script reflection/execution in controlled environment"
+          "description": "More aggressive payload to trigger reflection in attribute context",
+          "content_type": "text/html"
+        },
+        {
+          "tier": "destructive",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"><svg onload=location.href='about:blank'>"
+            }
+          ],
+          "description": "Destructive payload (not to be run without explicit permission)",
+          "content_type": "text/html"
         }
       ],
       "prerequisites": [
         {
-          "type": "login",
-          "description": "Authenticated session required (connect.sid cookie)"
+          "type": "session_state",
+          "description": "Valid authenticated session cookie may be required"
         }
       ],
       "oracle_rules": [
@@ -53,11 +66,11 @@
         },
         {
           "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / len(baseline.body) > 0.20",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.20",
           "threshold": {
             "body_length_delta_pct": 20.0
           },
-          "weight": 0.8
+          "weight": 0.6
         }
       ],
       "pass_logic": "any",
@@ -67,18 +80,18 @@
         "max_requests": 50
       },
       "max_retries": 2,
-      "delay_between_requests": 1.5,
-      "notes": "Include baseline before probes. Respect max_requests and rate limits. Use authenticated cookie (connect.sid).",
+      "delay_between_requests": 1.0,
+      "notes": "Start with benign baseline. Throttle requests to avoid rate limits.",
       "tags": [
         "xss",
         "reflected",
-        "authenticated"
+        "query"
       ],
       "estimated_duration": 60
     },
     {
-      "id": "tc-hyp-2",
-      "hypothesis_id": "hyp-2",
+      "id": "TC-H2-GET-/-description-xss",
+      "hypothesis_id": "H2-GET-/-query-description-xss",
       "base_url": "https://brokencrystals.com",
       "method": "GET",
       "endpoint": "/",
@@ -89,36 +102,49 @@
           "payloads": [
             {
               "location": "query",
-              "value": "description=baseline"
+              "value": "test"
             }
           ],
-          "description": "Baseline benign request with harmless description value"
+          "description": "Baseline benign value"
         },
         {
           "tier": "probe",
           "payloads": [
             {
               "location": "query",
-              "value": "description=<INJECT-REFLECT-DSC-6789>"
+              "value": "<script>/*probe*/</script>"
             }
           ],
-          "description": "Probe for reflection of unique marker in HTML"
+          "description": "Probe XSS payload for reflection",
+          "content_type": "text/html"
         },
         {
           "tier": "exploit",
           "payloads": [
             {
               "location": "query",
-              "value": "description=\\\"><script>/*xss*/alert(2)</script>"
+              "value": "'><img src=x onerror=console.log(1)>"
             }
           ],
-          "description": "Attempt script injection to detect raw inclusion in HTML context"
+          "description": "Attribute/context probing payload",
+          "content_type": "text/html"
+        },
+        {
+          "tier": "destructive",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "'><svg onload=location.href='about:blank'>"
+            }
+          ],
+          "description": "Destructive payload (do not run)",
+          "content_type": "text/html"
         }
       ],
       "prerequisites": [
         {
-          "type": "login",
-          "description": "Authenticated session required (connect.sid cookie)"
+          "type": "session_state",
+          "description": "Valid authenticated session cookie may be required"
         }
       ],
       "oracle_rules": [
@@ -129,11 +155,11 @@
         },
         {
           "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / len(baseline.body) > 0.15",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.20",
           "threshold": {
-            "body_length_delta_pct": 15.0
+            "body_length_delta_pct": 20.0
           },
-          "weight": 0.7
+          "weight": 0.6
         }
       ],
       "pass_logic": "any",
@@ -143,18 +169,18 @@
         "max_requests": 50
       },
       "max_retries": 2,
-      "delay_between_requests": 1.5,
-      "notes": "Perform baseline then probe. Maintain authenticated cookie. Monitor for reflected marker. Rate-limit probes to avoid triggering protections.",
+      "delay_between_requests": 1.0,
+      "notes": "Throttle requests; compare against baseline.",
       "tags": [
         "xss",
         "reflected",
-        "authenticated"
+        "query"
       ],
       "estimated_duration": 60
     },
     {
-      "id": "tc-hyp-3",
-      "hypothesis_id": "hyp-3",
+      "id": "TC-H3-GET-/-theme-color-xss",
+      "hypothesis_id": "H3-GET-/-query-theme-color-xss",
       "base_url": "https://brokencrystals.com",
       "method": "GET",
       "endpoint": "/",
@@ -165,49 +191,62 @@
           "payloads": [
             {
               "location": "query",
-              "value": "theme-color=baseline"
+              "value": "blue"
             }
           ],
-          "description": "Baseline benign request for theme-color"
+          "description": "Baseline benign theme value"
         },
         {
           "tier": "probe",
           "payloads": [
             {
               "location": "query",
-              "value": "theme-color=<INJECT-THEME-0001>"
+              "value": "<svg><text>probe</text></svg>"
             }
           ],
-          "description": "Probe for inclusion of theme-color value in style/meta tags"
+          "description": "Probe for reflection in HTML/SVG contexts",
+          "content_type": "text/html"
         },
         {
           "tier": "exploit",
           "payloads": [
             {
               "location": "query",
-              "value": "theme-color=);body{background:url('javascript:alert(3)')}"
+              "value": "\" onload=console.log(1) x=\""
             }
           ],
-          "description": "Probe for CSS/attribute injection; non-destructive attempt to inject CSS payload"
+          "description": "Payload targeting attribute injection",
+          "content_type": "text/html"
+        },
+        {
+          "tier": "destructive",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\" onload=location.href='about:blank' x=\""
+            }
+          ],
+          "description": "Destructive payload (do not run)",
+          "content_type": "text/html"
         }
       ],
       "prerequisites": [
         {
-          "type": "login",
-          "description": "Authenticated session required (connect.sid cookie)"
+          "type": "session_state",
+          "description": "Valid authenticated session cookie may be required"
         }
       ],
       "oracle_rules": [
         {
           "signal": "reflected_input",
           "condition": "payload_value in response.body",
-          "weight": 0.9
+          "weight": 1.0
         },
         {
           "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / len(baseline.body) > 0.10",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.20",
           "threshold": {
-            "body_length_delta_pct": 10.0
+            "body_length_delta_pct": 20.0
           },
           "weight": 0.6
         }
@@ -216,20 +255,21 @@
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 30
+        "max_requests": 50
       },
       "max_retries": 2,
-      "delay_between_requests": 1.5,
-      "notes": "Check for insertion into style/meta tags. Avoid payloads that trigger external callbacks. Use authenticated session.",
+      "delay_between_requests": 1.0,
+      "notes": "Use conservative probes for UI-related parameter.",
       "tags": [
-        "css_injection",
-        "authenticated"
+        "xss",
+        "reflected",
+        "query"
       ],
-      "estimated_duration": 45
+      "estimated_duration": 60
     },
     {
-      "id": "tc-hyp-4",
-      "hypothesis_id": "hyp-4",
+      "id": "TC-H4-GET-/-viewport-xss",
+      "hypothesis_id": "H4-GET-/-query-viewport-xss",
       "base_url": "https://brokencrystals.com",
       "method": "GET",
       "endpoint": "/",
@@ -240,159 +280,144 @@
           "payloads": [
             {
               "location": "query",
-              "value": "viewport=width=device-width,initial-scale=1"
+              "value": "width=device-width"
             }
           ],
-          "description": "Baseline benign viewport parameter"
+          "description": "Baseline benign viewport value"
         },
         {
           "tier": "probe",
           "payloads": [
             {
               "location": "query",
-              "value": "viewport=<INJECT-VP-4321>"
+              "value": "<meta name=viewport content=\"probe\">"
             }
           ],
-          "description": "Probe for reflection in meta viewport or HTML"
+          "description": "Probe for reflection in meta or head contexts",
+          "content_type": "text/html"
         },
         {
           "tier": "exploit",
           "payloads": [
             {
               "location": "query",
-              "value": "viewport=\\\">'<script>/*vp*/alert(4)</script>"
+              "value": "\"><img src=x onerror=console.log(1)>"
             }
           ],
-          "description": "Attempt harmless script injection to test HTML injection sinks"
+          "description": "Attribute/context exploitation attempt",
+          "content_type": "text/html"
+        },
+        {
+          "tier": "destructive",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"><svg onload=location.href='about:blank'>"
+            }
+          ],
+          "description": "Destructive payload (do not run)",
+          "content_type": "text/html"
         }
       ],
       "prerequisites": [
         {
-          "type": "login",
-          "description": "Authenticated session required (connect.sid cookie)"
+          "type": "session_state",
+          "description": "Valid authenticated session cookie may be required"
         }
       ],
       "oracle_rules": [
         {
           "signal": "reflected_input",
           "condition": "payload_value in response.body",
-          "weight": 0.9
+          "weight": 1.0
         },
         {
           "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / len(baseline.body) > 0.10",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.20",
           "threshold": {
-            "body_length_delta_pct": 10.0
+            "body_length_delta_pct": 20.0
           },
-          "weight": 0.5
+          "weight": 0.6
         }
       ],
       "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 30
+        "max_requests": 50
       },
       "max_retries": 2,
-      "delay_between_requests": 1.5,
-      "notes": "Baseline then probes. Watch meta viewport tags. Use authenticated session cookie.",
+      "delay_between_requests": 1.0,
+      "notes": "Meta tag contexts may sanitize differently; start with benign then probe.",
       "tags": [
-        "html_injection",
-        "authenticated"
+        "xss",
+        "reflected",
+        "query"
       ],
-      "estimated_duration": 45
+      "estimated_duration": 60
     },
     {
-      "id": "tc-hyp-5",
-      "hypothesis_id": "hyp-5",
+      "id": "TC-H5-GET-/-cookie-connect.sid-auth-bypass",
+      "hypothesis_id": "H5-GET-/-cookie-connect.sid-auth-bypass-session-fixation",
       "base_url": "https://brokencrystals.com",
       "method": "GET",
       "endpoint": "/",
-      "parameter": "config,description,theme-color,viewport",
+      "parameter": "connect.sid",
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
-              "location": "query",
-              "value": "config=baseline"
-            },
-            {
-              "location": "query",
-              "value": "description=baseline"
-            },
-            {
-              "location": "query",
-              "value": "theme-color=baseline"
-            },
-            {
-              "location": "query",
-              "value": "viewport=width=device-width"
+              "location": "cookie",
+              "value": ""
             }
           ],
-          "description": "Baseline with multiple benign params"
+          "description": "Baseline using current valid session cookie"
         },
         {
           "tier": "probe",
           "payloads": [
             {
-              "location": "query",
-              "value": "config=<DOM-CHK-AAA>"
-            },
-            {
-              "location": "query",
-              "value": "description=<DOM-CHK-BBB>"
-            },
-            {
-              "location": "query",
-              "value": "theme-color=<DOM-CHK-CCC>"
-            },
-            {
-              "location": "query",
-              "value": "viewport=<DOM-CHK-DDD>"
+              "location": "cookie",
+              "value": "replace_with_invalid_session_token"
             }
           ],
-          "description": "Probe multiple params for DOM sinks and combined reflection"
+          "description": "Probe by replaying an invalid or altered cookie to observe authentication handling"
         },
         {
           "tier": "exploit",
           "payloads": [
             {
-              "location": "query",
-              "value": "config=\" + document.domain + \""
-            },
-            {
-              "location": "query",
-              "value": "description=\\\"><img src=x onerror=console.log('dom')>"
-            },
-            {
-              "location": "query",
-              "value": "theme-color=');/*css*/body{background:red}/*"
-            },
-            {
-              "location": "query",
-              "value": "viewport=\\\">'<script>/*dom*/alert(5)</script>"
+              "location": "cookie",
+              "value": "replay_observed_cookie_value"
             }
           ],
-          "description": "Combined payloads aiming to trigger DOM-sourced XSS when multiple params are used together; non-destructive variants"
+          "description": "Replay of observed valid session cookie to test session fixation/replay handling"
         }
       ],
       "prerequisites": [
         {
           "type": "login",
-          "description": "Authenticated session required (connect.sid cookie)"
+          "description": "Have a valid authenticated session cookie (connect.sid) available for baseline and replay tests"
         }
       ],
       "oracle_rules": [
         {
-          "signal": "xss_payload_executed",
-          "condition": "javascript_executed_in_browser_context == true",
+          "signal": "authentication_bypassed",
+          "condition": "response.status_code == 200 and resource_accessible_without_expected_privileges",
           "weight": 1.0
         },
         {
-          "signal": "reflected_input",
-          "condition": "any(payload_value in response.body for payload_value in injected_values)",
-          "weight": 0.9
+          "signal": "status_code_change",
+          "condition": "response.status_code not in baseline.status_code",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.7
         }
       ],
       "pass_logic": "any",
@@ -401,53 +426,52 @@
         "destructive_ok": false,
         "max_requests": 20
       },
-      "max_retries": 2,
-      "delay_between_requests": 2.0,
-      "notes": "Composite DOM tests require browser-context validation (headless browser). Start with benign baseline. Use authenticated cookie. Limit combined attempts to avoid rate limits or triggering protections.",
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Do not brute-force session tokens. Use single replay and one invalid test. Respect rate limits.",
       "tags": [
-        "dom_xss",
-        "composite",
-        "authenticated"
+        "auth",
+        "session",
+        "cookie"
       ],
-      "estimated_duration": 180
+      "estimated_duration": 30
     }
   ],
   "global_prerequisites": [
     {
-      "type": "login",
-      "description": "Authenticate to obtain connect.sid cookie for session",
-      "bind_to": "connect.sid"
-    },
-    {
       "type": "session_state",
-      "description": "Maintain session cookies between requests"
+      "description": "Session cookie management; ensure ability to set/modify connect.sid cookie"
     }
   ],
   "execution_hints": [
     {
       "key": "rate_limit",
-      "value": "pace requests: delay_between_requests; adhere to max_requests per hypothesis"
+      "value": "pace requests to avoid triggering rate limits; wait >=1s between requests"
     },
     {
-      "key": "browser_validation",
-      "value": "Composite DOM tests require headless browser to detect xss_payload_executed"
-    },
-    {
-      "key": "auth",
-      "value": "Include connect.sid cookie in requests; perform login prerequisite first"
+      "key": "baseline_requests",
+      "value": "capture baseline response body/time using benign payload before probe"
     }
   ],
   "metadata": [
     {
-      "key": "observed_tokens",
-      "value": "auth_cookie_connect.sid"
+      "key": "observed_host",
+      "value": "brokencrystals.com"
+    },
+    {
+      "key": "protocol",
+      "value": "https"
+    },
+    {
+      "key": "content_types",
+      "value": "text/html"
     },
     {
       "key": "session_management",
       "value": "cookie"
     },
     {
-      "key": "global_needs_observation",
+      "key": "needs_observation",
       "value": "true"
     }
   ]
