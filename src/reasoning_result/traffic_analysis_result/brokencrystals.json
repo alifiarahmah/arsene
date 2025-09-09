@@ -7,6 +7,7 @@
         "cookie"
       ],
       "roles": [],
+      "csrf_protection": "same_site_cookie",
       "side_effect": "read_only",
       "anti_automation": [
         "none"
@@ -18,34 +19,523 @@
       "parameters": [
         {
           "name": "config",
-          "location": "query"
+          "location": "path",
+          "sample_value": "/api/config"
         },
         {
           "name": "description",
-          "location": "query"
+          "location": "header",
+          "sample_value": "Broken Crystals"
         },
         {
           "name": "theme-color",
-          "location": "query"
+          "location": "header",
+          "sample_value": "#ffffff"
         },
         {
           "name": "viewport",
-          "location": "query"
-        },
-        {
-          "name": "connect.sid",
-          "location": "cookie"
+          "location": "header",
+          "sample_value": "width=device-width, initial-scale=1"
         }
       ],
       "tokens_observed": [
-        "auth_cookie_connect.sid"
+        "connect.sid"
       ],
-      "needs_observation": true
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/css"
+      ],
+      "parameters": [
+        {
+          "name": "family",
+          "location": "query",
+          "sample_value": "Open Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        }
+      ],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/bootstrap/css/bootstrap.min.css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/css"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/icofont/icofont.min.css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/css"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/venobox/venobox.css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/css"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/boxicons/css/boxicons.min.css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/css"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/aos/aos.css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/css"
+      ],
+      "parameters": [
+        {
+          "name": "100",
+          "location": "query",
+          "sample_value": "100"
+        },
+        {
+          "name": "150",
+          "location": "query",
+          "sample_value": "150"
+        },
+        {
+          "name": "200",
+          "location": "query",
+          "sample_value": "200"
+        },
+        {
+          "name": "250",
+          "location": "query",
+          "sample_value": "250"
+        },
+        {
+          "name": "300",
+          "location": "query",
+          "sample_value": "300"
+        },
+        {
+          "name": "50",
+          "location": "query",
+          "sample_value": "50"
+        }
+      ],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/vendor/slick/slick.css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/css"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/vendor/wow/animate.css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/css"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/jquery/jquery.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/bootstrap/js/bootstrap.bundle.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/jquery.easing/jquery.easing.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/counterup/counterup.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/venobox/venobox.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/aos/aos.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/vendor/wow/wow.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/vendor/counter-up/jquery.waypoints.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [
+        {
+          "name": "horizontal",
+          "location": "query",
+          "sample_value": "horizontal"
+        }
+      ],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/vendor/counter-up/jquery.counterup.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/vendor/slick/slick.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/index-CHOz83TQ.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/maps/embed",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html"
+      ],
+      "parameters": [
+        {
+          "name": "pb",
+          "location": "query",
+          "sample_value": "!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0xb89d1fe6bc499443!2sDowntown Conference Center!5e0!3m2!1smk!2sbg!4v1539943755621"
+        }
+      ],
+      "tokens_observed": [
+        "connect.sid"
+      ],
+      "needs_observation": false
     }
   ],
   "global_observations": {
     "session_management": "cookie",
     "auth_flow": "none",
-    "needs_observation": true
+    "needs_observation": false
   }
 }

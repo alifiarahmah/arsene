@@ -1,174 +1,136 @@
 {
   "hypotheses": [
     {
-      "id": "H1-GET-/-query-config-xss",
+      "id": "H1-GET-/-config-path-traversal-or-ssrf",
       "method": "GET",
       "endpoint": "/",
       "parameters": [
-        "config"
-      ],
-      "param_locations": [
-        "query"
-      ],
-      "category": "reflected_xss",
-      "oracles": [
-        {
-          "signal": "reflected_input",
-          "threshold": {},
-          "description": "Reflected input of injected payload in HTML response body"
-        },
-        {
-          "signal": "response_length_diff",
-          "threshold": {
-            "body_length_delta_pct": 20.0
-          },
-          "description": "Significant body length change when injecting payload vs baseline"
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 50
-      },
-      "confidence": 0.45,
-      "priority": 3
-    },
-    {
-      "id": "H2-GET-/-query-description-xss",
-      "method": "GET",
-      "endpoint": "/",
-      "parameters": [
+        "config",
         "description"
       ],
       "param_locations": [
-        "query"
+        "path",
+        "header"
       ],
-      "category": "reflected_xss",
+      "category": "server_side_inclusion_or_ssrf",
       "oracles": [
-        {
-          "signal": "reflected_input",
-          "threshold": {},
-          "description": "Reflected input of injected payload in HTML response body"
-        },
-        {
-          "signal": "response_length_diff",
-          "threshold": {
-            "body_length_delta_pct": 20.0
-          },
-          "description": "Significant body length change when injecting payload vs baseline"
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 50
-      },
-      "confidence": 0.45,
-      "priority": 3
-    },
-    {
-      "id": "H3-GET-/-query-theme-color-xss",
-      "method": "GET",
-      "endpoint": "/",
-      "parameters": [
-        "theme-color"
-      ],
-      "param_locations": [
-        "query"
-      ],
-      "category": "reflected_xss",
-      "oracles": [
-        {
-          "signal": "reflected_input",
-          "threshold": {},
-          "description": "Reflected input of injected payload in HTML response body"
-        },
-        {
-          "signal": "response_length_diff",
-          "threshold": {
-            "body_length_delta_pct": 20.0
-          },
-          "description": "Significant body length change when injecting payload vs baseline"
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 50
-      },
-      "confidence": 0.35,
-      "priority": 2
-    },
-    {
-      "id": "H4-GET-/-query-viewport-xss",
-      "method": "GET",
-      "endpoint": "/",
-      "parameters": [
-        "viewport"
-      ],
-      "param_locations": [
-        "query"
-      ],
-      "category": "reflected_xss",
-      "oracles": [
-        {
-          "signal": "reflected_input",
-          "threshold": {},
-          "description": "Reflected input of injected payload in HTML response body"
-        },
-        {
-          "signal": "response_length_diff",
-          "threshold": {
-            "body_length_delta_pct": 20.0
-          },
-          "description": "Significant body length change when injecting payload vs baseline"
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 50
-      },
-      "confidence": 0.35,
-      "priority": 2
-    },
-    {
-      "id": "H5-GET-/-cookie-connect.sid-auth-bypass-session-fixation",
-      "method": "GET",
-      "endpoint": "/",
-      "parameters": [
-        "connect.sid"
-      ],
-      "param_locations": [
-        "cookie"
-      ],
-      "category": "authentication_bypassed",
-      "oracles": [
-        {
-          "signal": "authentication_bypassed",
-          "description": "Access granted or session accepted when altering or replaying connect.sid cookie"
-        },
         {
           "signal": "status_code_change",
           "threshold": {
             "expected_codes": [
               200,
-              401,
-              403
+              400,
+              500
             ]
           },
-          "description": "Different status codes when using valid vs invalid or missing cookie"
+          "description": "Detect unexpected errors or different status when fetching different config paths"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Large change in body length may indicate inclusion or remote fetch"
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
-          "key": "auth_context",
-          "value": "requires valid session cookie"
+          "key": "auth_cookie",
+          "value": "connect.sid present"
+        },
+        {
+          "key": "config_path_exists",
+          "value": "/api/config observed in path parameter"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "H2-GET-/css-font-family-injection",
+      "method": "GET",
+      "endpoint": "/css",
+      "parameters": [
+        "family"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "resource_injection",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Query family value reflected in CSS response or URLs"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Different font family values change response content length"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_cookie",
+          "value": "connect.sid present"
+        },
+        {
+          "key": "query_param_observed",
+          "value": "family has long font list"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "H3-GET-/assets/vendor/aos/aos.css-query-params-reflection",
+      "method": "GET",
+      "endpoint": "/assets/vendor/aos/aos.css",
+      "parameters": [
+        "50",
+        "100",
+        "150",
+        "200",
+        "250",
+        "300"
+      ],
+      "param_locations": [
+        "query",
+        "query",
+        "query",
+        "query",
+        "query",
+        "query"
+      ],
+      "category": "parameter_reflection",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Numeric query params reflected into response (CSS)"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_cookie",
+          "value": "connect.sid present"
+        },
+        {
+          "key": "numeric_query_params",
+          "value": "observed in request"
         }
       ],
       "safety": {
@@ -176,30 +138,134 @@
         "destructive_ok": false,
         "max_requests": 20
       },
-      "confidence": 0.5,
-      "priority": 4
+      "confidence": 0.3,
+      "priority": 2
+    },
+    {
+      "id": "H4-GET-/vendor/counter-up/jquery.waypoints.min.js-horizontal-param-reflection",
+      "method": "GET",
+      "endpoint": "/vendor/counter-up/jquery.waypoints.min.js",
+      "parameters": [
+        "horizontal"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "parameter_reflection",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "'horizontal' query parameter reflected in JS response or alters behavior"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_cookie",
+          "value": "connect.sid present"
+        },
+        {
+          "key": "param_observed",
+          "value": "horizontal=horizontal"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.2,
+      "priority": 2
+    },
+    {
+      "id": "H5-GET-/maps/embed-pb-open-redirect-or-parameter-injection",
+      "method": "GET",
+      "endpoint": "/maps/embed",
+      "parameters": [
+        "pb"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "open_redirect_or_injection",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "pb parameter values reflected in returned HTML iframe or redirect target"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              400,
+              500
+            ]
+          },
+          "description": "Different pb values trigger different response codes"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_cookie",
+          "value": "connect.sid present"
+        },
+        {
+          "key": "pb_param_observed",
+          "value": "complex encoded pb string present"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "H6-GET-static-assets-cookie-auth-required",
+      "method": "GET",
+      "endpoint": "/assets/index-CHOz83TQ.js",
+      "parameters": [],
+      "param_locations": [],
+      "category": "auth_required_resource_access",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              302
+            ]
+          },
+          "description": "Accessing static asset without cookie yields auth error or redirect"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_cookie",
+          "value": "connect.sid present"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 2
     }
   ],
   "metadata": [
     {
-      "key": "observed_host",
-      "value": "brokencrystals.com"
-    },
-    {
-      "key": "protocol",
-      "value": "https"
-    },
-    {
-      "key": "content_types",
-      "value": "text/html"
-    },
-    {
-      "key": "session_management",
-      "value": "cookie"
-    },
-    {
-      "key": "needs_observation",
-      "value": "true"
+      "key": "source",
+      "value": "har_summary"
     }
   ]
 }

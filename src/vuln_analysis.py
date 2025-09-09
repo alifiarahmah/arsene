@@ -16,32 +16,43 @@ class VulnerabilityAnalysisModule:
         return r
 
     def make_request(self, tc):
-        print(tc.keys())
-        # if tc['param_location'] == 'body':
-        #     rb = requests.request(
-        #         method=tc['method'],
-        #         url=tc['base_url'] + tc['endpoint'],
-        #         data=tc['payloads'][0]['value']
-        #     )
-        #     print('benign: ', rb.status_code)
-        #     rp = requests.request(
-        #         method=tc['method'],
-        #         url=tc['base_url'] + tc['endpoint'],
-        #         data=tc['payloads'][1]['value']
-        #     )
-        #     print('probe:', rp.status_code)
-        # elif tc['param_location'] == 'path' or tc['param_location'] == 'query':
-        #     rb = requests.request(
-        #         method=tc['method'],
-        #         url=tc['base_url'] + tc['payloads'][0]['value'],
-        #     )
-        #     print('benign:', rb.status_code)
-        #     rp = requests.request(
-        #         method=tc['method'],
-        #         url=tc['base_url'] + tc['payloads'][0]['value'],
-        #     )
-        #     print('probe:', rp.status_code)
-        # return r
+        for payload_group in tc['payloads']: # benign/probe
+            request_params = {
+                'method': tc['method'],
+                'url': tc['base_url'] + tc['endpoint']
+            }
+            for payload in payload_group['payloads']:
+                location = payload['location']
+                value = payload['value']
+                if location == 'query':
+                    request_params['url'] += value
+                elif location == 'body':
+                    request_params['data'] = value
+                elif location == 'path':
+                    request_params['url'] = tc['base_url'] + value
+                elif location == 'header':
+                    if 'headers' not in request_params:
+                        request_params['headers'] = {}
+                    key, val = value.split(':', 1)
+                    request_params['headers'][key.strip()] = val.strip()
+                elif location == 'cookie':
+                    if 'cookies' not in request_params:
+                        request_params['cookies'] = {}
+                    key, val = value.split(':', 1)
+                    request_params['cookies'][key.strip()] = val.strip()
+            if payload_group.get('content_type'):
+              if 'headers' not in request_params:
+                  request_params['headers'] = {}
+              request_params['headers']['Content-Type'] = payload_group['content_type']
+
+            try:
+                r = requests.request(**request_params)
+                print(
+                    f"TC: {tc['id']}, Tier: {payload_group['tier']}, "
+                    f"URL: {request_params['url']}, Status: {r.status_code}"
+                )
+            except Exception as e:
+                print(f"Error in {tc['id']}: {e}")
 
 if __name__ == "__main__":
     filename = 'juice_shop'
