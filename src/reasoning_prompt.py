@@ -153,10 +153,8 @@ Your responsibilities:
 Test Case Generation Rules:
 - ALWAYS start with benign payload for baseline comparison
 - Use probe payloads for safe vulnerability detection
-- Only include exploit/destructive payloads if safety.destructive_ok=true
 - Map hypothesis oracles to executable oracle_rules with specific conditions
-- Include prerequisites for auth context, CSRF tokens, session management
-- Set appropriate delays and retry logic for rate limiting
+- Include prerequisites for auth context, CSRF tokens, session management, cookies (take from context)
 
 Oracle Rule Examples:
 - Status change: "response.status_code != baseline.status_code"

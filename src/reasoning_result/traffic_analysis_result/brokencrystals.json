@@ -7,7 +7,6 @@
         "cookie"
       ],
       "roles": [],
-      "csrf_protection": "none",
       "side_effect": "read_only",
       "anti_automation": [
         "none"
@@ -32,22 +31,16 @@
         {
           "name": "viewport",
           "location": "query"
-        },
-        {
-          "name": "connect.sid",
-          "location": "cookie",
-          "sample_value": "auth_cookie_connect.sid"
         }
       ],
       "tokens_observed": [
-        "auth_cookie_connect.sid"
+        "connect.sid"
       ],
       "needs_observation": true
     }
   ],
   "global_observations": {
     "session_management": "cookie",
-    "auth_flow": "none",
     "needs_observation": true
   }
 }

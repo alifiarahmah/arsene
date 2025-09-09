@@ -1,366 +1,434 @@
 {
   "test_cases": [
     {
-      "id": "TC-H5-root-session-cookie-predictable",
-      "hypothesis_id": "H5-root-session-cookie-predictable",
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "connect.sid",
-      "param_location": "cookie",
-      "payloads": [
-        {
-          "tier": "benign",
-          "value": "auth_cookie_connect.sid",
-          "description": "Use observed session cookie value from HAR to establish baseline session behavior"
-        },
-        {
-          "tier": "probe",
-          "value": "replace_with_alternate_cookie_value_1",
-          "description": "Probe by replacing session cookie with alternate guessed value to test session predictability/reuse"
-        },
-        {
-          "tier": "probe",
-          "value": "replace_with_alternate_cookie_value_2",
-          "description": "Second probe with different alternate cookie value"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Valid authenticated session required to observe cookie behavior",
-          "extract_from": "cookie: connect.sid",
-          "bind_to": "cookie: connect.sid"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.set_cookie contains 'connect.sid' or response.body contains cookie value",
-          "weight": 1.0
-        },
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code != baseline.status_code",
-          "threshold": {
-            "expected_codes": [
-              200,
-              302
-            ]
-          },
-          "weight": 0.5
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "max_retries": 1,
-      "delay_between_requests": 2.0,
-      "notes": "Do not attempt brute-force of cookie values. Use a minimal set of alternate guessed cookie values to check for weak session binding. Respect max_requests and do not perform destructive actions.",
-      "tags": [
-        "session",
-        "cookie",
-        "predictable"
-      ],
-      "estimated_duration": 10
-    },
-    {
-      "id": "TC-H1-root-query-reflection",
-      "hypothesis_id": "H1-root-query-reflection",
+      "id": "TC-H1-query-reflected-xss-home-config",
+      "hypothesis_id": "H1-query-reflected-xss-home-config",
+      "base_url": "https://brokencrystals.com",
       "method": "GET",
       "endpoint": "/",
       "parameter": "config",
-      "param_location": "query",
       "payloads": [
         {
           "tier": "benign",
-          "value": "marker=REFLECT_TEST_123",
-          "description": "Baseline benign marker to detect reflection",
-          "content_type": "application/x-www-form-urlencoded"
+          "payloads": [
+            {
+              "location": "query",
+              "value": "default"
+            }
+          ],
+          "description": "Baseline request to capture normal response"
         },
         {
           "tier": "probe",
-          "value": "%3Cscript%3Econsole.log('X')%3C%2Fscript%3E",
-          "description": "Encoded probe payload to detect HTML reflection without executing",
-          "encoding": "url",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"><script>0</script>"
+            }
+          ],
+          "description": "Non-destructive probe payload to detect reflection in HTML/script contexts",
           "content_type": "application/x-www-form-urlencoded"
         },
         {
           "tier": "exploit",
-          "value": "<script>window.__XSS=1</script>",
-          "description": "Proof-of-concept XSS payload (only if safety allows execution)",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"><img src=x onerror=alert(1)>"
+            }
+          ],
+          "description": "Payload intended to trigger XSS if reflected unsanitized in HTML context",
           "content_type": "application/x-www-form-urlencoded"
+        },
+        {
+          "tier": "destructive",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "No destructive payloads allowed per safety"
         }
       ],
       "prerequisites": [
         {
           "type": "session_state",
-          "description": "Valid session cookie observed in HAR (connect.sid) to reproduce same context",
-          "extract_from": "cookie: connect.sid",
-          "bind_to": "cookie: connect.sid"
+          "description": "Use observed session cookie if available",
+          "bind_to": "connect.sid"
+        },
+        {
+          "type": "custom",
+          "description": "Capture baseline response body and headers for comparison"
         }
       ],
       "oracle_rules": [
         {
           "signal": "reflected_input",
           "condition": "payload_value in response.body",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
           "weight": 1.0
         },
         {
           "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.10",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.25",
           "threshold": {
-            "body_length_delta_pct": 10.0
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
           },
-          "weight": 0.5
+          "weight": 0.8
         }
       ],
       "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 20
+        "max_requests": 50
       },
       "max_retries": 2,
       "delay_between_requests": 1.5,
-      "notes": "Start with benign marker to record baseline. Probe uses encoded script to avoid trivial blocking. Exploit payload present but will not be executed if environment disallows. Respect max_requests and delays to avoid rate limits.",
+      "notes": "Start with benign baseline. Rate-limit requests to avoid triggering protections. Maintain session cookie if present.",
       "tags": [
         "xss",
         "reflection",
-        "baseline"
+        "query"
       ],
-      "estimated_duration": 5
+      "estimated_duration": 300
     },
     {
-      "id": "TC-H2-root-query-reflection-description",
-      "hypothesis_id": "H2-root-query-reflection-description",
+      "id": "TC-H2-query-reflected-xss-home-description",
+      "hypothesis_id": "H2-query-reflected-xss-home-description",
+      "base_url": "https://brokencrystals.com",
       "method": "GET",
       "endpoint": "/",
       "parameter": "description",
-      "param_location": "query",
       "payloads": [
         {
           "tier": "benign",
-          "value": "marker=REFLECT_TEST_123",
-          "description": "Baseline benign marker to detect reflection",
-          "content_type": "application/x-www-form-urlencoded"
+          "payloads": [
+            {
+              "location": "query",
+              "value": "test"
+            }
+          ],
+          "description": "Baseline request to capture normal response"
         },
         {
           "tier": "probe",
-          "value": "%3Cimg%20src%3Dx%20onerror%3D%22console.log('X')%22%3E",
-          "description": "Encoded image onerror probe to detect HTML attribute reflection",
-          "encoding": "url",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "'><script>0</script>"
+            }
+          ],
+          "description": "Non-destructive probe payload to detect reflection in HTML/script contexts",
           "content_type": "application/x-www-form-urlencoded"
         },
         {
           "tier": "exploit",
-          "value": "\"><script>window.__XSS=1</script>",
-          "description": "Attribute-breaking XSS payload (only if safety allows)",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "'><svg/onload=alert(1)>"
+            }
+          ],
+          "description": "Payload intended to trigger XSS if reflected unsanitized in HTML/DOM context",
           "content_type": "application/x-www-form-urlencoded"
+        },
+        {
+          "tier": "destructive",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "No destructive payloads allowed per safety"
         }
       ],
       "prerequisites": [
         {
           "type": "session_state",
-          "description": "Valid session cookie observed in HAR (connect.sid) to reproduce same context",
-          "extract_from": "cookie: connect.sid",
-          "bind_to": "cookie: connect.sid"
+          "description": "Use observed session cookie if available",
+          "bind_to": "connect.sid"
+        },
+        {
+          "type": "custom",
+          "description": "Capture baseline response body and headers for comparison"
         }
       ],
       "oracle_rules": [
         {
           "signal": "reflected_input",
           "condition": "payload_value in response.body",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
           "weight": 1.0
         },
         {
           "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.10",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.25",
           "threshold": {
-            "body_length_delta_pct": 10.0
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
           },
-          "weight": 0.5
+          "weight": 0.8
         }
       ],
       "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 20
+        "max_requests": 50
       },
       "max_retries": 2,
       "delay_between_requests": 1.5,
-      "notes": "Use benign marker then attribute-breaking probe. Avoid exploit payload execution unless explicitly permitted.",
+      "notes": "Begin with benign baseline. Throttle to avoid anti-automation. Preserve session cookie if present.",
       "tags": [
         "xss",
         "reflection",
-        "attribute"
+        "query"
       ],
-      "estimated_duration": 5
+      "estimated_duration": 300
     },
     {
-      "id": "TC-H3-root-query-reflection-theme-color",
-      "hypothesis_id": "H3-root-query-reflection-theme-color",
+      "id": "TC-H3-query-meta-injection-theme-color",
+      "hypothesis_id": "H3-query-meta-injection-theme-color",
+      "base_url": "https://brokencrystals.com",
       "method": "GET",
       "endpoint": "/",
       "parameter": "theme-color",
-      "param_location": "query",
       "payloads": [
         {
           "tier": "benign",
-          "value": "marker=REFLECT_TEST_123",
-          "description": "Baseline benign marker to detect reflection",
-          "content_type": "application/x-www-form-urlencoded"
+          "payloads": [
+            {
+              "location": "query",
+              "value": "#ffffff"
+            }
+          ],
+          "description": "Baseline to observe meta tag and header behavior"
         },
         {
           "tier": "probe",
-          "value": "%3Csvg%2Fonload%3Dalert(1)%3E",
-          "description": "Encoded SVG load probe to detect SVG-based reflection without direct script",
-          "encoding": "url",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "#\\\"><meta name=x content=y>"
+            }
+          ],
+          "description": "Probe to detect injection into meta tags or header-like contexts",
           "content_type": "application/x-www-form-urlencoded"
         },
         {
           "tier": "exploit",
-          "value": "<svg/onload=window.__XSS=1>",
-          "description": "SVG onload XSS payload (execute only if safe)",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "#\\\"><meta http-equiv=refresh content='0;url=about:blank'>"
+            }
+          ],
+          "description": "Exploit-like payload to detect meta tag injection impacts (non-destructive)",
           "content_type": "application/x-www-form-urlencoded"
+        },
+        {
+          "tier": "destructive",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "Destructive payloads not allowed per safety"
         }
       ],
       "prerequisites": [
         {
           "type": "session_state",
-          "description": "Valid session cookie observed in HAR (connect.sid) to reproduce same context",
-          "extract_from": "cookie: connect.sid",
-          "bind_to": "cookie: connect.sid"
+          "description": "Use observed session cookie if available",
+          "bind_to": "connect.sid"
+        },
+        {
+          "type": "custom",
+          "description": "Capture baseline response headers and HTML head section"
         }
       ],
       "oracle_rules": [
         {
           "signal": "reflected_input",
-          "condition": "payload_value in response.body",
-          "weight": 1.0
+          "condition": "payload_value in response.body or payload_value in response.headers.get('Content-Security-Policy','')",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.9
         },
         {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.10",
+          "signal": "header_change",
+          "condition": "response.headers != baseline.headers",
           "threshold": {
-            "body_length_delta_pct": 10.0
+            "expected_codes": [
+              200
+            ]
           },
-          "weight": 0.5
+          "weight": 0.6
         }
       ],
       "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 20
+        "max_requests": 30
       },
       "max_retries": 2,
       "delay_between_requests": 1.5,
-      "notes": "Theme-color may be reflected in meta tags; use SVG-based probe to detect reflection in tags.",
+      "notes": "Focus on head/meta reflections. Respect max_requests and idempotency. Rate-limit probes.",
       "tags": [
-        "xss",
-        "reflection",
-        "svg"
+        "meta-injection",
+        "query",
+        "headers"
       ],
-      "estimated_duration": 5
+      "estimated_duration": 180
     },
     {
-      "id": "TC-H4-root-query-reflection-viewport",
-      "hypothesis_id": "H4-root-query-reflection-viewport",
+      "id": "TC-H4-query-css-xss-viewport",
+      "hypothesis_id": "H4-query-css-xss-viewport",
+      "base_url": "https://brokencrystals.com",
       "method": "GET",
       "endpoint": "/",
       "parameter": "viewport",
-      "param_location": "query",
       "payloads": [
         {
           "tier": "benign",
-          "value": "marker=REFLECT_TEST_123",
-          "description": "Baseline benign marker to detect reflection",
-          "content_type": "application/x-www-form-urlencoded"
+          "payloads": [
+            {
+              "location": "query",
+              "value": "width=device-width,initial-scale=1"
+            }
+          ],
+          "description": "Baseline to capture normal CSS/JS inclusion"
         },
         {
           "tier": "probe",
-          "value": "%3Cscript%3Econsole.log('V')%3C%2Fscript%3E",
-          "description": "Encoded probe to detect viewport reflection in HTML",
-          "encoding": "url",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "width=device-width\\\"><style>/*x*/</style>"
+            }
+          ],
+          "description": "Probe to detect injection into CSS/HTML contexts",
           "content_type": "application/x-www-form-urlencoded"
         },
         {
           "tier": "exploit",
-          "value": "<script>window.__XSS_VIEWPORT=1</script>",
-          "description": "Exploit XSS payload for viewport parameter if permitted",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "width=device-width\\\"><style>body{background:url(\"javascript:alert(1)\")}</style>"
+            }
+          ],
+          "description": "Exploit-like payload to trigger CSS/JS related injection if reflected",
           "content_type": "application/x-www-form-urlencoded"
+        },
+        {
+          "tier": "destructive",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "Destructive payloads not allowed per safety"
         }
       ],
       "prerequisites": [
         {
           "type": "session_state",
-          "description": "Valid session cookie observed in HAR (connect.sid) to reproduce same context",
-          "extract_from": "cookie: connect.sid",
-          "bind_to": "cookie: connect.sid"
+          "description": "Use observed session cookie if available",
+          "bind_to": "connect.sid"
+        },
+        {
+          "type": "custom",
+          "description": "Capture baseline response for CSS/JS contexts"
         }
       ],
       "oracle_rules": [
         {
           "signal": "reflected_input",
           "condition": "payload_value in response.body",
-          "weight": 1.0
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.9
         },
         {
           "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.10",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
           "threshold": {
-            "body_length_delta_pct": 10.0
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
           },
-          "weight": 0.5
+          "weight": 0.6
         }
       ],
       "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 20
+        "max_requests": 30
       },
       "max_retries": 2,
       "delay_between_requests": 1.5,
-      "notes": "Viewport may be used in meta/view settings; use encoded script probe first.",
+      "notes": "Probe CSS/JS injection points carefully. Maintain session cookie if present and avoid aggressive requests.",
       "tags": [
         "xss",
-        "reflection",
-        "viewport"
+        "css-injection",
+        "query"
       ],
-      "estimated_duration": 5
+      "estimated_duration": 180
     }
   ],
   "global_prerequisites": [
     {
       "type": "session_state",
-      "description": "Preserve and reuse connect.sid cookie extracted from HAR for baseline requests",
-      "extract_from": "cookie: connect.sid",
-      "bind_to": "cookie: connect.sid"
+      "description": "Maintain cookie-based session if available (connect.sid) for authenticated endpoints",
+      "bind_to": "connect.sid"
     }
   ],
   "execution_hints": [
     {
-      "key": "rate_limit_hint",
-      "value": "Space requests by at least 1.5-2s and respect max_requests per hypothesis to avoid triggering protections"
+      "key": "rate_limit",
+      "value": "delay 1-2s between requests; keep total requests under max_requests per hypothesis"
     },
     {
-      "key": "user_agent",
-      "value": "Reuse user-agent from HAR capture when possible to replicate behavior"
+      "key": "capture_baseline",
+      "value": "perform benign request first and store full response body and headers for comparison"
     }
   ],
   "metadata": [
     {
-      "key": "observed_hosts",
-      "value": "brokencrystals.com"
-    },
-    {
-      "key": "page_content_type",
-      "value": "text/html"
+      "key": "observed_token",
+      "value": "connect.sid"
     },
     {
       "key": "needs_observation",

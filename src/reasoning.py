@@ -87,14 +87,17 @@ class ReasoningModule():
         self.export_result(result=av_result, output_path='reasoning_result/av_enum_result/' + filename + '.json')
         print(av_result)
 
+        print("STEP 3: VH")
         vh_result = self.vuln_hypothesis(ta_result)
         self.export_result(result=vh_result, output_path='reasoning_result/vuln_hypotheses_result/' + filename + '.json')
         print(vh_result)
 
+        print("STEP 4: TC")
         tc_gen_result = self.tc_gen(ta_result, vh_result)
         self.export_result(result=tc_gen_result, output_path='reasoning_result/tc_gen_result/' + filename + '.json')
         print(tc_gen_result)
 
+        print("STEP 5: FINAL")
         final_plan_json = self.chain_tc_context(ta_result, tc_gen_result)
         self.export_result(result=final_plan_json, output_path='reasoning_result/' + filename + '.json')
         print(final_plan_json)
@@ -106,7 +109,7 @@ class ReasoningModule():
 
 if __name__ == "__main__":
     RM = ReasoningModule()
-    filename = "juice_shop"
+    filename = "brokencrystals"
     try:
         result = RM.do_reasoning_chain(filename)
         print(result)
