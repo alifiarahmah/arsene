@@ -31,10 +31,14 @@
         {
           "name": "viewport",
           "location": "query"
+        },
+        {
+          "name": "connect.sid",
+          "location": "cookie"
         }
       ],
       "tokens_observed": [
-        "connect.sid"
+        "auth_cookie_connect.sid"
       ],
       "needs_observation": true
     }

@@ -3,31 +3,9 @@
     {
       "method": "GET",
       "endpoint": "/",
-      "parameter": "config",
-      "param_location": "query",
-      "category": "xss_reflected",
-      "expected_signals": [
-        "reflected_input",
-        "status_code_change"
+      "parameter": [
+        "config"
       ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "config",
-      "param_location": "query",
-      "category": "injection_nosql",
-      "expected_signals": [
-        "error_signature",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "description",
       "param_location": "query",
       "category": "xss_reflected",
       "expected_signals": [
@@ -39,21 +17,11 @@
     {
       "method": "GET",
       "endpoint": "/",
-      "parameter": "description",
-      "param_location": "query",
-      "category": "injection_sql",
-      "expected_signals": [
-        "error_signature",
-        "status_code_change"
+      "parameter": [
+        "description"
       ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "theme-color",
       "param_location": "query",
-      "category": "xss_dom",
+      "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
         "response_length_diff"
@@ -63,21 +31,11 @@
     {
       "method": "GET",
       "endpoint": "/",
-      "parameter": "theme-color",
-      "param_location": "query",
-      "category": "open_redirect",
-      "expected_signals": [
-        "out_of_band_call",
-        "status_code_change"
+      "parameter": [
+        "theme-color"
       ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/",
-      "parameter": "viewport",
       "param_location": "query",
-      "category": "xss_dom",
+      "category": "xss_reflected",
       "expected_signals": [
         "reflected_input",
         "response_length_diff"
@@ -87,12 +45,45 @@
     {
       "method": "GET",
       "endpoint": "/",
-      "parameter": "viewport",
+      "parameter": [
+        "viewport"
+      ],
       "param_location": "query",
-      "category": "injection_xpath",
+      "category": "xss_reflected",
       "expected_signals": [
-        "error_signature",
-        "status_code_change"
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "connect.sid"
+      ],
+      "param_location": "cookie",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "token_reuse_failure",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "config",
+        "description",
+        "theme-color",
+        "viewport"
+      ],
+      "param_location": "query",
+      "category": "business_logic",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
       ],
       "needs_observation": true
     }

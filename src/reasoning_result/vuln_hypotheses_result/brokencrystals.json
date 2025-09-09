@@ -1,39 +1,34 @@
 {
   "hypotheses": [
     {
-      "id": "H1-query-reflected-xss-home-config",
+      "id": "hyp-1",
       "method": "GET",
       "endpoint": "/",
-      "parameter": "config",
-      "param_location": "query",
-      "category": "xss_reflection",
+      "parameters": [
+        "config"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "reflected_xss",
       "oracles": [
         {
           "signal": "reflected_input",
-          "threshold": {
-            "body_length_delta_pct": 30.0,
-            "expected_codes": [
-              200
-            ]
-          },
-          "description": "Injected input reflected in HTML response body or script context leading to DOM XSS."
+          "description": "Search for exact reflection of injected config value in HTML response (case-sensitive)."
         },
         {
           "signal": "response_length_diff",
           "threshold": {
-            "body_length_delta_pct": 25.0,
-            "expected_codes": [
-              200
-            ]
+            "body_length_delta_pct": 20.0
           },
-          "description": "Significant change in response body length when injecting payload-like characters."
+          "description": "Significant body length change when injecting unique marker into config query parameter."
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
-          "key": "auth_required",
-          "value": "cookie (connect.sid) or anonymous depending on endpoint"
+          "key": "auth_context",
+          "value": "cookie_authenticated (connect.sid)"
         }
       ],
       "safety": {
@@ -45,39 +40,34 @@
       "priority": 3
     },
     {
-      "id": "H2-query-reflected-xss-home-description",
+      "id": "hyp-2",
       "method": "GET",
       "endpoint": "/",
-      "parameter": "description",
-      "param_location": "query",
-      "category": "xss_reflection",
+      "parameters": [
+        "description"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "reflected_xss",
       "oracles": [
         {
           "signal": "reflected_input",
-          "threshold": {
-            "body_length_delta_pct": 30.0,
-            "expected_codes": [
-              200
-            ]
-          },
-          "description": "Injected input reflected in HTML response body or script context leading to DOM XSS."
+          "description": "Look for raw inclusion of description value in HTML response."
         },
         {
           "signal": "response_length_diff",
           "threshold": {
-            "body_length_delta_pct": 25.0,
-            "expected_codes": [
-              200
-            ]
+            "body_length_delta_pct": 15.0
           },
-          "description": "Significant change in response body length when injecting payload-like characters."
+          "description": "Body length changes when altering description payload."
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
-          "key": "auth_required",
-          "value": "cookie (connect.sid) or anonymous depending on endpoint"
+          "key": "auth_context",
+          "value": "cookie_authenticated (connect.sid)"
         }
       ],
       "safety": {
@@ -85,42 +75,38 @@
         "destructive_ok": false,
         "max_requests": 50
       },
-      "confidence": 0.35,
+      "confidence": 0.3,
       "priority": 3
     },
     {
-      "id": "H3-query-meta-injection-theme-color",
+      "id": "hyp-3",
       "method": "GET",
       "endpoint": "/",
-      "parameter": "theme-color",
-      "param_location": "query",
-      "category": "meta_tag_injection",
+      "parameters": [
+        "theme-color"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "css_injection",
       "oracles": [
         {
           "signal": "reflected_input",
-          "threshold": {
-            "body_length_delta_pct": 20.0,
-            "expected_codes": [
-              200
-            ]
-          },
-          "description": "Parameter value reflected into meta tags or headers in response."
+          "description": "Check for inclusion of theme-color value in style or meta tags."
         },
         {
-          "signal": "header_change",
+          "signal": "response_length_diff",
           "threshold": {
-            "expected_codes": [
-              200
-            ]
+            "body_length_delta_pct": 10.0
           },
-          "description": "Response headers or meta tags change when manipulating parameter."
+          "description": "Detectable body change when setting theme-color to unique value."
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
-          "key": "auth_required",
-          "value": "cookie (connect.sid) or anonymous depending on endpoint"
+          "key": "auth_context",
+          "value": "cookie_authenticated (connect.sid)"
         }
       ],
       "safety": {
@@ -132,39 +118,34 @@
       "priority": 2
     },
     {
-      "id": "H4-query-css-xss-viewport",
+      "id": "hyp-4",
       "method": "GET",
       "endpoint": "/",
-      "parameter": "viewport",
-      "param_location": "query",
-      "category": "xss_reflection",
+      "parameters": [
+        "viewport"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "html_injection",
       "oracles": [
         {
           "signal": "reflected_input",
-          "threshold": {
-            "body_length_delta_pct": 25.0,
-            "expected_codes": [
-              200
-            ]
-          },
-          "description": "Viewport parameter reflected into page CSS/JS contexts leading to possible injection."
+          "description": "Observe viewport parameter reflected in meta viewport tag or HTML."
         },
         {
           "signal": "response_length_diff",
           "threshold": {
-            "body_length_delta_pct": 20.0,
-            "expected_codes": [
-              200
-            ]
+            "body_length_delta_pct": 10.0
           },
-          "description": "Observable body length differences when sending payload-like input."
+          "description": "Response size changes when modifying viewport parameter."
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
-          "key": "auth_required",
-          "value": "cookie (connect.sid) or anonymous depending on endpoint"
+          "key": "auth_context",
+          "value": "cookie_authenticated (connect.sid)"
         }
       ],
       "safety": {
@@ -174,15 +155,61 @@
       },
       "confidence": 0.2,
       "priority": 2
+    },
+    {
+      "id": "hyp-5",
+      "method": "GET",
+      "endpoint": "/",
+      "parameters": [
+        "config",
+        "description",
+        "theme-color",
+        "viewport"
+      ],
+      "param_locations": [
+        "query",
+        "query",
+        "query",
+        "query"
+      ],
+      "category": "dom_xss_composite",
+      "oracles": [
+        {
+          "signal": "xss_payload_executed",
+          "description": "Detect execution of injected payloads when multiple query params are manipulated together (DOM context)."
+        },
+        {
+          "signal": "reflected_input",
+          "description": "Multiple parameters reflected into the same DOM-sourced sink."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "cookie_authenticated (connect.sid)"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.2,
+      "priority": 3
     }
   ],
   "metadata": [
     {
-      "key": "observed_token",
-      "value": "connect.sid"
+      "key": "observed_tokens",
+      "value": "auth_cookie_connect.sid"
     },
     {
-      "key": "needs_observation",
+      "key": "session_management",
+      "value": "cookie"
+    },
+    {
+      "key": "global_needs_observation",
       "value": "true"
     }
   ]

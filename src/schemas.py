@@ -156,7 +156,7 @@ class TrafficAnalysisContext(BaseModel):
 class AttackVector(BaseModel):
     method: Optional[str] = None
     endpoint: str
-    parameter: Optional[str] = None
+    parameter: List[str] = []
     param_location: Optional[ParamLocation] = None
     sample_value: Optional[str] = None
     category: AttackCategory
@@ -189,8 +189,8 @@ class VulnHypothesis(BaseModel, extra=Extra.forbid):
     id: str
     method: str
     endpoint: str
-    parameter: str
-    param_location: str
+    parameters: List[str]
+    param_locations: List[str]
     category: str
 
     oracles: List[Oracle]

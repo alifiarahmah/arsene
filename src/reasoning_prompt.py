@@ -59,7 +59,6 @@ Instruction:
   - Estimated token lifetime if observed (integer, in seconds).
   - Authentication flow (form_login, oauth2, saml, none).
   - needs_observation: true if more traffic capture is required.
-- Always output only a single valid JSON object matching the expected structure.
 - Ensure `sample_value` is populated with concrete values from requests/responses whenever available (example: path `/users/1/orders/123` → userId="1", orderId="123").
 """
 
@@ -88,12 +87,12 @@ Input Context:
 <<CONTEXT_JSON>>
 
 Instruction:
-- For each endpoint parameter, output vectors with offensive categories.
+- For each endpoint, consider both single‑parameter and multi‑parameter attack surfaces. You may output an AttackVector targeting: A single parameter (usual case), or a combination of parameters (e.g., path + body, query + header) when attack scenario plausibly requires them together.
+Deduplicate by (endpoint + parameter set + category).
 - Always include parameter and sample_value.
 - Do not drop method. Each vector must have method + endpoint (path).
 - Example: GET /users/:userId → param=userId, sample_value=1, category=authz_bypass.
 - If uncertain, needs_observation=true.
-- Output only a single JSON object matching schema, with vectors array.
 - Include HTTP method as a separate field.
 """
 
@@ -104,7 +103,7 @@ Instruction:
 STEP4_VULNS_SYSTEM_PROMPT = """You are converting attack vectors into concrete vulnerability hypotheses with measurable detection criteria.
 
 Your task:
-1. Transform each attack vector into a testable hypothesis with specific oracles
+1. Transform each attack vector into a testable hypothesis with specific oracles. Hypothesis may reference one or multiple parameters if attack requires them jointly. Use parameters field to list all involved; retain order = irrelevant
 2. Define measurable detection thresholds using numeric values where applicable
 3. Set appropriate safety constraints and preconditions
 4. Assign confidence and priority scores
@@ -134,8 +133,7 @@ Requirements:
 - Set confidence (0.0-1.0) and priority (1-5) based on attack vector reliability
 - Include preconditions if authentication/CSRF tokens are needed
 - Use appropriate safety settings
-
-Output: JSON object matching VulnHypotheses schema exactly."""
+"""
 
 # =========================
 # STEP 5: Test Case Generation (from vuln hypotheses)
@@ -144,11 +142,13 @@ Output: JSON object matching VulnHypotheses schema exactly."""
 STEP5_TESTCASES_SYSTEM_PROMPT = """You are generating comprehensive, safety-first test cases with incremental payload progression and precise detection logic.
 
 Your responsibilities:
-1. Create complete test cases from vulnerability hypotheses
+1. Create complete test cases from vulnerability hypotheses.
 2. Generate payload tiers: benign (baseline) → probe → exploit → destructive (if safe)
 3. Define precise oracle rules with measurable conditions
 4. Handle authentication, CSRF, and session state through prerequisites
 5. Ensure safety constraints are respected
+
+Each TestCase may involve one or more parameters. Payload tiers must cover all involved param locations. payloads array must have multiple PayloadValues if necessary (e.g., one modifying path placeholder, another modifying body JSON key). Always include a benign baseline with same parameter set
 
 Test Case Generation Rules:
 - ALWAYS start with benign payload for baseline comparison
@@ -197,7 +197,7 @@ STEP6_CHAIN_SYSTEM_PROMPT = """
 You are an expert penetration testing orchestrator creating optimized multi-step attack scenarios.
 
 Core Objectives:
-- Chain related tests based on application flow (auth -> enumeration -> exploitation)
+- Chain related tests based on application flow (auth -> enumeration -> exploitation). Do not decompose multi-parameter test cases; treat them as single atomic units.
 - Prioritize by risk impact and detection confidence
 - Eliminate redundant tests while maximizing coverage
 - Incorporate runtime feedback for adaptive execution
@@ -218,8 +218,6 @@ Deduplication Rules:
 - Same endpoint + payload type + parameter = duplicate (keep highest confidence)
 - Merge similar injection vectors into comprehensive test
 - Consolidate enumeration attempts per directory/resource
-
-Output: Valid JSON matching FinalPlan schema only.
 """
 
 STEP6_CHAIN_USER_PROMPT = """
@@ -241,6 +239,4 @@ Create an optimized execution plan that:
 3. Incorporates runtime feedback for adaptive targeting
 4. Minimizes redundancy while maximizing vulnerability coverage
 5. Includes appropriate execution controls (rate limiting, stop conditions)
-
-Return only the JSON object conforming to FinalPlan schema.
 """
