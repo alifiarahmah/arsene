@@ -1,493 +1,47 @@
 {
   "test_cases": [
     {
-      "id": "tc-hv00-rest_products_search-xss",
-      "hypothesis_id": "hv00-rest_products_search-xss",
+      "id": "TC-VH-001-001",
+      "hypothesis_id": "VH-001",
       "base_url": "http://localhost:3000",
       "method": "GET",
-      "endpoint": "/rest/products/search",
-      "parameter": "q",
+      "endpoint": "/rest/user/whoami",
+      "parameter": "",
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
-              "location": "query",
+              "location": "none",
               "value": ""
             }
           ],
-          "description": "Baseline request with empty q",
+          "description": "Baseline authenticated request to /rest/user/whoami",
           "content_type": "application/json"
         },
         {
           "tier": "probe",
           "payloads": [
             {
-              "location": "query",
-              "value": "<script>1</script>"
+              "location": "header",
+              "value": "Authorization: Bearer {{valid_token}}"
             }
           ],
-          "description": "Probe for reflected script tag in response",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "query",
-              "value": "%3Cimg%20src%3Dx%20onerror%3D%22alert(1)%22%3E"
-            }
-          ],
-          "description": "Payload with encoded XSS vector",
-          "encoding": "url",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [],
-      "oracle_rules": [
-        {
-          "signal": "reflected_input",
-          "condition": "response.body contains payload_value or abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.10",
-          "threshold": {
-            "body_length_delta_pct": 10.0,
-            "expected_codes": [
-              200
-            ]
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 50
-      },
-      "max_retries": 1,
-      "delay_between_requests": 0.5,
-      "notes": "Start with benign baseline. Respect rate limits. If responses are JSON, check for reflected strings in JSON values.",
-      "tags": [
-        "xss",
-        "reflection"
-      ],
-      "estimated_duration": 60
-    },
-    {
-      "id": "tc-hv01-api_Challenges_name-injection",
-      "hypothesis_id": "hv01-api_Challenges_name-injection",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/api/Challenges/",
-      "parameter": "name",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "query",
-              "value": "Score Board"
-            }
-          ],
-          "description": "Baseline request returning challenge info",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "query",
-              "value": "Score Board\"><script>1</script>"
-            }
-          ],
-          "description": "Probe to trigger additional content or reflection",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "query",
-              "value": "Score%20Board%27%20OR%20%271%27=%271"
-            }
-          ],
-          "description": "SQL-like probe to observe increased disclosure or different results",
-          "encoding": "url",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) >= 0.20 or response.body contains unexpected fields",
-          "threshold": {
-            "body_length_delta_pct": 20.0,
-            "expected_codes": [
-              200
-            ]
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 30
-      },
-      "max_retries": 1,
-      "delay_between_requests": 0.5,
-      "notes": "Monitor for sensitive fields in JSON. Use URL-encoding. Avoid aggressive SQL payloads; probe is non-destructive.",
-      "tags": [
-        "information_disclosure"
-      ],
-      "estimated_duration": 90
-    },
-    {
-      "id": "tc-hv02-rest_products_productId-idor",
-      "hypothesis_id": "hv02-rest_products_productId-idor",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/rest/products/{productId}/reviews",
-      "parameter": "productId",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "1"
-            }
-          ],
-          "description": "Baseline request for productId=1",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "2"
-            }
-          ],
-          "description": "Probe different productId to compare returned data",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "42"
-            }
-          ],
-          "description": "Access another productId (may be sensitive) to check authorization enforcement",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [],
-      "oracle_rules": [
-        {
-          "signal": "authorization_bypassed",
-          "condition": "response.status_code==200 and response.body contains data for productId different from baseline and owner-restricted markers absent",
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 50
-      },
-      "max_retries": 1,
-      "delay_between_requests": 0.5,
-      "notes": "Compare JSON data sets. If product reviews visibly show owner-only content, flag. Keep probes conservative.",
-      "tags": [
-        "idor",
-        "authz"
-      ],
-      "estimated_duration": 60
-    },
-    {
-      "id": "tc-hv03-api_Feedbacks_captcha_bypass",
-      "hypothesis_id": "hv03-api_Feedbacks_captcha_bypass",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "comment",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "kenapa begini? (anonymous)"
-            },
-            {
-              "location": "body",
-              "value": "0"
-            },
-            {
-              "location": "body",
-              "value": "-7"
-            },
-            {
-              "location": "body",
-              "value": "3"
-            }
-          ],
-          "description": "Baseline valid feedback submission using observed captchaId/captcha",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "probe-comment-<test>"
-            }
-          ],
-          "description": "Submit altered comment with same captcha to test reflection and bypass handling (captcha may block if incorrect)",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "<script>alert(1)</script>"
-            }
-          ],
-          "description": "Attempt to submit XSS payload in comment to see if response reflects or stores it (respect captcha)",
+          "description": "Probe with observed auth tokens to confirm disclosure",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
-          "type": "custom",
-          "description": "Obtain valid captchaId and captcha answer via GET /rest/captcha/ and use values in body",
-          "extract_from": "/rest/captcha/",
-          "bind_to": "captcha,captchaId"
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "{{valid_token}}"
         }
       ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code==201",
-          "threshold": {
-            "expected_codes": [
-              201
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "reflected_input",
-          "condition": "payload_value in response.body or payload_value in subsequent GET /api/Feedbacks/ entries",
-          "threshold": {
-            "body_length_delta_pct": 10.0,
-            "expected_codes": [
-              201
-            ]
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 20
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Must solve/obtain captcha. Use benign first. Do not flood endpoints. Store created feedback IDs for cleanup if needed.",
-      "tags": [
-        "captcha_bypass",
-        "xss"
-      ],
-      "estimated_duration": 120
-    },
-    {
-      "id": "tc-hv04-api_Users_registration_weak_creds",
-      "hypothesis_id": "hv04-api_Users_registration_weak_creds",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "email",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "ggggg@mail.com"
-            },
-            {
-              "location": "body",
-              "value": "ggggg"
-            },
-            {
-              "location": "body",
-              "value": "ggggg"
-            },
-            {
-              "location": "body",
-              "value": "5"
-            },
-            {
-              "location": "body",
-              "value": "gramma"
-            }
-          ],
-          "description": "Baseline registration using observed values",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "test+probe@mail.com"
-            },
-            {
-              "location": "body",
-              "value": "password123"
-            },
-            {
-              "location": "body",
-              "value": "password123"
-            },
-            {
-              "location": "body",
-              "value": "5"
-            },
-            {
-              "location": "body",
-              "value": "probe"
-            }
-          ],
-          "description": "Register with weak password to check account creation policy",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "test+exploit@mail.com"
-            },
-            {
-              "location": "body",
-              "value": "1234"
-            },
-            {
-              "location": "body",
-              "value": "1234"
-            },
-            {
-              "location": "body",
-              "value": "5"
-            },
-            {
-              "location": "body",
-              "value": "exploit"
-            }
-          ],
-          "description": "Attempt very weak password registration to test enforcement",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [],
       "oracle_rules": [
         {
           "signal": "sensitive_data_exposed",
-          "condition": "response.status_code==201 and (\"id\" in response.json or \"email\" in response.json)",
-          "threshold": {
-            "body_length_delta_pct": 5.0,
-            "expected_codes": [
-              201
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.30",
-          "threshold": {
-            "body_length_delta_pct": 30.0,
-            "expected_codes": [
-              201
-            ]
-          },
-          "weight": 0.6
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 20
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Limit number of registration attempts. Use distinct emails. Prioritize probe before exploit. Clean up created accounts if possible.",
-      "tags": [
-        "account_creation",
-        "weak_password"
-      ],
-      "estimated_duration": 180
-    },
-    {
-      "id": "tc-hv05-rest_user_login_token_leak",
-      "hypothesis_id": "hv05-rest_user_login_token_leak",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/rest/user/login",
-      "parameter": "email",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "ggggg@mail.com"
-            },
-            {
-              "location": "body",
-              "value": "ggggg"
-            }
-          ],
-          "description": "Baseline login with observed credentials",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "ggggg@mail.com"
-            },
-            {
-              "location": "body",
-              "value": "wrongpass"
-            }
-          ],
-          "description": "Probe with wrong password to check response differences",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.status_code==200 and response.json.get('authentication',{}).get('token') is not None",
-          "threshold": {
-            "body_length_delta_pct": 5.0,
-            "expected_codes": [
-              200
-            ]
-          },
+          "condition": "response.body contains any of [\"email\",\"username\",\"lastLoginIp\",\"profileImage\"]",
           "weight": 1.0
         }
       ],
@@ -495,20 +49,20 @@
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 30
+        "max_requests": 20
       },
-      "max_retries": 1,
+      "max_retries": 2,
       "delay_between_requests": 1.0,
-      "notes": "Avoid brute-force. Use observed valid credentials only. Do not persist tokens outside ephemeral test harness.",
+      "notes": "Establish authenticated session first. Keep requests low-rate.",
       "tags": [
-        "auth",
-        "token_leak"
+        "info-disclosure",
+        "auth_required"
       ],
-      "estimated_duration": 60
+      "estimated_duration": 1
     },
     {
-      "id": "tc-hv06-rest_basket_id_idor",
-      "hypothesis_id": "hv06-rest_basket_id_idor",
+      "id": "TC-VH-002-001",
+      "hypothesis_id": "VH-002",
       "base_url": "http://localhost:3000",
       "method": "GET",
       "endpoint": "/rest/basket/{basketId}",
@@ -522,7 +76,7 @@
               "value": "6"
             }
           ],
-          "description": "Baseline request for own basketId",
+          "description": "Baseline request to own basketId=6",
           "content_type": "application/json"
         },
         {
@@ -530,10 +84,10 @@
           "payloads": [
             {
               "location": "path",
-              "value": "5"
+              "value": "7"
             }
           ],
-          "description": "Probe adjacent basketId to see if access is allowed",
+          "description": "Probe nearby numeric id to detect IDOR (non-owner)",
           "content_type": "application/json"
         },
         {
@@ -542,24 +96,2333 @@
             {
               "location": "path",
               "value": "1"
+            },
+            {
+              "location": "path",
+              "value": "9"
             }
           ],
-          "description": "Probe other basketId values for potential data leak",
+          "description": "Access other observed ids (1,9) to check for authorization bypass",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
-          "type": "custom",
-          "description": "Authenticated session cookie required; perform valid login to obtain session cookie",
-          "extract_from": "/rest/user/login",
-          "bind_to": "auth_cookie"
+          "type": "login",
+          "description": "Valid authenticated user session required (cookie or bearer)",
+          "bind_to": "session_cookie_or_token"
         }
       ],
       "oracle_rules": [
         {
-          "signal": "authorization_bypassed",
-          "condition": "response.status_code==200 and response.json.get('data',{}).get('UserId') not in [current_user_id]",
+          "signal": "status_code_change",
+          "condition": "response.status_code not in baseline.status_code or response.status_code in [403,404] vs 200",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains keys indicative of basket ownership such as [\"orderId\",\"paymentId\",\"addressId\"]",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "notes": "Do not perform destructive actions. Compare responses against baseline for status and body length.",
+      "tags": [
+        "idor",
+        "authz"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "TC-VH-003-001",
+      "hypothesis_id": "VH-003",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/admin/application-configuration",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Baseline authenticated request to admin configuration",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Authorization: Bearer {{admin_or_user_token}}"
+            }
+          ],
+          "description": "Probe with observed auth tokens; try non-admin then admin token if available",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session; admin token if available to compare responses",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains any of [\"privacyContactEmail\",\"baseUrl\",\"facebookUrl\",\"defaultResponse\",\"config\"]",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "If admin token not available, observe differences between user and admin responses. Requires additional observation for admin privilege.",
+      "tags": [
+        "config-leak"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-VH-004-001",
+      "hypothesis_id": "VH-004",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/socket.io/",
+      "parameter": "EIO,sid,t,transport",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "Baseline websocket/socket.io handshake without modifying query params",
+          "content_type": "application/octet-stream"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "EIO=3"
+            },
+            {
+              "location": "query",
+              "value": "transport=polling"
+            }
+          ],
+          "description": "Probe with manipulated sid/transport to observe session differences",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Existing authenticated cookie session may be required for socket access",
+          "bind_to": "session_cookie"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "header_change",
+          "condition": "response.headers[\"set-cookie\"] or response.headers differ from baseline or response contains reflected sid/transport values",
+          "weight": 1.0
+        },
+        {
+          "signal": "authentication_bypassed",
+          "condition": "response contains socket data not present in baseline or access to other user's socket channels observed",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Socket endpoints may require observation. Avoid interfering with active sockets.",
+      "tags": [
+        "session",
+        "socket"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-VH-005-001",
+      "hypothesis_id": "VH-005",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/products/search",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "q=apple"
+            }
+          ],
+          "description": "Baseline search query q=apple",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "q=<script>alert(1)</script>"
+            }
+          ],
+          "description": "Probe for reflected input (XSS) in search results (benign probe uses script tag but not executed in tests)",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "q=%3Cimg%20src%3Dx%20onerror%3D%22console.log(1)%22%3E"
+            }
+          ],
+          "description": "Probe for HTML injection reflected in JSON/HTML",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Optional authenticated session may change results; include if observed",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "payload_value in response.body",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.30",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 100
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "notes": "Use non-executing payloads. Do not store or trigger malicious payloads. Observe JSON encoding.",
+      "tags": [
+        "xss",
+        "injection"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-VH-006-001",
+      "hypothesis_id": "VH-006",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Addresss",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Baseline authenticated request to address list",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Authorization: Bearer {{valid_token}}"
+            }
+          ],
+          "description": "Probe authenticated access to detect address disclosure",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains address fields such as [\"streetAddress\",\"fullName\",\"zipCode\",\"mobileNum\"]",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Compare against baseline. Avoid creating addresses.",
+      "tags": [
+        "pioi",
+        "info-leak"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-VH-007-001",
+      "hypothesis_id": "VH-007",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/admin/application-version",
+      "parameter": "version",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "Baseline request to application-version",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "version=1.0"
+            }
+          ],
+          "description": "Probe with sample version query to elicit version info",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Auth token may be required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains keys like [\"version\",\"build\",\"commit\",\"release\"]",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Requires additional observation; try admin vs non-admin tokens.",
+      "tags": [
+        "version-leak"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-VH-008-001",
+      "hypothesis_id": "VH-008",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/Feedbacks/",
+      "parameter": "captcha,captchaId,comment,rating",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"captcha\":\"<valid>\",\"captchaId\":\"<validId>\",\"comment\":\"test feedback\",\"rating\":3}"
+            }
+          ],
+          "description": "Baseline valid feedback submission with valid captcha and CSRF token",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"captcha\":\"wrong\",\"captchaId\":\"<validId>\",\"comment\":\"probe\",\"rating\":1}"
+            }
+          ],
+          "description": "Probe with invalid captcha to observe rejection response",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"captcha\":\"bypass\",\"captchaId\":\"predictableId\",\"comment\":\"automation test\",\"rating\":5}"
+            }
+          ],
+          "description": "Probe automated submission patterns to test captcha robustness",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "CSRF token required in form/body; extract from GET form or page",
+          "extract_from": "/rest/user/login or page response",
+          "bind_to": "csrf_token",
+          "custom_logic": "attach token as header or body field as observed"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "authentication_bypassed",
+          "condition": "response.status_code in [200,201] and response.body contains success indication while probe baseline with invalid captcha returns 4xx",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.50",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "Captcha present; automated exploit attempts should be limited. Ensure CSRF token included.",
+      "tags": [
+        "captcha",
+        "automation"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "TC-VH-009-001",
+      "hypothesis_id": "VH-009",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/products/{productId}/reviews",
+      "parameter": "productId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            }
+          ],
+          "description": "Baseline fetch reviews for productId=6",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9999"
+            }
+          ],
+          "description": "Probe with high/non-existent id to detect disclosure or differences",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1'};alert(1);//"
+            }
+          ],
+          "description": "Probe for injection/reflection in path parameter (non-destructive)",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains unexpected fields or PII such as [\"email\",\"userId\"] for non-public products",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Use non-destructive probes. Observe for PII in responses.",
+      "tags": [
+        "info-leak"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "TC-VH-010-001",
+      "hypothesis_id": "VH-010",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/captcha/",
+      "parameter": "answer,captcha",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "Baseline request to captcha endpoint",
+          "content_type": "image/png"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "answer=wrong&captcha=1234"
+            }
+          ],
+          "description": "Probe with wrong answer to observe rejection response",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "answer=correct&captcha=1234"
+            }
+          ],
+          "description": "If correct answer known, probe for success response (use only if answer obtained legitimately)",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "authentication_bypassed",
+          "condition": "response.status_code == 200 and subsequent protected action allowed without further challenge",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.30",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Do not attempt to brute-force captchas. Only test with known/legitimate answers.",
+      "tags": [
+        "captcha"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-VH-011-001",
+      "hypothesis_id": "VH-011",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Addresss/{addressId}",
+      "parameter": "addressId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "7"
+            }
+          ],
+          "description": "Baseline access to own addressId=7",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            },
+            {
+              "location": "path",
+              "value": "2"
+            }
+          ],
+          "description": "Probe other address IDs to detect IDOR",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code not equal to baseline.status_code or is 200 when expecting 403/404",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains address fields not belonging to authenticated user",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "notes": "Compare responses for status and content. Avoid modifying resources.",
+      "tags": [
+        "idor",
+        "authz"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "TC-VH-012-001",
+      "hypothesis_id": "VH-012",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": "itemId,quantity",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9"
+            },
+            {
+              "location": "body",
+              "value": "{\"quantity\":1}"
+            }
+          ],
+          "description": "Baseline update to own itemId=9 with small quantity",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "10"
+            },
+            {
+              "location": "body",
+              "value": "{\"quantity\":5}"
+            }
+          ],
+          "description": "Probe updating another itemId to detect authorization bypass",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code not equal baseline.status_code or response.status_code in [200,403,404] when expected otherwise",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains basket ownership or modification confirmation indicating other user's item modified",
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Non-idempotent — avoid making destructive changes. Use minimal quantity and restore if applicable.",
+      "tags": [
+        "authz",
+        "modify"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-VH-013-001",
+      "hypothesis_id": "VH-013",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/BasketItems/",
+      "parameter": "BasketId,ProductId,quantity",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"BasketId\":6,\"ProductId\":24,\"quantity\":1}"
+            }
+          ],
+          "description": "Baseline add to own basket",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"BasketId\":1,\"ProductId\":24,\"quantity\":1}"
+            }
+          ],
+          "description": "Probe adding to another basket id to detect authz enforcement",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [201] for success vs [401,403] for unauthorized",
+          "threshold": {
+            "expected_codes": [
+              201,
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains ownership fields or basket identifiers linking to other user",
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Avoid creating persistent unwanted items; cleanup if created.",
+      "tags": [
+        "authz",
+        "create"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-VH-014-001",
+      "hypothesis_id": "VH-014",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/wallet/balance",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Baseline authenticated wallet balance request",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Authorization: Bearer {{valid_token}}"
+            }
+          ],
+          "description": "Probe with auth token to confirm balance disclosure",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated account with wallet expected",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains fields like [\"balance\",\"payments\",\"walletId\"]",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "High sensitivity — minimize probing frequency.",
+      "tags": [
+        "financial"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-VH-015-001",
+      "hypothesis_id": "VH-015",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/user/change-password",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Load change-password form to observe CSRF token requirement",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Authorization: Bearer {{valid_token}}"
+            }
+          ],
+          "description": "Probe access to change-password endpoint to verify CSRF enforcement",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "CSRF token must be extracted from GET response/form and included in subsequent state-changing requests",
+          "extract_from": "/rest/user/change-password response body",
+          "bind_to": "csrf_token"
+        },
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "authentication_bypassed",
+          "condition": "ability to perform password change without valid CSRF token results in state change (compare baseline)",
+          "weight": 1.0
+        },
+        {
+          "signal": "header_change",
+          "condition": "responses missing expected CSRF headers or differing set-cookie behavior vs baseline",
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Do not perform actual password changes; only verify presence/requirement of token. Use safe, non-destructive checks.",
+      "tags": [
+        "csrf"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-VH-016-001",
+      "hypothesis_id": "VH-016",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/track-order/{trackId}",
+      "parameter": "trackId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "789a-c954d34e39503081"
+            }
+          ],
+          "description": "Baseline access to tracking id observed in traffic",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "789a-c954d34e39503082"
+            },
+            {
+              "location": "path",
+              "value": "0000-0000"
+            }
+          ],
+          "description": "Probe neighboring and random trackIds to detect disclosure",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "If endpoint requires auth, use authenticated session; otherwise public tokens may work",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains order fields like [\"email\",\"addressId\",\"orderId\",\"paymentId\"]",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Avoid scraping large ranges. Respect rate limits.",
+      "tags": [
+        "tracking",
+        "info-leak"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "TC-VH-017-001",
+      "hypothesis_id": "VH-017",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/languages",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Baseline fetch i18n payloads",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "lang=en' OR '1'='1"
+            }
+          ],
+          "description": "Probe for injection via language parameter if present",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Optional authentication may change returned payloads",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "payload_value in response.body",
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains unexpected keys/values not present in baseline",
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Use non-executing payloads. Observe JSON encoding and client-side rendering risk.",
+      "tags": [
+        "i18n",
+        "xss"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "TC-VH-018-001",
+      "hypothesis_id": "VH-018",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/2fa/status",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Baseline 2FA status check for authenticated account",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Authorization: Bearer {{valid_token_of_other_account}}"
+            }
+          ],
+          "description": "Probe using different account token to detect enumeration differences",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated sessions for accounts with and without 2FA to compare responses",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Compare known 2FA-enabled vs disabled accounts only.",
+      "tags": [
+        "2fa",
+        "enum"
+      ],
+      "estimated_duration": 6
+    },
+    {
+      "id": "TC-VH-019-001",
+      "hypothesis_id": "VH-019",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/profile",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Baseline load of profile page with authenticated cookie",
+          "content_type": "text/html"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Cookie: {{session_cookie_of_other}}"
+            }
+          ],
+          "description": "Probe access using different session to detect profile exposure",
+          "content_type": "text/html"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains user-identifying fields like [\"email\",\"username\",\"lastLoginIp\",\"profileImage\"]",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "High sensitivity; minimize probes.",
+      "tags": [
+        "profile",
+        "pii"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-VH-020-001",
+      "hypothesis_id": "VH-020",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Deliverys/{deliveryId}",
+      "parameter": "deliveryId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            }
+          ],
+          "description": "Baseline access to deliveryId=1",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "2"
+            }
+          ],
+          "description": "Probe other delivery ids to detect sensitive configuration exposure",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session may be required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains fields like [\"icon\",\"name\",\"status\",\"data\"] beyond baseline",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Non-destructive probes only.",
+      "tags": [
+        "delivery",
+        "config"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-VH-021-001",
+      "hypothesis_id": "VH-021",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": "itemId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9"
+            }
+          ],
+          "description": "Baseline fetch of itemId=9",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "10"
+            },
+            {
+              "location": "path",
+              "value": "1"
+            }
+          ],
+          "description": "Probe other itemIds to detect IDOR exposure",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code not equal baseline.status_code or is 200 when expecting 403/404",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "notes": "Compare responses and do not modify resources.",
+      "tags": [
+        "idor"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "TC-VH-022-001",
+      "hypothesis_id": "VH-022",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": "itemId,quantity",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "10"
+            },
+            {
+              "location": "body",
+              "value": "{\"quantity\":1}"
+            }
+          ],
+          "description": "Baseline safe update to own itemId=10",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9"
+            },
+            {
+              "location": "body",
+              "value": "{\"quantity\":2}"
+            }
+          ],
+          "description": "Probe attempting to modify other user's item",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code not equal baseline.status_code or 200 vs 403/404 observed",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.30",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Avoid persistent modifications; use minimal changes and restore if needed.",
+      "tags": [
+        "modify",
+        "authz"
+      ],
+      "estimated_duration": 6
+    },
+    {
+      "id": "TC-VH-023-001",
+      "hypothesis_id": "VH-023",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/rest/user/login",
+      "parameter": "email,password,authentication",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "email=user@example.com&password=correcthorsebatterystaple"
+            }
+          ],
+          "description": "Single legitimate login attempt baseline",
+          "encoding": "application/x-www-form-urlencoded",
+          "content_type": "application/x-www-form-urlencoded"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "email=user@example.com&password=wrongpassword"
+            }
+          ],
+          "description": "Probe failed login to observe status/code/time",
+          "encoding": "application/x-www-form-urlencoded",
+          "content_type": "application/x-www-form-urlencoded"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "email=user@example.com&password=attempt2"
+            }
+          ],
+          "description": "Additional safe probes to detect rate limiting/timing anomalies",
+          "encoding": "application/x-www-form-urlencoded",
+          "content_type": "application/x-www-form-urlencoded"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "CSRF token required for login form; extract and include",
+          "extract_from": "/rest/user/login GET or page",
+          "bind_to": "csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "timing_anomaly",
+          "condition": "response.time_ms > baseline.time_ms + 2000",
+          "threshold": {
+            "timing_ms": 2000
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,401,429] indicating success, failure or rate-limit",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              429
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 100
+      },
+      "max_retries": 5,
+      "delay_between_requests": 5.0,
+      "notes": "Brute-force attempts are rate-limited; respect delay_between_requests to avoid lockouts.",
+      "tags": [
+        "auth",
+        "bruteforce"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-VH-024-001",
+      "hypothesis_id": "VH-024",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/rest/user/data-export",
+      "parameter": "confirmation,format",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"confirmation\":true,\"format\":\"json\"}"
+            }
+          ],
+          "description": "Baseline legitimate data export request",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"confirmation\":true,\"format\":\"csv\"}"
+            }
+          ],
+          "description": "Probe with different format to observe export behavior",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response contains exported user data or file link",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "Export returns sensitive data; limit number of exports and store securely.",
+      "tags": [
+        "data-export"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "TC-VH-025-001",
+      "hypothesis_id": "VH-025",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/rest/basket/{basketId}/checkout",
+      "parameter": "basketId,orderDetails.addressId,orderDetails.deliveryMethodId,orderDetails.paymentId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "body",
+              "value": "{\"orderDetails\":{\"addressId\":7,\"deliveryMethodId\":1,\"paymentId\":1}}"
+            }
+          ],
+          "description": "Baseline checkout of own basket with valid order details",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "body",
+              "value": "{\"orderDetails\":{\"addressId\":1,\"deliveryMethodId\":1,\"paymentId\":1}}"
+            }
+          ],
+          "description": "Probe checkout using other address/payment ids to detect authorization issues",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200] for success vs [401,403] for unauthorized attempts",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains order confirmation details including paymentId or orderId",
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "Do not place real orders. Use test payment/delivery ids; avoid generating financial transactions.",
+      "tags": [
+        "checkout",
+        "authz"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "TC-VH-026-001",
+      "hypothesis_id": "VH-026",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/Users/",
+      "parameter": "email,password,passwordRepeat,username",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"test+unique@example.com\",\"password\":\"Str0ngP@ssw0rd!\",\"passwordRepeat\":\"Str0ngP@ssw0rd!\",\"username\":\"testuser_unique\"}"
+            }
+          ],
+          "description": "Baseline account creation with unique email to observe normal response",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"existing@example.com\",\"password\":\"weak\",\"passwordRepeat\":\"weak\",\"username\":\"testuser\"}"
+            }
+          ],
+          "description": "Probe duplicate email and weak password responses",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "CSRF token required for registration form",
+          "extract_from": "/api/Users/ form or page",
+          "bind_to": "csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.8
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [201,400,409] indicating success or errors",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              409
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Use disposable unique emails to avoid collisions. Respect account creation limits.",
+      "tags": [
+        "signup",
+        "validation"
+      ],
+      "estimated_duration": 15
+    },
+    {
+      "id": "TC-VH-027-001",
+      "hypothesis_id": "VH-027",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/SecurityAnswers/",
+      "parameter": "SecurityQuestionId,UserId,answer",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"SecurityQuestionId\":1,\"UserId\":123,\"answer\":\"placeholder\"}"
+            }
+          ],
+          "description": "Baseline submission of security answer (non-destructive)",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"SecurityQuestionId\":1,\"UserId\":123,\"answer\":\"wrong\"}"
+            }
+          ],
+          "description": "Probe different answers to detect response differences indicating correct answer",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "successful submission returns linkage or user info",
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "notes": "Do not attempt credential stuffing; use minimal probes.",
+      "tags": [
+        "security-questions"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "TC-VH-028-001",
+      "hypothesis_id": "VH-028",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/Cards/",
+      "parameter": "cardNum,expMonth,expYear,fullName",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"cardNum\":\"4111111111111111\",\"expMonth\":12,\"expYear\":2026,\"fullName\":\"Test User\"}"
+            }
+          ],
+          "description": "Baseline card tokenization attempt using test card number",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"cardNum\":\"4242424242424242\",\"expMonth\":1,\"expYear\":2025,\"fullName\":\"Probe User\"}"
+            }
+          ],
+          "description": "Probe for storage/response containing masked card data",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains card reference or masked number (e.g., '****1111')",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "Use only test card numbers. Do not submit real card data.",
+      "tags": [
+        "payment",
+        "pii"
+      ],
+      "estimated_duration": 8
+    },
+    {
+      "id": "TC-VH-029-001",
+      "hypothesis_id": "VH-029",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/Addresss/",
+      "parameter": "city,country,fullName,mobileNum,streetAddress,zipCode",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"city\":\"Testville\",\"country\":\"Testland\",\"fullName\":\"Tester\",\"mobileNum\":\"+10000000000\",\"streetAddress\":\"1 Test St\",\"zipCode\":\"12345\"}"
+            }
+          ],
+          "description": "Baseline add address to authenticated account",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"city\":\"<script>probe</script>\",\"country\":\"Testland\",\"fullName\":\"Tester\",\"mobileNum\":\"+10000000000\",\"streetAddress\":\"1 Test St\",\"zipCode\":\"12345\"}"
+            }
+          ],
+          "description": "Probe for injection/reflection in address fields",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.8
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "new address appears in subsequent GET /api/Addresss list",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Use test addresses and remove if created. Avoid polluting production data.",
+      "tags": [
+        "injection",
+        "data"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "TC-VH-030-001",
+      "hypothesis_id": "VH-030",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/order-history",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Baseline fetch order history for authenticated account",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Authorization: Bearer {{valid_token}}"
+            }
+          ],
+          "description": "Probe with auth token to verify orders returned",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains orders array with fields like [\"orderId\",\"items\",\"total\",\"paymentId\"]",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Limit frequency of checks.",
+      "tags": [
+        "orders",
+        "pii"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "TC-VH-031-001",
+      "hypothesis_id": "VH-031",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/image-captcha/",
+      "parameter": "image",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "Baseline request to fetch captcha image",
+          "content_type": "image/png"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "image=12345"
+            }
+          ],
+          "description": "Probe image id enumeration/replay with single id",
+          "content_type": "image/png"
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "http_callback",
+          "condition": "image URL predictable allowing enumeration or external callbacks observed",
+          "weight": 0.8
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Do not attempt mass enumeration. Limit probes.",
+      "tags": [
+        "captcha",
+        "enumeration"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-VH-032-001",
+      "hypothesis_id": "VH-032",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/continue-code",
+      "parameter": "continueCode",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "Baseline continue-code usage if available",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "continueCode=abc123'}"
+            }
+          ],
+          "description": "Probe reflection and possible redirect/use of continueCode",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session observed; use session cookie if required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "payload_value in response.body or in redirect location header",
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response contains session/state info tied to continueCode",
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Avoid using real continuation tokens. Use synthetic probes.",
+      "tags": [
+        "token",
+        "redirect"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "TC-VH-033-001",
+      "hypothesis_id": "VH-033",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/SecurityQuestions/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Baseline fetch of security questions list",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Repeat to detect unexpected keys/PII",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains unexpected question metadata or PII",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Lightweight checks only.",
+      "tags": [
+        "info-leak"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-VH-034-001",
+      "hypothesis_id": "VH-034",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Recycles/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Baseline fetch of recycle/debug data",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Authorization: Bearer {{valid_token}}"
+            }
+          ],
+          "description": "Probe with auth to observe additional debug data exposure",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session may be required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains debug keys such as [\"err\",\"stack\",\"data\"]",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Avoid triggering server errors.",
+      "tags": [
+        "debug",
+        "info-leak"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-VH-035-001",
+      "hypothesis_id": "VH-035",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Products/{productId}",
+      "parameter": "productId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "24"
+            }
+          ],
+          "description": "Baseline fetch productId=24",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9999"
+            }
+          ],
+          "description": "Probe unpublished/high ids for exposure",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session if required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains unpublished fields or internal flags not present in baseline",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Limit enumeration breadth.",
+      "tags": [
+        "products",
+        "info-leak"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "TC-VH-036-001",
+      "hypothesis_id": "VH-036",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Feedbacks/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "none",
+              "value": ""
+            }
+          ],
+          "description": "Baseline fetch public feedback list",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "q=test"
+            }
+          ],
+          "description": "Probe search or filters to surface PII in comments",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body items contain PII like emails or phone numbers",
           "weight": 1.0
         }
       ],
@@ -571,76 +2434,123 @@
       },
       "max_retries": 1,
       "delay_between_requests": 1.0,
-      "notes": "Requires authenticated session. current_user_id must be determined from baseline /rest/user/whoami. Do not enumerate many IDs; keep probe count low.",
+      "notes": "Do not post feedback here for testing.",
       "tags": [
-        "idor",
-        "authz"
+        "feedback",
+        "pii"
       ],
-      "estimated_duration": 120
+      "estimated_duration": 3
     },
     {
-      "id": "tc-hv07-rest_user_change_password_insecure_get",
-      "hypothesis_id": "hv07-rest_user_change_password_insecure_get",
+      "id": "TC-VH-037-001",
+      "hypothesis_id": "VH-037",
       "base_url": "http://localhost:3000",
       "method": "GET",
-      "endpoint": "/rest/user/change-password",
-      "parameter": "current",
+      "endpoint": "/api/Deliverys",
+      "parameter": "",
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
-              "location": "query",
-              "value": "ggggg"
-            },
-            {
-              "location": "query",
-              "value": "aaaaa"
-            },
-            {
-              "location": "query",
-              "value": "aaaaa"
+              "location": "none",
+              "value": ""
             }
           ],
-          "description": "Baseline password change attempt using observed query params",
+          "description": "Baseline fetch delivery methods list",
           "content_type": "application/json"
         },
         {
           "tier": "probe",
           "payloads": [
             {
-              "location": "query",
-              "value": "ggggg"
-            },
-            {
-              "location": "query",
-              "value": "testNew1"
-            },
-            {
-              "location": "query",
-              "value": "testNew1"
+              "location": "header",
+              "value": "Authorization: Bearer {{valid_token}}"
             }
           ],
-          "description": "Probe with different new password to observe response and leakage",
+          "description": "Probe with auth to reveal internal names/configs",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
-          "type": "custom",
-          "description": "Authenticated session cookie required; login to obtain cookie",
-          "extract_from": "/rest/user/login",
-          "bind_to": "auth_cookie"
+          "type": "login",
+          "description": "Authenticated session may reveal more details",
+          "bind_to": "session_cookie_or_token"
         }
       ],
       "oracle_rules": [
         {
           "signal": "sensitive_data_exposed",
-          "condition": "response.status_code==200 and ('password' in response.body or 'hashed' in response.body or 'User' in response.json)",
+          "condition": "response.body contains internal config or debug fields not present in baseline",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Lightweight enumeration only.",
+      "tags": [
+        "delivery"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-VH-038-001",
+      "hypothesis_id": "VH-038",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Cards/{cardId}",
+      "parameter": "cardId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "7"
+            }
+          ],
+          "description": "Baseline fetch cardId=7",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            },
+            {
+              "location": "path",
+              "value": "2"
+            }
+          ],
+          "description": "Probe other cardIds to detect IDOR exposing masked card info",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code differs from baseline or returns 200 exposing masked card info when unauthorized",
           "threshold": {
-            "body_length_delta_pct": 5.0,
             "expected_codes": [
-              200
+              200,
+              403,
+              404
             ]
           },
           "weight": 1.0
@@ -648,126 +2558,26 @@
       ],
       "pass_logic": "any",
       "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "This endpoint performs sensitive operation via GET; minimize attempts. Do not change real password permanently in exploit phase; use probe only unless safe rollback available.",
-      "tags": [
-        "sensitive_data",
-        "insecure_method"
-      ],
-      "estimated_duration": 60
-    },
-    {
-      "id": "tc-hv08-api_BasketItems_quantity_modify",
-      "hypothesis_id": "hv08-api_BasketItems_quantity_modify",
-      "base_url": "http://localhost:3000",
-      "method": "PUT",
-      "endpoint": "/api/BasketItems/{id}",
-      "parameter": "quantity",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "9"
-            },
-            {
-              "location": "body",
-              "value": "1"
-            }
-          ],
-          "description": "Baseline update quantity to 1",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "9"
-            },
-            {
-              "location": "body",
-              "value": "5"
-            }
-          ],
-          "description": "Modify quantity to a higher non-destructive value",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "9"
-            },
-            {
-              "location": "body",
-              "value": "9999"
-            }
-          ],
-          "description": "Large quantity update to observe business logic limits",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "custom",
-          "description": "Authenticated session cookie required; login to obtain cookie and ensure BasketItem 9 belongs to test user",
-          "extract_from": "/rest/user/login",
-          "bind_to": "auth_cookie"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code==200 and subsequent GET /rest/basket/{basketId} shows quantity change and abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.10",
-          "threshold": {
-            "body_length_delta_pct": 10.0,
-            "expected_codes": [
-              200
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.10",
-          "threshold": {
-            "body_length_delta_pct": 10.0,
-            "expected_codes": [
-              200
-            ]
-          },
-          "weight": 0.7
-        }
-      ],
-      "pass_logic": "all",
-      "safety": {
-        "idempotent_required": false,
+        "idempotent_required": true,
         "destructive_ok": false,
         "max_requests": 20
       },
-      "max_retries": 1,
+      "max_retries": 2,
       "delay_between_requests": 1.0,
-      "notes": "Ensure BasketItem belongs to authenticated user. Use moderate quantities first. Avoid financial impact by not placing orders.",
+      "notes": "High sensitivity; avoid exposing card data. Use test accounts.",
       "tags": [
-        "business_logic"
+        "payment",
+        "idor"
       ],
-      "estimated_duration": 120
+      "estimated_duration": 4
     },
     {
-      "id": "tc-hv09-api_BasketItems_delete_authorization",
-      "hypothesis_id": "hv09-api_BasketItems_delete_authorization",
+      "id": "TC-VH-039-001",
+      "hypothesis_id": "VH-039",
       "base_url": "http://localhost:3000",
-      "method": "DELETE",
-      "endpoint": "/api/BasketItems/{id}",
-      "parameter": "id",
+      "method": "GET",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": "itemId",
       "payloads": [
         {
           "tier": "benign",
@@ -777,33 +2587,106 @@
               "value": "9"
             }
           ],
-          "description": "Baseline DELETE of own BasketItem 9 (if present)",
+          "description": "Baseline fetch basket item 9",
           "content_type": "application/json"
         },
         {
           "tier": "probe",
           "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            },
             {
               "location": "path",
               "value": "10"
             }
           ],
-          "description": "Attempt to delete another BasketItem id to test authorization",
+          "description": "Probe other item ids for exposure",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
-          "type": "custom",
-          "description": "Authenticated session cookie required; login to obtain cookie",
-          "extract_from": "/rest/user/login",
-          "bind_to": "auth_cookie"
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains item details and owner identifiers not belonging to requester",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Non-destructive enumeration only.",
+      "tags": [
+        "basket",
+        "info-leak"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "TC-VH-040-001",
+      "hypothesis_id": "VH-040",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": "itemId,quantity",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "10"
+            },
+            {
+              "location": "body",
+              "value": "{\"quantity\":1}"
+            }
+          ],
+          "description": "Baseline safe update",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9"
+            },
+            {
+              "location": "body",
+              "value": "{\"quantity\":1}"
+            }
+          ],
+          "description": "Probe unauthorized update to other item",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
         }
       ],
       "oracle_rules": [
         {
           "signal": "status_code_change",
-          "condition": "response.status_code in [200,403,404] and subsequent GET /api/BasketItems/{id} shows existence removed when unauthorized",
+          "condition": "response.status_code not equal baseline.status_code or 200 vs 403/404 observed",
           "threshold": {
             "expected_codes": [
               200,
@@ -818,561 +2701,117 @@
       "safety": {
         "idempotent_required": false,
         "destructive_ok": false,
-        "max_requests": 10
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Avoid making destructive changes. Use minimal non-persistent updates.",
+      "tags": [
+        "authz",
+        "modify"
+      ],
+      "estimated_duration": 6
+    },
+    {
+      "id": "TC-VH-041-001",
+      "hypothesis_id": "VH-041",
+      "base_url": "http://localhost:3000",
+      "method": "DELETE",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": "itemId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9"
+            }
+          ],
+          "description": "Baseline deletion attempt (if permitted) on own item; prefer non-destructive check",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "10"
+            }
+          ],
+          "description": "Probe deletion of other item ids to detect unauthorized deletion",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required",
+          "bind_to": "session_cookie_or_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code differs from baseline or is 200 when unauthorized deletion attempted",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
       },
       "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Avoid deleting items that affect other users. Prefer probe on non-critical IDs. Record state before delete to restore if needed.",
+      "delay_between_requests": 2.0,
+      "notes": "Prefer non-destructive checks; avoid actual deletions where possible.",
       "tags": [
         "authz",
         "delete"
       ],
-      "estimated_duration": 90
-    },
-    {
-      "id": "tc-hv10-api_Products_date_param_tamper",
-      "hypothesis_id": "hv10-api_Products_date_param_tamper",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/api/Products/{productId}",
-      "parameter": "d",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "1"
-            },
-            {
-              "location": "query",
-              "value": "Fri Aug 15 2025"
-            }
-          ],
-          "description": "Baseline product fetch with observed date param",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "1"
-            },
-            {
-              "location": "query",
-              "value": "Fri Aug 15 1900"
-            }
-          ],
-          "description": "Probe with different d value to trigger server-side processing differences",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "1"
-            },
-            {
-              "location": "query",
-              "value": "${'a'*8000}"
-            }
-          ],
-          "description": "Large payload in d to detect timing anomalies or resource exhaustion behavior",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [],
-      "oracle_rules": [
-        {
-          "signal": "timing_anomaly",
-          "condition": "response.time_ms > baseline.time_ms + 3000 or response.status_code in [500]",
-          "threshold": {
-            "timing_ms": 3000,
-            "expected_codes": [
-              200
-            ]
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 30
-      },
-      "max_retries": 1,
-      "delay_between_requests": 2.0,
-      "notes": "Use small probe first. Monitor response times; avoid large or prolonged payloads to prevent DoS.",
-      "tags": [
-        "timing",
-        "resource"
-      ],
-      "estimated_duration": 120
-    },
-    {
-      "id": "tc-hv11-api_Addresss_create_injection",
-      "hypothesis_id": "hv11-api_Addresss_create_injection",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/api/Addresss/",
-      "parameter": "streetAddress",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "GG Island St."
-            },
-            {
-              "location": "body",
-              "value": "Cayman Islands"
-            },
-            {
-              "location": "body",
-              "value": "ggggg"
-            },
-            {
-              "location": "body",
-              "value": "8000000000"
-            },
-            {
-              "location": "body",
-              "value": "666666"
-            },
-            {
-              "location": "body",
-              "value": "Cyaman"
-            },
-            {
-              "location": "body",
-              "value": "MN"
-            }
-          ],
-          "description": "Baseline address creation with observed values",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "GG Island St. ' OR '1'='1"
-            },
-            {
-              "location": "body",
-              "value": "Cayman Islands"
-            },
-            {
-              "location": "body",
-              "value": "ggggg"
-            },
-            {
-              "location": "body",
-              "value": "8000000000"
-            },
-            {
-              "location": "body",
-              "value": "666666"
-            },
-            {
-              "location": "body",
-              "value": "Cyaman"
-            },
-            {
-              "location": "body",
-              "value": "MN"
-            }
-          ],
-          "description": "SQL/command injection probe in streetAddress",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "<script>alert(1)</script>"
-            },
-            {
-              "location": "body",
-              "value": "Cayman Islands"
-            },
-            {
-              "location": "body",
-              "value": "ggggg"
-            },
-            {
-              "location": "body",
-              "value": "8000000000"
-            },
-            {
-              "location": "body",
-              "value": "666666"
-            },
-            {
-              "location": "body",
-              "value": "Cyaman"
-            },
-            {
-              "location": "body",
-              "value": "MN"
-            }
-          ],
-          "description": "XSS probe in streetAddress to detect reflected/stored injection",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "custom",
-          "description": "Authenticated session cookie required; login to obtain cookie",
-          "extract_from": "/rest/user/login",
-          "bind_to": "auth_cookie"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "error_signature",
-          "condition": "response.status_code in [400,500] and response.body contains 'error' or SQL stack traces",
-          "threshold": {
-            "expected_codes": [
-              500,
-              400
-            ]
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 15
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Avoid destructive injection payloads. Use probes that elicit errors safely. Clean up created addresses.",
-      "tags": [
-        "injection",
-        "sql",
-        "xss"
-      ],
-      "estimated_duration": 180
-    },
-    {
-      "id": "tc-hv12-api_Cards_card_number_exposure",
-      "hypothesis_id": "hv12-api_Cards_card_number_exposure",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/api/Cards/",
-      "parameter": "cardNum",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "1234567892233333"
-            },
-            {
-              "location": "body",
-              "value": "gggggg"
-            },
-            {
-              "location": "body",
-              "value": "10"
-            },
-            {
-              "location": "body",
-              "value": "2097"
-            }
-          ],
-          "description": "Baseline add card with observed sample (sensitive)",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "4111111111111111"
-            },
-            {
-              "location": "body",
-              "value": "probe name"
-            },
-            {
-              "location": "body",
-              "value": "12"
-            },
-            {
-              "location": "body",
-              "value": "2030"
-            }
-          ],
-          "description": "Add another test card to check masking behavior in response",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "custom",
-          "description": "Authenticated session cookie required; login to obtain cookie",
-          "extract_from": "/rest/user/login",
-          "bind_to": "auth_cookie"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.status_code==201 and (response.body contains cardNum or response.body contains unmasked card number)",
-          "threshold": {
-            "body_length_delta_pct": 5.0,
-            "expected_codes": [
-              201
-            ]
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Do not submit real card numbers. Use clearly test card numbers. Ensure PCI-safe handling and cleanup.",
-      "tags": [
-        "sensitive_data",
-        "pci"
-      ],
-      "estimated_duration": 120
-    },
-    {
-      "id": "tc-hv13-rest_basket_checkout_logic",
-      "hypothesis_id": "hv13-rest_basket_checkout_logic",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/rest/basket/{basketId}/checkout",
-      "parameter": "couponData",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "6"
-            },
-            {
-              "location": "body",
-              "value": "bnVsbA=="
-            },
-            {
-              "location": "body",
-              "value": "7"
-            },
-            {
-              "location": "body",
-              "value": "7"
-            },
-            {
-              "location": "body",
-              "value": "1"
-            }
-          ],
-          "description": "Baseline checkout with observed values",
-          "encoding": "json",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "6"
-            },
-            {
-              "location": "body",
-              "value": "invalidCoupon"
-            },
-            {
-              "location": "body",
-              "value": "7"
-            },
-            {
-              "location": "body",
-              "value": "7"
-            },
-            {
-              "location": "body",
-              "value": "1"
-            }
-          ],
-          "description": "Probe with invalid couponData to observe behavior",
-          "encoding": "json",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "6"
-            },
-            {
-              "location": "body",
-              "value": "eyJwYXltZW50SWQiOiAiNyJ9"
-            },
-            {
-              "location": "body",
-              "value": "7"
-            },
-            {
-              "location": "body",
-              "value": "7"
-            },
-            {
-              "location": "body",
-              "value": "1"
-            }
-          ],
-          "description": "Manipulate couponData/orderDetails to attempt altering payment or delivery",
-          "encoding": "base64",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "custom",
-          "description": "Authenticated session cookie required; login to obtain cookie and ensure basket contains items",
-          "extract_from": "/rest/user/login",
-          "bind_to": "auth_cookie"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "response_length_diff",
-          "condition": "response.status_code==200 and abs(len(response.body)-len(baseline.body))/max(1,len(baseline.body)) > 0.10 and response.body contains 'orderConfirmation'",
-          "threshold": {
-            "body_length_delta_pct": 10.0,
-            "expected_codes": [
-              200
-            ]
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "max_retries": 1,
-      "delay_between_requests": 2.0,
-      "notes": "Avoid creating real orders with payment impact. Use test paymentId/addressId known to be non-chargeable. Monitor track-order for created order.",
-      "tags": [
-        "business_logic",
-        "checkout"
-      ],
-      "estimated_duration": 300
-    },
-    {
-      "id": "tc-hv14-rest_track_order_enum_idor",
-      "hypothesis_id": "hv14-rest_track_order_enum_idor",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/rest/track-order/{orderId}",
-      "parameter": "orderId",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "789a-c954d34e39503081"
-            }
-          ],
-          "description": "Baseline track-order for own orderId",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "789a-c954d34e39503080"
-            }
-          ],
-          "description": "Probe adjacent orderId to check authorization",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "0000-0000000000000000"
-            }
-          ],
-          "description": "Probe other orderId patterns to detect enumeration leaks",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "custom",
-          "description": "Authenticated session cookie required; login to obtain cookie",
-          "extract_from": "/rest/user/login",
-          "bind_to": "auth_cookie"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "authorization_bypassed",
-          "condition": "response.status_code==200 and response.body contains 'email' and response.json.get('data')[0].get('orderId') != baseline_orderId",
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 30
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Limit enumeration attempts. Compare returned email masked/unmasked. Use low-frequency probes.",
-      "tags": [
-        "idor",
-        "order"
-      ],
-      "estimated_duration": 120
+      "estimated_duration": 6
     }
   ],
   "global_prerequisites": [
     {
       "type": "login",
-      "description": "Authenticate using POST /rest/user/login with observed valid account to obtain auth cookie and optional Bearer token",
-      "extract_from": "/rest/user/login",
-      "bind_to": "auth_cookie"
+      "description": "Most tests require an authenticated session; obtain session cookie or bearer token via /rest/user/login",
+      "extract_from": "/rest/user/login response",
+      "bind_to": "session_cookie_or_token"
+    },
+    {
+      "type": "csrf_token",
+      "description": "CSRF token extraction for endpoints marked token_in_form (e.g., /rest/user/login, /api/Users/, /api/Feedbacks/)",
+      "extract_from": "/rest/user/login or form pages",
+      "bind_to": "csrf_token"
     }
   ],
   "execution_hints": [
     {
       "key": "rate_limit",
-      "value": "pace requests at >0.5s intervals; respect max_requests per test case"
+      "value": "Respect delay_between_requests and avoid aggressive enumeration; some endpoints enforce rate limits or account lockout."
     },
     {
-      "key": "timing",
-      "value": "use baseline timing measurements and allow 2-3x variance for probe thresholds"
+      "key": "observation_required",
+      "value": "Certain socket/io and captcha endpoints require additional traffic capture to fill sample values."
     }
   ],
-  "metadata": []
+  "metadata": [
+    {
+      "key": "session_management",
+      "value": "cookie"
+    },
+    {
+      "key": "auth_flow",
+      "value": "form_login"
+    }
+  ]
 }

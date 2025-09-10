@@ -328,22 +328,6 @@ class ParserModule:
         return False
 
     @staticmethod
-    def _normalize_path(path: str) -> str:
-        """
-        Replace dynamic segments with placeholders to group similar endpoints:
-        - UUIDs -> :uuid
-        - long hex -> :hex
-        - integers -> :int
-        - emails -> :email
-        """
-        s = path
-        s = re.sub(r'\b[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}\b', ':uuid', s)
-        s = re.sub(r'\b[0-9a-fA-F]{16,}\b', ':hex', s)
-        s = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', ':email', s)
-        s = re.sub(r'(?<=/)\d+(?=/|$)', ':int', s)
-        return s
-
-    @staticmethod
     def _status_bucket(status: int) -> str:
         if status >= 500:
             return '5xx'
@@ -380,14 +364,14 @@ class ParserModule:
             orig = self.INCLUDE_STATIC_ASSETS
             self.INCLUDE_STATIC_ASSETS = include_static_assets
 
+        # Group by exact path (no normalization)
         groups: Dict[Tuple[str, str], Dict[str, Any]] = {}
         for ep in endpoints:
-            norm = self._normalize_path(ep.path or '/')
-            key = (ep.method, norm)
+            key = (ep.method, ep.path or '/')
             if key not in groups:
                 groups[key] = {
                     "method": ep.method,
-                    "normalizedPath": norm,
+                    "path": ep.path or '/',
                     "hosts": set(),
                     "endpointTypes": set(),
                     "count": 0,
@@ -420,11 +404,11 @@ class ParserModule:
 
         # Flatten
         flat: List[Dict[str, Any]] = []
-        for (method, norm_path), g in groups.items():
+        for (method, path), g in groups.items():
             req = {
-                "id": f"{method}:{norm_path}",
+                "id": f"{method}:{path}",
                 "method": method,
-                "normalizedPath": norm_path,
+                "path": path,
                 "hosts": sorted(list(g["hosts"]))[:3],
                 "endpointTypes": sorted(list(g["endpointTypes"])),
                 "count": g["count"],
@@ -437,7 +421,7 @@ class ParserModule:
             flat.append(req)
 
         # Sort by score desc, then count desc, then method/path
-        flat.sort(key=lambda x: (x["score"], x["count"], x["method"], x["normalizedPath"]), reverse=True)
+        flat.sort(key=lambda x: (x["score"], x["count"], x["method"], x["path"]), reverse=True)
 
         # Cap groups
         cap = max_groups if max_groups is not None else self.MAX_GROUPS
@@ -466,6 +450,49 @@ class ParserModule:
         if include_static_assets is not None:
             self.INCLUDE_STATIC_ASSETS = orig
 
+    def _filter_for_reasoning(self, endpoints: List[ParsedEndpoint]) -> List[ParsedEndpoint]:
+        """Filter endpoints that are relevant for security testing"""
+        filtered = []
+        for ep in endpoints:
+            # Skip unimportant static assets unless explicitly included
+            if not self.INCLUDE_STATIC_ASSETS and ep.endpoint_type == EndpointType.UNIMPORTANT_STATIC_ASSET:
+                continue
+            # Skip third party
+            if ep.endpoint_type == EndpointType.THIRD_PARTY:
+                continue
+            filtered.append(ep)
+        return filtered
+
+    def _score_endpoint(self, ep: ParsedEndpoint) -> float:
+        """Score endpoint based on security testing relevance"""
+        score = 0.0
+
+        # Base score by type
+        type_scores = {
+            EndpointType.API_ENDPOINT: 1.0,
+            EndpointType.AUTHENTICATION: 0.9,
+            EndpointType.FORM_SUBMISSION: 0.8,
+            EndpointType.PAGE_REQUEST: 0.5,
+            EndpointType.STATIC_ASSET: 0.3,
+            EndpointType.UNIMPORTANT_STATIC_ASSET: 0.1,
+            EndpointType.THIRD_PARTY: 0.0
+        }
+        score += type_scores.get(ep.endpoint_type, 0.0)
+
+        # Bonus for sensitive endpoints
+        if ep.is_sensitive:
+            score += 0.5
+
+        # Bonus for auth indicators
+        if ep.authentication_indicators:
+            score += 0.3
+
+        # Bonus for parameters
+        if ep.potential_parameters:
+            score += min(len(ep.potential_parameters) * 0.1, 0.5)
+
+        return score
+
     def export_ultra_compact_sharded(
         self,
         endpoints: List[ParsedEndpoint],
@@ -483,15 +510,14 @@ class ParserModule:
 
         filtered = self._filter_for_reasoning(endpoints)
 
-        # Build all groups once
+        # Build all groups once (no normalization)
         groups: Dict[Tuple[str, str], Dict[str, Any]] = {}
         for ep in filtered:
-            norm = self._normalize_path(ep.path or '/')
-            key = (ep.method, norm)
+            key = (ep.method, ep.path or '/')
             if key not in groups:
                 groups[key] = {
                     "method": ep.method,
-                    "normalizedPath": norm,
+                    "path": ep.path or '/',
                     "hosts": set(),
                     "endpointTypes": set(),
                     "count": 0,
@@ -522,11 +548,11 @@ class ParserModule:
                 g["score"] = s
 
         flat: List[Dict[str, Any]] = []
-        for (method, norm_path), g in groups.items():
+        for (method, path), g in groups.items():
             flat.append({
-                "id": f"{method}:{norm_path}",
+                "id": f"{method}:{path}",
                 "method": method,
-                "normalizedPath": norm_path,
+                "path": path,
                 "hosts": sorted(list(g["hosts"]))[:3],
                 "endpointTypes": sorted(list(g["endpointTypes"])),
                 "count": g["count"],
@@ -537,7 +563,7 @@ class ParserModule:
                 "score": round(g["score"], 2),
             })
 
-        flat.sort(key=lambda x: (x["score"], x["count"], x["method"], x["normalizedPath"]), reverse=True)
+        flat.sort(key=lambda x: (x["score"], x["count"], x["method"], x["path"]), reverse=True)
 
         per_file = max_groups_per_file if max_groups_per_file is not None else self.SHARD_SIZE
         files: List[str] = []
