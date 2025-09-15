@@ -4,6 +4,7 @@ from reasoning_prompt import STEP1_SYSTEM_PROMPT, STEP2_CONTEXT_SYSTEM_PROMPT, S
 from schemas import AttackVectorsContext, TestCasesContext, TrafficAnalysisContext, VulnHypothesesContext
 from utils import call_llm, fill
 import json
+import argparse
 
 class ReasoningModule():
     def __init__(self):
@@ -104,8 +105,12 @@ class ReasoningModule():
                 f.write(result.model_dump_json(indent=2, exclude_none=True))
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Do reasoning from parsed HAR file')
+    parser.add_argument('filename', help='Filename without .har extension (e.g., "example" for parsed_hars/example.har)')
+    args = parser.parse_args()
+    filename = args.filename
+
     RM = ReasoningModule()
-    filename = "juice_shop"
     try:
         result = RM.do_reasoning_chain(filename)
         print(result)

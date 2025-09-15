@@ -1,5 +1,6 @@
 import requests
 import json
+import argparse
 
 from schemas import TestCase
 
@@ -55,7 +56,10 @@ class VulnerabilityAnalysisModule:
                 print(f"Error in {tc['id']}: {e}")
 
 if __name__ == "__main__":
-    filename = 'juice_shop'
+    parser = argparse.ArgumentParser(description='Execute testcases from reasoning and verify')
+    parser.add_argument('filename', help='Filename without .har extension (e.g., "example" for parsed_hars/example.har)')
+    args = parser.parse_args()
+    filename = args.filename
+
     VAM = VulnerabilityAnalysisModule()
     res = VAM.do_vuln_analysis(filename)
-    # print(res)

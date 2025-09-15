@@ -4,6 +4,7 @@ import re
 from typing import Counter, Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
+import argparse
 
 class EndpointType(Enum):
     UNIMPORTANT_STATIC_ASSET = "unimportant_static_asset"
@@ -600,8 +601,12 @@ class ParserModule:
         self.export_ultra_compact_json(endpoints, output_file, max_groups=self.MAX_GROUPS)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Parse HAR files and extract endpoints')
+    parser.add_argument('filename', help='Filename without .har extension (e.g., "example" for hars/example.har)')
+    args = parser.parse_args()
+    filename = args.filename
+
     PM = ParserModule()
-    filename = input('Enter filename (hars/<name>.har): ').strip()
     endpoints = PM.parse_har_file(f'hars/{filename}.har')
 
     print(f"\n=== PARSING SUMMARY ===")
