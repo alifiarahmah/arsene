@@ -1,262 +1,92 @@
 {
   "test_cases": [
     {
-      "id": "TC-H-REST-WHOAMI-INFO-LEAK",
-      "hypothesis_id": "H-REST-WHOAMI-INFO-LEAK",
+      "id": "tc-hypo-001",
+      "hypothesis_id": "hypo-001",
       "base_url": "http://localhost:3000",
       "method": "GET",
       "endpoint": "/rest/user/whoami",
-      "parameter": "email,lastLoginIp,profileImage,user",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Authorization",
-          "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-        }
-      ],
+      "parameter": "user",
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"email\":\"ggggg@mail.com\",\"lastLoginIp\":\"0.0.0.0\",\"profileImage\":\"/assets/public/images/uploads/default.svg\",\"user\":\"\"}"
+              "value": "{\"user\":\"current\"}"
             }
           ],
-          "description": "Authenticated baseline returning whoami",
+          "description": "Baseline authorized request with user=current",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
         },
         {
           "tier": "probe",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"email\":\"ggggg@mail.com\\\"'><script>1</script>\",\"lastLoginIp\":\"0.0.0.0\",\"profileImage\":\"/assets/public/images/uploads/default.svg\",\"user\":\"\"}"
+              "value": "{\"user\":\"\"}"
             }
           ],
-          "description": "Inject benign reflective probe to detect reflection or body changes",
+          "description": "Probe with blank user to observe difference",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
         },
         {
           "tier": "exploit",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"email\":\"ggggg@mail.com\",\"lastLoginIp\":\"0.0.0.0\",\"profileImage\":\"/assets/public/images/uploads/default.svg\",\"user\":\"' OR '1'='1\"}"
+              "value": "{\"user\":\"admin' OR 1=1 --\"}"
             }
           ],
-          "description": "Probe for unexpected data disclosure differences",
+          "description": "Probe for information leakage by supplying crafted user field (safe probe)",
           "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "jwt_refresh",
-          "description": "Valid Bearer token present in Authorization header"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "payload_value in response.body OR response.body contains \\\"ggggg@mail.com\\\" OR response.body contains \\\"/assets/public/images/uploads/default.svg\\\"",
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.30",
-          "threshold": {
-            "body_length_delta_pct": 30.0
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 20
-      },
-      "max_retries": 1,
-      "delay_between_requests": 0.5,
-      "notes": "Use existing Authorization header; do not exceed max_requests",
-      "tags": [
-        "info_leak",
-        "whoami"
-      ],
-      "estimated_duration": 60
-    },
-    {
-      "id": "TC-H-REST-BASKET-IDOR",
-      "hypothesis_id": "H-REST-BASKET-IDOR",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/rest/basket/{basketId}",
-      "parameter": "BasketId",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Authorization",
-          "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-        }
-      ],
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
+          "content_type": "application/json",
+          "header": [
             {
-              "location": "path",
-              "value": "/rest/basket/6"
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
             }
-          ],
-          "description": "Baseline fetch of own basketId=6",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/7"
-            }
-          ],
-          "description": "Request neighboring basketId to detect IDOR via status or content difference",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/1"
-            }
-          ],
-          "description": "Request another likely user basket id to test access control",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "jwt_refresh",
-          "description": "Valid Bearer token in Authorization header for authenticated access"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code not in baseline.status_code and response.status_code in [200,403,404]",
-          "threshold": {
-            "expected_codes": [
-              200,
-              403,
-              404
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.40",
-          "threshold": {
-            "body_length_delta_pct": 40.0
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 50
-      },
-      "max_retries": 2,
-      "delay_between_requests": 0.5,
-      "notes": "Do not attempt destructive actions; only GETs allowed. Vary basketId conservatively.",
-      "tags": [
-        "idor",
-        "authorization"
-      ],
-      "estimated_duration": 120
-    },
-    {
-      "id": "TC-H-ADMIN-APP-CONFIG-EXPOSE",
-      "hypothesis_id": "H-ADMIN-APP-CONFIG-EXPOSE",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "application,baseUrl,trainingData",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Authorization",
-          "header_value": "Bearer <ADMIN_TOKEN_REQUIRED>"
-        }
-      ],
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/admin/application-configuration"
-            }
-          ],
-          "description": "Baseline admin config fetch with admin token",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/admin/application-configuration"
-            }
-          ],
-          "description": "Probe: fetch as non-admin (omit admin token) to compare responses",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/admin/application-configuration"
-            }
-          ],
-          "description": "Authenticated admin fetch to confirm sensitive fields exposed",
-          "content_type": "application/json"
+          ]
         }
       ],
       "prerequisites": [
         {
           "type": "login",
-          "description": "Admin credentials required to obtain admin bearer token; bind token to Authorization header"
+          "description": "Bearer token present in Authorization header",
+          "extract_from": "response",
+          "bind_to": "authorization_token"
         }
       ],
       "oracle_rules": [
         {
           "signal": "sensitive_data_exposed",
-          "condition": "response.body contains \\\"baseUrl\\\" OR response.body contains \\\"trainingData\\\" OR response.body contains \\\"application\\\"",
+          "condition": "response.body contains \"email\" or response.body contains \"id\"",
           "weight": 1.0
         },
         {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.30",
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,401] (compare authorized vs no-auth)",
           "threshold": {
-            "body_length_delta_pct": 30.0
+            "expected_codes": [
+              200,
+              401
+            ]
           },
-          "weight": 0.8
+          "weight": 1.0
         }
       ],
       "pass_logic": "any",
@@ -265,93 +95,99 @@
         "destructive_ok": false,
         "max_requests": 10
       },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Requires admin token; do not expose admin token in logs. Replace <ADMIN_TOKEN_REQUIRED> before execution.",
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
       "tags": [
-        "sensitive",
-        "admin"
+        "info_disclosure",
+        "auth_bypass"
       ],
-      "estimated_duration": 300
+      "estimated_duration": 2
     },
     {
-      "id": "TC-H-SOCKETIO-SID-PREDICTION-NEEDS",
-      "hypothesis_id": "H-SOCKETIO-SID-PREDICTION-NEEDS",
+      "id": "tc-hypo-002",
+      "hypothesis_id": "hypo-002",
       "base_url": "http://localhost:3000",
       "method": "GET",
-      "endpoint": "/socket.io/",
-      "parameter": "sid",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "*/*"
-        },
-        {
-          "header_name": "Cookie",
-          "header_value": "auth_cookie_token=<SESSION_COOKIE>"
-        }
-      ],
+      "endpoint": "/rest/basket/6",
+      "parameter": "BasketId",
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
-              "location": "query",
-              "value": "EIO=4&transport=polling&sid=<observed_sid>"
+              "location": "path",
+              "value": "6"
             }
           ],
-          "description": "Baseline handshake using observed sid",
-          "content_type": "*/*"
+          "description": "Baseline fetch for BasketId=6 with Authorization header",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
         },
         {
           "tier": "probe",
           "payloads": [
             {
-              "location": "query",
-              "value": "EIO=4&transport=polling&sid=invalid-sid-123"
+              "location": "path",
+              "value": "7"
             }
           ],
-          "description": "Probe with invalid sid to observe status/timing differences",
-          "content_type": "*/*"
+          "description": "Probe other BasketId to observe access control",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
         },
         {
           "tier": "exploit",
           "payloads": [
             {
-              "location": "query",
-              "value": "EIO=4&transport=polling&sid=789a-c954d34e39503081"
+              "location": "path",
+              "value": "1"
             }
           ],
-          "description": "Use another observed sid value to test session handling",
-          "content_type": "*/*"
+          "description": "Probe accessing a different known id (1) to check for leakage (safe probe)",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
         }
       ],
       "prerequisites": [
         {
-          "type": "session_state",
-          "description": "Valid session cookie required; bind to Cookie header as auth_cookie_token"
+          "type": "login",
+          "description": "Have valid Authorization Bearer token",
+          "extract_from": "input",
+          "bind_to": "Authorization"
         }
       ],
       "oracle_rules": [
         {
-          "signal": "timing_anomaly",
-          "condition": "response.time_ms > baseline.time_ms + 5000",
-          "threshold": {
-            "timing_ms": 5000
-          },
-          "weight": 0.7
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains \"UserId\" or response.body contains \"Products\"",
+          "weight": 1.0
         },
         {
           "signal": "status_code_change",
-          "condition": "response.status_code in [200,400,401] and response.status_code != baseline.status_code",
+          "condition": "response.status_code in [200,403,404] across probes",
           "threshold": {
             "expected_codes": [
               200,
-              400,
-              401
+              403,
+              404
             ]
           },
-          "weight": 0.8
+          "weight": 1.0
         }
       ],
       "pass_logic": "any",
@@ -361,296 +197,175 @@
         "max_requests": 20
       },
       "max_retries": 2,
-      "delay_between_requests": 1.0,
-      "notes": "Needs observation to populate real sid values; avoid repeated invalid sids to prevent lockout.",
+      "delay_between_requests": 0.5,
       "tags": [
-        "socket.io",
-        "session"
+        "idor",
+        "authz"
       ],
-      "estimated_duration": 180
+      "estimated_duration": 3
     },
     {
-      "id": "TC-H-FEEDBACK-CAPTCHA-BYPASS",
-      "hypothesis_id": "H-FEEDBACK-CAPTCHA-BYPASS-NEEDS_OBS",
+      "id": "tc-hypo-003",
+      "hypothesis_id": "hypo-003",
       "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "captcha,captchaId,comment",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Content-Type",
-          "header_value": "application/json"
-        }
-      ],
+      "method": "GET",
+      "endpoint": "/rest/admin/application-configuration",
+      "parameter": "application",
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"UserId\":null,\"captcha\":\"<valid_answer>\",\"captchaId\":1,\"comment\":\"benign feedback\",\"rating\":5}"
+              "value": "{\"application\":\"default\"}"
             }
           ],
-          "description": "Submit feedback with valid captcha (baseline). Replace <valid_answer> before execution.",
+          "description": "Baseline admin config request with admin token",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiYWRtaW4iLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
         },
         {
           "tier": "probe",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"UserId\":null,\"captcha\":\"wrong-answer\",\"captchaId\":1,\"comment\":\"probe feedback\",\"rating\":1}"
+              "value": "{\"application\":\"default\"}"
             }
           ],
-          "description": "Submit with incorrect captcha to observe status changes",
+          "description": "Probe non-admin token to compare response",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIn0.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
         },
         {
           "tier": "exploit",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"UserId\":null,\"captcha\":\"\",\"captchaId\":9999,\"comment\":\"attempt bypass\",\"rating\":1}"
+              "value": "{\"application\":\"' OR '1'='1\"}"
             }
           ],
-          "description": "Attempt submission with missing/invalid captchaId to detect bypass behavior",
+          "description": "Safe probe payload to detect leakage when non-admin token used",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIn0.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Admin and non-admin tokens available; baseline uses admin token",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains \"config\" or response.body contains \"privacyContactEmail\" when using non-admin token",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,401,403] across admin vs non-admin",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "privilege",
+        "info_leak"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "tc-hypo-004",
+      "hypothesis_id": "hypo-004",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/socket.io/",
+      "parameter": "sid",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "sid=existing-sid&t=1&EIO=3&transport=polling"
+            }
+          ],
+          "description": "Baseline socket.io connect with observed sid",
+          "content_type": "*/*",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "sid=random-sid-123&t=1&EIO=3&transport=polling"
+            }
+          ],
+          "description": "Probe with random sid to observe status/timing differences",
+          "content_type": "*/*",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "sid=789a-c954d34e39503081&t=1&EIO=3&transport=polling"
+            }
+          ],
+          "description": "Probe with another observed orderRef-like sid to see auth leakage",
+          "content_type": "*/*",
+          "header": []
         }
       ],
       "prerequisites": [
         {
           "type": "custom",
-          "description": "No auth required; ensure captchaId 1 corresponds to baseline if known"
+          "description": "Capture valid sid from socket.io negotiation prior to probes",
+          "extract_from": "response",
+          "bind_to": "sid",
+          "custom_logic": "needs_observation=true"
         }
       ],
       "oracle_rules": [
         {
           "signal": "status_code_change",
-          "condition": "response.status_code in [200,400,403] and response.status_code != baseline.status_code",
-          "threshold": {
-            "expected_codes": [
-              200,
-              400,
-              403
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
-          "threshold": {
-            "body_length_delta_pct": 20.0
-          },
-          "weight": 0.7
-        }
-      ],
-      "pass_logic": "all",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 30
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Requires observation to confirm a valid captcha answer; do not brute-force captcha.",
-      "tags": [
-        "captcha",
-        "anti_automation"
-      ],
-      "estimated_duration": 300
-    },
-    {
-      "id": "TC-H-BASKETITEMS-PUT-CSRF",
-      "hypothesis_id": "H-BASKETITEMS-PUT-CSRF",
-      "base_url": "http://localhost:3000",
-      "method": "PUT",
-      "endpoint": "/api/BasketItems/{itemId}",
-      "parameter": "itemId,id,quantity",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Authorization",
-          "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-        },
-        {
-          "header_name": "Content-Type",
-          "header_value": "application/json"
-        }
-      ],
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/9"
-            },
-            {
-              "location": "body",
-              "value": "{\"id\":9,\"quantity\":1}"
-            }
-          ],
-          "description": "Baseline authenticated PUT with valid CSRF token present (token_in_form)",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/9"
-            },
-            {
-              "location": "body",
-              "value": "{\"id\":9,\"quantity\":2}"
-            }
-          ],
-          "description": "Authenticated PUT altering quantity (with CSRF token) to observe behavior",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/9"
-            },
-            {
-              "location": "body",
-              "value": "{\"id\":9,\"quantity\":5}"
-            }
-          ],
-          "description": "Attempt PUT without CSRF token header or form field to detect rejection",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authenticated user session required; include Authorization header or session cookie"
-        },
-        {
-          "type": "csrf_token",
-          "description": "Obtain token_in_form for valid baseline and probe requests; omit for exploit step to test protection"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code in [200,401,403] and response.status_code != baseline.status_code",
-          "threshold": {
-            "expected_codes": [
-              200,
-              403,
-              401
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
-          "threshold": {
-            "body_length_delta_pct": 20.0
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 20
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Ensure CSRF token is included for benign/probe; exploit step omits CSRF to test server rejection. Avoid changing quantity to high values.",
-      "tags": [
-        "csrf",
-        "state_change"
-      ],
-      "estimated_duration": 240
-    },
-    {
-      "id": "TC-H-BASKETITEMS-DELETE-CSRF",
-      "hypothesis_id": "H-BASKETITEMS-DELETE-CSRF",
-      "base_url": "http://localhost:3000",
-      "method": "DELETE",
-      "endpoint": "/api/BasketItems/{id}",
-      "parameter": "id",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Authorization",
-          "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-        }
-      ],
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/9"
-            }
-          ],
-          "description": "Baseline DELETE with valid CSRF token (token_in_form) to confirm expected behavior",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/9"
-            }
-          ],
-          "description": "Attempt DELETE with CSRF token removed to observe server rejection",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/10"
-            }
-          ],
-          "description": "Attempt deletion of another itemId without CSRF to detect CSRF/IDOR combination",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authenticated session required; include Authorization header"
-        },
-        {
-          "type": "csrf_token",
-          "description": "Obtain token_in_form for baseline; omit for probe/exploit steps"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code in [200,401,403] and response.status_code != baseline.status_code",
+          "condition": "response.status_code in [200,401,403] across different sid values",
           "threshold": {
             "expected_codes": [
               200,
@@ -661,12 +376,193 @@
           "weight": 1.0
         },
         {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
+          "signal": "timing_anomaly",
+          "condition": "response.time_ms > baseline.time_ms + 3000",
           "threshold": {
-            "body_length_delta_pct": 20.0
+            "timing_ms": 3000
           },
-          "weight": 0.7
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "needs_observation=true for sid extraction",
+      "tags": [
+        "session",
+        "socket.io"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "tc-hypo-005",
+      "hypothesis_id": "hypo-005",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/products/search",
+      "parameter": "description",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"description\":\"laptop\"}"
+            }
+          ],
+          "description": "Baseline search with benign description",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"description\":\"<script>1</script>\"}"
+            }
+          ],
+          "description": "Probe for reflected input (XSS-like) but safe payload",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"description\":\"' OR 1=1 --\"}"
+            }
+          ],
+          "description": "Probe for injection reflection via description field (safe probe)",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Optional Authorization header supported; include if available to reach protected search",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "injected string present in response.body or abs(len(response.body)-len(baseline.body))/len(baseline.body) > 0.30",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "injection",
+        "xss"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "tc-hypo-007",
+      "hypothesis_id": "hypo-007",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/Feedbacks/",
+      "parameter": "comment",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"UserId\":null,\"captchaId\":123,\"captcha\":\"valid\",\"comment\":\"Nice app\",\"rating\":5}"
+            }
+          ],
+          "description": "Baseline valid feedback submission (uses provided captchaId)",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"UserId\":null,\"captchaId\":999999,\"captcha\":\"wrong\",\"comment\":\"Test\",\"rating\":1}"
+            }
+          ],
+          "description": "Probe with incorrect captcha to observe response difference",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"UserId\":null,\"captchaId\":999999,\"captcha\":\"\",\"comment\":\"Automated probe\",\"rating\":1}"
+            }
+          ],
+          "description": "Attempt bypass by omitting captcha value (safe)",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [201,400,429] across probes",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              429
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/len(baseline.body) > 0.50",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
         }
       ],
       "pass_logic": "any",
@@ -675,80 +571,594 @@
         "destructive_ok": false,
         "max_requests": 10
       },
-      "max_retries": 1,
-      "delay_between_requests": 2.0,
-      "notes": "Destructive action: ensure test account and low-impact items. Obtain and use CSRF token for baseline only.",
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "captcha anti-automation present; probes are validation-safe",
       "tags": [
-        "csrf",
-        "delete"
+        "captcha",
+        "automation"
       ],
-      "estimated_duration": 300
+      "estimated_duration": 4
     },
     {
-      "id": "TC-H-REST-LOGIN-BRUTE-FORCE",
-      "hypothesis_id": "H-REST-LOGIN-BRUTE-FORCE",
+      "id": "tc-hypo-010",
+      "hypothesis_id": "hypo-010",
       "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/rest/user/login",
-      "parameter": "email,password",
-      "header": [
+      "method": "GET",
+      "endpoint": "/api/Addresss/7",
+      "parameter": "addressId",
+      "payloads": [
         {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "7"
+            }
+          ],
+          "description": "Baseline fetch addressId=7 with auth",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
         },
         {
-          "header_name": "Content-Type",
-          "header_value": "application/json"
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "8"
+            }
+          ],
+          "description": "Probe different addressId to check access control",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            }
+          ],
+          "description": "Probe with low id to check unauthorized access",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
         }
       ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Valid Authorization bearer token required",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains \"streetAddress\" or response.body contains \"mobileNum\"",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,403,404] across probes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "idor",
+        "address"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "tc-hypo-011",
+      "hypothesis_id": "hypo-011",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "/api/BasketItems/9",
+      "parameter": "quantity",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9"
+            },
+            {
+              "location": "body",
+              "value": "{\"quantity\":1}"
+            }
+          ],
+          "description": "Baseline update item 9 quantity=1 with auth and CSRF token",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9"
+            },
+            {
+              "location": "body",
+              "value": "{\"quantity\":9999}"
+            }
+          ],
+          "description": "Probe modify quantity to large value to detect authz controls",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "10"
+            },
+            {
+              "location": "body",
+              "value": "{\"quantity\":5}"
+            }
+          ],
+          "description": "Attempt to change another itemId to see if unauthorized modification allowed (safe probe)",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authorization header present (bearer token)",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF token required",
+          "extract_from": "response",
+          "bind_to": "X-CSRF-Token",
+          "custom_logic": "fetch token from page or / endpoint"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,403,404] across probes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains \"BasketId\" and owner differs from baseline",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Use CSRF token for all state-changing requests; keep quantity probes small to avoid disrupting real orders",
+      "tags": [
+        "authz",
+        "modify"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "tc-hypo-012",
+      "hypothesis_id": "hypo-012",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/socket.io/",
+      "parameter": "sid",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "EIO=3&sid=existing-sid&t=1&transport=polling"
+            }
+          ],
+          "description": "Baseline POST to socket.io with existing sid",
+          "encoding": "utf-8",
+          "content_type": "text/plain;charset=UTF-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "EIO=3&sid=random-sid-999&t=1&transport=polling"
+            }
+          ],
+          "description": "Probe with random sid to detect session fixation handling",
+          "encoding": "utf-8",
+          "content_type": "text/plain;charset=UTF-8",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "EIO=3&sid=789a-c954d34e39503081&t=1&transport=polling"
+            }
+          ],
+          "description": "Probe with observed orderRef-like sid for timing/status differences",
+          "encoding": "utf-8",
+          "content_type": "text/plain;charset=UTF-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Capture valid sid from socket.io negotiation prior to probes",
+          "extract_from": "response",
+          "bind_to": "sid",
+          "custom_logic": "needs_observation=true"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,401,403] across probes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "timing_anomaly",
+          "condition": "response.time_ms > baseline.time_ms + 3000",
+          "threshold": {
+            "timing_ms": 3000
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "needs_observation=true for sid extraction",
+      "tags": [
+        "session_fixation",
+        "socket"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "tc-hypo-013",
+      "hypothesis_id": "hypo-013",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/BasketItems/",
+      "parameter": "ProductId",
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"email\":\"testuser@example.com\",\"password\":\"CorrectHorseBattery\"}"
+              "value": "{\"BasketId\":6,\"ProductId\":24,\"quantity\":1}"
             }
           ],
-          "description": "Single benign login attempt with valid credentials to record baseline",
+          "description": "Baseline add product to basket with auth and CSRF token",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
         },
         {
           "tier": "probe",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"email\":\"testuser@example.com\",\"password\":\"wrongpass1\"}"
+              "value": "{\"BasketId\":7,\"ProductId\":24,\"quantity\":1}"
             }
           ],
-          "description": "Small number of incorrect attempts to detect rate limiting or lockout",
+          "description": "Probe forging BasketId to see if item added to other basket",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
         },
         {
           "tier": "exploit",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"email\":\"testuser@example.com\",\"password\":\"wrongpass2\"}"
+              "value": "{\"BasketId\":6,\"ProductId\":1,\"quantity\":1}"
             }
           ],
-          "description": "Additional incorrect attempts within max_requests to trigger rate limit signals",
+          "description": "Attempt to add ProductId=1 to basket to observe ownership anomalies",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
         }
       ],
       "prerequisites": [
         {
-          "type": "custom",
-          "description": "Use non-privileged test account; no auth required"
+          "type": "login",
+          "description": "Authorization header present (bearer token)",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF token required",
+          "extract_from": "response",
+          "bind_to": "X-CSRF-Token",
+          "custom_logic": "fetch token from page or / endpoint"
         }
       ],
       "oracle_rules": [
         {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains \"BasketId\" and owner differs from baseline",
+          "weight": 1.0
+        },
+        {
           "signal": "status_code_change",
-          "condition": "response.status_code in [200,401,429] and response.status_code != baseline.status_code",
+          "condition": "response.status_code in [201,400,403] across probes",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Use CSRF token; avoid high quantities or destructive actions",
+      "tags": [
+        "business_logic",
+        "fraud"
+      ],
+      "estimated_duration": 6
+    },
+    {
+      "id": "tc-hypo-014",
+      "hypothesis_id": "hypo-014",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "background",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "background=blue"
+            }
+          ],
+          "description": "Baseline homepage load with benign background param",
+          "content_type": "text/html",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "background=%3Cscript%3E1%3C%2Fscript%3E"
+            }
+          ],
+          "description": "Probe stored reflection vector encoded in query string",
+          "content_type": "text/html",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "background=\\\"><svg/onload=alert(1)>"
+            }
+          ],
+          "description": "Safe XSS probing payload encoded to avoid execution in automated environments",
+          "content_type": "text/html",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "injected value appears in response.body or abs(len(response.body)-len(baseline.body))/len(baseline.body) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Probes are encoded to avoid harming client; check rendered page manually if reflection detected",
+      "tags": [
+        "xss",
+        "stored"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "tc-hypo-015",
+      "hypothesis_id": "hypo-015",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/rest/user/login",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"user@example.com\",\"password\":\"correcthorsebatterystaple\"}"
+            }
+          ],
+          "description": "Baseline login attempt with valid credentials",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"user@example.com\",\"password\":\"wrongpass\"}"
+            }
+          ],
+          "description": "Single invalid credential attempt to observe status and timing",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"user@example.com\",\"password\":\"password1\"}"
+            }
+          ],
+          "description": "Additional safe attempts to detect lockout/rate-limit behavior (do not exceed max_requests)",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,401,429] across attempts",
           "threshold": {
             "expected_codes": [
               200,
@@ -764,7 +1174,733 @@
           "threshold": {
             "timing_ms": 2000
           },
-          "weight": 0.6
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 2.0,
+      "notes": "Respect max_requests to avoid lockout; manual follow-up required for bruteforce",
+      "tags": [
+        "auth",
+        "bruteforce"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "tc-hypo-016",
+      "hypothesis_id": "hypo-016",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/rest/user/data-export",
+      "parameter": "confirmation",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"confirmation\":\"confirm\",\"format\":1}"
+            }
+          ],
+          "description": "Baseline data-export request with valid Authorization header",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"confirmation\":\"confirm\",\"format\":1}"
+            }
+          ],
+          "description": "Probe without Authorization header to check access control",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"confirmation\":\"\",\"format\":1}"
+            }
+          ],
+          "description": "Probe submitting empty confirmation to observe behavior",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authorization header present for baseline",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains personal data (email,name) in response when called without proper auth",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,401,403] across probes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "High priority; limit attempts",
+      "tags": [
+        "data_export",
+        "authz"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "tc-hypo-017",
+      "hypothesis_id": "hypo-017",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/rest/basket/6/checkout",
+      "parameter": "orderDetails.paymentId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "body",
+              "value": "{\"orderDetails\":{\"paymentId\":1,\"addressId\":1}}"
+            }
+          ],
+          "description": "Baseline checkout with valid paymentId and auth",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "body",
+              "value": "{\"orderDetails\":{\"paymentId\":9999,\"addressId\":1}}"
+            }
+          ],
+          "description": "Probe with manipulated paymentId to check if accepted",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "body",
+              "value": "{\"orderDetails\":{\"paymentId\":1,\"addressId\":2}}"
+            }
+          ],
+          "description": "Probe changing addressId or paymentId combinations to observe acceptance",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authorization header present",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,400,403] across probes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "High impact payment-related tests - limit attempts and do not perform real payments",
+      "tags": [
+        "payment",
+        "fraud"
+      ],
+      "estimated_duration": 6
+    },
+    {
+      "id": "tc-hypo-018",
+      "hypothesis_id": "hypo-018",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/Users/",
+      "parameter": "role",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"newuser@example.com\",\"password\":\"SafePass123!\",\"role\":\"user\"}"
+            }
+          ],
+          "description": "Baseline account creation with normal role",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"newuser2@example.com\",\"password\":\"SafePass123!\",\"role\":\"admin\"}"
+            }
+          ],
+          "description": "Probe attempt to create account with elevated role",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"newuser3@example.com\",\"password\":\"SafePass123!\",\"role\":\"\\\"admin\\\"\"}"
+            }
+          ],
+          "description": "Probe variant role encoding to detect role injection",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [201,400,403] across probes",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "after creation, GET user shows admin privileges or token contains role=admin",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "Do not retain created accounts; manual review required if elevated role returned",
+      "tags": [
+        "account",
+        "privilege"
+      ],
+      "estimated_duration": 8
+    },
+    {
+      "id": "tc-hypo-019",
+      "hypothesis_id": "hypo-019",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/Cards/",
+      "parameter": "cardNum",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"UserId\":23,\"cardNum\":\"0000000000000000\",\"expMonth\":1,\"expYear\":2030,\"fullName\":\"Test User\"}"
+            }
+          ],
+          "description": "Baseline add card with masked test card number",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"UserId\":23,\"cardNum\":\"4111111111111111\",\"expMonth\":12,\"expYear\":2030,\"fullName\":\"Test User\"}"
+            }
+          ],
+          "description": "Probe with common test Visa number masked; observe response and storage handling",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"UserId\":24,\"cardNum\":\"0000000000000000\",\"expMonth\":1,\"expYear\":2030,\"fullName\":\"Other User\"}"
+            }
+          ],
+          "description": "Probe adding card for different UserId to detect IDOR/data exposure (safe masked numbers)",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authorization header present",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF token required",
+          "extract_from": "response",
+          "bind_to": "X-CSRF-Token",
+          "custom_logic": "fetch token from page or / endpoint"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains full cardNum or unmasked details",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [201,400,403] across probes",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Use masked test card numbers only; do not use real card data",
+      "tags": [
+        "pci",
+        "sensitive"
+      ],
+      "estimated_duration": 6
+    },
+    {
+      "id": "tc-hypo-020",
+      "hypothesis_id": "hypo-020",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/image-captcha/",
+      "parameter": "image",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "image=1"
+            }
+          ],
+          "description": "Baseline captcha image fetch image=1 with auth",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "image=9999"
+            }
+          ],
+          "description": "Probe non-existing image id to observe 404 or size differences",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "image=../../etc/passwd"
+            }
+          ],
+          "description": "Safe probe for directory traversal-like behavior encoded to avoid system impact",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authorization header present for baseline fetch",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body)-len(baseline.body))/len(baseline.body) > 0.50",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,404] across probes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              404
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Do not attempt real filesystem reads; payloads are encoded safe probes",
+      "tags": [
+        "captcha",
+        "image"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "tc-hypo-021",
+      "hypothesis_id": "hypo-021",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/track-order/789a-c954d34e39503081",
+      "parameter": "orderRef",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "789a-c954d34e39503081"
+            }
+          ],
+          "description": "Baseline track-order with observed orderRef and auth",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "789a-c954d34e39503082"
+            }
+          ],
+          "description": "Probe adjacent orderRef to test enumeration",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "789a-c954d34e39503000"
+            }
+          ],
+          "description": "Probe different pattern orderRef to enumerate possible existing orders",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authorization header required",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,404] across probes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains order details for orderRef not belonging to requester",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 100
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "notes": "High attempt limit for enumeration but respect rate limits",
+      "tags": [
+        "order",
+        "enumeration"
+      ],
+      "estimated_duration": 8
+    },
+    {
+      "id": "tc-hypo-026",
+      "hypothesis_id": "hypo-026",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Cards/7",
+      "parameter": "cardId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "7"
+            }
+          ],
+          "description": "Baseline fetch cardId=7 with auth",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "8"
+            }
+          ],
+          "description": "Probe other cardId to detect IDOR to other users' cards",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            }
+          ],
+          "description": "Probe low cardId to check exposure of other users' card data",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authorization header required",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains full card number or cvv fields",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,403,404] across probes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
         }
       ],
       "pass_logic": "any",
@@ -775,34 +1911,152 @@
       },
       "max_retries": 1,
       "delay_between_requests": 1.0,
-      "notes": "Limit incorrect attempts to avoid lockouts; do not exceed max_requests. Use test account.",
+      "notes": "Use masked/pseudo card numbers only; avoid entering real payment data",
       "tags": [
-        "auth",
-        "bruteforce"
+        "pci",
+        "idor"
       ],
-      "estimated_duration": 180
+      "estimated_duration": 5
+    },
+    {
+      "id": "tc-hypo-027",
+      "hypothesis_id": "hypo-027",
+      "base_url": "http://localhost:3000",
+      "method": "DELETE",
+      "endpoint": "/api/BasketItems/9",
+      "parameter": "itemId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9"
+            }
+          ],
+          "description": "Baseline delete itemId=9 with auth and CSRF token",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "10"
+            }
+          ],
+          "description": "Probe delete another itemId to check unauthorized deletion",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            }
+          ],
+          "description": "Probe delete low itemId to detect unauthorized deletion (safe probe)",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "X-CSRF-Token",
+              "header_value": "fetch-from-session"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authorization header present",
+          "extract_from": "input",
+          "bind_to": "Authorization"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF token required",
+          "extract_from": "response",
+          "bind_to": "X-CSRF-Token",
+          "custom_logic": "fetch token from page or / endpoint"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,403,401] across probes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Avoid destructive deletions in production; probes are limited and safe",
+      "tags": [
+        "deletion",
+        "authz"
+      ],
+      "estimated_duration": 5
     }
   ],
   "global_prerequisites": [
     {
       "type": "login",
-      "description": "Obtain valid JWT or session cookie for endpoints requiring authorization; bind to Authorization header or Cookie"
+      "description": "Valid session cookie or Authorization Bearer token must be available for endpoints requiring auth",
+      "extract_from": "input",
+      "bind_to": "Authorization"
     }
   ],
   "execution_hints": [
     {
-      "key": "max_concurrent",
-      "value": "1"
+      "key": "respect_rate_limits",
+      "value": "true"
     },
     {
-      "key": "respect_rate_limits",
+      "key": "use_masked_test_card_numbers",
       "value": "true"
     }
   ],
   "metadata": [
     {
-      "key": "session_management",
-      "value": "jwt (observed Bearer token in Authorization header)"
+      "key": "source",
+      "value": "HAR parsed SPA traffic"
     }
   ]
 }

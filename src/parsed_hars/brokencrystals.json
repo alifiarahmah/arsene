@@ -1,917 +1,596 @@
 {
-  "summary": {
-    "total_endpoints": 21,
-    "by_type": {
-      "page_request": 1,
-      "third_party": 19,
-      "static_asset": 1
+  "separatedHeaders": {
+    "h1": {
+      "name": "user-agent",
+      "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
     },
-    "by_method": {
-      "GET": 21
+    "h2": {
+      "name": "sec-ch-ua",
+      "value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
     },
-    "sensitive_count": 21,
-    "with_auth": 21,
-    "reflects_input": 0,
-    "deduplication_stats": {
-      "unique_headers": 4,
-      "unique_cookies": 1,
-      "unique_response_headers": 20
+    "h3": {
+      "name": "referer",
+      "value": "https://brokencrystals.com/"
     }
   },
-  "headers_store": {
-    "hdr_1": {
-      "upgrade-insecure-requests": "1",
-      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
-      "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": "\"Windows\""
-    },
-    "hdr_2": {
-      "referer": "https://brokencrystals.com/",
-      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
-      "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": "\"Windows\""
-    },
-    "hdr_3": {
-      "origin": "https://brokencrystals.com",
-      "referer": "https://brokencrystals.com/",
-      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
-      "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": "\"Windows\""
-    },
-    "hdr_4": {
-      "referer": "https://brokencrystals.com/",
-      "upgrade-insecure-requests": "1",
-      "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
-      "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": "\"Windows\""
-    }
-  },
-  "cookies_store": {
-    "ck_1": {
-      "connect.sid": "h5X8SCy8FNPxtB3vaEx7UZTGZ_zycZbz.fn4krMxdfpJdmRg4VX983B8DQT21fXIvh0avusd%2FeT8"
-    }
-  },
-  "response_headers_store": {
-    "rhdr_1": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "text/html; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"bd7-19753b04b40\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:52 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_2": {
-      "access-control-allow-origin": "*",
-      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
-      "cache-control": "private, max-age=86400, stale-while-revalidate=604800",
-      "content-encoding": "gzip",
-      "content-type": "text/css; charset=utf-8",
-      "cross-origin-opener-policy": "same-origin-allow-popups",
-      "cross-origin-resource-policy": "cross-origin",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "expires": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "last-modified": "Mon, 28 Jul 2025 04:16:56 GMT",
-      "link": "<https://fonts.gstatic.com>; rel=preconnect; crossorigin",
-      "server": "ESF",
-      "strict-transport-security": "max-age=31536000",
-      "timing-allow-origin": "*",
-      "vary": "Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site",
-      "x-content-type-options": "nosniff",
-      "x-frame-options": "SAMEORIGIN",
-      "x-xss-protection": "0"
-    },
-    "rhdr_3": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "text/css; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"26f1b-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_4": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "text/css; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"16830-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_5": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "text/css; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"4f55-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_6": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "text/css; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"f14d-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_7": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "text/css; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"65c5-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_8": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "text/css; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"6f0-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_9": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "text/css; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"1252c-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_10": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"15851-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_11": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"13b3a-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_12": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"9e4-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_13": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"966-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_14": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"3ac3-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_15": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"3962-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_16": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"20df-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_17": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"2281-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_18": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"886-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_19": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"a76f-19753b04758\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:51 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    },
-    "rhdr_20": {
-      "cache-control": "public, max-age=0",
-      "content-encoding": "gzip",
-      "content-type": "application/javascript; charset=UTF-8",
-      "date": "Mon, 28 Jul 2025 05:56:23 GMT",
-      "etag": "W/\"9fe05-19753b04b40\"",
-      "last-modified": "Mon, 09 Jun 2025 07:55:52 GMT",
-      "strict-transport-security": "max-age=31536000; includeSubDomains",
-      "vary": "Accept-Encoding"
-    }
-  },
-  "endpoints": [
+  "requests": [
     {
-      "url": "https://brokencrystals.com/",
+      "id": "GET:/vendor/wow/wow.min.js",
       "method": "GET",
-      "endpoint_type": "page_request",
-      "path": "/",
-      "query_params": {},
-      "headers_ref": "hdr_1",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_1",
-      "response_body": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <meta name=\"description\" content=\"Broken Crystals\" />\n\n    <!-- Favicons -->\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicons/apple-icon-180x180.png\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"192x192\" href=\"/favicons/android-icon-192x192.png\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicons/favicon-32x32.png\" />\n    <link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicons/favicon-16x16.png\" />\n    <meta name=\"theme-color\" content=\"#ffffff\" />\n\n    <script id=\"config\" type=\"application/json\" src=\"/api/config\"></script>\n\n    <!--\n      manifest.json provides metadata used when your web app is installed on a\n      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/\n    -->\n    <link rel=\"manifest\" href=\"/manifest.json\" />\n    <title>Broken Crystals</title>\n    <!-- Google Fonts -->\n    <link\n      href=\"https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i\"\n      rel=\"stylesheet\"\n    />\n\n    <!-- Vendor CSS Files -->\n    <link href=\"/assets/vendor/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\" />\n    <link href=\"/assets/vendor/icofont/icofont.min.css\" rel=\"stylesheet\" />\n    <link href=\"/assets/vendor/boxicons/css/boxicons.min.css\" rel=\"stylesheet\" />\n    <link href=\"/assets/vendor/venobox/venobox.css\" rel=\"stylesheet\" />\n    <link href=\"/assets/vendor/aos/aos.css\" rel=\"stylesheet\" />\n\n    <!-- Vendor CSS-->\n    <link href=\"/vendor/wow/animate.css\" rel=\"stylesheet\" media=\"all\" />\n    <link href=\"/vendor/slick/slick.css\" rel=\"stylesheet\" media=\"all\" />\n\n    <!-- Main CSS-->\n    <link href=\"/assets/css/style.css\" rel=\"stylesheet\" media=\"all\" />\n    <link href=\"/css/theme.css\" rel=\"styles",
-      "content_type": "text/html",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [
-        "config",
-        "description",
-        "theme-color",
-        "viewport"
-      ],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
-    },
-    {
-      "url": "https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/css",
-      "query_params": {
-        "family": "Open Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
-      },
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_2",
-      "response_body": "/* cyrillic-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 300;\n  font-stretch: 100%;\n  src: url(https://fonts.gstatic.com/s/opensans/v43/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtE6F15M.woff2) format('woff2');\n  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;\n}\n/* cyrillic */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 300;\n  font-stretch: 100%;\n  src: url(https://fonts.gstatic.com/s/opensans/v43/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWvU6F15M.woff2) format('woff2');\n  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;\n}\n/* greek-ext */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 300;\n  font-stretch: 100%;\n  src: url(https://fonts.gstatic.com/s/opensans/v43/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWtU6F15M.woff2) format('woff2');\n  unicode-range: U+1F00-1FFF;\n}\n/* greek */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 300;\n  font-stretch: 100%;\n  src: url(https://fonts.gstatic.com/s/opensans/v43/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWuk6F15M.woff2) format('woff2');\n  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;\n}\n/* hebrew */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 300;\n  font-stretch: 100%;\n  src: url(https://fonts.gstatic.com/s/opensans/v43/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWu06F15M.woff2) format('woff2');\n  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;\n}\n/* math */\n@font-face {\n  font-family: 'Open Sans';\n  font-style: italic;\n  font-weight: 300;\n  font-stretch: 100%;\n  src: url(https://fonts.gstatic.com/s/opensans/v43/memtYaGs126MiZpBA-UFUIcVXSCEkx2cmqvXlWqWxU6F15M.woff2) format('woff2');\n  unicode-range: U+0302-0303, U+0305, U+0307-0308, U+0310, U+0312, U+0315, U+031A, U+0326-0327, U+032C, U+032F-0330, U+0332-0333, U+0338, U+033A, U+0346, U+034D, U",
-      "content_type": "text/css",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [
-        "family"
-      ],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/bootstrap/css/bootstrap.min.css",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/bootstrap/css/bootstrap.min.css",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_3",
-      "response_body": "/*!\n * Bootstrap v4.4.1 (https://getbootstrap.com/)\n * Copyright 2011-2019 The Bootstrap Authors\n * Copyright 2011-2019 Twitter, Inc.\n * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)\n */:root{--blue:#007bff;--indigo:#6610f2;--purple:#6f42c1;--pink:#e83e8c;--red:#dc3545;--orange:#fd7e14;--yellow:#ffc107;--green:#28a745;--teal:#20c997;--cyan:#17a2b8;--white:#fff;--gray:#6c757d;--gray-dark:#343a40;--primary:#007bff;--secondary:#6c757d;--success:#28a745;--info:#17a2b8;--warning:#ffc107;--danger:#dc3545;--light:#f8f9fa;--dark:#343a40;--breakpoint-xs:0;--breakpoint-sm:576px;--breakpoint-md:768px;--breakpoint-lg:992px;--breakpoint-xl:1200px;--font-family-sans-serif:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,\"Noto Sans\",sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\";--font-family-monospace:SFMono-Regular,Menlo,Monaco,Consolas,\"Liberation Mono\",\"Courier New\",monospace}*,::after,::before{box-sizing:border-box}html{font-family:sans-serif;line-height:1.15;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}article,aside,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,\"Noto Sans\",sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;text-align:left;background-color:#fff}[tabindex=\"-1\"]:focus:not(:focus-visible){outline:0!important}hr{box-sizing:content-box;height:0;overflow:visible}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem}p{margin-top:0;margin-bottom:1rem}abbr[data-original-title],abbr[title]{text-decoration:underline;-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;border-bottom:0;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inhe",
-      "content_type": "text/css",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/icofont/icofont.min.css",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/icofont/icofont.min.css",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_4",
-      "response_body": "/*! \n* @package IcoFont \n* @version 1.0.1 \n* @author IcoFont https://icofont.com \n* @copyright Copyright (c) 2015 - 2018 IcoFont \n* @license - https://icofont.com/license/\n*/@font-face{font-family:IcoFont;font-weight:400;font-style:Regular;src:url(fonts/icofont.woff2) format(\"woff2\"),url(fonts/icofont.woff) format(\"woff\")}[class*=\" icofont-\"],[class^=icofont-]{font-family:IcoFont!important;speak:none;font-style:normal;font-weight:400;font-variant:normal;text-transform:none;white-space:nowrap;word-wrap:normal;direction:ltr;line-height:1;-webkit-font-feature-settings:\"liga\";-webkit-font-smoothing:antialiased}.icofont-angry-monster:before{content:\"\\e800\"}.icofont-bathtub:before{content:\"\\e801\"}.icofont-bird-wings:before{content:\"\\e802\"}.icofont-bow:before{content:\"\\e803\"}.icofont-castle:before{content:\"\\e804\"}.icofont-circuit:before{content:\"\\e805\"}.icofont-crown-king:before{content:\"\\e806\"}.icofont-crown-queen:before{content:\"\\e807\"}.icofont-dart:before{content:\"\\e808\"}.icofont-disability-race:before{content:\"\\e809\"}.icofont-diving-goggle:before{content:\"\\e80a\"}.icofont-eye-open:before{content:\"\\e80b\"}.icofont-flora-flower:before{content:\"\\e80c\"}.icofont-flora:before{content:\"\\e80d\"}.icofont-gift-box:before{content:\"\\e80e\"}.icofont-halloween-pumpkin:before{content:\"\\e80f\"}.icofont-hand-power:before{content:\"\\e810\"}.icofont-hand-thunder:before{content:\"\\e811\"}.icofont-king-monster:before{content:\"\\e812\"}.icofont-love:before{content:\"\\e813\"}.icofont-magician-hat:before{content:\"\\e814\"}.icofont-native-american:before{content:\"\\e815\"}.icofont-owl-look:before{content:\"\\e816\"}.icofont-phoenix:before{content:\"\\e817\"}.icofont-robot-face:before{content:\"\\e818\"}.icofont-sand-clock:before{content:\"\\e819\"}.icofont-shield-alt:before{content:\"\\e81a\"}.icofont-ship-wheel:before{content:\"\\e81b\"}.icofont-skull-danger:before{content:\"\\e81c\"}.icofont-skull-face:before{content:\"\\e81d\"}.icofont-snowmobile:before{content:\"\\e81e\"}.icofont-space-shuttle:before{content:\"\\e81f\"}.icofont-star-sh",
-      "content_type": "text/css",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/venobox/venobox.css",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/venobox/venobox.css",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_5",
-      "response_body": "/* ------ venobox.css --------*/\n.vbox-overlay *, .vbox-overlay *:before, .vbox-overlay *:after{\n    -webkit-backface-visibility: hidden;\n    -webkit-box-sizing:border-box;\n    -moz-box-sizing:border-box;\n    box-sizing:border-box;\n}\n.vbox-overlay * { \n    -webkit-backface-visibility: visible;\n    backface-visibility: visible;\n}\n.vbox-overlay{\n    display: -webkit-flex;\n    display: flex;\n    -webkit-flex-direction: column;\n    flex-direction: column;\n    -webkit-justify-content: center;\n    justify-content: center;\n    -webkit-align-items: center;\n    align-items: center;\n    position: fixed;\n    left: 0;\n    top: 0;\n    bottom: 0;\n    right: 0;\n    z-index: 999999;\n}\n\n/* ----- navigation ----- */\n.vbox-title{\n    width: 100%;\n    height: 40px;\n    float: left;\n    text-align: center;\n    line-height: 28px;\n    font-size: 12px;\n    padding: 6px 50px;\n    overflow: hidden;\n    position: fixed;\n    display: none;\n    left: 0;\n    z-index: 89;\n}\n.vbox-close{\n    cursor: pointer;\n    position: fixed;\n    top: -1px;\n    right: 0;\n    width: 50px;\n    height: 40px;\n    padding: 6px;\n    display: block;\n    background-position:10px center;\n    overflow: hidden;\n    font-size: 24px;\n    line-height: 1;\n    text-align: center;\n    z-index: 99;\n}\n.vbox-left{\n    cursor: pointer;\n    position: fixed;\n    left: 0;\n    height: 40px;\n    overflow: hidden;\n    line-height: 28px;\n    font-size: 12px;\n    z-index: 99;\n    display: flex;\n    align-items:center;\n}\n.vbox-num{\n    display: inline-block;\n    margin: 6px 0 6px 15px;\n}\n/* ----- Social share ----- */\n.vbox-share{\n    line-height: 28px;\n    font-size: 12px;\n    overflow: hidden;\n    position: fixed;\n    left: 0;\n    z-index: 98;\n    display: flex;\n    align-items:center;\n    justify-content: center;\n    width: 100%;\n    text-align: center;\n}\n.vbox-share svg{\n    max-height: 28px;\n    width: 28px;\n    z-index: 10;\n    margin-left: 12px;\n    margin-top: 6px;\n    margin-bottom: 6px;\n    vertical-align: middle;\n}\n\n\n/* ----- nav",
-      "content_type": "text/css",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/boxicons/css/boxicons.min.css",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/boxicons/css/boxicons.min.css",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_6",
-      "response_body": "@font-face{font-family:'boxicons';font-weight:normal;font-style:normal;src:url('../fonts/boxicons.eot');src:url('../fonts/boxicons.eot') format('embedded-opentype'),url('../fonts/boxicons.woff2') format('woff2'),url('../fonts/boxicons.woff') format('woff'),url('../fonts/boxicons.ttf') format('truetype'),url('../fonts/boxicons.svg?#boxicons') format('svg')}.bx{font-family:'boxicons'!important;font-weight:normal;font-style:normal;font-variant:normal;line-height:1;display:inline-block;text-transform:none;speak:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.bx-ul{margin-left:2em;padding-left:0;list-style:none}.bx-ul>li{position:relative}.bx-ul .bx{font-size:inherit;line-height:inherit;position:absolute;left:-2em;width:2em;text-align:center}@-webkit-keyframes spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@keyframes spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(359deg);transform:rotate(359deg)}}@-webkit-keyframes burst{0%{-webkit-transform:scale(1);transform:scale(1);opacity:1}90%{-webkit-transform:scale(1.5);transform:scale(1.5);opacity:0}}@keyframes burst{0%{-webkit-transform:scale(1);transform:scale(1);opacity:1}90%{-webkit-transform:scale(1.5);transform:scale(1.5);opacity:0}}@-webkit-keyframes flashing{0%{opacity:1}45%{opacity:0}90%{opacity:1}}@keyframes flashing{0%{opacity:1}45%{opacity:0}90%{opacity:1}}@-webkit-keyframes fade-left{0%{-webkit-transform:translateX(0);transform:translateX(0);opacity:1}75%{-webkit-transform:translateX(-20px);transform:translateX(-20px);opacity:0}}@keyframes fade-left{0%{-webkit-transform:translateX(0);transform:translateX(0);opacity:1}75%{-webkit-transform:translateX(-20px);transform:translateX(-20px);opacity:0}}@-webkit-keyframes fade-right{0%{-webkit-transform:translateX(0);transform:translateX(0);opacity:1}75%{-webkit-transform:translateX(20px);transform:translateX(20px);opacity:0}}@keyframes f",
-      "content_type": "text/css",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/aos/aos.css",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/aos/aos.css",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_7",
-      "response_body": "[data-aos][data-aos][data-aos-duration=\"50\"],body[data-aos-duration=\"50\"] [data-aos]{transition-duration:50ms}[data-aos][data-aos][data-aos-delay=\"50\"],body[data-aos-delay=\"50\"] [data-aos]{transition-delay:0}[data-aos][data-aos][data-aos-delay=\"50\"].aos-animate,body[data-aos-delay=\"50\"] [data-aos].aos-animate{transition-delay:50ms}[data-aos][data-aos][data-aos-duration=\"100\"],body[data-aos-duration=\"100\"] [data-aos]{transition-duration:.1s}[data-aos][data-aos][data-aos-delay=\"100\"],body[data-aos-delay=\"100\"] [data-aos]{transition-delay:0}[data-aos][data-aos][data-aos-delay=\"100\"].aos-animate,body[data-aos-delay=\"100\"] [data-aos].aos-animate{transition-delay:.1s}[data-aos][data-aos][data-aos-duration=\"150\"],body[data-aos-duration=\"150\"] [data-aos]{transition-duration:.15s}[data-aos][data-aos][data-aos-delay=\"150\"],body[data-aos-delay=\"150\"] [data-aos]{transition-delay:0}[data-aos][data-aos][data-aos-delay=\"150\"].aos-animate,body[data-aos-delay=\"150\"] [data-aos].aos-animate{transition-delay:.15s}[data-aos][data-aos][data-aos-duration=\"200\"],body[data-aos-duration=\"200\"] [data-aos]{transition-duration:.2s}[data-aos][data-aos][data-aos-delay=\"200\"],body[data-aos-delay=\"200\"] [data-aos]{transition-delay:0}[data-aos][data-aos][data-aos-delay=\"200\"].aos-animate,body[data-aos-delay=\"200\"] [data-aos].aos-animate{transition-delay:.2s}[data-aos][data-aos][data-aos-duration=\"250\"],body[data-aos-duration=\"250\"] [data-aos]{transition-duration:.25s}[data-aos][data-aos][data-aos-delay=\"250\"],body[data-aos-delay=\"250\"] [data-aos]{transition-delay:0}[data-aos][data-aos][data-aos-delay=\"250\"].aos-animate,body[data-aos-delay=\"250\"] [data-aos].aos-animate{transition-delay:.25s}[data-aos][data-aos][data-aos-duration=\"300\"],body[data-aos-duration=\"300\"] [data-aos]{transition-duration:.3s}[data-aos][data-aos][data-aos-delay=\"300\"],body[data-aos-delay=\"300\"] [data-aos]{transition-delay:0}[data-aos][data-aos][data-aos-delay=\"300\"].aos-animate,body[data-aos-delay=\"300\"] [data-aos].aos-animate",
-      "content_type": "text/css",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [
-        "100",
-        "150",
-        "200",
-        "250",
-        "300",
-        "50"
-      ],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
-    },
-    {
-      "url": "https://brokencrystals.com/vendor/slick/slick.css",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/vendor/slick/slick.css",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_8",
-      "response_body": "/* Slider */\n.slick-slider\n{\n    position: relative;\n\n    display: block;\n    box-sizing: border-box;\n\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n\n    -webkit-touch-callout: none;\n    -khtml-user-select: none;\n    -ms-touch-action: pan-y;\n        touch-action: pan-y;\n    -webkit-tap-highlight-color: transparent;\n}\n\n.slick-list\n{\n    position: relative;\n\n    display: block;\n    overflow: hidden;\n\n    margin: 0;\n    padding: 0;\n}\n.slick-list:focus\n{\n    outline: none;\n}\n.slick-list.dragging\n{\n    cursor: pointer;\n    cursor: hand;\n}\n\n.slick-slider .slick-track,\n.slick-slider .slick-list\n{\n    -webkit-transform: translate3d(0, 0, 0);\n       -moz-transform: translate3d(0, 0, 0);\n        -ms-transform: translate3d(0, 0, 0);\n         -o-transform: translate3d(0, 0, 0);\n            transform: translate3d(0, 0, 0);\n}\n\n.slick-track\n{\n    position: relative;\n    top: 0;\n    left: 0;\n\n    display: block;\n    margin-left: auto;\n    margin-right: auto;\n}\n.slick-track:before,\n.slick-track:after\n{\n    display: table;\n\n    content: '';\n}\n.slick-track:after\n{\n    clear: both;\n}\n.slick-loading .slick-track\n{\n    visibility: hidden;\n}\n\n.slick-slide\n{\n    display: none;\n    float: left;\n\n    height: 100%;\n    min-height: 1px;\n}\n[dir='rtl'] .slick-slide\n{\n    float: right;\n}\n.slick-slide img\n{\n    display: block;\n}\n.slick-slide.slick-loading img\n{\n    display: none;\n}\n.slick-slide.dragging img\n{\n    pointer-events: none;\n}\n.slick-initialized .slick-slide\n{\n    display: block;\n}\n.slick-loading .slick-slide\n{\n    visibility: hidden;\n}\n.slick-vertical .slick-slide\n{\n    display: block;\n\n    height: auto;\n\n    border: 1px solid transparent;\n}\n.slick-arrow.slick-hidden {\n    display: none;\n}\n",
-      "content_type": "text/css",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
-    },
-    {
-      "url": "https://brokencrystals.com/vendor/wow/animate.css",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/vendor/wow/animate.css",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_9",
-      "response_body": "@charset \"UTF-8\";\n\n/*!\n * animate.css -http://daneden.me/animate\n * Version - 3.5.2\n * Licensed under the MIT license - http://opensource.org/licenses/MIT\n *\n * Copyright (c) 2018 Daniel Eden\n */\n\n.animated {\n  -webkit-animation-duration: 1s;\n  animation-duration: 1s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n}\n\n.animated.infinite {\n  -webkit-animation-iteration-count: infinite;\n  animation-iteration-count: infinite;\n}\n\n@-webkit-keyframes bounce {\n  from,\n  20%,\n  53%,\n  80%,\n  to {\n    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);\n    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);\n    -webkit-transform: translate3d(0, 0, 0);\n    transform: translate3d(0, 0, 0);\n  }\n\n  40%,\n  43% {\n    -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);\n    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);\n    -webkit-transform: translate3d(0, -30px, 0);\n    transform: translate3d(0, -30px, 0);\n  }\n\n  70% {\n    -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);\n    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);\n    -webkit-transform: translate3d(0, -15px, 0);\n    transform: translate3d(0, -15px, 0);\n  }\n\n  90% {\n    -webkit-transform: translate3d(0, -4px, 0);\n    transform: translate3d(0, -4px, 0);\n  }\n}\n\n@keyframes bounce {\n  from,\n  20%,\n  53%,\n  80%,\n  to {\n    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);\n    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);\n    -webkit-transform: translate3d(0, 0, 0);\n    transform: translate3d(0, 0, 0);\n  }\n\n  40%,\n  43% {\n    -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);\n    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);\n    -webkit-transform: translate3d(0, -30px, 0);\n    transform: translate3d(0, -30px, 0);\n  }\n\n  70% {\n    -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);\n    ani",
-      "content_type": "text/css",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/jquery/jquery.min.js",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/jquery/jquery.min.js",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_10",
-      "response_body": "/*! jQuery v3.4.1 | (c) JS Foundation and other contributors | jquery.org/license */\n!function(e,t){\"use strict\";\"object\"==typeof module&&\"object\"==typeof module.exports?module.exports=e.document?t(e,!0):function(e){if(!e.document)throw new Error(\"jQuery requires a window with a document\");return t(e)}:t(e)}(\"undefined\"!=typeof window?window:this,function(C,e){\"use strict\";var t=[],E=C.document,r=Object.getPrototypeOf,s=t.slice,g=t.concat,u=t.push,i=t.indexOf,n={},o=n.toString,v=n.hasOwnProperty,a=v.toString,l=a.call(Object),y={},m=function(e){return\"function\"==typeof e&&\"number\"!=typeof e.nodeType},x=function(e){return null!=e&&e===e.window},c={type:!0,src:!0,nonce:!0,noModule:!0};function b(e,t,n){var r,i,o=(n=n||E).createElement(\"script\");if(o.text=e,t)for(r in c)(i=t[r]||t.getAttribute&&t.getAttribute(r))&&o.setAttribute(r,i);n.head.appendChild(o).parentNode.removeChild(o)}function w(e){return null==e?e+\"\":\"object\"==typeof e||\"function\"==typeof e?n[o.call(e)]||\"object\":typeof e}var f=\"3.4.1\",k=function(e,t){return new k.fn.init(e,t)},p=/^[\\s\\uFEFF\\xA0]+|[\\s\\uFEFF\\xA0]+$/g;function d(e){var t=!!e&&\"length\"in e&&e.length,n=w(e);return!m(e)&&!x(e)&&(\"array\"===n||0===t||\"number\"==typeof t&&0<t&&t-1 in e)}k.fn=k.prototype={jquery:f,constructor:k,length:0,toArray:function(){return s.call(this)},get:function(e){return null==e?s.call(this):e<0?this[e+this.length]:this[e]},pushStack:function(e){var t=k.merge(this.constructor(),e);return t.prevObject=this,t},each:function(e){return k.each(this,e)},map:function(n){return this.pushStack(k.map(this,function(e,t){return n.call(e,t,e)}))},slice:function(){return this.pushStack(s.apply(this,arguments))},first:function(){return this.eq(0)},last:function(){return this.eq(-1)},eq:function(e){var t=this.length,n=+e+(e<0?t:0);return this.pushStack(0<=n&&n<t?[this[n]]:[])},end:function(){return this.prevObject||this.constructor()},push:u,sort:t.sort,splice:t.splice},k.extend=k.fn.extend=function(){var e,t,n,r,i,o,a=arguments[0]||{},s",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": [
-        "exports",
-        "extend",
-        "prevObject",
-        "prototype",
-        "text"
-      ]
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/bootstrap/js/bootstrap.bundle.min.js",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/bootstrap/js/bootstrap.bundle.min.js",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_11",
-      "response_body": "/*!\n  * Bootstrap v4.4.1 (https://getbootstrap.com/)\n  * Copyright 2011-2019 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)\n  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)\n  */\n!function(e,t){\"object\"==typeof exports&&\"undefined\"!=typeof module?t(exports,require(\"jquery\")):\"function\"==typeof define&&define.amd?define([\"exports\",\"jquery\"],t):t((e=e||self).bootstrap={},e.jQuery)}(this,function(e,p){\"use strict\";function i(e,t){for(var n=0;n<t.length;n++){var i=t[n];i.enumerable=i.enumerable||!1,i.configurable=!0,\"value\"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}function s(e,t,n){return t&&i(e.prototype,t),n&&i(e,n),e}function t(t,e){var n=Object.keys(t);if(Object.getOwnPropertySymbols){var i=Object.getOwnPropertySymbols(t);e&&(i=i.filter(function(e){return Object.getOwnPropertyDescriptor(t,e).enumerable})),n.push.apply(n,i)}return n}function l(o){for(var e=1;e<arguments.length;e++){var r=null!=arguments[e]?arguments[e]:{};e%2?t(Object(r),!0).forEach(function(e){var t,n,i;t=o,i=r[n=e],n in t?Object.defineProperty(t,n,{value:i,enumerable:!0,configurable:!0,writable:!0}):t[n]=i}):Object.getOwnPropertyDescriptors?Object.defineProperties(o,Object.getOwnPropertyDescriptors(r)):t(Object(r)).forEach(function(e){Object.defineProperty(o,e,Object.getOwnPropertyDescriptor(r,e))})}return o}p=p&&p.hasOwnProperty(\"default\")?p.default:p;var n=\"transitionend\";function o(e){var t=this,n=!1;return p(this).one(m.TRANSITION_END,function(){n=!0}),setTimeout(function(){n||m.triggerTransitionEnd(t)},e),this}var m={TRANSITION_END:\"bsTransitionEnd\",getUID:function(e){for(;e+=~~(1e6*Math.random()),document.getElementById(e););return e},getSelectorFromElement:function(e){var t=e.getAttribute(\"data-target\");if(!t||\"#\"===t){var n=e.getAttribute(\"href\");t=n&&\"#\"!==n?n.trim():\"\"}try{return document.querySelector(t)?t:null}catch(e){return null}},getTransitionDurationFromElement:function(e){if(!e)return 0;var t=p(e).css(\"transi",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": [
-        "bootstrap",
-        "configurable",
-        "enumerable",
-        "writable"
-      ]
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/jquery.easing/jquery.easing.min.js",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/jquery.easing/jquery.easing.min.js",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_12",
-      "response_body": "(function(factory){if(typeof define===\"function\"&&define.amd){define([\"jquery\"],function($){return factory($)})}else if(typeof module===\"object\"&&typeof module.exports===\"object\"){exports=factory(require(\"jquery\"))}else{factory(jQuery)}})(function($){$.easing.jswing=$.easing.swing;var pow=Math.pow,sqrt=Math.sqrt,sin=Math.sin,cos=Math.cos,PI=Math.PI,c1=1.70158,c2=c1*1.525,c3=c1+1,c4=2*PI/3,c5=2*PI/4.5;function bounceOut(x){var n1=7.5625,d1=2.75;if(x<1/d1){return n1*x*x}else if(x<2/d1){return n1*(x-=1.5/d1)*x+.75}else if(x<2.5/d1){return n1*(x-=2.25/d1)*x+.9375}else{return n1*(x-=2.625/d1)*x+.984375}}$.extend($.easing,{def:\"easeOutQuad\",swing:function(x){return $.easing[$.easing.def](x)},easeInQuad:function(x){return x*x},easeOutQuad:function(x){return 1-(1-x)*(1-x)},easeInOutQuad:function(x){return x<.5?2*x*x:1-pow(-2*x+2,2)/2},easeInCubic:function(x){return x*x*x},easeOutCubic:function(x){return 1-pow(1-x,3)},easeInOutCubic:function(x){return x<.5?4*x*x*x:1-pow(-2*x+2,3)/2},easeInQuart:function(x){return x*x*x*x},easeOutQuart:function(x){return 1-pow(1-x,4)},easeInOutQuart:function(x){return x<.5?8*x*x*x*x:1-pow(-2*x+2,4)/2},easeInQuint:function(x){return x*x*x*x*x},easeOutQuint:function(x){return 1-pow(1-x,5)},easeInOutQuint:function(x){return x<.5?16*x*x*x*x*x:1-pow(-2*x+2,5)/2},easeInSine:function(x){return 1-cos(x*PI/2)},easeOutSine:function(x){return sin(x*PI/2)},easeInOutSine:function(x){return-(cos(PI*x)-1)/2},easeInExpo:function(x){return x===0?0:pow(2,10*x-10)},easeOutExpo:function(x){return x===1?1:1-pow(2,-10*x)},easeInOutExpo:function(x){return x===0?0:x===1?1:x<.5?pow(2,20*x-10)/2:(2-pow(2,-20*x+10))/2},easeInCirc:function(x){return 1-sqrt(1-pow(x,2))},easeOutCirc:function(x){return sqrt(1-pow(x-1,2))},easeInOutCirc:function(x){return x<.5?(1-sqrt(1-pow(2*x,2)))/2:(sqrt(1-pow(-2*x+2,2))+1)/2},easeInElastic:function(x){return x===0?0:x===1?1:-pow(2,10*x-10)*sin((x*10-10.75)*c4)},easeOutElastic:function(x){return x===0?0:x===1?1:pow(2,-10*x)*sin((x*10-.75",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": [
-        "exports",
-        "jswing",
-        "pow"
-      ]
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/counterup/counterup.min.js",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/counterup/counterup.min.js",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_13",
-      "response_body": "/*!\n * jquery.counterup.js 2.1.0\n *\n * Copyright 2013, Benjamin Intal http://gambit.ph @bfintal\n * Released under the GPL v2 License\n *\n * Amended by Jeremy Paris, Ciro Mattia Gonano and others\n *\n * Date: Feb 24, 2017\n */\n (function($){\"use strict\";$.fn.counterUp=function(options){var settings=$.extend({time:400,delay:10,offset:100,beginAt:0,formatter:false,context:\"window\",callback:function(){}},options),s;return this.each(function(){var $this=$(this),counter={time:$(this).data(\"counterup-time\")||settings.time,delay:$(this).data(\"counterup-delay\")||settings.delay,offset:$(this).data(\"counterup-offset\")||settings.offset,beginAt:$(this).data(\"counterup-beginat\")||settings.beginAt,context:$(this).data(\"counterup-context\")||settings.context};var counterUpper=function(){var nums=[];var divisions=counter.time/counter.delay;var num=$(this).attr(\"data-num\")?$(this).attr(\"data-num\"):$this.text();var isComma=/[0-9]+,[0-9]+/.test(num);num=num.replace(/,/g,\"\");var decimalPlaces=(num.split(\".\")[1]||[]).length;if(counter.beginAt>num)counter.beginAt=num;var isTime=/[0-9]+:[0-9]+:[0-9]+/.test(num);if(isTime){var times=num.split(\":\"),m=1;s=0;while(times.length>0){s+=m*parseInt(times.pop(),10);m*=60}}for(var i=divisions;i>=counter.beginAt/num*divisions;i--){var newNum=parseFloat(num/divisions*i).toFixed(decimalPlaces);if(isTime){newNum=parseInt(s/divisions*i);var hours=parseInt(newNum/3600)%24;var minutes=parseInt(newNum/60)%60;var seconds=parseInt(newNum%60,10);newNum=(hours<10?\"0\"+hours:hours)+\":\"+(minutes<10?\"0\"+minutes:minutes)+\":\"+(seconds<10?\"0\"+seconds:seconds)}if(isComma){while(/(\\d+)(\\d{3})/.test(newNum.toString())){newNum=newNum.toString().replace(/(\\d+)(\\d{3})/,\"$1\"+\",\"+\"$2\")}}if(settings.formatter){newNum=settings.formatter.call(this,newNum)}nums.unshift(newNum)}$this.data(\"counterup-nums\",nums);$this.text(counter.beginAt);var f=function(){if(!$this.data(\"counterup-nums\")){settings.callback.call(this);return}$this.html($this.data(\"counterup-nums\").shift());if($this.data",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": [
-        "$this",
-        "beginAt",
-        "counterUp",
-        "counterUpper",
-        "decimalPlaces",
-        "divisions",
-        "hours",
-        "isComma",
-        "isTime",
-        "minutes",
-        "newNum",
-        "num",
-        "nums",
-        "seconds",
-        "settings",
-        "times"
-      ]
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/venobox/venobox.min.js",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/venobox/venobox.min.js",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_14",
-      "response_body": "/*\n * VenoBox - jQuery Plugin\n * version: 1.8.9\n * @requires jQuery >= 1.7.0\n *\n * Examples at http://veno.es/venobox/\n * License: MIT License\n * License URI: https://github.com/nicolafranchini/VenoBox/blob/master/LICENSE\n * Copyright 2013-2020 Nicola Franchini - @nicolafranchini\n *\n */\n!function(e){\"use strict\";var s,i,a,t,o,c,r,l,d,n,v,u,b,h,k,p,g,m,f,x,w,y,_,C,z,B,P,M,E,O,D,N,U,V,I,j,R,X,Y,W,q,$,A,H,Q,S,T='<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"28\" height=\"28\" viewBox=\"0 0 24 24\"><path d=\"M12 0c-6.627 0-12 5.372-12 12 0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\"/></svg>',Z='<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"28\" height=\"28\" viewBox=\"0 0 24 24\"><path d=\"M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3 8h-1.35c-.538 0-.65.221-.65.778v1.222h2l-.209 2h-1.791v7h-3v-7h-2v-2h2v-2.308c0-1.769.931-2.692 3.029-2.692h1.971v3z\"/></svg>',F='<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"28\" height=\"28\" viewBox=\"0 0 24 24\"><path d=\"M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.04-2.83 8.544-8.164 8.544-1.622 0-3.131-.476-4.402-1.291 1.524.18 3.045-.244 4.252-1.189-1.256-.023-2.317-.854-2.684-1.995.451.086.895.061 1.298-.049-1.381-.278-2.335-1.522-2.304-2.853.388.215.83.344 1.301.359-1.279-",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
-    },
-    {
-      "url": "https://brokencrystals.com/assets/vendor/aos/aos.js",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/assets/vendor/aos/aos.js",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_15",
-      "response_body": "!function(e,t){\"object\"==typeof exports&&\"object\"==typeof module?module.exports=t():\"function\"==typeof define&&define.amd?define([],t):\"object\"==typeof exports?exports.AOS=t():e.AOS=t()}(this,function(){return function(e){function t(o){if(n[o])return n[o].exports;var i=n[o]={exports:{},id:o,loaded:!1};return e[o].call(i.exports,i,i.exports,t),i.loaded=!0,i.exports}var n={};return t.m=e,t.c=n,t.p=\"dist/\",t(0)}([function(e,t,n){\"use strict\";function o(e){return e&&e.__esModule?e:{default:e}}var i=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var o in n)Object.prototype.hasOwnProperty.call(n,o)&&(e[o]=n[o])}return e},r=n(1),a=(o(r),n(6)),u=o(a),c=n(7),s=o(c),f=n(8),d=o(f),l=n(9),p=o(l),m=n(10),b=o(m),v=n(11),y=o(v),g=n(14),h=o(g),w=[],k=!1,x={offset:120,delay:0,easing:\"ease\",duration:400,disable:!1,once:!1,startEvent:\"DOMContentLoaded\",throttleDelay:99,debounceDelay:50,disableMutationObserver:!1},j=function(){var e=arguments.length>0&&void 0!==arguments[0]&&arguments[0];if(e&&(k=!0),k)return w=(0,y.default)(w,x),(0,b.default)(w,x.once),w},O=function(){w=(0,h.default)(),j()},M=function(){w.forEach(function(e,t){e.node.removeAttribute(\"data-aos\"),e.node.removeAttribute(\"data-aos-easing\"),e.node.removeAttribute(\"data-aos-duration\"),e.node.removeAttribute(\"data-aos-delay\")})},S=function(e){return e===!0||\"mobile\"===e&&p.default.mobile()||\"phone\"===e&&p.default.phone()||\"tablet\"===e&&p.default.tablet()||\"function\"==typeof e&&e()===!0},_=function(e){x=i(x,e),w=(0,h.default)();var t=document.all&&!window.atob;return S(x.disable)||t?M():(x.disableMutationObserver||d.default.isSupported()||(console.info('\\n      aos: MutationObserver is not supported on this browser,\\n      code mutations observing has been disabled.\\n      You may have to call \"refreshHard()\" by yourself.\\n    '),x.disableMutationObserver=!0),document.querySelector(\"body\").setAttribute(\"data-aos-easing\",x.easing),document.querySelector(\"body\").setAttribute(\"data-aos-dura",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": [
-        "AOS",
-        "atob",
-        "disableMutationObserver",
-        "exports",
-        "loaded"
-      ]
-    },
-    {
-      "url": "https://brokencrystals.com/vendor/wow/wow.min.js",
-      "method": "GET",
-      "endpoint_type": "third_party",
       "path": "/vendor/wow/wow.min.js",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_16",
-      "response_body": "/*! WOW - v1.1.3 - 2016-05-06\n* Copyright (c) 2016 Matthieu Aussaguel;*/(function(){var a,b,c,d,e,f=function(a,b){return function(){return a.apply(b,arguments)}},g=[].indexOf||function(a){for(var b=0,c=this.length;c>b;b++)if(b in this&&this[b]===a)return b;return-1};b=function(){function a(){}return a.prototype.extend=function(a,b){var c,d;for(c in b)d=b[c],null==a[c]&&(a[c]=d);return a},a.prototype.isMobile=function(a){return/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(a)},a.prototype.createEvent=function(a,b,c,d){var e;return null==b&&(b=!1),null==c&&(c=!1),null==d&&(d=null),null!=document.createEvent?(e=document.createEvent(\"CustomEvent\"),e.initCustomEvent(a,b,c,d)):null!=document.createEventObject?(e=document.createEventObject(),e.eventType=a):e.eventName=a,e},a.prototype.emitEvent=function(a,b){return null!=a.dispatchEvent?a.dispatchEvent(b):b in(null!=a)?a[b]():\"on\"+b in(null!=a)?a[\"on\"+b]():void 0},a.prototype.addEvent=function(a,b,c){return null!=a.addEventListener?a.addEventListener(b,c,!1):null!=a.attachEvent?a.attachEvent(\"on\"+b,c):a[b]=c},a.prototype.removeEvent=function(a,b,c){return null!=a.removeEventListener?a.removeEventListener(b,c,!1):null!=a.detachEvent?a.detachEvent(\"on\"+b,c):delete a[b]},a.prototype.innerHeight=function(){return\"innerHeight\"in window?window.innerHeight:document.documentElement.clientHeight},a}(),c=this.WeakMap||this.MozWeakMap||(c=function(){function a(){this.keys=[],this.values=[]}return a.prototype.get=function(a){var b,c,d,e,f;for(f=this.keys,b=d=0,e=f.length;e>d;b=++d)if(c=f[b],c===a)return this.values[b]},a.prototype.set=function(a,b){var c,d,e,f,g;for(g=this.keys,c=e=0,f=g.length;f>e;c=++e)if(d=g[c],d===a)return void(this.values[c]=b);return this.keys.push(a),this.values.push(b)},a}()),a=this.MutationObserver||this.WebkitMutationObserver||this.MozMutationObserver||(a=function(){function a(){\"undefined\"!=typeof console&&null!==console&&console.warn(\"MutationObserver is not supported by your browser",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
+      "hosts": [
+        "brokencrystals.com"
       ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": [
-        "addEvent",
-        "createEvent",
-        "emitEvent",
-        "eventName",
-        "eventType",
-        "extend",
-        "get",
-        "innerHeight",
-        "isMobile",
-        "keys",
-        "removeEvent",
-        "set",
-        "values"
-      ]
-    },
-    {
-      "url": "https://brokencrystals.com/vendor/counter-up/jquery.waypoints.min.js",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/vendor/counter-up/jquery.waypoints.min.js",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_17",
-      "response_body": "/*!\nWaypoints - 4.0.0\nCopyright © 2011-2015 Caleb Troughton\nLicensed under the MIT license.\nhttps://github.com/imakewebthings/waypoints/blob/master/licenses.txt\n*/\n!function(){\"use strict\";function t(o){if(!o)throw new Error(\"No options passed to Waypoint constructor\");if(!o.element)throw new Error(\"No element option passed to Waypoint constructor\");if(!o.handler)throw new Error(\"No handler option passed to Waypoint constructor\");this.key=\"waypoint-\"+e,this.options=t.Adapter.extend({},t.defaults,o),this.element=this.options.element,this.adapter=new t.Adapter(this.element),this.callback=o.handler,this.axis=this.options.horizontal?\"horizontal\":\"vertical\",this.enabled=this.options.enabled,this.triggerPoint=null,this.group=t.Group.findOrCreate({name:this.options.group,axis:this.axis}),this.context=t.Context.findOrCreateByElement(this.options.context),t.offsetAliases[this.options.offset]&&(this.options.offset=t.offsetAliases[this.options.offset]),this.group.add(this),this.context.add(this),i[this.key]=this,e+=1}var e=0,i={};t.prototype.queueTrigger=function(t){this.group.queueTrigger(this,t)},t.prototype.trigger=function(t){this.enabled&&this.callback&&this.callback.apply(this,t)},t.prototype.destroy=function(){this.context.remove(this),this.group.remove(this),delete i[this.key]},t.prototype.disable=function(){return this.enabled=!1,this},t.prototype.enable=function(){return this.context.refresh(),this.enabled=!0,this},t.prototype.next=function(){return this.group.next(this)},t.prototype.previous=function(){return this.group.previous(this)},t.invokeAll=function(t){var e=[];for(var o in i)e.push(i[o]);for(var n=0,r=e.length;r>n;n++)e[n][t]()},t.destroyAll=function(){t.invokeAll(\"destroy\")},t.disableAll=function(){t.invokeAll(\"disable\")},t.enableAll=function(){t.invokeAll(\"enable\")},t.refreshAll=function(){t.Context.refreshAll()},t.viewportHeight=function(){return window.innerHeight||document.documentElement.clientHeight},t.viewportWidth=function(){return document.document",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
+      "endpointTypes": [
+        "third_party"
       ],
-      "potential_parameters": [
-        "horizontal"
-      ],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": [
-        "adapter",
-        "axis",
-        "callback",
-        "context",
-        "destroy",
-        "destroyAll",
-        "disable",
-        "disableAll",
-        "element",
-        "enable",
-        "enableAll",
-        "enabled",
-        "group",
-        "innerHeight",
-        "invokeAll",
-        "key",
-        "next",
-        "offset",
-        "options",
-        "previous"
-      ]
-    },
-    {
-      "url": "https://brokencrystals.com/vendor/counter-up/jquery.counterup.min.js",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/vendor/counter-up/jquery.counterup.min.js",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_18",
-      "response_body": "(function($){\"use strict\";$.fn.counterUp=function(options){var settings=$.extend({time:400,delay:10,offset:100,beginAt:0,formatter:false,context:\"window\",callback:function(){}},options),s;return this.each(function(){var $this=$(this),counter={time:$(this).data(\"counterup-time\")||settings.time,delay:$(this).data(\"counterup-delay\")||settings.delay,offset:$(this).data(\"counterup-offset\")||settings.offset,beginAt:$(this).data(\"counterup-beginat\")||settings.beginAt,context:$(this).data(\"counterup-context\")||settings.context};var counterUpper=function(){var nums=[];var divisions=counter.time/counter.delay;var num=$(this).attr(\"data-num\")?$(this).attr(\"data-num\"):$this.text();var isComma=/[0-9]+,[0-9]+/.test(num);num=num.replace(/,/g,\"\");var decimalPlaces=(num.split(\".\")[1]||[]).length;if(counter.beginAt>num)counter.beginAt=num;var isTime=/[0-9]+:[0-9]+:[0-9]+/.test(num);if(isTime){var times=num.split(\":\"),m=1;s=0;while(times.length>0){s+=m*parseInt(times.pop(),10);m*=60}}for(var i=divisions;i>=counter.beginAt/num*divisions;i--){var newNum=parseFloat(num/divisions*i).toFixed(decimalPlaces);if(isTime){newNum=parseInt(s/divisions*i);var hours=parseInt(newNum/3600)%24;var minutes=parseInt(newNum/60)%60;var seconds=parseInt(newNum%60,10);newNum=(hours<10?\"0\"+hours:hours)+\":\"+(minutes<10?\"0\"+minutes:minutes)+\":\"+(seconds<10?\"0\"+seconds:seconds)}if(isComma){while(/(\\d+)(\\d{3})/.test(newNum.toString())){newNum=newNum.toString().replace(/(\\d+)(\\d{3})/,\"$1\"+\",\"+\"$2\")}}if(settings.formatter){newNum=settings.formatter.call(this,newNum)}nums.unshift(newNum)}$this.data(\"counterup-nums\",nums);$this.text(counter.beginAt);var f=function(){if(!$this.data(\"counterup-nums\")){settings.callback.call(this);return}$this.html($this.data(\"counterup-nums\").shift());if($this.data(\"counterup-nums\").length){setTimeout($this.data(\"counterup-func\"),counter.delay)}else{$this.data(\"counterup-nums\",null);$this.data(\"counterup-func\",null);settings.callback.call(this)}};$this.data(\"counterup-func\",f);setTime",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": [
-        "$this",
-        "beginAt",
-        "counterUp",
-        "counterUpper",
-        "decimalPlaces",
-        "divisions",
-        "hours",
-        "isComma",
-        "isTime",
-        "minutes",
-        "newNum",
-        "num",
-        "nums",
-        "seconds",
-        "settings",
-        "times"
-      ]
-    },
-    {
-      "url": "https://brokencrystals.com/vendor/slick/slick.min.js",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/vendor/slick/slick.min.js",
-      "query_params": {},
-      "headers_ref": "hdr_2",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_19",
-      "response_body": "!function(i){\"use strict\";\"function\"==typeof define&&define.amd?define([\"jquery\"],i):\"undefined\"!=typeof exports?module.exports=i(require(\"jquery\")):i(jQuery)}(function(i){\"use strict\";var e=window.Slick||{};(e=function(){var e=0;return function(t,o){var s,n=this;n.defaults={accessibility:!0,adaptiveHeight:!1,appendArrows:i(t),appendDots:i(t),arrows:!0,asNavFor:null,prevArrow:'<button class=\"slick-prev\" aria-label=\"Previous\" type=\"button\">Previous</button>',nextArrow:'<button class=\"slick-next\" aria-label=\"Next\" type=\"button\">Next</button>',autoplay:!1,autoplaySpeed:3e3,centerMode:!1,centerPadding:\"50px\",cssEase:\"ease\",customPaging:function(e,t){return i('<button type=\"button\" />').text(t+1)},dots:!1,dotsClass:\"slick-dots\",draggable:!0,easing:\"linear\",edgeFriction:.35,fade:!1,focusOnSelect:!1,focusOnChange:!1,infinite:!0,initialSlide:0,lazyLoad:\"ondemand\",mobileFirst:!1,pauseOnHover:!0,pauseOnFocus:!0,pauseOnDotsHover:!1,respondTo:\"window\",responsive:null,rows:1,rtl:!1,slide:\"\",slidesPerRow:1,slidesToShow:1,slidesToScroll:1,speed:500,swipe:!0,swipeToSlide:!1,touchMove:!0,touchThreshold:5,useCSS:!0,useTransform:!0,variableWidth:!1,vertical:!1,verticalSwiping:!1,waitForAnimate:!0,zIndex:1e3},n.initials={animating:!1,dragging:!1,autoPlayTimer:null,currentDirection:0,currentLeft:null,currentSlide:0,direction:1,$dots:null,listWidth:null,listHeight:null,loadIndex:0,$nextArrow:null,$prevArrow:null,scrolling:!1,slideCount:null,slideWidth:null,$slideTrack:null,$slides:null,sliding:!1,slideOffset:0,swipeLeft:null,swiping:!1,$list:null,touchObject:{},transformsEnabled:!1,unslicked:!1},i.extend(n,n.initials),n.activeBreakpoint=null,n.animType=null,n.animProp=null,n.breakpoints=[],n.breakpointSettings=[],n.cssTransitions=!1,n.focussed=!1,n.interrupted=!1,n.hidden=\"hidden\",n.paused=!0,n.positionProp=null,n.respondTo=null,n.rowCount=1,n.shouldClick=!0,n.$slider=i(t),n.$slidesCache=null,n.transformType=null,n.transitionType=null,n.visibilityChange=\"visibilitychange\",n.windowWidth=0",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": [
-        "$slider",
-        "$slidesCache",
-        "Slick",
-        "activeBreakpoint",
-        "animProp",
-        "animType",
-        "breakpointSettings",
-        "breakpoints",
-        "cssTransitions",
-        "defaults",
-        "exports",
-        "focussed",
-        "hidden",
-        "initials",
-        "interrupted",
-        "paused",
-        "positionProp",
-        "respondTo",
-        "rowCount",
-        "shouldClick"
-      ]
-    },
-    {
-      "url": "https://brokencrystals.com/assets/index-CHOz83TQ.js",
-      "method": "GET",
-      "endpoint_type": "static_asset",
-      "path": "/assets/index-CHOz83TQ.js",
-      "query_params": {},
-      "headers_ref": "hdr_3",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 200,
-      "response_headers_ref": "rhdr_20",
-      "response_body": "var Tw=Object.defineProperty;var Nw=(e,t,n)=>t in e?Tw(e,t,{enumerable:!0,configurable:!0,writable:!0,value:n}):e[t]=n;var V=(e,t,n)=>Nw(e,typeof t!=\"symbol\"?t+\"\":t,n);function Aw(e,t){for(var n=0;n<t.length;n++){const r=t[n];if(typeof r!=\"string\"&&!Array.isArray(r)){for(const i in r)if(i!==\"default\"&&!(i in e)){const o=Object.getOwnPropertyDescriptor(r,i);o&&Object.defineProperty(e,i,o.get?o:{enumerable:!0,get:()=>r[i]})}}}return Object.freeze(Object.defineProperty(e,Symbol.toStringTag,{value:\"Module\"}))}(function(){const t=document.createElement(\"link\").relList;if(t&&t.supports&&t.supports(\"modulepreload\"))return;for(const i of document.querySelectorAll('link[rel=\"modulepreload\"]'))r(i);new MutationObserver(i=>{for(const o of i)if(o.type===\"childList\")for(const a of o.addedNodes)a.tagName===\"LINK\"&&a.rel===\"modulepreload\"&&r(a)}).observe(document,{childList:!0,subtree:!0});function n(i){const o={};return i.integrity&&(o.integrity=i.integrity),i.referrerPolicy&&(o.referrerPolicy=i.referrerPolicy),i.crossOrigin===\"use-credentials\"?o.credentials=\"include\":i.crossOrigin===\"anonymous\"?o.credentials=\"omit\":o.credentials=\"same-origin\",o}function r(i){if(i.ep)return;i.ep=!0;const o=n(i);fetch(i.href,o)}})();var $g=typeof globalThis<\"u\"?globalThis:typeof window<\"u\"?window:typeof global<\"u\"?global:typeof self<\"u\"?self:{};function $u(e){return e&&e.__esModule&&Object.prototype.hasOwnProperty.call(e,\"default\")?e.default:e}var Qg={exports:{}},Qu={},Gg={exports:{}},de={};/**\n * @license React\n * react.production.min.js\n *\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */var $a=Symbol.for(\"react.element\"),Ow=Symbol.for(\"react.portal\"),Pw=Symbol.for(\"react.fragment\"),Rw=Symbol.for(\"react.strict_mode\"),Iw=Symbol.for(\"react.profiler\"),Mw=Symbol.for(\"react.provider\"),Lw=Symbol.for(\"react.context\"),Fw=Symbol.for(\"react.forward_ref\"),Bw=Symbol.for(\"rea",
-      "content_type": "application/javascript",
-      "is_sensitive": true,
-      "authentication_indicators": [
-        "auth_cookie_connect.sid"
-      ],
-      "potential_parameters": [],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": [
-        "credentials",
-        "crossOrigin",
-        "integrity",
-        "referrerPolicy",
-        "rel",
-        "tagName",
-        "type"
-      ]
-    },
-    {
-      "url": "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621",
-      "method": "GET",
-      "endpoint_type": "third_party",
-      "path": "/maps/embed",
-      "query_params": {
-        "pb": "!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0xb89d1fe6bc499443!2sDowntown Conference Center!5e0!3m2!1smk!2sbg!4v1539943755621"
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
       },
-      "headers_ref": "hdr_4",
-      "cookies_ref": "ck_1",
-      "request_body": null,
-      "response_status": 0,
-      "response_headers_ref": null,
-      "response_body": null,
-      "content_type": "text/html",
-      "is_sensitive": true,
-      "authentication_indicators": [
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
         "auth_cookie_connect.sid"
       ],
-      "potential_parameters": [
-        "pb"
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/vendor/wow/animate.css",
+      "method": "GET",
+      "path": "/vendor/wow/animate.css",
+      "hosts": [
+        "brokencrystals.com"
       ],
-      "has_authorization_header": false,
-      "has_auth_cookies": true,
-      "reflects_input": false,
-      "form_fields": [],
-      "javascript_variables": []
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/vendor/slick/slick.min.js",
+      "method": "GET",
+      "path": "/vendor/slick/slick.min.js",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/vendor/slick/slick.css",
+      "method": "GET",
+      "path": "/vendor/slick/slick.css",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/vendor/counter-up/jquery.waypoints.min.js",
+      "method": "GET",
+      "path": "/vendor/counter-up/jquery.waypoints.min.js",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [
+        [
+          "horizontal",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/vendor/counter-up/jquery.counterup.min.js",
+      "method": "GET",
+      "path": "/vendor/counter-up/jquery.counterup.min.js",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/maps/embed",
+      "method": "GET",
+      "path": "/maps/embed",
+      "hosts": [
+        "www.google.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "other": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [
+        [
+          "pb",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/css",
+      "method": "GET",
+      "path": "/css",
+      "hosts": [
+        "fonts.googleapis.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [
+        [
+          "family",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/venobox/venobox.min.js",
+      "method": "GET",
+      "path": "/assets/vendor/venobox/venobox.min.js",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/venobox/venobox.css",
+      "method": "GET",
+      "path": "/assets/vendor/venobox/venobox.css",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/jquery/jquery.min.js",
+      "method": "GET",
+      "path": "/assets/vendor/jquery/jquery.min.js",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [
+        [
+          "object",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/jquery.easing/jquery.easing.min.js",
+      "method": "GET",
+      "path": "/assets/vendor/jquery.easing/jquery.easing.min.js",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/icofont/icofont.min.css",
+      "method": "GET",
+      "path": "/assets/vendor/icofont/icofont.min.css",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/counterup/counterup.min.js",
+      "method": "GET",
+      "path": "/assets/vendor/counterup/counterup.min.js",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/boxicons/css/boxicons.min.css",
+      "method": "GET",
+      "path": "/assets/vendor/boxicons/css/boxicons.min.css",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/bootstrap/js/bootstrap.bundle.min.js",
+      "method": "GET",
+      "path": "/assets/vendor/bootstrap/js/bootstrap.bundle.min.js",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/bootstrap/css/bootstrap.min.css",
+      "method": "GET",
+      "path": "/assets/vendor/bootstrap/css/bootstrap.min.css",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/aos/aos.js",
+      "method": "GET",
+      "path": "/assets/vendor/aos/aos.js",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/assets/vendor/aos/aos.css",
+      "method": "GET",
+      "path": "/assets/vendor/aos/aos.css",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/",
+      "method": "GET",
+      "path": "/",
+      "hosts": [
+        "brokencrystals.com"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_connect.sid"
+      ],
+      "parameters": [
+        [
+          "config",
+          "string"
+        ],
+        [
+          "description",
+          "string"
+        ],
+        [
+          "theme-color",
+          "string"
+        ],
+        [
+          "viewport",
+          "string"
+        ]
+      ],
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "@h1",
+        "sec-ch-ua": "@h2",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     }
   ]
 }

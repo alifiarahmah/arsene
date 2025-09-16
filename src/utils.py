@@ -15,11 +15,12 @@ def call_llm(model=config['MODEL'], messages=[], response_format=None, format_js
     if model.startswith('gpt-'):
         if response_format is None:
           response_format = GenericResponse
+          
         completion = openai_client.chat.completions.parse(
             model=model,
             messages=messages,
             response_format=response_format,
-            reasoning_effort='high'
+            reasoning_effort='minimal'
         )
         result = completion.choices[0].message.parsed
         print('call_llm result:', result)
