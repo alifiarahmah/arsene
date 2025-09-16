@@ -2,8 +2,6 @@ import requests
 import json
 import argparse
 
-from schemas import TestCase
-
 class VulnerabilityAnalysisModule:
     def read_tc(self, filepath):
         with open(filepath, 'r') as f:
@@ -22,6 +20,12 @@ class VulnerabilityAnalysisModule:
                 'method': tc['method'],
                 'url': tc['base_url'] + tc['endpoint']
             }
+            # add header
+            request_header = {}
+            for h in tc['header']:
+                request_header[h['header_name']] = h['header_value']
+            request_params['headers'] = request_header
+            # add payload based on location
             for payload in payload_group['payloads']:
                 location = payload['location']
                 value = payload['value']
@@ -51,13 +55,14 @@ class VulnerabilityAnalysisModule:
                 print(
                     f"TC: {tc['id']}, Tier: {payload_group['tier']}, "
                     f"URL: {request_params['url']}, Status: {r.status_code}"
+
                 )
             except Exception as e:
                 print(f"Error in {tc['id']}: {e}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Execute testcases from reasoning and verify')
-    parser.add_argument('filename', help='Filename without .har extension (e.g., "example" for parsed_hars/example.har)')
+    parser.add_argument('filename', help='Filename without .har extension (e.g., "example" for reasoning_result/example.har)')
     args = parser.parse_args()
     filename = args.filename
 

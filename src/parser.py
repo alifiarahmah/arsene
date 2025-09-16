@@ -39,6 +39,11 @@ class ParserModule:
     MAX_GROUPS = 250
     SHARD_SIZE = 250
     INCLUDE_STATIC_ASSETS = False
+    HEADER_LENGTH_THRESHOLD = 50
+    COMMON_LONG_HEADERS = {
+        'authorization', 'cookie', 'set-cookie', 'user-agent',
+        'accept', 'accept-encoding', 'accept-language', 'referer'
+    }
 
     def __init__(self):
         self.third_party_domains = {
@@ -366,6 +371,63 @@ class ParserModule:
                 return True
         return False
 
+    def _should_separate_header(self, header_name: str, header_value: str) -> bool:
+        """Determine if a header should be separated based on length or common patterns"""
+        header_name_lower = header_name.lower()
+
+        # Always separate common long headers
+        if header_name_lower in self.COMMON_LONG_HEADERS:
+            return True
+
+        # Separate if value exceeds threshold
+        if len(header_value) > self.HEADER_LENGTH_THRESHOLD:
+            return True
+
+        return False
+
+    def _extract_separated_headers(self, all_headers: Dict[str, set]) -> Tuple[Dict[str, str], Dict[str, Any]]:
+        """
+        Extract headers that should be separated and create references
+        Returns: (separated_headers_dict, processed_headers_for_endpoints)
+        """
+        separated_headers = {}
+        processed_headers = {}
+        header_id_counter = 1
+
+        for header_name, values_set in all_headers.items():
+            values_list = sorted(list(values_set))
+
+            # Check if any value in this header should be separated
+            should_separate = any(
+                self._should_separate_header(header_name, value)
+                for value in values_list
+            )
+
+            if should_separate:
+                if len(values_list) == 1:
+                    header_id = f"h{header_id_counter}"
+                    separated_headers[header_id] = {
+                        "name": header_name,
+                        "value": values_list[0]
+                    }
+                    processed_headers[header_name] = f"@{header_id}"
+                    header_id_counter += 1
+                else:
+                    references = []
+                    for value in values_list:
+                        header_id = f"h{header_id_counter}"
+                        separated_headers[header_id] = {
+                            "name": header_name,
+                            "value": value
+                        }
+                        references.append(f"@{header_id}")
+                        header_id_counter += 1
+                    processed_headers[header_name] = references
+            else:
+                processed_headers[header_name] = values_list[0] if len(values_list) == 1 else values_list
+
+        return separated_headers, processed_headers
+
     @staticmethod
     def _status_bucket(status: int) -> str:
         if status >= 500:
@@ -413,6 +475,8 @@ class ParserModule:
 
         # Group by exact path (no normalization)
         groups: Dict[Tuple[str, str], Dict[str, Any]] = {}
+        all_headers_collection: Dict[str, set] = {}  # Collect all headers across all endpoints
+
         for ep in filtered_endpoints:
             key = (ep.method, ep.path or '/')
             if key not in groups:
@@ -426,6 +490,7 @@ class ParserModule:
                     "isSensitiveAny": False,
                     "authIndicatorsAny": set(),
                     "parameters": set(),
+                    "headers": {},
                 }
             g = groups[key]
             g["count"] += 1
@@ -444,13 +509,31 @@ class ParserModule:
                 g["authIndicatorsAny"].add(ai)
             for p in ep.potential_parameters:
                 g["parameters"].add((p["name"], p["type"]))
+
+            # headers - collect all header keys and their values
+            for header_name, header_value in ep.headers.items():
+                if header_name not in g["headers"]:
+                    g["headers"][header_name] = set()
+                g["headers"][header_name].add(header_value)
+
+                # Also collect globally for separation analysis
+                if header_name not in all_headers_collection:
+                    all_headers_collection[header_name] = set()
+                all_headers_collection[header_name].add(header_value)
+
             # status
             bucket = self._status_bucket(ep.response_status)
             g["statusHistogram"][bucket] += 1
 
+        # Extract separated headers (global dictionary)
+        separated_headers, _ = self._extract_separated_headers(all_headers_collection)
+
         # Flatten
         flat: List[Dict[str, Any]] = []
         for (method, path), g in groups.items():
+            # Apply header separation for each endpoint group
+            _, headers_processed = self._extract_separated_headers(g["headers"])
+
             req = {
                 "id": f"{method}:{path}",
                 "method": method,
@@ -462,6 +545,7 @@ class ParserModule:
                 "isSensitiveAny": g["isSensitiveAny"],
                 "authIndicatorsAny": sorted(list(g["authIndicatorsAny"]))[:10],
                 "parameters": sorted(list(g["parameters"]))[: self.MAX_PARAM_KEYS],
+                "headers": headers_processed,
             }
             flat.append(req)
 
@@ -473,12 +557,16 @@ class ParserModule:
         if len(flat) > cap:
             flat = flat[:cap]
 
-        output = {"requests": flat}
+        # Build final output including separated headers
+        output = {
+            "separatedHeaders": separated_headers,
+            "requests": flat
+        }
 
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(output, f, ensure_ascii=False, indent=2)
 
-        print(f"[INFO] Ultra-compact export: {len(flat)} requests -> {output_file}")
+        print(f"[INFO] Ultra-compact export: {len(flat)} requests, {len(separated_headers)} separated headers -> {output_file}")
 
         if include_static_assets is not None:
             self.INCLUDE_STATIC_ASSETS = orig
@@ -495,97 +583,6 @@ class ParserModule:
                 continue
             filtered.append(ep)
         return filtered
-
-    def export_ultra_compact_sharded(
-        self,
-        endpoints: List[ParsedEndpoint],
-        output_prefix: str,
-        max_groups_per_file: Optional[int] = None,
-        include_static_assets: Optional[bool] = None
-    ) -> List[str]:
-        """
-        Write multiple small files like <prefix>_page_1.json, <prefix>_page_2.json, ...
-        Returns list of filenames.
-        """
-        if include_static_assets is not None:
-            orig = self.INCLUDE_STATIC_ASSETS
-            self.INCLUDE_STATIC_ASSETS = include_static_assets
-
-        filtered = self._filter_for_reasoning(endpoints)
-
-        # Build all groups once (no normalization)
-        groups: Dict[Tuple[str, str], Dict[str, Any]] = {}
-        for ep in filtered:
-            key = (ep.method, ep.path or '/')
-            if key not in groups:
-                groups[key] = {
-                    "method": ep.method,
-                    "path": ep.path or '/',
-                    "hosts": set(),
-                    "endpointTypes": set(),
-                    "count": 0,
-                    "statusHistogram": Counter(),
-                    "isSensitiveAny": False,
-                    "authIndicatorsAny": set(),
-                    "parameters": set(),
-                }
-            g = groups[key]
-            g["count"] += 1
-            try:
-                host = urllib.parse.urlparse(ep.url).netloc
-                if host:
-                    g["hosts"].add(host)
-            except Exception:
-                pass
-            g["endpointTypes"].add(ep.endpoint_type.value)
-            g["isSensitiveAny"] = g["isSensitiveAny"] or ep.is_sensitive
-            for ai in ep.authentication_indicators:
-                g["authIndicatorsAny"].add(ai)
-            for p in ep.potential_parameters:
-                g["parameters"].add(p)
-            bucket = self._status_bucket(ep.response_status)
-            g["statusHistogram"][bucket] += 1
-
-        flat: List[Dict[str, Any]] = []
-        for (method, path), g in groups.items():
-            flat.append({
-                "id": f"{method}:{path}",
-                "method": method,
-                "path": path,
-                "hosts": sorted(list(g["hosts"]))[:3],
-                "endpointTypes": sorted(list(g["endpointTypes"])),
-                "count": g["count"],
-                "statusHistogram": {k: v for k, v in g["statusHistogram"].items() if v > 0} or {"other": 0},
-                "isSensitiveAny": g["isSensitiveAny"],
-                "authIndicatorsAny": sorted(list(g["authIndicatorsAny"]))[:10],
-                "parameters": sorted(list(g["parameters"]))[: self.MAX_PARAM_KEYS],
-            })
-
-        flat.sort(key=lambda x: (x["count"], x["method"], x["path"]), reverse=True)
-
-        per_file = max_groups_per_file if max_groups_per_file is not None else self.SHARD_SIZE
-        files: List[str] = []
-        if not flat:
-            # still write one empty page for predictable pipeline
-            filename = f"{output_prefix}_page_1.json"
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump({"requests": []}, f, indent=2, ensure_ascii=False)
-            files.append(filename)
-            print(f"[INFO] Wrote empty shard {filename}")
-        else:
-            for i in range(0, len(flat), per_file):
-                chunk = flat[i:i+per_file]
-                page_idx = (i // per_file) + 1
-                filename = f"{output_prefix}_page_{page_idx}.json"
-                with open(filename, 'w', encoding='utf-8') as f:
-                    json.dump({"requests": chunk}, f, indent=2, ensure_ascii=False)
-                files.append(filename)
-                print(f"[INFO] Shard {page_idx}: {len(chunk)} requests -> {filename}")
-
-        if include_static_assets is not None:
-            self.INCLUDE_STATIC_ASSETS = orig
-
-        return files
 
     def export_to_json(self, endpoints: List[ParsedEndpoint], output_file: str):
         self.export_ultra_compact_json(endpoints, output_file, max_groups=self.MAX_GROUPS, include_static_assets=False)

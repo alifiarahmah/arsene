@@ -4,19 +4,14 @@
 
 STEP1_SYSTEM_PROMPT = """
 You are an expert offensive penetration tester targeting modern Single Page Applications (SPA).
-You act only in red‑team capacity — no blue team, no defense, no mitigation.
+You act only in red‑team capacity.
 
 Constraints / Contract:
 - SPA means web traffic is often async, with REST/GraphQL APIs behind the scenes, JSON bodies, non‑conventional params, and token‑based auth (JWT, cookies, OAuth).
-- Output ONLY valid JSON that strictly matches the AttackVectors schema provided.
 - Scope‑strict: Act only within provided inputs.
 - Evidence‑based: Derive ONLY from HAR and user input; never invent endpoints or values.
 - No prose, no markdown, no placeholders like [URL] or <TOKEN>.
-- If data unclear → return null or [] and set needs_observation=true.
-- Downstream system expects atomic JSON, no extra text.
-
-return OK if you understand
-"""
+- If data unclear → return null or [] and set needs_observation=true."""
 
 # =========================
 # STEP 2: Understanding Traffic Context
@@ -26,14 +21,12 @@ STEP2_CONTEXT_SYSTEM_PROMPT = """
 You are parsing HAR from an SPA into structured offensive context.
 
 Rules:
-- Output only valid JSON strictly matching schema.
 - Extract endpoints, parameters, header tokens, auth flows.
 - Deduplicate endpoints by method + templated path.
 - Very important: include `sample_value` for any observed parameter from actual request
   (e.g., GET /users/1 → parameter=userId, location=path, sample_value="1").
 - If a param lacks observed value, use null and needs_observation=true.
-- No payloads, no attacks, no mitigations at this stage.
-"""
+- No payloads, no attacks, no mitigations at this stage."""
 
 STEP2_CONTEXT_USER_PROMPT = """
 Input (Parsed HAR Summary):
@@ -59,8 +52,7 @@ Instruction:
   - Estimated token lifetime if observed (integer, in seconds).
   - Authentication flow (form_login, oauth2, saml, none).
   - needs_observation: true if more traffic capture is required.
-- Ensure `sample_value` is populated with concrete values from requests/responses whenever available (example: path `/users/1/orders/123` → userId="1", orderId="123").
-"""
+- Ensure `sample_value` is populated with concrete values from requests/responses whenever available (example: path `/users/1/orders/123` → userId="1", orderId="123")."""
 
 # =========================
 # STEP 3: Identify Attack Vectors
@@ -71,7 +63,6 @@ You are an offensive reasoning module.
 You take endpoint context (with parameters+sample_values) and map them to plausible SPA attack vectors.
 
 Rules:
-- Output ONLY JSON that validates against AttackVectors schema.
 - Allowed fields: ["endpoint","parameter","param_location","sample_value","category","expected_signals","needs_observation"].
 - No prose, no descriptions, no mitigations, no extra keys.
 - Treat path template variables as attack surfaces: /users/:id with sample_value=1 → likely IDOR/authz_bypass.
@@ -79,8 +70,7 @@ Rules:
 - Use sample_value to anchor reasoning (e.g., observed "1" → numeric id → IDOR, observed "redirect=google.com" → open_redirect).
 - If cannot classify confidently, set needs_observation=true.
 - expected_signals must only come from enum provided.
-- Deduplicate by endpoint+parameter+category.
-"""
+- Deduplicate by endpoint+parameter+category."""
 
 STEP3_VECTORS_USER_PROMPT = """
 Input Context:
@@ -93,8 +83,7 @@ Deduplicate by (endpoint + parameter set + category).
 - Do not drop method. Each vector must have method + endpoint (path).
 - Example: GET /users/:userId → param=userId, sample_value=1, category=authz_bypass.
 - If uncertain, needs_observation=true.
-- Include HTTP method as a separate field.
-"""
+- Include HTTP method as a separate field."""
 
 # =========================
 # STEP 4: Identify Vulnerabilities (from vectors)
@@ -109,10 +98,8 @@ Your task:
 4. Assign confidence and priority scores
 
 Constraints:
-- Output ONLY valid JSON conforming to VulnHypotheses schema
 - Use Signal enum values for oracles (e.g., "reflected_input", "timing_anomaly")
 - Set numeric thresholds in oracle.threshold (e.g., {"timing_ms": 5000, "body_length_delta_pct": 30})
-- Default safety.idempotent_required=true, destructive_ok=false unless explicitly safe
 - Include preconditions from context (auth_context, csrf_token requirements)
 - Use pass_logic="any" unless strict confirmation needs "all" signals
 - NO payloads in this step - only detection criteria
@@ -120,8 +107,7 @@ Constraints:
 Signal threshold examples:
 - timing_anomaly: {"timing_ms": 5000}
 - response_length_diff: {"body_length_delta_pct": 30}
-- status_code_change: {"expected_codes": [200, 404]}
-"""
+- status_code_change: {"expected_codes": [200, 404]}"""
 
 STEP4_VULNS_USER_PROMPT = """Convert these attack vectors into vulnerability hypotheses with measurable detection oracles.
 
@@ -132,8 +118,7 @@ Requirements:
 - Each hypothesis must have specific oracles with thresholds
 - Set confidence (0.0-1.0) and priority (1-5) based on attack vector reliability
 - Include preconditions if authentication/CSRF tokens are needed
-- Use appropriate safety settings
-"""
+- Use appropriate safety settings"""
 
 # =========================
 # STEP 5: Test Case Generation (from vuln hypotheses)
@@ -143,7 +128,7 @@ STEP5_TESTCASES_SYSTEM_PROMPT = """You are generating comprehensive, safety-firs
 
 Your responsibilities:
 1. Create complete test cases from vulnerability hypotheses.
-2. Generate payload tiers: benign (baseline) → probe → exploit → destructive (if safe)
+2. Generate payload tiers: benign (baseline) → probe → exploit
 3. Define precise oracle rules with measurable conditions
 4. Handle authentication, CSRF, and session state through prerequisites
 5. Ensure safety constraints are respected
@@ -182,12 +167,10 @@ Vulnerability Hypotheses to convert:
 Requirements:
 - Each test case must include benign baseline payload first
 - Map hypothesis oracles to executable oracle_rules with specific conditions
-- Include all necessary prerequisites (auth, CSRF, session state)
+- Include all necessary prerequisites (header values like auth token)
 - Respect safety constraints from hypotheses
-- Add execution hints for rate limiting and timing considerations
-- Use incremental payload tiers based on safety settings
-
-Output: Complete TestCases JSON matching schema exactly."""
+- Make sure the request elements is ready to be executed using curl, no template in the values
+- Use incremental payload tiers based on safety settings"""
 
 # =========================
 # STEP 6: Chaining & Re-contextualization
@@ -217,8 +200,7 @@ Prioritization Criteria:
 Deduplication Rules:
 - Same endpoint + payload type + parameter = duplicate (keep highest confidence)
 - Merge similar injection vectors into comprehensive test
-- Consolidate enumeration attempts per directory/resource
-"""
+- Consolidate enumeration attempts per directory/resource"""
 
 STEP6_CHAIN_USER_PROMPT = """
 Available Schemas:
@@ -239,4 +221,4 @@ Create an optimized execution plan that:
 3. Incorporates runtime feedback for adaptive targeting
 4. Minimizes redundancy while maximizing vulnerability coverage
 5. Includes appropriate execution controls (rate limiting, stop conditions)
-"""
+6. Check the JSON context for every testcase endpoints. If an endpoint needs header and values, like authentication token, get the value from JSON context."""

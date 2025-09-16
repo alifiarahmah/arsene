@@ -1,4 +1,46 @@
 {
+  "separatedHeaders": {
+    "h1": {
+      "name": "user-agent",
+      "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+    },
+    "h2": {
+      "name": "sec-ch-ua",
+      "value": "\"Not;A=Brand\";v=\"99\", \"Google Chrome\";v=\"139\", \"Chromium\";v=\"139\""
+    },
+    "h3": {
+      "name": "referer",
+      "value": ""
+    },
+    "h4": {
+      "name": "referer",
+      "value": "http://fonts.googleapis.com/"
+    },
+    "h5": {
+      "name": "referer",
+      "value": "http://localhost:3000/"
+    },
+    "h6": {
+      "name": "referer",
+      "value": "http://localhost:3000/profile"
+    },
+    "h7": {
+      "name": "referer",
+      "value": "https://fonts.googleapis.com/"
+    },
+    "h8": {
+      "name": "accept",
+      "value": "*/*"
+    },
+    "h9": {
+      "name": "accept",
+      "value": "application/json, text/plain, */*"
+    },
+    "h10": {
+      "name": "authorization",
+      "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+    }
+  },
   "requests": [
     {
       "id": "GET:/rest/user/whoami",
@@ -37,7 +79,16 @@
           "user",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "@h5"
+      }
     },
     {
       "id": "GET:/rest/basket/6",
@@ -128,7 +179,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/admin/application-configuration",
@@ -231,7 +291,16 @@
           "trainingData",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "@h5"
+      }
     },
     {
       "id": "GET:/socket.io/",
@@ -280,7 +349,15 @@
           "upgrades",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/products/search",
@@ -347,7 +424,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "@h5"
+      }
     },
     {
       "id": "GET:/api/Quantitys/",
@@ -402,7 +488,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "@h5"
+      }
     },
     {
       "id": "GET:/api/Addresss",
@@ -473,7 +568,16 @@
           "zipCode",
           "integer"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/admin/application-version",
@@ -500,7 +604,16 @@
           "version",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "@h5"
+      }
     },
     {
       "id": "GET:/api/Challenges/",
@@ -595,7 +708,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "@h5"
+      }
     },
     {
       "id": "GET:/api/Cards",
@@ -646,7 +768,16 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "POST:/api/Feedbacks/",
@@ -706,7 +837,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "content-type": "application/json",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/products/6/reviews",
@@ -757,7 +897,15 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/products/36/reviews",
@@ -808,7 +956,15 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/products/1/reviews",
@@ -859,7 +1015,15 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/captcha/",
@@ -894,7 +1058,15 @@
           "captchaId",
           "integer"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/api/Addresss/7",
@@ -965,7 +1137,16 @@
           "zipCode",
           "integer"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "PUT:/api/BasketItems/9",
@@ -1016,7 +1197,17 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "content-type": "application/json",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "POST:/socket.io/",
@@ -1053,7 +1244,16 @@
           "transport",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "content-type": "text/plain;charset=UTF-8",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "POST:/api/BasketItems/",
@@ -1104,7 +1304,17 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "content-type": "application/json",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2",
@@ -1124,7 +1334,15 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "parameters": []
+      "parameters": [],
+      "headers": {
+        "origin": "http://localhost:3000",
+        "referer": [
+          "@h1",
+          "@h2"
+        ],
+        "user-agent": "@h3"
+      }
     },
     {
       "id": "GET:/s/materialicons/v143/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2",
@@ -1144,7 +1362,18 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "parameters": []
+      "parameters": [],
+      "headers": {
+        "origin": "http://localhost:3000",
+        "referer": [
+          "@h1",
+          "@h2"
+        ],
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/wallet/balance",
@@ -1175,7 +1404,16 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/user/change-password",
@@ -1255,7 +1493,16 @@
           "username",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/track-order/789a-c954d34e39503081",
@@ -1346,7 +1593,16 @@
           "totalPrice",
           "float"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/products/24/reviews",
@@ -1373,7 +1629,15 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/products/16/reviews",
@@ -1400,7 +1664,15 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/languages",
@@ -1447,7 +1719,16 @@
           "shortKey",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "@h5"
+      }
     },
     {
       "id": "GET:/rest/2fa/status",
@@ -1486,7 +1767,16 @@
           "setupToken",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/profile",
@@ -1519,7 +1809,20 @@
           "viewport",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "referer": [
+          "@h1",
+          "@h2"
+        ],
+        "upgrade-insecure-requests": "1",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "content-type": "application/x-www-form-urlencoded",
+        "origin": "http://localhost:3000"
+      }
     },
     {
       "id": "GET:/icon",
@@ -1544,7 +1847,14 @@
           "family",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/css",
@@ -1569,7 +1879,11 @@
           "family",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2"
+      }
     },
     {
       "id": "GET:/api/Deliverys/1",
@@ -1616,7 +1930,16 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/api/BasketItems/9",
@@ -1667,7 +1990,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/ajax/libs/jquery/3.3.1/jquery.min.js",
@@ -1692,7 +2024,11 @@
           "object",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2"
+      }
     },
     {
       "id": "GET:/ajax/libs/jquery/2.2.4/jquery.min.js",
@@ -1712,7 +2048,11 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "parameters": []
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2"
+      }
     },
     {
       "id": "GET:/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js",
@@ -1732,7 +2072,11 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "parameters": []
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2"
+      }
     },
     {
       "id": "GET:/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css",
@@ -1752,7 +2096,11 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "parameters": []
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2"
+      }
     },
     {
       "id": "GET:/",
@@ -1809,7 +2157,15 @@
           "viewport",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "@h1",
+        "sec-ch-ua": "@h2",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "@h3"
+      }
     },
     {
       "id": "PUT:/api/BasketItems/10",
@@ -1860,7 +2216,17 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "content-type": "application/json",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "POST:/rest/user/login",
@@ -1902,7 +2268,16 @@
           "umail",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "content-type": "application/json",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "POST:/rest/user/data-export",
@@ -1937,7 +2312,17 @@
           "userData",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "content-type": "application/json",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "POST:/rest/basket/6/checkout",
@@ -1984,7 +2369,17 @@
           "orderDetails.paymentId",
           "integer"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "content-type": "application/json",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "POST:/api/Users/",
@@ -2079,7 +2474,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "content-type": "application/json",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "POST:/api/SecurityAnswers/",
@@ -2126,7 +2530,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "content-type": "application/json",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "POST:/api/Cards/",
@@ -2185,7 +2598,17 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "content-type": "application/json",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "POST:/api/Addresss/",
@@ -2256,7 +2679,17 @@
           "zipCode",
           "integer"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "content-type": "application/json",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/order-history",
@@ -2287,7 +2720,16 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/image-captcha/",
@@ -2314,7 +2756,16 @@
           "image",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/rest/continue-code",
@@ -2341,7 +2792,16 @@
           "continueCode",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/api/SecurityQuestions/",
@@ -2384,7 +2844,15 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/api/Recycles/",
@@ -2415,7 +2883,16 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/api/Products/24",
@@ -2482,7 +2959,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/api/Products/1",
@@ -2549,7 +3035,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/api/Feedbacks/",
@@ -2600,7 +3095,15 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/api/Deliverys",
@@ -2651,7 +3154,16 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/api/Cards/7",
@@ -2702,7 +3214,16 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "GET:/api/BasketItems/10",
@@ -2753,7 +3274,16 @@
           "updatedAt",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     },
     {
       "id": "DELETE:/api/BasketItems/9",
@@ -2784,7 +3314,16 @@
           "status",
           "string"
         ]
-      ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "authorization": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
     }
   ]
 }

@@ -1,22 +1,32 @@
 {
   "test_cases": [
     {
-      "id": "GET_/rest/user/whoami_authz_leak_tc",
-      "hypothesis_id": "GET_/rest/user/whoami_authz_leak",
+      "id": "TC-H-REST-WHOAMI-INFO-LEAK",
+      "hypothesis_id": "H-REST-WHOAMI-INFO-LEAK",
       "base_url": "http://localhost:3000",
       "method": "GET",
       "endpoint": "/rest/user/whoami",
-      "parameter": "user",
+      "parameter": "email,lastLoginIp,profileImage,user",
+      "header": [
+        {
+          "header_name": "Accept",
+          "header_value": "application/json, text/plain, */*"
+        },
+        {
+          "header_name": "Authorization",
+          "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+        }
+      ],
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"user\":\"current\"}"
+              "value": "{\"email\":\"ggggg@mail.com\",\"lastLoginIp\":\"0.0.0.0\",\"profileImage\":\"/assets/public/images/uploads/default.svg\",\"user\":\"\"}"
             }
           ],
-          "description": "Baseline authenticated request returning current user info",
+          "description": "Authenticated baseline returning whoami",
           "encoding": "utf-8",
           "content_type": "application/json"
         },
@@ -25,10 +35,10 @@
           "payloads": [
             {
               "location": "body",
-              "value": "{\"user\":\"other\"}"
+              "value": "{\"email\":\"ggggg@mail.com\\\"'><script>1</script>\",\"lastLoginIp\":\"0.0.0.0\",\"profileImage\":\"/assets/public/images/uploads/default.svg\",\"user\":\"\"}"
             }
           ],
-          "description": "Probe with different user identifier to detect disclosure",
+          "description": "Inject benign reflective probe to detect reflection or body changes",
           "encoding": "utf-8",
           "content_type": "application/json"
         },
@@ -37,94 +47,24 @@
           "payloads": [
             {
               "location": "body",
-              "value": "{\"user\":\"admin\"}"
+              "value": "{\"email\":\"ggggg@mail.com\",\"lastLoginIp\":\"0.0.0.0\",\"profileImage\":\"/assets/public/images/uploads/default.svg\",\"user\":\"' OR '1'='1\"}"
             }
           ],
-          "description": "Attempt to retrieve another user's (admin) info if authorization missing",
+          "description": "Probe for unexpected data disclosure differences",
           "encoding": "utf-8",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
-          "type": "login",
-          "description": "Valid session cookie or Authorization header required"
+          "type": "jwt_refresh",
+          "description": "Valid Bearer token present in Authorization header"
         }
       ],
       "oracle_rules": [
         {
           "signal": "sensitive_data_exposed",
-          "condition": "response.body contains email or profileImage or lastLoginIp",
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "max_retries": 1,
-      "delay_between_requests": 0.5,
-      "notes": "Compare benign baseline to probe/exploit responses; keep requests under max_requests; authenticated session required",
-      "tags": [
-        "information_disclosure",
-        "authz"
-      ],
-      "estimated_duration": 2
-    },
-    {
-      "id": "GET_/rest/basket/{basketId}_idor_tc",
-      "hypothesis_id": "GET_/rest/basket/{basketId}_idor",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/rest/basket/{basketId}",
-      "parameter": "BasketId",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/6"
-            }
-          ],
-          "description": "Baseline retrieve own basket (observed BasketId=6)",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/7"
-            }
-          ],
-          "description": "Request another basketId to check for authorization enforcement",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/1"
-            }
-          ],
-          "description": "Request low-numbered basketId to attempt access to other user's basket data",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Valid session cookie or Authorization header required"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "authorization_bypassed",
-          "condition": "response.status_code == 200 and response.body contains user or Products or coupon or UserId fields indicating another user's data",
+          "condition": "payload_value in response.body OR response.body contains \\\"ggggg@mail.com\\\" OR response.body contains \\\"/assets/public/images/uploads/default.svg\\\"",
           "weight": 1.0
         },
         {
@@ -142,91 +82,42 @@
         "destructive_ok": false,
         "max_requests": 20
       },
-      "max_retries": 2,
-      "delay_between_requests": 1.0,
-      "notes": "Use observed BasketId=6 as baseline. Limit attempts to max_requests. Do not modify server state.",
-      "tags": [
-        "idor",
-        "authz"
-      ],
-      "estimated_duration": 5
-    },
-    {
-      "id": "GET_/rest/admin/application-configuration_admin_exposure_tc",
-      "hypothesis_id": "GET_/rest/admin/application-configuration_admin_exposure",
-      "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/rest/admin/application-configuration",
-      "parameter": "",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/admin/application-configuration"
-            }
-          ],
-          "description": "Baseline admin config request using current auth",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/admin/application-configuration"
-            }
-          ],
-          "description": "Probe with elevated Authorization header (if available) to see if config returns",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authorization header or admin cookie required to test exposure; use admin credentials if available"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.body contains config or baseUrl or trainingData or privacyContactEmail or logo",
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 5
-      },
       "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Requires admin-level auth to validate exposure. If admin credentials not available, set needs_observation.",
+      "delay_between_requests": 0.5,
+      "notes": "Use existing Authorization header; do not exceed max_requests",
       "tags": [
-        "authz",
-        "admin"
+        "info_leak",
+        "whoami"
       ],
-      "estimated_duration": 2
+      "estimated_duration": 60
     },
     {
-      "id": "GET_/rest/products/{productId}/reviews_info_leak_tc",
-      "hypothesis_id": "GET_/rest/products/{productId}/reviews_idor_public",
+      "id": "TC-H-REST-BASKET-IDOR",
+      "hypothesis_id": "H-REST-BASKET-IDOR",
       "base_url": "http://localhost:3000",
       "method": "GET",
-      "endpoint": "/rest/products/{productId}/reviews",
-      "parameter": "productId",
+      "endpoint": "/rest/basket/{basketId}",
+      "parameter": "BasketId",
+      "header": [
+        {
+          "header_name": "Accept",
+          "header_value": "application/json, text/plain, */*"
+        },
+        {
+          "header_name": "Authorization",
+          "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+        }
+      ],
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
               "location": "path",
-              "value": "/rest/products/6/reviews"
+              "value": "/rest/basket/6"
             }
           ],
-          "description": "Baseline product reviews retrieval (observed productId=6)",
+          "description": "Baseline fetch of own basketId=6",
           "content_type": "application/json"
         },
         {
@@ -234,10 +125,10 @@
           "payloads": [
             {
               "location": "path",
-              "value": "/rest/products/24/reviews"
+              "value": "/rest/basket/7"
             }
           ],
-          "description": "Request another productId to verify public access to reviews",
+          "description": "Request neighboring basketId to detect IDOR via status or content difference",
           "content_type": "application/json"
         },
         {
@@ -245,19 +136,39 @@
           "payloads": [
             {
               "location": "path",
-              "value": "/rest/products/1/reviews"
+              "value": "/rest/basket/1"
             }
           ],
-          "description": "Request additional productId to observe data consistency across IDs",
+          "description": "Request another likely user basket id to test access control",
           "content_type": "application/json"
         }
       ],
-      "prerequisites": [],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Valid Bearer token in Authorization header for authenticated access"
+        }
+      ],
       "oracle_rules": [
         {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.body contains review objects (author, data, likesCount) for requested productId",
+          "signal": "status_code_change",
+          "condition": "response.status_code not in baseline.status_code and response.status_code in [200,403,404]",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
           "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.40",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 0.8
         }
       ],
       "pass_logic": "any",
@@ -266,149 +177,180 @@
         "destructive_ok": false,
         "max_requests": 50
       },
-      "max_retries": 1,
+      "max_retries": 2,
       "delay_between_requests": 0.5,
-      "notes": "Public endpoint; benign probes only. Use multiple productIds to confirm consistent behavior.",
+      "notes": "Do not attempt destructive actions; only GETs allowed. Vary basketId conservatively.",
       "tags": [
-        "information_disclosure"
+        "idor",
+        "authorization"
       ],
-      "estimated_duration": 3
+      "estimated_duration": 120
     },
     {
-      "id": "GET_/rest/captcha/_anti_automation_check_tc",
-      "hypothesis_id": "GET_/rest/captcha/anti_automation_check",
+      "id": "TC-H-ADMIN-APP-CONFIG-EXPOSE",
+      "hypothesis_id": "H-ADMIN-APP-CONFIG-EXPOSE",
       "base_url": "http://localhost:3000",
       "method": "GET",
-      "endpoint": "/rest/captcha/",
-      "parameter": "captchaId",
+      "endpoint": "/rest/admin/application-configuration",
+      "parameter": "application,baseUrl,trainingData",
+      "header": [
+        {
+          "header_name": "Accept",
+          "header_value": "application/json, text/plain, */*"
+        },
+        {
+          "header_name": "Authorization",
+          "header_value": "Bearer <ADMIN_TOKEN_REQUIRED>"
+        }
+      ],
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
-              "location": "query",
-              "value": "?captchaId=1"
+              "location": "path",
+              "value": "/rest/admin/application-configuration"
             }
           ],
-          "description": "Baseline captcha retrieval",
+          "description": "Baseline admin config fetch with admin token",
           "content_type": "application/json"
         },
         {
           "tier": "probe",
           "payloads": [
             {
-              "location": "query",
-              "value": "?captchaId=1&answer=wrong"
+              "location": "path",
+              "value": "/rest/admin/application-configuration"
             }
           ],
-          "description": "Submit wrong answer to observe failure reflection",
+          "description": "Probe: fetch as non-admin (omit admin token) to compare responses",
           "content_type": "application/json"
         },
         {
           "tier": "exploit",
           "payloads": [
             {
-              "location": "query",
-              "value": "?captchaId=1&answer=correct"
+              "location": "path",
+              "value": "/rest/admin/application-configuration"
             }
           ],
-          "description": "If known correct answer available from prior observation, submit to test bypass (requires observation)",
+          "description": "Authenticated admin fetch to confirm sensitive fields exposed",
           "content_type": "application/json"
         }
       ],
-      "prerequisites": [],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Admin credentials required to obtain admin bearer token; bind token to Authorization header"
+        }
+      ],
       "oracle_rules": [
         {
-          "signal": "reflected_input",
-          "condition": "response.body contains answer or success/failure message or change in body length > 10% compared to baseline",
-          "threshold": {
-            "body_length_delta_pct": 10.0
-          },
+          "signal": "sensitive_data_exposed",
+          "condition": "response.body contains \\\"baseUrl\\\" OR response.body contains \\\"trainingData\\\" OR response.body contains \\\"application\\\"",
           "weight": 1.0
         },
         {
-          "signal": "http_callback",
-          "condition": "external callback observed (requires out-of-band monitoring)",
-          "weight": 0.6
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.30",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.8
         }
       ],
       "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 20
+        "max_requests": 10
       },
-      "max_retries": 2,
-      "delay_between_requests": 0.5,
-      "notes": "Do not attempt automated captcha cracking. Exploit tier requires prior observation of correct answer; set needs_observation if unknown.",
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Requires admin token; do not expose admin token in logs. Replace <ADMIN_TOKEN_REQUIRED> before execution.",
       "tags": [
-        "anti_automation"
+        "sensitive",
+        "admin"
       ],
-      "estimated_duration": 5
+      "estimated_duration": 300
     },
     {
-      "id": "POST_/api/Feedbacks/_captcha_bypass_attempt_tc",
-      "hypothesis_id": "POST_/api/Feedbacks/_captcha_bypass_attempt",
+      "id": "TC-H-SOCKETIO-SID-PREDICTION-NEEDS",
+      "hypothesis_id": "H-SOCKETIO-SID-PREDICTION-NEEDS",
       "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": "captcha",
+      "method": "GET",
+      "endpoint": "/socket.io/",
+      "parameter": "sid",
+      "header": [
+        {
+          "header_name": "Accept",
+          "header_value": "*/*"
+        },
+        {
+          "header_name": "Cookie",
+          "header_value": "auth_cookie_token=<SESSION_COOKIE>"
+        }
+      ],
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
-              "location": "body",
-              "value": "{\"comment\":\"benign feedback\",\"captchaId\":1,\"captcha\":\"\"}"
+              "location": "query",
+              "value": "EIO=4&transport=polling&sid=<observed_sid>"
             }
           ],
-          "description": "Baseline anonymous feedback submission without captcha value",
-          "encoding": "utf-8",
-          "content_type": "application/json"
+          "description": "Baseline handshake using observed sid",
+          "content_type": "*/*"
         },
         {
           "tier": "probe",
           "payloads": [
             {
-              "location": "body",
-              "value": "{\"comment\":\"probe feedback\",\"captchaId\":1,\"captcha\":\"invalid\"}"
+              "location": "query",
+              "value": "EIO=4&transport=polling&sid=invalid-sid-123"
             }
           ],
-          "description": "Submit invalid captcha to observe rejection behavior",
-          "encoding": "utf-8",
-          "content_type": "application/json"
+          "description": "Probe with invalid sid to observe status/timing differences",
+          "content_type": "*/*"
         },
         {
           "tier": "exploit",
           "payloads": [
             {
-              "location": "body",
-              "value": "{\"comment\":\"exploit feedback\",\"captchaId\":1,\"captcha\":\"<bypass>\"}"
+              "location": "query",
+              "value": "EIO=4&transport=polling&sid=789a-c954d34e39503081"
             }
           ],
-          "description": "Attempt bypass with crafted captcha value if a weakness is known",
-          "encoding": "utf-8",
-          "content_type": "application/json"
+          "description": "Use another observed sid value to test session handling",
+          "content_type": "*/*"
         }
       ],
-      "prerequisites": [],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Valid session cookie required; bind to Cookie header as auth_cookie_token"
+        }
+      ],
       "oracle_rules": [
         {
+          "signal": "timing_anomaly",
+          "condition": "response.time_ms > baseline.time_ms + 5000",
+          "threshold": {
+            "timing_ms": 5000
+          },
+          "weight": 0.7
+        },
+        {
           "signal": "status_code_change",
-          "condition": "response.status_code in [200,201] vs baseline (expected rejection)",
+          "condition": "response.status_code in [200,400,401] and response.status_code != baseline.status_code",
           "threshold": {
             "expected_codes": [
               200,
-              201,
               400,
-              403
+              401
             ]
           },
-          "weight": 1.0
-        },
-        {
-          "signal": "reflected_input",
-          "condition": "submitted comment appears in response body indicating acceptance",
           "weight": 0.8
         }
       ],
@@ -420,30 +362,147 @@
       },
       "max_retries": 2,
       "delay_between_requests": 1.0,
-      "notes": "Endpoint uses captcha; avoid brute force. Keep submissions low and observe responses.",
+      "notes": "Needs observation to populate real sid values; avoid repeated invalid sids to prevent lockout.",
       "tags": [
-        "anti_automation",
-        "captcha"
+        "socket.io",
+        "session"
       ],
-      "estimated_duration": 6
+      "estimated_duration": 180
     },
     {
-      "id": "GET_/api/Addresss/{addressId}_idor_tc",
-      "hypothesis_id": "GET_/api/Addresss/{addressId}_idor",
+      "id": "TC-H-FEEDBACK-CAPTCHA-BYPASS",
+      "hypothesis_id": "H-FEEDBACK-CAPTCHA-BYPASS-NEEDS_OBS",
       "base_url": "http://localhost:3000",
-      "method": "GET",
-      "endpoint": "/api/Addresss/{addressId}",
-      "parameter": "addressId",
+      "method": "POST",
+      "endpoint": "/api/Feedbacks/",
+      "parameter": "captcha,captchaId,comment",
+      "header": [
+        {
+          "header_name": "Accept",
+          "header_value": "application/json, text/plain, */*"
+        },
+        {
+          "header_name": "Content-Type",
+          "header_value": "application/json"
+        }
+      ],
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"UserId\":null,\"captcha\":\"<valid_answer>\",\"captchaId\":1,\"comment\":\"benign feedback\",\"rating\":5}"
+            }
+          ],
+          "description": "Submit feedback with valid captcha (baseline). Replace <valid_answer> before execution.",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"UserId\":null,\"captcha\":\"wrong-answer\",\"captchaId\":1,\"comment\":\"probe feedback\",\"rating\":1}"
+            }
+          ],
+          "description": "Submit with incorrect captcha to observe status changes",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"UserId\":null,\"captcha\":\"\",\"captchaId\":9999,\"comment\":\"attempt bypass\",\"rating\":1}"
+            }
+          ],
+          "description": "Attempt submission with missing/invalid captchaId to detect bypass behavior",
+          "encoding": "utf-8",
+          "content_type": "application/json"
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "No auth required; ensure captchaId 1 corresponds to baseline if known"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,400,403] and response.status_code != baseline.status_code",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Requires observation to confirm a valid captcha answer; do not brute-force captcha.",
+      "tags": [
+        "captcha",
+        "anti_automation"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "TC-H-BASKETITEMS-PUT-CSRF",
+      "hypothesis_id": "H-BASKETITEMS-PUT-CSRF",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": "itemId,id,quantity",
+      "header": [
+        {
+          "header_name": "Accept",
+          "header_value": "application/json, text/plain, */*"
+        },
+        {
+          "header_name": "Authorization",
+          "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+        },
+        {
+          "header_name": "Content-Type",
+          "header_value": "application/json"
+        }
+      ],
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
               "location": "path",
-              "value": "/api/Addresss/7"
+              "value": "/api/BasketItems/9"
+            },
+            {
+              "location": "body",
+              "value": "{\"id\":9,\"quantity\":1}"
             }
           ],
-          "description": "Baseline fetch own address (observed addressId=7)",
+          "description": "Baseline authenticated PUT with valid CSRF token present (token_in_form)",
+          "encoding": "utf-8",
           "content_type": "application/json"
         },
         {
@@ -451,10 +510,15 @@
           "payloads": [
             {
               "location": "path",
-              "value": "/api/Addresss/1"
+              "value": "/api/BasketItems/9"
+            },
+            {
+              "location": "body",
+              "value": "{\"id\":9,\"quantity\":2}"
             }
           ],
-          "description": "Request another addressId to test access controls",
+          "description": "Authenticated PUT altering quantity (with CSRF token) to observe behavior",
+          "encoding": "utf-8",
           "content_type": "application/json"
         },
         {
@@ -462,23 +526,39 @@
           "payloads": [
             {
               "location": "path",
-              "value": "/api/Addresss/2"
+              "value": "/api/BasketItems/9"
+            },
+            {
+              "location": "body",
+              "value": "{\"id\":9,\"quantity\":5}"
             }
           ],
-          "description": "Additional probe for IDOR patterns",
+          "description": "Attempt PUT without CSRF token header or form field to detect rejection",
+          "encoding": "utf-8",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
           "type": "login",
-          "description": "Valid Authorization header or session cookie required"
+          "description": "Authenticated user session required; include Authorization header or session cookie"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Obtain token_in_form for valid baseline and probe requests; omit for exploit step to test protection"
         }
       ],
       "oracle_rules": [
         {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.body contains streetAddress or mobileNum or fullName fields",
+          "signal": "status_code_change",
+          "condition": "response.status_code in [200,401,403] and response.status_code != baseline.status_code",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              401
+            ]
+          },
           "weight": 1.0
         },
         {
@@ -492,26 +572,36 @@
       ],
       "pass_logic": "any",
       "safety": {
-        "idempotent_required": true,
+        "idempotent_required": false,
         "destructive_ok": false,
         "max_requests": 20
       },
-      "max_retries": 2,
+      "max_retries": 1,
       "delay_between_requests": 1.0,
-      "notes": "Authenticated test only. Use minimal probes and respect privacy.",
+      "notes": "Ensure CSRF token is included for benign/probe; exploit step omits CSRF to test server rejection. Avoid changing quantity to high values.",
       "tags": [
-        "idor",
-        "authz"
+        "csrf",
+        "state_change"
       ],
-      "estimated_duration": 5
+      "estimated_duration": 240
     },
     {
-      "id": "PUT_/api/BasketItems/{itemId}_authz_update_tc",
-      "hypothesis_id": "PUT_/api/BasketItems/{itemId}_authz_update",
+      "id": "TC-H-BASKETITEMS-DELETE-CSRF",
+      "hypothesis_id": "H-BASKETITEMS-DELETE-CSRF",
       "base_url": "http://localhost:3000",
-      "method": "PUT",
-      "endpoint": "/api/BasketItems/{itemId}",
-      "parameter": "itemId",
+      "method": "DELETE",
+      "endpoint": "/api/BasketItems/{id}",
+      "parameter": "id",
+      "header": [
+        {
+          "header_name": "Accept",
+          "header_value": "application/json, text/plain, */*"
+        },
+        {
+          "header_name": "Authorization",
+          "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+        }
+      ],
       "payloads": [
         {
           "tier": "benign",
@@ -519,14 +609,9 @@
             {
               "location": "path",
               "value": "/api/BasketItems/9"
-            },
-            {
-              "location": "body",
-              "value": "{\"quantity\":1}"
             }
           ],
-          "description": "Baseline update to observed itemId=9 with safe quantity",
-          "encoding": "utf-8",
+          "description": "Baseline DELETE with valid CSRF token (token_in_form) to confirm expected behavior",
           "content_type": "application/json"
         },
         {
@@ -534,15 +619,10 @@
           "payloads": [
             {
               "location": "path",
-              "value": "/api/BasketItems/10"
-            },
-            {
-              "location": "body",
-              "value": "{\"quantity\":2}"
+              "value": "/api/BasketItems/9"
             }
           ],
-          "description": "Attempt update on different itemId to test authorization",
-          "encoding": "utf-8",
+          "description": "Attempt DELETE with CSRF token removed to observe server rejection",
           "content_type": "application/json"
         },
         {
@@ -550,45 +630,43 @@
           "payloads": [
             {
               "location": "path",
-              "value": "/api/BasketItems/1"
-            },
-            {
-              "location": "body",
-              "value": "{\"quantity\":99}"
+              "value": "/api/BasketItems/10"
             }
           ],
-          "description": "Aggressive update to check acceptance when ownership checks missing (keep limited)",
-          "encoding": "utf-8",
+          "description": "Attempt deletion of another itemId without CSRF to detect CSRF/IDOR combination",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
           "type": "login",
-          "description": "Authorization header or valid session cookie required"
+          "description": "Authenticated session required; include Authorization header"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Obtain token_in_form for baseline; omit for probe/exploit steps"
         }
       ],
       "oracle_rules": [
         {
           "signal": "status_code_change",
-          "condition": "response.status_code in [200,204] while baseline was 403/404 or vice versa",
+          "condition": "response.status_code in [200,401,403] and response.status_code != baseline.status_code",
           "threshold": {
             "expected_codes": [
               200,
-              204,
-              403,
-              404
+              401,
+              403
             ]
           },
           "weight": 1.0
         },
         {
           "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.30",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
           "threshold": {
-            "body_length_delta_pct": 30.0
+            "body_length_delta_pct": 20.0
           },
-          "weight": 0.8
+          "weight": 0.7
         }
       ],
       "pass_logic": "any",
@@ -599,30 +677,40 @@
       },
       "max_retries": 1,
       "delay_between_requests": 2.0,
-      "notes": "Non-idempotent - limit attempts. Prefer probe with low-impact quantities. Require authenticated user.",
+      "notes": "Destructive action: ensure test account and low-impact items. Obtain and use CSRF token for baseline only.",
       "tags": [
-        "authz",
-        "state_change"
+        "csrf",
+        "delete"
       ],
-      "estimated_duration": 6
+      "estimated_duration": 300
     },
     {
-      "id": "POST_/api/BasketItems/_create_item_idor_tc",
-      "hypothesis_id": "POST_/api/BasketItems/_create_item_idor",
+      "id": "TC-H-REST-LOGIN-BRUTE-FORCE",
+      "hypothesis_id": "H-REST-LOGIN-BRUTE-FORCE",
       "base_url": "http://localhost:3000",
       "method": "POST",
-      "endpoint": "/api/BasketItems/",
-      "parameter": "BasketId",
+      "endpoint": "/rest/user/login",
+      "parameter": "email,password",
+      "header": [
+        {
+          "header_name": "Accept",
+          "header_value": "application/json, text/plain, */*"
+        },
+        {
+          "header_name": "Content-Type",
+          "header_value": "application/json"
+        }
+      ],
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"BasketId\":6,\"ProductId\":1,\"quantity\":1}"
+              "value": "{\"email\":\"testuser@example.com\",\"password\":\"CorrectHorseBattery\"}"
             }
           ],
-          "description": "Baseline create item in own basket (observed BasketId=6)",
+          "description": "Single benign login attempt with valid credentials to record baseline",
           "encoding": "utf-8",
           "content_type": "application/json"
         },
@@ -631,10 +719,10 @@
           "payloads": [
             {
               "location": "body",
-              "value": "{\"BasketId\":1,\"ProductId\":2,\"quantity\":1}"
+              "value": "{\"email\":\"testuser@example.com\",\"password\":\"wrongpass1\"}"
             }
           ],
-          "description": "Attempt create item in another basketId to test ownership checks",
+          "description": "Small number of incorrect attempts to detect rate limiting or lockout",
           "encoding": "utf-8",
           "content_type": "application/json"
         },
@@ -643,116 +731,24 @@
           "payloads": [
             {
               "location": "body",
-              "value": "{\"BasketId\":2,\"ProductId\":3,\"quantity\":1}"
+              "value": "{\"email\":\"testuser@example.com\",\"password\":\"wrongpass2\"}"
             }
           ],
-          "description": "Additional probe to confirm behavior",
+          "description": "Additional incorrect attempts within max_requests to trigger rate limit signals",
           "encoding": "utf-8",
           "content_type": "application/json"
         }
       ],
       "prerequisites": [
         {
-          "type": "login",
-          "description": "Authorization header or session cookie required"
+          "type": "custom",
+          "description": "Use non-privileged test account; no auth required"
         }
       ],
       "oracle_rules": [
         {
           "signal": "status_code_change",
-          "condition": "response.status_code in [201,200] when creating in other BasketId (baseline expected 201 for own)",
-          "threshold": {
-            "expected_codes": [
-              201,
-              200,
-              403
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.body contains created item with owner identifiers or BasketId field matching supplied BasketId",
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.5,
-      "notes": "Non-idempotent - keep low request count and small quantities. Auth required.",
-      "tags": [
-        "authz",
-        "idor"
-      ],
-      "estimated_duration": 6
-    },
-    {
-      "id": "POST_/rest/user/login_bruteforce_rate_limit_tc",
-      "hypothesis_id": "POST_/rest/user/login_bruteforce_rate_limit",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/rest/user/login",
-      "parameter": "email",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"email\":\"user@example.com\",\"password\":\"correcthorsebatterystaple\"}"
-            }
-          ],
-          "description": "Baseline successful login attempt (use valid credentials if available)",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"email\":\"user@example.com\",\"password\":\"wrongpass1\"}"
-            }
-          ],
-          "description": "Single failed login to observe 401 response",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"email\":\"user@example.com\",\"password\":\"wrongpass2\"}"
-            }
-          ],
-          "description": "Repeated failed attempts (capped) to detect rate limiting or delays",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "destructive",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"email\":\"user@example.com\",\"password\":\"wrongpass3\"}"
-            }
-          ],
-          "description": "Do not use unless explicitly allowed; included for completeness but will be skipped due to safety",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "observe 429 or different codes after repeated failed attempts (compare first failed attempt to subsequent)",
+          "condition": "response.status_code in [200,401,429] and response.status_code != baseline.status_code",
           "threshold": {
             "expected_codes": [
               200,
@@ -764,380 +760,49 @@
         },
         {
           "signal": "timing_anomaly",
-          "condition": "response.time_ms > baseline.time_ms + 5000",
+          "condition": "response.time_ms > baseline.time_ms + 2000",
           "threshold": {
-            "timing_ms": 5000
+            "timing_ms": 2000
           },
-          "weight": 0.8
+          "weight": 0.6
         }
       ],
       "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 50
-      },
-      "max_retries": 1,
-      "delay_between_requests": 1.0,
-      "notes": "Throttle attempts and obey max_requests. Use distinct passwords; stop if 429 observed.",
-      "tags": [
-        "auth",
-        "rate_limit"
-      ],
-      "estimated_duration": 10
-    },
-    {
-      "id": "POST_/rest/basket/{basketId}/checkout_coupon_injection_tc",
-      "hypothesis_id": "POST_/rest/basket/{basketId}/checkout_coupon_injection",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/rest/basket/{basketId}/checkout",
-      "parameter": "couponData",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/6/checkout"
-            },
-            {
-              "location": "body",
-              "value": "{\"couponData\":\"\",\"orderDetails\":{}}"
-            }
-          ],
-          "description": "Baseline checkout with no coupon",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/6/checkout"
-            },
-            {
-              "location": "body",
-              "value": "{\"couponData\":{\"code\":\"TEST10\"},\"orderDetails\":{}}"
-            }
-          ],
-          "description": "Apply benign coupon code to observe effect on totalPrice",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/rest/basket/6/checkout"
-            },
-            {
-              "location": "body",
-              "value": "{\"couponData\":{\"code\":\"0 OR 1=1\"},\"orderDetails\":{}}"
-            }
-          ],
-          "description": "Crafted coupon payload to attempt business-logic abuse (probe for injection-like behavior)",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authorization header or session cookie required"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code in [200,400,403] indicating coupon accepted or rejected",
-          "threshold": {
-            "expected_codes": [
-              200,
-              400,
-              403
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.body contains orderDetails or totalPrice and value changed compared to baseline",
-          "weight": 0.9
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
         "max_requests": 20
       },
       "max_retries": 1,
-      "delay_between_requests": 2.0,
-      "notes": "Non-idempotent; do not finalize orders. Keep quantities minimal and monitor totals only.",
+      "delay_between_requests": 1.0,
+      "notes": "Limit incorrect attempts to avoid lockouts; do not exceed max_requests. Use test account.",
       "tags": [
-        "business_logic"
+        "auth",
+        "bruteforce"
       ],
-      "estimated_duration": 8
-    },
-    {
-      "id": "POST_/api/Users/_account_creation_weakness_tc",
-      "hypothesis_id": "POST_/api/Users/_account_creation_weakness",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": "email",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"email\":\"attacker+test@example.com\",\"password\":\"P@ssw0rd!\",\"passwordRepeat\":\"P@ssw0rd!\",\"role\":\"customer\"}"
-            }
-          ],
-          "description": "Baseline account creation with default role",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"email\":\"attacker+test2@example.com\",\"password\":\"P@ssw0rd!\",\"passwordRepeat\":\"P@ssw0rd!\",\"role\":\"admin\"}"
-            }
-          ],
-          "description": "Attempt to set role to admin during signup to detect role acceptance",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"email\":\"attacker+test3@example.com\",\"password\":\"P@ssw0rd!\",\"passwordRepeat\":\"P@ssw0rd!\",\"role\":\"superadmin\"}"
-            }
-          ],
-          "description": "Attempt creation with elevated role strings",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.body contains role field matching supplied role or created user has elevated privileges on subsequent auth",
-          "weight": 1.0
-        },
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code in [201,200] indicating account created",
-          "threshold": {
-            "expected_codes": [
-              201,
-              200,
-              400
-            ]
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "max_retries": 1,
-      "delay_between_requests": 2.0,
-      "notes": "Account creation can be destructive; avoid creating many accounts. Use email aliases and delete test accounts if possible.",
-      "tags": [
-        "privilege_escalation",
-        "account_creation"
-      ],
-      "estimated_duration": 10
-    },
-    {
-      "id": "POST_/api/Cards/_card_upload_injection_tc",
-      "hypothesis_id": "POST_/api/Cards/_card_upload_injection",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/api/Cards/",
-      "parameter": "cardNum",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"UserId\":7,\"cardNum\":\"4111111111111111\",\"expMonth\":12,\"expYear\":2030,\"fullName\":\"Test User\"}"
-            }
-          ],
-          "description": "Baseline card creation using dummy test card number",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"UserId\":7,\"cardNum\":\"4242424242424242\",\"expMonth\":12,\"expYear\":2030,\"fullName\":\"Probe User\"}"
-            }
-          ],
-          "description": "Probe to observe whether cardNum echoed in response",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"UserId\":7,\"cardNum\":\"<script>test</script>\",\"expMonth\":12,\"expYear\":2030,\"fullName\":\"XSS Probe\"}"
-            }
-          ],
-          "description": "Probe for reflection/XSS in response (non-destructive)",
-          "encoding": "utf-8",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authorization header or session cookie required"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.body contains cardNum or fullName indicating storage/echo of sensitive data",
-          "weight": 1.0
-        },
-        {
-          "signal": "reflected_input",
-          "condition": "submitted cardNum or script appears in response.body or response length increases >10%",
-          "threshold": {
-            "body_length_delta_pct": 10.0
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 5
-      },
-      "max_retries": 1,
-      "delay_between_requests": 2.0,
-      "notes": "Use test card numbers only. Do not submit real card data. Limit attempts.",
-      "tags": [
-        "sensitive_data"
-      ],
-      "estimated_duration": 6
-    },
-    {
-      "id": "DELETE_/api/BasketItems/{itemId}_unauthorized_delete_tc",
-      "hypothesis_id": "DELETE_/api/BasketItems/{itemId}_unauthorized_delete",
-      "base_url": "http://localhost:3000",
-      "method": "DELETE",
-      "endpoint": "/api/BasketItems/{itemId}",
-      "parameter": "itemId",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/9"
-            }
-          ],
-          "description": "Baseline delete own itemId=9 (if permitted)",
-          "content_type": "application/json"
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "path",
-              "value": "/api/BasketItems/1"
-            }
-          ],
-          "description": "Attempt delete other itemId to test authorization",
-          "content_type": "application/json"
-        }
-      ],
-      "prerequisites": [
-        {
-          "type": "login",
-          "description": "Authorization header or session cookie required"
-        }
-      ],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code in [200,204] when deleting other user's item (baseline may be 403/404)",
-          "threshold": {
-            "expected_codes": [
-              200,
-              204,
-              403,
-              404
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "response_length_diff",
-          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
-          "threshold": {
-            "body_length_delta_pct": 20.0
-          },
-          "weight": 0.8
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 5
-      },
-      "max_retries": 1,
-      "delay_between_requests": 2.0,
-      "notes": "Destructive action - avoid actual deletion where possible. Prefer probe that expects 403/404. Keep within max_requests.",
-      "tags": [
-        "authz",
-        "destructive"
-      ],
-      "estimated_duration": 5
+      "estimated_duration": 180
     }
   ],
   "global_prerequisites": [
     {
       "type": "login",
-      "description": "Obtain valid session cookie or Authorization header for authenticated tests"
+      "description": "Obtain valid JWT or session cookie for endpoints requiring authorization; bind to Authorization header or Cookie"
     }
   ],
   "execution_hints": [
     {
-      "key": "rate_limit",
-      "value": "Respect per-endpoint max_requests; add 1s delays for state-changing actions"
+      "key": "max_concurrent",
+      "value": "1"
     },
     {
-      "key": "baseline",
-      "value": "Capture baseline response body and time for each endpoint before probes"
+      "key": "respect_rate_limits",
+      "value": "true"
     }
   ],
   "metadata": [
     {
-      "key": "generated_by",
-      "value": "automated_hypothesis_converter"
+      "key": "session_management",
+      "value": "jwt (observed Bearer token in Authorization header)"
     }
   ]
 }

@@ -167,8 +167,8 @@ class AttackVectorsContext(BaseModel):
     vectors: List[AttackVector]
 
 class SafetyConfig(BaseModel, extra=Extra.forbid):
-    idempotent_required: bool = Field(default=True)
-    destructive_ok: bool = Field(default=False)
+    idempotent_required: bool = Field(default=False)
+    destructive_ok: bool = Field(default=True)
     max_requests: int = Field(default=10, ge=1)
 
 class Threshold(BaseModel, extra=Extra.forbid):
@@ -237,6 +237,10 @@ class TestPayload(BaseModel, extra=Extra.forbid):
     encoding: Optional[str] = None
     content_type: Optional[str] = None
 
+class TestCaseHeaders(BaseModel, extra=Extra.forbid):
+    header_name: str
+    header_value: str
+
 class TestCase(BaseModel, extra=Extra.forbid):
     id: str
     hypothesis_id: str
@@ -246,6 +250,7 @@ class TestCase(BaseModel, extra=Extra.forbid):
     method: str
     endpoint: str
     parameter: str
+    header: List[TestCaseHeaders]
 
     # Test configuration
     payloads: List[TestPayload]
