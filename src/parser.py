@@ -403,9 +403,17 @@ class ParserModule:
             orig = self.INCLUDE_STATIC_ASSETS
             self.INCLUDE_STATIC_ASSETS = include_static_assets
 
+        # Filter out static assets before processing
+        filtered_endpoints = []
+        for ep in endpoints:
+            # Skip static assets (both unimportant and important static assets)
+            if ep.endpoint_type in [EndpointType.UNIMPORTANT_STATIC_ASSET, EndpointType.STATIC_ASSET]:
+                continue
+            filtered_endpoints.append(ep)
+
         # Group by exact path (no normalization)
         groups: Dict[Tuple[str, str], Dict[str, Any]] = {}
-        for ep in endpoints:
+        for ep in filtered_endpoints:
             key = (ep.method, ep.path or '/')
             if key not in groups:
                 groups[key] = {
@@ -479,8 +487,8 @@ class ParserModule:
         """Filter endpoints that are relevant for security testing"""
         filtered = []
         for ep in endpoints:
-            # Skip unimportant static assets unless explicitly included
-            if not self.INCLUDE_STATIC_ASSETS and ep.endpoint_type == EndpointType.UNIMPORTANT_STATIC_ASSET:
+            # Skip both types of static assets unless explicitly included
+            if not self.INCLUDE_STATIC_ASSETS and ep.endpoint_type in [EndpointType.UNIMPORTANT_STATIC_ASSET, EndpointType.STATIC_ASSET]:
                 continue
             # Skip third party
             if ep.endpoint_type == EndpointType.THIRD_PARTY:
