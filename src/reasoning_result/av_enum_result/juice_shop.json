@@ -4,12 +4,28 @@
       "method": "GET",
       "endpoint": "/rest/user/whoami",
       "parameter": [
-        ""
+        "user"
       ],
+      "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
         "response_length_diff",
         "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/basket/{basketId}",
+      "parameter": [
+        "BasketId"
+      ],
+      "param_location": "path",
+      "sample_value": "6",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
       ],
       "needs_observation": false
     },
@@ -17,41 +33,27 @@
       "method": "GET",
       "endpoint": "/rest/basket/{basketId}",
       "parameter": [
-        "basketId"
+        "coupon"
       ],
-      "param_location": "path",
-      "sample_value": "6",
-      "category": "insecure_direct_object_reference",
+      "param_location": "query",
+      "category": "injection_nosql",
       "expected_signals": [
-        "status_code_change",
+        "error_signature",
         "response_length_diff"
       ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "GET",
       "endpoint": "/rest/admin/application-configuration",
       "parameter": [
-        ""
+        "application"
       ],
+      "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
         "response_length_diff",
-        "error_signature"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "endpoint": "/socket.io/",
-      "parameter": [
-        "EIO"
-      ],
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "timing_variation",
-        "out_of_band_call"
+        "none"
       ],
       "needs_observation": true
     },
@@ -64,34 +66,8 @@
       "param_location": "query",
       "category": "authn_bypass",
       "expected_signals": [
-        "token_reuse_failure",
-        "status_code_change"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/socket.io/",
-      "parameter": [
-        "t"
-      ],
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "timing_variation"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/socket.io/",
-      "parameter": [
-        "transport"
-      ],
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "response_length_diff"
+        "status_code_change",
+        "token_reuse_failure"
       ],
       "needs_observation": true
     },
@@ -99,37 +75,43 @@
       "method": "GET",
       "endpoint": "/rest/products/search",
       "parameter": [
-        ""
+        "name"
       ],
-      "category": "others",
+      "param_location": "query",
+      "category": "xss_reflected",
       "expected_signals": [
+        "reflected_input",
         "response_length_diff"
       ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "GET",
       "endpoint": "/api/Quantitys/",
       "parameter": [
-        ""
+        "ProductId"
       ],
-      "category": "sensitive_data_exposure",
+      "param_location": "query",
+      "category": "injection_nosql",
       "expected_signals": [
+        "error_signature",
         "response_length_diff"
       ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "GET",
       "endpoint": "/api/Addresss",
       "parameter": [
-        ""
+        "id"
       ],
-      "category": "sensitive_data_exposure",
+      "param_location": "query",
+      "category": "injection_nosql",
       "expected_signals": [
+        "error_signature",
         "response_length_diff"
       ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "GET",
@@ -138,9 +120,10 @@
         "version"
       ],
       "param_location": "query",
-      "category": "others",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
+        "response_length_diff",
+        "none"
       ],
       "needs_observation": true
     },
@@ -148,25 +131,29 @@
       "method": "GET",
       "endpoint": "/api/Challenges/",
       "parameter": [
-        ""
+        "key"
       ],
-      "category": "others",
+      "param_location": "query",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
+        "response_length_diff",
+        "none"
       ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "GET",
       "endpoint": "/api/Cards",
       "parameter": [
-        ""
+        "cardNum"
       ],
+      "param_location": "query",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
+        "response_length_diff",
+        "none"
       ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "POST",
@@ -178,21 +165,7 @@
       "category": "xss_stored",
       "expected_signals": [
         "reflected_input",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": [
-        "captcha"
-      ],
-      "param_location": "body",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change",
-        "error_signature"
+        "response_length_diff"
       ],
       "needs_observation": true
     },
@@ -214,26 +187,12 @@
       "method": "GET",
       "endpoint": "/rest/captcha/",
       "parameter": [
-        "answer"
-      ],
-      "param_location": "query",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/captcha/",
-      "parameter": [
-        "captcha"
+        "captchaId"
       ],
       "param_location": "query",
       "category": "others",
       "expected_signals": [
-        "response_length_diff"
+        "none"
       ],
       "needs_observation": true
     },
@@ -260,38 +219,24 @@
       ],
       "param_location": "path",
       "sample_value": "9",
-      "category": "insecure_direct_object_reference",
+      "category": "authz_bypass",
       "expected_signals": [
         "status_code_change",
         "state_change_observed"
       ],
-      "needs_observation": true
-    },
-    {
-      "method": "PUT",
-      "endpoint": "/api/BasketItems/{itemId}",
-      "parameter": [
-        "quantity"
-      ],
-      "param_location": "body",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change",
-        "response_length_diff"
-      ],
-      "needs_observation": true
+      "needs_observation": false
     },
     {
       "method": "POST",
-      "endpoint": "/api/BasketItems/",
+      "endpoint": "/socket.io/",
       "parameter": [
-        "BasketId"
+        "sid"
       ],
       "param_location": "body",
-      "category": "insecure_direct_object_reference",
+      "category": "authn_bypass",
       "expected_signals": [
         "status_code_change",
-        "state_change_observed"
+        "token_reuse_failure"
       ],
       "needs_observation": true
     },
@@ -302,50 +247,165 @@
         "ProductId"
       ],
       "param_location": "body",
-      "category": "insecure_direct_object_reference",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/rest/user/login",
+      "parameter": [
+        "email"
+      ],
+      "param_location": "body",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "timing_variation"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/rest/user/data-export",
+      "parameter": [
+        "userData"
+      ],
+      "param_location": "body",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "state_change_observed",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/rest/basket/{basketId}/checkout",
+      "parameter": [
+        "basketId"
+      ],
+      "param_location": "path",
+      "sample_value": "6",
+      "category": "authz_bypass",
       "expected_signals": [
         "status_code_change",
         "state_change_observed"
       ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/wallet/balance",
-      "parameter": [
-        ""
-      ],
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
       "needs_observation": false
     },
     {
-      "method": "GET",
-      "endpoint": "/rest/user/change-password",
+      "method": "POST",
+      "endpoint": "/api/Users/",
       "parameter": [
-        ""
+        "email"
       ],
-      "category": "authn_bypass",
+      "param_location": "body",
+      "category": "injection_nosql",
       "expected_signals": [
-        "status_code_change",
-        "error_signature"
+        "error_signature",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/SecurityAnswers/",
+      "parameter": [
+        "answer"
+      ],
+      "param_location": "body",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/Cards/",
+      "parameter": [
+        "cardNum"
+      ],
+      "param_location": "body",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/Addresss/",
+      "parameter": [
+        "streetAddress"
+      ],
+      "param_location": "body",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "response_length_diff"
       ],
       "needs_observation": true
     },
     {
       "method": "GET",
-      "endpoint": "/rest/track-order/{trackId}",
+      "endpoint": "/rest/order-history",
       "parameter": [
-        "trackId"
+        "status"
       ],
-      "param_location": "path",
-      "sample_value": "789a-c954d34e39503081",
+      "param_location": "query",
       "category": "sensitive_data_exposure",
       "expected_signals": [
         "response_length_diff",
+        "none"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/image-captcha/",
+      "parameter": [
+        "image"
+      ],
+      "param_location": "query",
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/continue-code",
+      "parameter": [
+        "continueCode"
+      ],
+      "param_location": "query",
+      "category": "open_redirect",
+      "expected_signals": [
+        "out_of_band_call",
         "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/track-order/{orderId}",
+      "parameter": [
+        "orderId"
+      ],
+      "param_location": "path",
+      "sample_value": "789a-c954d34e39503081",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
       ],
       "needs_observation": false
     },
@@ -381,353 +441,87 @@
       "method": "GET",
       "endpoint": "/rest/languages",
       "parameter": [
-        ""
+        "lang"
       ],
-      "category": "others",
+      "param_location": "query",
+      "category": "sensitive_data_exposure",
       "expected_signals": [
-        "response_length_diff"
+        "response_length_diff",
+        "none"
       ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "GET",
       "endpoint": "/rest/2fa/status",
       "parameter": [
-        ""
+        "setupToken"
       ],
+      "param_location": "query",
       "category": "sensitive_data_exposure",
       "expected_signals": [
         "response_length_diff",
-        "error_signature"
+        "none"
       ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "GET",
       "endpoint": "/profile",
       "parameter": [
-        ""
+        "description"
       ],
-      "category": "sensitive_data_exposure",
+      "param_location": "query",
+      "category": "xss_reflected",
       "expected_signals": [
+        "reflected_input",
         "response_length_diff"
       ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "GET",
-      "endpoint": "/api/Deliverys/{deliveryId}",
+      "endpoint": "/",
       "parameter": [
-        "deliveryId"
+        "theme"
       ],
-      "param_location": "path",
-      "sample_value": "1",
-      "category": "insecure_direct_object_reference",
+      "param_location": "query",
+      "category": "xss_reflected",
       "expected_signals": [
-        "status_code_change",
+        "reflected_input",
         "response_length_diff"
       ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/BasketItems/{itemId}",
-      "parameter": [
-        "itemId"
-      ],
-      "param_location": "path",
-      "sample_value": "9",
-      "category": "insecure_direct_object_reference",
-      "expected_signals": [
-        "status_code_change",
-        "response_length_diff"
-      ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "PUT",
       "endpoint": "/api/BasketItems/{itemId}",
       "parameter": [
-        "itemId",
-        "quantity"
+        "itemId"
       ],
       "param_location": "path",
       "sample_value": "10",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change",
-        "state_change_observed"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/rest/user/login",
-      "parameter": [
-        "email"
-      ],
-      "param_location": "body",
-      "category": "authn_bypass",
-      "expected_signals": [
-        "status_code_change",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/rest/user/login",
-      "parameter": [
-        "password"
-      ],
-      "param_location": "body",
-      "category": "authn_bypass",
-      "expected_signals": [
-        "status_code_change",
-        "error_signature"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/rest/user/data-export",
-      "parameter": [
-        "confirmation"
-      ],
-      "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "status_code_change",
-        "state_change_observed"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/rest/basket/{basketId}/checkout",
-      "parameter": [
-        "basketId"
-      ],
-      "param_location": "path",
-      "sample_value": "6",
       "category": "authz_bypass",
       "expected_signals": [
         "status_code_change",
         "state_change_observed"
       ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/rest/basket/{basketId}/checkout",
-      "parameter": [
-        "orderDetails.paymentId"
-      ],
-      "param_location": "body",
-      "category": "business_logic",
-      "expected_signals": [
-        "status_code_change",
-        "state_change_observed"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": [
-        "email"
-      ],
-      "param_location": "body",
-      "category": "injection_nosql",
-      "expected_signals": [
-        "error_signature",
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameter": [
-        "password"
-      ],
-      "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/SecurityAnswers/",
-      "parameter": [
-        "answer"
-      ],
-      "param_location": "body",
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "none"
-      ],
-      "needs_observation": true
+      "needs_observation": false
     },
     {
       "method": "POST",
       "endpoint": "/api/Cards/",
       "parameter": [
+        "UserId",
         "cardNum"
       ],
       "param_location": "body",
       "category": "sensitive_data_exposure",
       "expected_signals": [
-        "none"
+        "response_length_diff",
+        "state_change_observed"
       ],
       "needs_observation": true
-    },
-    {
-      "method": "POST",
-      "endpoint": "/api/Addresss/",
-      "parameter": [
-        "streetAddress"
-      ],
-      "param_location": "body",
-      "category": "injection_nosql",
-      "expected_signals": [
-        "error_signature",
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/order-history",
-      "parameter": [
-        ""
-      ],
-      "category": "sensitive_data_exposure",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/image-captcha/",
-      "parameter": [
-        "image"
-      ],
-      "param_location": "query",
-      "category": "others",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/rest/continue-code",
-      "parameter": [
-        "continueCode"
-      ],
-      "param_location": "query",
-      "category": "open_redirect",
-      "expected_signals": [
-        "status_code_change",
-        "out_of_band_call"
-      ],
-      "needs_observation": true
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/SecurityQuestions/",
-      "parameter": [
-        ""
-      ],
-      "category": "others",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Recycles/",
-      "parameter": [
-        ""
-      ],
-      "category": "others",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Products/{productId}",
-      "parameter": [
-        "productId"
-      ],
-      "param_location": "path",
-      "sample_value": "24",
-      "category": "others",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Feedbacks/",
-      "parameter": [
-        ""
-      ],
-      "category": "others",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Deliverys",
-      "parameter": [
-        ""
-      ],
-      "category": "others",
-      "expected_signals": [
-        "response_length_diff"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/Cards/{cardId}",
-      "parameter": [
-        "cardId"
-      ],
-      "param_location": "path",
-      "sample_value": "7",
-      "category": "insecure_direct_object_reference",
-      "expected_signals": [
-        "status_code_change",
-        "response_length_diff"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "endpoint": "/api/BasketItems/{itemId}",
-      "parameter": [
-        "itemId"
-      ],
-      "param_location": "path",
-      "sample_value": "10",
-      "category": "insecure_direct_object_reference",
-      "expected_signals": [
-        "status_code_change",
-        "response_length_diff"
-      ],
-      "needs_observation": false
     },
     {
       "method": "DELETE",

@@ -20,13 +20,24 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "email",
-        "lastLoginIp",
-        "profileImage",
-        "user"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "email",
+          "string"
+        ],
+        [
+          "lastLoginIp",
+          "string"
+        ],
+        [
+          "profileImage",
+          "string"
+        ],
+        [
+          "user",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/basket/6",
@@ -48,17 +59,76 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "BasketItem",
-        "createdAt",
-        "data",
-        "description",
-        "image",
-        "name",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "BasketId",
+          "integer"
+        ],
+        [
+          "BasketItem",
+          "string"
+        ],
+        [
+          "Products",
+          "string"
+        ],
+        [
+          "UserId",
+          "integer"
+        ],
+        [
+          "coupon",
+          "string"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "deletedAt",
+          "string"
+        ],
+        [
+          "deluxePrice",
+          "float"
+        ],
+        [
+          "description",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "image",
+          "string"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "price",
+          "float"
+        ],
+        [
+          "quantity",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/admin/application-configuration",
@@ -80,29 +150,88 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "altcoinName",
-        "application",
-        "avatar",
-        "basePath",
-        "baseUrl",
-        "blueSkyUrl",
-        "chatBot",
-        "config",
-        "customMetricsPrefix",
-        "defaultResponse",
-        "domain",
-        "facebookUrl",
-        "favicon",
-        "greeting",
-        "logo",
-        "mastodonUrl",
-        "name",
-        "nftUrl",
-        "pressKitUrl",
-        "privacyContactEmail"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "altcoinName",
+          "string"
+        ],
+        [
+          "application",
+          "string"
+        ],
+        [
+          "avatar",
+          "string"
+        ],
+        [
+          "baseUrl",
+          "string"
+        ],
+        [
+          "chatBot",
+          "string"
+        ],
+        [
+          "config",
+          "string"
+        ],
+        [
+          "customMetricsPrefix",
+          "string"
+        ],
+        [
+          "defaultResponse",
+          "string"
+        ],
+        [
+          "favicon",
+          "string"
+        ],
+        [
+          "greeting",
+          "string"
+        ],
+        [
+          "localBackupEnabled",
+          "boolean"
+        ],
+        [
+          "logo",
+          "string"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "numberOfRandomFakeUsers",
+          "integer"
+        ],
+        [
+          "port",
+          "integer"
+        ],
+        [
+          "privacyContactEmail",
+          "string"
+        ],
+        [
+          "showGitHubLinks",
+          "boolean"
+        ],
+        [
+          "showVersionNumber",
+          "boolean"
+        ],
+        [
+          "theme",
+          "string"
+        ],
+        [
+          "trainingData",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/assets/public/images/products/apple_pressings.jpg",
@@ -122,8 +251,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/socket.io/",
@@ -143,13 +271,36 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [
-        "EIO",
-        "sid",
-        "t",
-        "transport"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "EIO",
+          "integer"
+        ],
+        [
+          "pingInterval",
+          "integer"
+        ],
+        [
+          "pingTimeout",
+          "integer"
+        ],
+        [
+          "sid",
+          "string"
+        ],
+        [
+          "t",
+          "string"
+        ],
+        [
+          "transport",
+          "string"
+        ],
+        [
+          "upgrades",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/products/search",
@@ -171,15 +322,52 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "createdAt",
-        "description",
-        "image",
-        "name",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "deletedAt",
+          "string"
+        ],
+        [
+          "deluxePrice",
+          "float"
+        ],
+        [
+          "description",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "image",
+          "string"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "price",
+          "float"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/assets/public/images/products/fruit_press.jpg",
@@ -199,8 +387,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/api/Quantitys/",
@@ -222,12 +409,40 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "createdAt",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "ProductId",
+          "integer"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "limitPerUser",
+          "string"
+        ],
+        [
+          "quantity",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/assets/public/images/products/permafrost.jpg",
@@ -247,8 +462,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/melon_bike.jpeg",
@@ -268,8 +482,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/lemon_juice.jpg",
@@ -289,8 +502,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/green_smoothie.jpg",
@@ -310,8 +522,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/fan_facemask.jpg",
@@ -331,8 +542,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/eggfruit_juice.jpg",
@@ -352,8 +562,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/carrot_juice.jpeg",
@@ -373,8 +582,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/banana_juice.jpg",
@@ -394,8 +602,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/artwork2.jpg",
@@ -415,8 +622,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/apple_juice.jpg",
@@ -436,8 +642,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/api/Addresss",
@@ -459,18 +664,56 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "city",
-        "country",
-        "createdAt",
-        "fullName",
-        "state",
-        "status",
-        "streetAddress",
-        "updatedAt",
-        "zipCode"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "city",
+          "string"
+        ],
+        [
+          "country",
+          "string"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "fullName",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "mobileNum",
+          "integer"
+        ],
+        [
+          "state",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "streetAddress",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ],
+        [
+          "zipCode",
+          "integer"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/admin/application-version",
@@ -492,10 +735,12 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "version"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "version",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/assets/public/images/JuiceShop_Logo.png",
@@ -516,8 +761,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/api/Challenges/",
@@ -539,19 +783,80 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "category",
-        "createdAt",
-        "description",
-        "hint",
-        "hintUrl",
-        "key",
-        "name",
-        "status",
-        "tags",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "category",
+          "string"
+        ],
+        [
+          "codingChallengeStatus",
+          "integer"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "description",
+          "string"
+        ],
+        [
+          "difficulty",
+          "integer"
+        ],
+        [
+          "disabledEnv",
+          "string"
+        ],
+        [
+          "hasCodingChallenge",
+          "boolean"
+        ],
+        [
+          "hint",
+          "string"
+        ],
+        [
+          "hintUrl",
+          "string"
+        ],
+        [
+          "key",
+          "string"
+        ],
+        [
+          "mitigationUrl",
+          "string"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "solved",
+          "boolean"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "tags",
+          "string"
+        ],
+        [
+          "tutorialOrder",
+          "integer"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/api/Cards",
@@ -573,12 +878,36 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "cardNum",
-        "fullName",
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "cardNum",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "expMonth",
+          "integer"
+        ],
+        [
+          "expYear",
+          "integer"
+        ],
+        [
+          "fullName",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "POST:/api/Feedbacks/",
@@ -597,17 +926,48 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "captcha",
-        "captchaId",
-        "comment",
-        "createdAt",
-        "data",
-        "rating",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "UserId",
+          "string"
+        ],
+        [
+          "captcha",
+          "float"
+        ],
+        [
+          "captcha",
+          "integer"
+        ],
+        [
+          "captchaId",
+          "integer"
+        ],
+        [
+          "comment",
+          "string"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "rating",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/products/6/reviews",
@@ -625,13 +985,40 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "_id",
-        "author",
-        "message",
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "_id",
+          "string"
+        ],
+        [
+          "author",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "liked",
+          "boolean"
+        ],
+        [
+          "likedBy",
+          "string"
+        ],
+        [
+          "likesCount",
+          "integer"
+        ],
+        [
+          "product",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/products/36/reviews",
@@ -649,13 +1036,40 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "_id",
-        "author",
-        "message",
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "_id",
+          "string"
+        ],
+        [
+          "author",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "liked",
+          "boolean"
+        ],
+        [
+          "likedBy",
+          "string"
+        ],
+        [
+          "likesCount",
+          "integer"
+        ],
+        [
+          "product",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/products/1/reviews",
@@ -673,13 +1087,40 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "_id",
-        "author",
-        "message",
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "_id",
+          "string"
+        ],
+        [
+          "author",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "liked",
+          "boolean"
+        ],
+        [
+          "likedBy",
+          "string"
+        ],
+        [
+          "likesCount",
+          "integer"
+        ],
+        [
+          "product",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/captcha/",
@@ -697,11 +1138,24 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "answer",
-        "captcha"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "answer",
+          "float"
+        ],
+        [
+          "answer",
+          "integer"
+        ],
+        [
+          "captcha",
+          "string"
+        ],
+        [
+          "captchaId",
+          "integer"
+        ]
+      ]
     },
     {
       "id": "GET:/api/Addresss/7",
@@ -723,19 +1177,56 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "city",
-        "country",
-        "createdAt",
-        "data",
-        "fullName",
-        "state",
-        "status",
-        "streetAddress",
-        "updatedAt",
-        "zipCode"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "city",
+          "string"
+        ],
+        [
+          "country",
+          "string"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "fullName",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "mobileNum",
+          "integer"
+        ],
+        [
+          "state",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "streetAddress",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ],
+        [
+          "zipCode",
+          "integer"
+        ]
+      ]
     },
     {
       "id": "PUT:/api/BasketItems/9",
@@ -757,14 +1248,36 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "createdAt",
-        "data",
-        "quantity",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "BasketId",
+          "integer"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "quantity",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "POST:/socket.io/",
@@ -784,13 +1297,24 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [
-        "EIO",
-        "sid",
-        "t",
-        "transport"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "EIO",
+          "integer"
+        ],
+        [
+          "sid",
+          "string"
+        ],
+        [
+          "t",
+          "string"
+        ],
+        [
+          "transport",
+          "string"
+        ]
+      ]
     },
     {
       "id": "POST:/api/BasketItems/",
@@ -812,16 +1336,36 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "BasketId",
-        "ProductId",
-        "createdAt",
-        "data",
-        "quantity",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "BasketId",
+          "integer"
+        ],
+        [
+          "ProductId",
+          "integer"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "quantity",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/vendor.js",
@@ -842,8 +1386,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/styles.css",
@@ -864,8 +1407,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2",
@@ -885,8 +1427,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/s/materialicons/v143/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2",
@@ -906,8 +1447,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/runtime.js",
@@ -928,8 +1468,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/rest/wallet/balance",
@@ -951,10 +1490,16 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "data",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/user/change-password",
@@ -977,23 +1522,64 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "createdAt",
-        "current",
-        "deluxeToken",
-        "email",
-        "lastLoginIp",
-        "new",
-        "password",
-        "profileImage",
-        "repeat",
-        "role",
-        "totpSecret",
-        "updatedAt",
-        "user",
-        "username"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "current",
+          "string"
+        ],
+        [
+          "deletedAt",
+          "string"
+        ],
+        [
+          "email",
+          "string"
+        ],
+        [
+          "isActive",
+          "boolean"
+        ],
+        [
+          "lastLoginIp",
+          "string"
+        ],
+        [
+          "new",
+          "string"
+        ],
+        [
+          "password",
+          "string"
+        ],
+        [
+          "profileImage",
+          "string"
+        ],
+        [
+          "repeat",
+          "string"
+        ],
+        [
+          "role",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ],
+        [
+          "user",
+          "string"
+        ],
+        [
+          "username",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/track-order/789a-c954d34e39503081",
@@ -1015,18 +1601,76 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "_id",
-        "addressId",
-        "email",
-        "eta",
-        "name",
-        "orderId",
-        "paymentId",
-        "promotionalAmount",
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "_id",
+          "string"
+        ],
+        [
+          "addressId",
+          "integer"
+        ],
+        [
+          "bonus",
+          "integer"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "delivered",
+          "boolean"
+        ],
+        [
+          "deliveryPrice",
+          "float"
+        ],
+        [
+          "email",
+          "string"
+        ],
+        [
+          "eta",
+          "integer"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "orderId",
+          "string"
+        ],
+        [
+          "paymentId",
+          "integer"
+        ],
+        [
+          "price",
+          "float"
+        ],
+        [
+          "products",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "total",
+          "float"
+        ],
+        [
+          "totalPrice",
+          "float"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/products/24/reviews",
@@ -1044,10 +1688,16 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "data",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/products/16/reviews",
@@ -1065,10 +1715,16 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "data",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/languages",
@@ -1090,13 +1746,32 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "gauge",
-        "key",
-        "lang",
-        "shortKey"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "gauge",
+          "string"
+        ],
+        [
+          "icons",
+          "string"
+        ],
+        [
+          "key",
+          "string"
+        ],
+        [
+          "lang",
+          "string"
+        ],
+        [
+          "percentage",
+          "float"
+        ],
+        [
+          "shortKey",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/2fa/status",
@@ -1118,12 +1793,24 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "email",
-        "secret",
-        "setupToken"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "email",
+          "string"
+        ],
+        [
+          "secret",
+          "string"
+        ],
+        [
+          "setup",
+          "boolean"
+        ],
+        [
+          "setupToken",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/profile",
@@ -1143,12 +1830,20 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [
-        "description",
-        "keywords",
-        "viewport"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "description",
+          "string"
+        ],
+        [
+          "keywords",
+          "string"
+        ],
+        [
+          "viewport",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/polyfills.js",
@@ -1169,8 +1864,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/main.js",
@@ -1191,8 +1885,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/icon",
@@ -1212,10 +1905,12 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [
-        "family"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "family",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/font-mfizz.woff",
@@ -1235,8 +1930,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/css",
@@ -1256,10 +1950,12 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [
-        "family"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "family",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/assets/public/images/uploads/default.svg",
@@ -1280,8 +1976,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/css/userProfile.css",
@@ -1302,8 +1997,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/i18n/en.json",
@@ -1325,29 +2019,88 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "ALREADY_A_CUSTOMER",
-        "BTN_GOOGLE_LOGIN",
-        "BTN_LOGIN",
-        "DIGITS_CRITERIA_MSG",
-        "INVALID_EMAIL",
-        "INVALID_PASSWORD_LENGTH",
-        "LABEL_EMAIL",
-        "LABEL_PASSWORD",
-        "LABEL_PASSWORD_REPEAT",
-        "LANGUAGE",
-        "LOWER_CASE_CRITERIA_MSG",
-        "MANDATORY_EMAIL",
-        "MANDATORY_PASSWORD",
-        "MANDATORY_PASSWORD_REPEAT",
-        "MIN_CHARS_CRITERIA_MSG",
-        "NAV_COMPLAIN",
-        "NAV_SEARCH",
-        "NO_CUSTOMER",
-        "REMEMBER_ME",
-        "SEARCH_PLACEHOLDER"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "ALREADY_A_CUSTOMER",
+          "string"
+        ],
+        [
+          "BTN_GOOGLE_LOGIN",
+          "string"
+        ],
+        [
+          "BTN_LOGIN",
+          "string"
+        ],
+        [
+          "DIGITS_CRITERIA_MSG",
+          "string"
+        ],
+        [
+          "LABEL_EMAIL",
+          "string"
+        ],
+        [
+          "LABEL_PASSWORD",
+          "string"
+        ],
+        [
+          "LANGUAGE",
+          "string"
+        ],
+        [
+          "LOWER_CASE_CRITERIA_MSG",
+          "string"
+        ],
+        [
+          "MANDATORY_EMAIL",
+          "string"
+        ],
+        [
+          "MANDATORY_PASSWORD",
+          "string"
+        ],
+        [
+          "MIN_CHARS_CRITERIA_MSG",
+          "string"
+        ],
+        [
+          "NAV_COMPLAIN",
+          "string"
+        ],
+        [
+          "NAV_SEARCH",
+          "string"
+        ],
+        [
+          "NO_CUSTOMER",
+          "string"
+        ],
+        [
+          "REMEMBER_ME",
+          "string"
+        ],
+        [
+          "SEARCH_PLACEHOLDER",
+          "string"
+        ],
+        [
+          "SHOW_PASSWORD_ADVICE",
+          "string"
+        ],
+        [
+          "SPECIAL_CHARS_CRITERIA_MSG",
+          "string"
+        ],
+        [
+          "TITLE_LOGIN",
+          "string"
+        ],
+        [
+          "UPPER_CASE_CRITERIA_MSG",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/api/Deliverys/1",
@@ -1369,13 +2122,32 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "data",
-        "icon",
-        "name",
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "data",
+          "string"
+        ],
+        [
+          "eta",
+          "integer"
+        ],
+        [
+          "icon",
+          "string"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "price",
+          "float"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/api/BasketItems/9",
@@ -1397,13 +2169,36 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "createdAt",
-        "data",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "BasketId",
+          "integer"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "quantity",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/ajax/libs/jquery/3.3.1/jquery.min.js",
@@ -1423,8 +2218,12 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": [
+        [
+          "object",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/ajax/libs/jquery/2.2.4/jquery.min.js",
@@ -1444,8 +2243,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js",
@@ -1465,8 +2263,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css",
@@ -1486,8 +2283,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/MaterialIcons-Regular.woff2",
@@ -1507,8 +2303,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/1.3.0/material.min.js",
@@ -1528,8 +2323,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/1.3.0/material.min.css",
@@ -1549,8 +2343,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/",
@@ -1570,19 +2363,44 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [
-        "background",
-        "button",
-        "description",
-        "favicon",
-        "palette",
-        "popup",
-        "position",
-        "text",
-        "theme",
-        "viewport"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "background",
+          "string"
+        ],
+        [
+          "button",
+          "string"
+        ],
+        [
+          "description",
+          "string"
+        ],
+        [
+          "favicon",
+          "string"
+        ],
+        [
+          "palette",
+          "string"
+        ],
+        [
+          "position",
+          "string"
+        ],
+        [
+          "text",
+          "string"
+        ],
+        [
+          "theme",
+          "string"
+        ],
+        [
+          "viewport",
+          "string"
+        ]
+      ]
     },
     {
       "id": "PUT:/api/BasketItems/10",
@@ -1604,14 +2422,36 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "createdAt",
-        "data",
-        "quantity",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "BasketId",
+          "integer"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "quantity",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "POST:/rest/user/login",
@@ -1632,14 +2472,28 @@
         "auth_cookie_token",
         "url_contains_login"
       ],
-      "potentialParametersAny": [
-        "authentication",
-        "email",
-        "password",
-        "token",
-        "umail"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "authentication",
+          "string"
+        ],
+        [
+          "bid",
+          "integer"
+        ],
+        [
+          "email",
+          "string"
+        ],
+        [
+          "password",
+          "string"
+        ],
+        [
+          "umail",
+          "string"
+        ]
+      ]
     },
     {
       "id": "POST:/rest/user/data-export",
@@ -1661,12 +2515,20 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "confirmation",
-        "format",
-        "userData"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "confirmation",
+          "string"
+        ],
+        [
+          "format",
+          "integer"
+        ],
+        [
+          "userData",
+          "string"
+        ]
+      ]
     },
     {
       "id": "POST:/rest/basket/6/checkout",
@@ -1688,15 +2550,32 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "couponData",
-        "orderConfirmation",
-        "orderDetails",
-        "orderDetails.addressId",
-        "orderDetails.deliveryMethodId",
-        "orderDetails.paymentId"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "couponData",
+          "string"
+        ],
+        [
+          "orderConfirmation",
+          "string"
+        ],
+        [
+          "orderDetails",
+          "string"
+        ],
+        [
+          "orderDetails.addressId",
+          "integer"
+        ],
+        [
+          "orderDetails.deliveryMethodId",
+          "integer"
+        ],
+        [
+          "orderDetails.paymentId",
+          "integer"
+        ]
+      ]
     },
     {
       "id": "POST:/api/Users/",
@@ -1714,27 +2593,84 @@
       },
       "isSensitiveAny": true,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "createdAt",
-        "data",
-        "deluxeToken",
-        "email",
-        "lastLoginIp",
-        "password",
-        "passwordRepeat",
-        "profileImage",
-        "role",
-        "securityAnswer",
-        "securityQuestion",
-        "securityQuestion.createdAt",
-        "securityQuestion.id",
-        "securityQuestion.question",
-        "securityQuestion.updatedAt",
-        "status",
-        "updatedAt",
-        "username"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "deletedAt",
+          "string"
+        ],
+        [
+          "email",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "isActive",
+          "boolean"
+        ],
+        [
+          "lastLoginIp",
+          "string"
+        ],
+        [
+          "password",
+          "string"
+        ],
+        [
+          "passwordRepeat",
+          "string"
+        ],
+        [
+          "profileImage",
+          "string"
+        ],
+        [
+          "role",
+          "string"
+        ],
+        [
+          "securityAnswer",
+          "string"
+        ],
+        [
+          "securityQuestion",
+          "string"
+        ],
+        [
+          "securityQuestion.createdAt",
+          "string"
+        ],
+        [
+          "securityQuestion.id",
+          "integer"
+        ],
+        [
+          "securityQuestion.question",
+          "string"
+        ],
+        [
+          "securityQuestion.updatedAt",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "POST:/api/SecurityAnswers/",
@@ -1752,16 +2688,36 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "SecurityQuestionId",
-        "UserId",
-        "answer",
-        "createdAt",
-        "data",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "SecurityQuestionId",
+          "integer"
+        ],
+        [
+          "UserId",
+          "integer"
+        ],
+        [
+          "answer",
+          "string"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "POST:/api/Cards/",
@@ -1783,17 +2739,44 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "cardNum",
-        "createdAt",
-        "data",
-        "expMonth",
-        "expYear",
-        "fullName",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "UserId",
+          "integer"
+        ],
+        [
+          "cardNum",
+          "integer"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "expMonth",
+          "integer"
+        ],
+        [
+          "expYear",
+          "integer"
+        ],
+        [
+          "fullName",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "POST:/api/Addresss/",
@@ -1815,20 +2798,56 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "city",
-        "country",
-        "createdAt",
-        "data",
-        "fullName",
-        "mobileNum",
-        "state",
-        "status",
-        "streetAddress",
-        "updatedAt",
-        "zipCode"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "UserId",
+          "integer"
+        ],
+        [
+          "city",
+          "string"
+        ],
+        [
+          "country",
+          "string"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "fullName",
+          "string"
+        ],
+        [
+          "mobileNum",
+          "integer"
+        ],
+        [
+          "state",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "streetAddress",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ],
+        [
+          "zipCode",
+          "integer"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/order-history",
@@ -1850,10 +2869,16 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "data",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/image-captcha/",
@@ -1875,10 +2900,12 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "image"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "image",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/rest/continue-code",
@@ -1900,10 +2927,12 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "continueCode"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "continueCode",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/assets/public/images/products/woodruff_syrup.jpg",
@@ -1921,8 +2950,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/velcro-patch.jpg",
@@ -1940,8 +2968,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/tattoo.jpg",
@@ -1959,8 +2986,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/strawberry_juice.jpeg",
@@ -1978,8 +3004,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/sticker_single.jpg",
@@ -1997,8 +3022,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/sticker_page.jpg",
@@ -2016,8 +3040,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/snakes_ladders_m.jpg",
@@ -2035,8 +3058,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/snakes_ladders.jpg",
@@ -2054,8 +3076,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/raspberry_juice.jpg",
@@ -2073,8 +3094,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/quince.jpg",
@@ -2092,8 +3112,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/orange_juice.jpg",
@@ -2111,8 +3130,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/no-results.png",
@@ -2132,8 +3150,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/magnets.jpg",
@@ -2151,8 +3168,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/lego_case.jpg",
@@ -2170,8 +3186,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/iron-on.jpg",
@@ -2189,8 +3204,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/holo_sticker.png",
@@ -2208,8 +3222,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/fan_shirt.jpg",
@@ -2227,8 +3240,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/fan_mug.jpg",
@@ -2246,8 +3258,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/fan_hoodie.jpg",
@@ -2265,8 +3276,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/fan_girlie.jpg",
@@ -2284,8 +3294,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/cover_small.jpg",
@@ -2303,8 +3312,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/coaster.jpg",
@@ -2322,8 +3330,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/card_alpha.jpg",
@@ -2341,8 +3348,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/products/3d_keychain.jpg",
@@ -2360,8 +3366,7 @@
       },
       "isSensitiveAny": true,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/padding/81px.png",
@@ -2381,8 +3386,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/carousel/3.jpg",
@@ -2400,8 +3404,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/carousel/2.jpg",
@@ -2419,8 +3422,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/images/carousel/1.jpg",
@@ -2438,8 +3440,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/assets/public/favicon_js.ico",
@@ -2457,8 +3458,7 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "GET:/api/SecurityQuestions/",
@@ -2476,13 +3476,32 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "createdAt",
-        "question",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "createdAt",
+          "integer"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "question",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/api/Recycles/",
@@ -2504,12 +3523,16 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "data",
-        "err",
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "data",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/api/Products/24",
@@ -2531,17 +3554,52 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "createdAt",
-        "d",
-        "data",
-        "description",
-        "image",
-        "name",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "d",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "deletedAt",
+          "string"
+        ],
+        [
+          "deluxePrice",
+          "float"
+        ],
+        [
+          "description",
+          "string"
+        ],
+        [
+          "image",
+          "string"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "price",
+          "float"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/api/Products/1",
@@ -2563,17 +3621,52 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "createdAt",
-        "d",
-        "data",
-        "description",
-        "image",
-        "name",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "d",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "deletedAt",
+          "string"
+        ],
+        [
+          "deluxePrice",
+          "float"
+        ],
+        [
+          "description",
+          "string"
+        ],
+        [
+          "image",
+          "string"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "price",
+          "float"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/api/Feedbacks/",
@@ -2591,13 +3684,40 @@
       },
       "isSensitiveAny": false,
       "authIndicatorsAny": [],
-      "potentialParametersAny": [
-        "comment",
-        "createdAt",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "UserId",
+          "string"
+        ],
+        [
+          "comment",
+          "string"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "rating",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/api/Deliverys",
@@ -2619,12 +3739,36 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "icon",
-        "name",
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "data",
+          "string"
+        ],
+        [
+          "eta",
+          "integer"
+        ],
+        [
+          "icon",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "price",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/api/Cards/7",
@@ -2646,13 +3790,36 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "cardNum",
-        "data",
-        "fullName",
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "cardNum",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "expMonth",
+          "integer"
+        ],
+        [
+          "expYear",
+          "integer"
+        ],
+        [
+          "fullName",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/api/BasketItems/10",
@@ -2674,13 +3841,36 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "createdAt",
-        "data",
-        "status",
-        "updatedAt"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "BasketId",
+          "integer"
+        ],
+        [
+          "createdAt",
+          "string"
+        ],
+        [
+          "data",
+          "string"
+        ],
+        [
+          "id",
+          "integer"
+        ],
+        [
+          "quantity",
+          "integer"
+        ],
+        [
+          "status",
+          "string"
+        ],
+        [
+          "updatedAt",
+          "string"
+        ]
+      ]
     },
     {
       "id": "GET:/705.js",
@@ -2700,8 +3890,7 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "potentialParametersAny": [],
-      "score": 0.0
+      "parameters": []
     },
     {
       "id": "DELETE:/api/BasketItems/9",
@@ -2723,17 +3912,16 @@
         "authorization_header",
         "bearer_token"
       ],
-      "potentialParametersAny": [
-        "data",
-        "status"
-      ],
-      "score": 0.0
+      "parameters": [
+        [
+          "data",
+          "string"
+        ],
+        [
+          "status",
+          "string"
+        ]
+      ]
     }
-  ],
-  "scores": {
-    "avg": 0.0,
-    "total": 0.0,
-    "min": 0.0,
-    "max": 0.0
-  }
+  ]
 }

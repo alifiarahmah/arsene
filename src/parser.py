@@ -31,7 +31,7 @@ class ParsedEndpoint:
     content_type: str
     is_sensitive: bool
     authentication_indicators: List[str]
-    potential_parameters: List[str]
+    potential_parameters: List[Dict[str, str]]
 
 class ParserModule:
     MAX_PARAM_KEYS = 20
@@ -259,13 +259,35 @@ class ParserModule:
         return indicators
 
     def _extract_potential_parameters(self, url: str, headers: Dict[str, str],
-                                    request_body: Optional[str], response_body: Optional[str]) -> List[str]:
-        params = set()
+                                    request_body: Optional[str], response_body: Optional[str]) -> List[Dict[str, str]]:
+        params = {}
+
+        def guess_type(value: Any) -> str:
+            if isinstance(value, bool):
+                return "boolean"
+            if isinstance(value, int):
+                return "integer"
+            if isinstance(value, float):
+                return "float"
+            if isinstance(value, str):
+                v = value.strip()
+                if v.isdigit():
+                    return "integer"
+                try:
+                    float(v)
+                    return "float"
+                except:
+                    if v.lower() in ["true", "false"]:
+                        return "boolean"
+                return "string"
+            return "string"
 
         # from URL query parameters
         parsed_url = urllib.parse.urlparse(url)
         query_params = urllib.parse.parse_qs(parsed_url.query)
-        params.update(query_params.keys())
+        for k, v in query_params.items():
+            sample = v[0] if v else ""
+            params[k] = guess_type(sample)
 
         # from request body (JSON/form)
         if request_body:
@@ -273,10 +295,21 @@ class ParserModule:
                 body = request_body.strip()
                 if body.startswith('{') or body.startswith('['):
                     json_data = json.loads(body)
-                    params.update(self._extract_json_keys(json_data))
+                    def walk_json(obj, prefix=""):
+                        if isinstance(obj, dict):
+                            for kk, vv in obj.items():
+                                name = f"{prefix}.{kk}" if prefix else kk
+                                params[name] = guess_type(vv)
+                                if isinstance(vv, (dict, list)):
+                                    walk_json(vv, name)
+                        elif isinstance(obj, list) and obj:
+                            walk_json(obj[0], prefix)
+                    walk_json(json_data)
                 elif '=' in body:
                     form_data = urllib.parse.parse_qs(body)
-                    params.update(form_data.keys())
+                    for k, v in form_data.items():
+                        sample = v[0] if v else ""
+                        params[k] = guess_type(sample)
             except Exception:
                 pass
 
@@ -286,16 +319,21 @@ class ParserModule:
                 patterns = [
                     r'name=["\']([^"\']+)["\']',
                     r'id=["\']([^"\']+)["\']',
-                    r'"([a-zA-Z_][a-zA-Z0-9_]*)":\s*["\'{]'
+                    r'"([a-zA-Z_][a-zA-Z0-9_]*)":\s*"?([^,"}]+)"?'
                 ]
                 for pattern in patterns:
-                    for m in re.findall(pattern, response_body):
-                        params.add(m)
+                    matches = re.findall(pattern, response_body)
+                    if pattern == r'"([a-zA-Z_][a-zA-Z0-9_]*)":\s*"?([^,"}]+)"?':
+                        for k, v in matches:
+                            params[k] = guess_type(v)
+                    else:
+                        for m in matches:
+                            params[m] = "string"
             except Exception:
                 pass
 
-        # Enforce limit
-        out = sorted(list(params))
+        # Enforce limit and convert to list of dicts
+        out = [{"name": k, "type": t} for k, t in params.items()]
         if len(out) > self.MAX_PARAM_KEYS:
             out = out[: self.MAX_PARAM_KEYS]
         return out
@@ -379,12 +417,11 @@ class ParserModule:
                     "statusHistogram": Counter(),
                     "isSensitiveAny": False,
                     "authIndicatorsAny": set(),
-                    "potentialParametersAny": set(),
-                    "score": 0.0,  # will store best score seen
+                    "parameters": set(),
                 }
             g = groups[key]
             g["count"] += 1
-            # hosts
+
             try:
                 host = urllib.parse.urlparse(ep.url).netloc
                 if host:
@@ -398,7 +435,7 @@ class ParserModule:
             for ai in ep.authentication_indicators:
                 g["authIndicatorsAny"].add(ai)
             for p in ep.potential_parameters:
-                g["potentialParametersAny"].add(p)
+                g["parameters"].add((p["name"], p["type"]))
             # status
             bucket = self._status_bucket(ep.response_status)
             g["statusHistogram"][bucket] += 1
@@ -416,32 +453,19 @@ class ParserModule:
                 "statusHistogram": {k: v for k, v in g["statusHistogram"].items() if v > 0} or {"other": 0},
                 "isSensitiveAny": g["isSensitiveAny"],
                 "authIndicatorsAny": sorted(list(g["authIndicatorsAny"]))[:10],
-                "potentialParametersAny": sorted(list(g["potentialParametersAny"]))[: self.MAX_PARAM_KEYS],
-                "score": round(g["score"], 2),
+                "parameters": sorted(list(g["parameters"]))[: self.MAX_PARAM_KEYS],
             }
             flat.append(req)
 
-        # Sort by score desc, then count desc, then method/path
-        flat.sort(key=lambda x: (x["score"], x["count"], x["method"], x["path"]), reverse=True)
+        # Sort by count desc, then method/path
+        flat.sort(key=lambda x: (x["count"], x["method"], x["path"]), reverse=True)
 
         # Cap groups
         cap = max_groups if max_groups is not None else self.MAX_GROUPS
         if len(flat) > cap:
             flat = flat[:cap]
 
-        # Score summary
-        if flat:
-            scores = [r["score"] for r in flat]
-            summary = {
-                "avg": round(sum(scores) / len(scores), 2),
-                "total": round(sum(scores) / len(scores), 2),  # alias for compatibility
-                "min": min(scores),
-                "max": max(scores)
-            }
-        else:
-            summary = {"avg": 0.0, "total": 0.0, "min": 0.0, "max": 0.0}
-
-        output = {"requests": flat, "scores": summary}
+        output = {"requests": flat}
 
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(output, f, ensure_ascii=False, indent=2)
@@ -463,36 +487,6 @@ class ParserModule:
                 continue
             filtered.append(ep)
         return filtered
-
-    def _score_endpoint(self, ep: ParsedEndpoint) -> float:
-        """Score endpoint based on security testing relevance"""
-        score = 0.0
-
-        # Base score by type
-        type_scores = {
-            EndpointType.API_ENDPOINT: 1.0,
-            EndpointType.AUTHENTICATION: 0.9,
-            EndpointType.FORM_SUBMISSION: 0.8,
-            EndpointType.PAGE_REQUEST: 0.5,
-            EndpointType.STATIC_ASSET: 0.3,
-            EndpointType.UNIMPORTANT_STATIC_ASSET: 0.1,
-            EndpointType.THIRD_PARTY: 0.0
-        }
-        score += type_scores.get(ep.endpoint_type, 0.0)
-
-        # Bonus for sensitive endpoints
-        if ep.is_sensitive:
-            score += 0.5
-
-        # Bonus for auth indicators
-        if ep.authentication_indicators:
-            score += 0.3
-
-        # Bonus for parameters
-        if ep.potential_parameters:
-            score += min(len(ep.potential_parameters) * 0.1, 0.5)
-
-        return score
 
     def export_ultra_compact_sharded(
         self,
@@ -525,8 +519,7 @@ class ParserModule:
                     "statusHistogram": Counter(),
                     "isSensitiveAny": False,
                     "authIndicatorsAny": set(),
-                    "potentialParametersAny": set(),
-                    "score": 0.0,
+                    "parameters": set(),
                 }
             g = groups[key]
             g["count"] += 1
@@ -541,12 +534,9 @@ class ParserModule:
             for ai in ep.authentication_indicators:
                 g["authIndicatorsAny"].add(ai)
             for p in ep.potential_parameters:
-                g["potentialParametersAny"].add(p)
+                g["parameters"].add(p)
             bucket = self._status_bucket(ep.response_status)
             g["statusHistogram"][bucket] += 1
-            s = self._score_endpoint(ep)
-            if s > g["score"]:
-                g["score"] = s
 
         flat: List[Dict[str, Any]] = []
         for (method, path), g in groups.items():
@@ -560,11 +550,10 @@ class ParserModule:
                 "statusHistogram": {k: v for k, v in g["statusHistogram"].items() if v > 0} or {"other": 0},
                 "isSensitiveAny": g["isSensitiveAny"],
                 "authIndicatorsAny": sorted(list(g["authIndicatorsAny"]))[:10],
-                "potentialParametersAny": sorted(list(g["potentialParametersAny"]))[: self.MAX_PARAM_KEYS],
-                "score": round(g["score"], 2),
+                "parameters": sorted(list(g["parameters"]))[: self.MAX_PARAM_KEYS],
             })
 
-        flat.sort(key=lambda x: (x["score"], x["count"], x["method"], x["path"]), reverse=True)
+        flat.sort(key=lambda x: (x["count"], x["method"], x["path"]), reverse=True)
 
         per_file = max_groups_per_file if max_groups_per_file is not None else self.SHARD_SIZE
         files: List[str] = []
@@ -572,23 +561,16 @@ class ParserModule:
             # still write one empty page for predictable pipeline
             filename = f"{output_prefix}_page_1.json"
             with open(filename, 'w', encoding='utf-8') as f:
-                json.dump({"requests": [], "scores": {"avg": 0, "total": 0, "min": 0, "max": 0}}, f, indent=2, ensure_ascii=False)
+                json.dump({"requests": []}, f, indent=2, ensure_ascii=False)
             files.append(filename)
             print(f"[INFO] Wrote empty shard {filename}")
         else:
             for i in range(0, len(flat), per_file):
                 chunk = flat[i:i+per_file]
-                scores = [r["score"] for r in chunk]
-                summary = {
-                    "avg": round(sum(scores)/len(scores), 2),
-                    "total": round(sum(scores)/len(scores), 2),
-                    "min": min(scores),
-                    "max": max(scores)
-                }
                 page_idx = (i // per_file) + 1
                 filename = f"{output_prefix}_page_{page_idx}.json"
                 with open(filename, 'w', encoding='utf-8') as f:
-                    json.dump({"requests": chunk, "scores": summary}, f, indent=2, ensure_ascii=False)
+                    json.dump({"requests": chunk}, f, indent=2, ensure_ascii=False)
                 files.append(filename)
                 print(f"[INFO] Shard {page_idx}: {len(chunk)} requests -> {filename}")
 
@@ -598,7 +580,7 @@ class ParserModule:
         return files
 
     def export_to_json(self, endpoints: List[ParsedEndpoint], output_file: str):
-        self.export_ultra_compact_json(endpoints, output_file, max_groups=self.MAX_GROUPS)
+        self.export_ultra_compact_json(endpoints, output_file, max_groups=self.MAX_GROUPS, include_static_assets=False)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Parse HAR files and extract endpoints')
@@ -620,7 +602,3 @@ if __name__ == "__main__":
     # Default: ultra-compact single file
     out_path = f'parsed_hars/{filename}.json'
     PM.export_to_json(endpoints, out_path)
-
-    # Optional: also write shards if you expect a lot of endpoints
-    # Uncomment to shard:
-    # PM.export_ultra_compact_sharded(endpoints, f'parsed_hars/{filename}', max_groups_per_file=250)
