@@ -1,0 +1,260 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path_template": "/resources/images/gin-and-juice-team.mp4",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/blog/post",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "postId",
+          "location": "query"
+        },
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/catalog/subscribe",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/json;charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "coupon",
+          "location": "body"
+        },
+        {
+          "name": "csrf",
+          "location": "body"
+        },
+        {
+          "name": "email",
+          "location": "body"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "https://ginandjuice.shop/"
+        }
+      ],
+      "tokens_observed": [
+        "csrf"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/catalog/product",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "productId",
+          "location": "query"
+        },
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/catalog/cart",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/catalog",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/about",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    }
+  ],
+  "global_observations": {
+    "session_management": "cookie",
+    "auth_flow": "none",
+    "needs_observation": true
+  }
+}

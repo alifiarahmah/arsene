@@ -1,0 +1,1066 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-H001-GET-/blog/post-postId",
+      "hypothesis_id": "H001",
+      "base_url": "https://ginandjuice.shop",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "postId=1"
+            }
+          ],
+          "description": "Baseline: existing post id (1)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "postId=2"
+            }
+          ],
+          "description": "Probe: different post id to detect access control differences",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "postId=9999"
+            }
+          ],
+          "description": "Enumerate/non-existent or other user's id to trigger unauthorized content",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie required if resource is protected"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code != baseline.status_code",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.40",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Use observed session cookie if resource requires auth. Rate-limit requests to avoid triggering protections.",
+      "tags": [
+        "id_or_authorization_bypass",
+        "enum"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H002-GET-/blog/post-scanMeHeader",
+      "hypothesis_id": "H002",
+      "base_url": "https://ginandjuice.shop",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "scanMeHeader",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=hello"
+            }
+          ],
+          "description": "Baseline benign value",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=<script>1</script>"
+            }
+          ],
+          "description": "Probe for reflection of HTML/script characters",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Exploit-like probe to detect reflected XSS (payload encoded)",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Use session cookie if application serves different content to authenticated users"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "payload_value in response.body",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Do not execute payloads causing real popups in production; use encoded probes. Maintain observed User-Agent header.",
+      "tags": [
+        "reflected_xss"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H003-GET-/blog/post-viewport",
+      "hypothesis_id": "H003",
+      "base_url": "https://ginandjuice.shop",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "viewport",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "viewport=mobile"
+            }
+          ],
+          "description": "Baseline benign viewport value",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "viewport={{7*7}}"
+            }
+          ],
+          "description": "Probe for client-side template interpolation characters",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "viewport=%7B%7Balert(1)%7D%7D"
+            }
+          ],
+          "description": "Exploit-like probe for client template injection (encoded)",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Use session cookie if content differs by auth"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "payload_value in response.body or payload_value in response.body or payload_value in response.body",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.15",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Client-side template injection probes are encoded to avoid execution. Observe responses in browser context if needed.",
+      "tags": [
+        "client_side_template_injection"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H004-GET-/-scanMeHeader",
+      "hypothesis_id": "H004",
+      "base_url": "https://ginandjuice.shop",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "scanMeHeader",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=ok"
+            }
+          ],
+          "description": "Baseline homepage with benign param",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=<img src=x onerror=1>"
+            }
+          ],
+          "description": "Probe for reflection of HTML attributes",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Exploit-like encoded XSS probe",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Include session cookie if site renders differently for logged-in users"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "payload_value in response.body",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Maintain observed User-Agent and referer headers to avoid anti-automation blocks.",
+      "tags": [
+        "reflected_xss"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H005-POST-/catalog/subscribe-email",
+      "hypothesis_id": "H005",
+      "base_url": "https://ginandjuice.shop",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"tester@example.com\",\"csrf\":\"{{csrf_token}}\",\"coupon\":\"\""
+            }
+          ],
+          "description": "Baseline legitimate subscribe with valid CSRF token",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://ginandjuice.shop/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"attacker@example.com\",\"csrf\":\"invalid-token\",\"coupon\":\"\"}"
+            }
+          ],
+          "description": "Probe with invalid CSRF token to observe status/response changes",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://ginandjuice.shop/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"victim+injected@example.com\",\"csrf\":\"\",\"coupon\":\"\"}"
+            }
+          ],
+          "description": "Missing CSRF token to test enforcement (non-destructive)",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://ginandjuice.shop/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Obtain valid csrf token from page or cookie and bind to {{csrf_token}}",
+          "extract_from": "https://ginandjuice.shop/catalog/subscribe or originating page",
+          "bind_to": "csrf_token"
+        },
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie if subscribe requires login"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code != baseline.status_code",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.30",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Bind valid CSRF token before baseline. Do not perform exploit tier repeatedly to avoid creating accounts or subscriptions.",
+      "tags": [
+        "csrf_missing_or_weak"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H006-POST-/catalog/subscribe-csrf_email",
+      "hypothesis_id": "H006",
+      "base_url": "https://ginandjuice.shop",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "csrf, email",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"tester2@example.com\",\"csrf\":\"{{csrf_token}}\",\"coupon\":\"\"}"
+            }
+          ],
+          "description": "Baseline with valid CSRF token",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://ginandjuice.shop/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"tester2@example.com\",\"csrf\":\"{{reused_csrf_token}}\",\"coupon\":\"\"}"
+            }
+          ],
+          "description": "Probe by reusing an old/replayed CSRF token to test replayability",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://ginandjuice.shop/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"tester2@example.com\",\"csrf\":\"modified-token-123\",\"coupon\":\"\"}"
+            }
+          ],
+          "description": "Probe with crafted/modified token to see validation and timing differences",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://ginandjuice.shop/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Obtain current csrf token and optionally an older token for replay test",
+          "extract_from": "https://ginandjuice.shop/catalog/subscribe or originating page",
+          "bind_to": "csrf_token;reused_csrf_token"
+        },
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie if required"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code != baseline.status_code",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "timing_anomaly",
+          "condition": "response.time_ms > baseline.time_ms + 3000",
+          "threshold": {
+            "timing_ms": 3000
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Collect baseline timing. Reuse of tokens must respect privacy and not cause repeated state changes.",
+      "tags": [
+        "csrf_token_predictable_or_replay"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H007-POST-/catalog/subscribe-coupon",
+      "hypothesis_id": "H007",
+      "base_url": "https://ginandjuice.shop",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "coupon",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"shoptester@example.com\",\"csrf\":\"{{csrf_token}}\",\"coupon\":\"\"}"
+            }
+          ],
+          "description": "Baseline without coupon",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://ginandjuice.shop/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"shoptester@example.com\",\"csrf\":\"{{csrf_token}}\",\"coupon\":\"INVALIDCOUPON\"}"
+            }
+          ],
+          "description": "Probe with invalid coupon value",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://ginandjuice.shop/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"shoptester@example.com\",\"csrf\":\"{{csrf_token}}\",\"coupon\":\"FREE100PCT\"}"
+            }
+          ],
+          "description": "Probe with potential abusive coupon code (non-destructive)",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://ginandjuice.shop/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Bind valid csrf token to {{csrf_token}}",
+          "extract_from": "https://ginandjuice.shop/catalog/subscribe or originating page",
+          "bind_to": "csrf_token"
+        },
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie if required"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code != baseline.status_code",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              422
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.25",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Do not use coupon values that grant real monetary discounts. Use safe probe values.",
+      "tags": [
+        "business_logic_abuse"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H008-GET-/catalog/product-productId",
+      "hypothesis_id": "H008",
+      "base_url": "https://ginandjuice.shop",
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": "productId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "productId=17"
+            }
+          ],
+          "description": "Baseline product id observed in HAR (17)",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "productId=18"
+            }
+          ],
+          "description": "Probe different product id to detect authorization differences",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "productId=9999"
+            }
+          ],
+          "description": "Enumerate non-existent or other users' products",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie if product details restricted"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code != baseline.status_code",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.30",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Observed productId=17 in HAR used as baseline. Keep User-Agent header to avoid automation blocking.",
+      "tags": [
+        "id_or_authorization_bypass"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H009-GET-/catalog/cart-scanMeHeader",
+      "hypothesis_id": "H009",
+      "base_url": "https://ginandjuice.shop",
+      "method": "GET",
+      "endpoint": "/catalog/cart",
+      "parameter": "scanMeHeader",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=ok"
+            }
+          ],
+          "description": "Baseline cart page with benign param",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=<script>1</script>"
+            }
+          ],
+          "description": "Probe for reflection in cart page",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Exploit-like encoded payload to detect reflected XSS",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie if cart is user-specific"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "payload_value in response.body",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Cart may be user-specific; avoid modifying cart state. Use read-only probes.",
+      "tags": [
+        "reflected_xss"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H010-GET-/catalog-scanMeHeader",
+      "hypothesis_id": "H010",
+      "base_url": "https://ginandjuice.shop",
+      "method": "GET",
+      "endpoint": "/catalog",
+      "parameter": "scanMeHeader",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=ok"
+            }
+          ],
+          "description": "Baseline catalog with benign param",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=%3Cimg%20src%3Dx%20onerror%3D1%3E"
+            }
+          ],
+          "description": "Probe for reflected HTML attributes (encoded)",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=<svg/onload=alert(1)>"
+            }
+          ],
+          "description": "Exploit-like probe (use with caution)",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Session cookie if catalog personalized"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "payload_value in response.body",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Keep User-Agent header to avoid automated blocks. Use encoded probes first.",
+      "tags": [
+        "reflected_xss"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H011-GET-/about-scanMeHeader",
+      "hypothesis_id": "H011",
+      "base_url": "https://ginandjuice.shop",
+      "method": "GET",
+      "endpoint": "/about",
+      "parameter": "scanMeHeader",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=ok"
+            }
+          ],
+          "description": "Baseline about page with benign param",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=<script>1</script>"
+            }
+          ],
+          "description": "Probe for reflected script characters",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "scanMeHeader=%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Exploit-like encoded XSS probe",
+          "header": [
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Include session cookie if site differentiates content"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "payload_value in response.body",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / max(1,len(baseline.body)) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Use encoded probes first, monitor for anti-automation blocks.",
+      "tags": [
+        "reflected_xss"
+      ],
+      "estimated_duration": 60
+    }
+  ],
+  "global_prerequisites": [
+    {
+      "type": "session_state",
+      "description": "Capture and reuse existing session cookie from browser to access pages and protected endpoints",
+      "bind_to": "cookie_jar"
+    },
+    {
+      "type": "csrf_token",
+      "description": "Extract CSRF token from subscribe page and bind to {{csrf_token}} before POST requests",
+      "extract_from": "https://ginandjuice.shop/catalog/subscribe or referring pages",
+      "bind_to": "csrf_token"
+    }
+  ],
+  "execution_hints": [
+    {
+      "key": "user_agent",
+      "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "key": "respect_rate_limit",
+      "value": "true"
+    }
+  ],
+  "metadata": [
+    {
+      "key": "observed_user_agent",
+      "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "key": "csrf_token_seen_in_subscribe",
+      "value": "true"
+    }
+  ]
+}

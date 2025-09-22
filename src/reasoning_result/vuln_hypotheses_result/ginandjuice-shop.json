@@ -1,0 +1,445 @@
+{
+  "hypotheses": [
+    {
+      "id": "H001",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameters": [
+        "postId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "id_or_authorization_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "description": "Accessing other postId values may return different status codes indicating access control"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Large body length differences when changing postId may indicate unauthorized content exposure"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.45,
+      "priority": 3
+    },
+    {
+      "id": "H002",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameters": [
+        "scanMeHeader"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "reflected_xss",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Injected query parameter reflected in response body"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Significant body size change when varying parameter payload"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.3,
+      "priority": 3
+    },
+    {
+      "id": "H003",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameters": [
+        "viewport"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "client_side_template_injection",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Viewport value reflected or used in response scripts/templates"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "description": "Change in body when altering viewport suggests template usage"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.25,
+      "priority": 4
+    },
+    {
+      "id": "H004",
+      "method": "GET",
+      "endpoint": "/",
+      "parameters": [
+        "scanMeHeader"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "reflected_xss",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Query parameter reflected in home page HTML/JS"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Body size changes when varying value"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.25,
+      "priority": 4
+    },
+    {
+      "id": "H005",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameters": [
+        "email"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "csrf_missing_or_weak",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              401
+            ]
+          },
+          "description": "Requests without valid CSRF token result in different status codes"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Response differs when CSRF token invalid/missing"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "csrf_token_present",
+          "value": "true"
+        },
+        {
+          "key": "auth_context",
+          "value": "cookie_session"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "H006",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameters": [
+        "csrf",
+        "email"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "csrf_token_predictable_or_replay",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403
+            ]
+          },
+          "description": "Reuse or modification of CSRF token should change response status"
+        },
+        {
+          "signal": "timing_anomaly",
+          "threshold": {
+            "timing_ms": 3000
+          },
+          "description": "Token validation may introduce timing differences"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "cookie_session"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "H007",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameters": [
+        "coupon"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "business_logic_abuse",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              422
+            ]
+          },
+          "description": "Invalid/abused coupon may change status code"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Different response body when coupon triggers different server paths"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "cookie_session"
+        },
+        {
+          "key": "csrf_token_present",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "H008",
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameters": [
+        "productId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "id_or_authorization_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "description": "Changing productId returns different status codes indicating access control"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Body length differences when enumerating productId values"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.45,
+      "priority": 3
+    },
+    {
+      "id": "H009",
+      "method": "GET",
+      "endpoint": "/catalog/cart",
+      "parameters": [
+        "scanMeHeader"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "reflected_xss",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Query parameter reflected in cart page"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Body changes with parameter modifications"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.2,
+      "priority": 4
+    },
+    {
+      "id": "H010",
+      "method": "GET",
+      "endpoint": "/catalog",
+      "parameters": [
+        "scanMeHeader"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "reflected_xss",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Query parameter reflected in catalog listing"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Catalog content changes when varying parameter"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.2,
+      "priority": 4
+    },
+    {
+      "id": "H011",
+      "method": "GET",
+      "endpoint": "/about",
+      "parameters": [
+        "scanMeHeader"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "reflected_xss",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Query parameter reflected in about page"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Body size changes when altering parameter"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.2,
+      "priority": 5
+    }
+  ],
+  "metadata": [
+    {
+      "key": "observed_user_agent",
+      "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "key": "csrf_token_seen_in_subscribe",
+      "value": "true"
+    }
+  ]
+}

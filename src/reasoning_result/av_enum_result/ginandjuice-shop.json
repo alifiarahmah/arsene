@@ -1,0 +1,353 @@
+{
+  "vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/resources/images/gin-and-juice-team.mp4",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": [
+        "postId"
+      ],
+      "param_location": "query",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": [
+        "postId"
+      ],
+      "param_location": "query",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "state_change_observed",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": [
+        "scanMeHeader"
+      ],
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": [
+        "viewport"
+      ],
+      "param_location": "query",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": [
+        "user-agent"
+      ],
+      "param_location": "header",
+      "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "scanMeHeader"
+      ],
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "viewport"
+      ],
+      "param_location": "query",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "user-agent"
+      ],
+      "param_location": "header",
+      "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": [
+        "email"
+      ],
+      "param_location": "body",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": [
+        "coupon"
+      ],
+      "param_location": "body",
+      "category": "business_logic",
+      "expected_signals": [
+        "state_change_observed",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": [
+        "csrf"
+      ],
+      "param_location": "body",
+      "category": "csrf",
+      "expected_signals": [
+        "token_reuse_failure",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": [
+        "email",
+        "csrf"
+      ],
+      "param_location": "body",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": [
+        "productId"
+      ],
+      "param_location": "query",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": [
+        "productId",
+        "scanMeHeader"
+      ],
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": [
+        "user-agent"
+      ],
+      "param_location": "header",
+      "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog/cart",
+      "parameter": [
+        "scanMeHeader"
+      ],
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog/cart",
+      "parameter": [
+        "viewport"
+      ],
+      "param_location": "query",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog/cart",
+      "parameter": [
+        "user-agent"
+      ],
+      "param_location": "header",
+      "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog",
+      "parameter": [
+        "scanMeHeader"
+      ],
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog",
+      "parameter": [
+        "viewport"
+      ],
+      "param_location": "query",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog",
+      "parameter": [
+        "user-agent"
+      ],
+      "param_location": "header",
+      "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/about",
+      "parameter": [
+        "scanMeHeader"
+      ],
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/about",
+      "parameter": [
+        "viewport"
+      ],
+      "param_location": "query",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/about",
+      "parameter": [
+        "user-agent"
+      ],
+      "param_location": "header",
+      "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    }
+  ]
+}

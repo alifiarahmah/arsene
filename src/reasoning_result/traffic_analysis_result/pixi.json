@@ -1,0 +1,720 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path_template": "/js/jquery.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/bootstrap.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/pictures/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "text/plain",
+        "*/*"
+      ],
+      "parameters": [
+        {
+          "name": "_id",
+          "location": "query"
+        },
+        {
+          "name": "created_date",
+          "location": "query"
+        },
+        {
+          "name": "creator_id",
+          "location": "query"
+        },
+        {
+          "name": "description",
+          "location": "query"
+        },
+        {
+          "name": "filename",
+          "location": "query"
+        },
+        {
+          "name": "image_url",
+          "location": "query"
+        },
+        {
+          "name": "likes",
+          "location": "query"
+        },
+        {
+          "name": "money_made",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "title",
+          "location": "query"
+        },
+        {
+          "name": "updated_date",
+          "location": "query"
+        },
+        {
+          "name": "username",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/{resource_hash}",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_pictures/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "text/plain",
+        "*/*"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_loves/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "text/plain",
+        "*/*"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_likes/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "text/plain",
+        "*/*"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_info/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "text/plain",
+        "*/*"
+      ],
+      "parameters": [
+        {
+          "name": "_id",
+          "location": "query"
+        },
+        {
+          "name": "account_balance",
+          "location": "query"
+        },
+        {
+          "name": "all_pictures",
+          "location": "query"
+        },
+        {
+          "name": "email",
+          "location": "query",
+          "sample_value": "mail@example.com"
+        },
+        {
+          "name": "is_admin",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "password",
+          "location": "query"
+        },
+        {
+          "name": "pic",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/total_money/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "text/plain",
+        "*/*"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/pixi",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/x-www-form-urlencoded"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/all_users/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "text/plain",
+        "*/*"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/ajax/libs/moment.js/2.9.0/moment.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/ajax/libs/angularjs/1.5.5/angular-aria.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/ajax/libs/angularjs/1.5.5/angular-animate.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/ajax/libs/angular_material/1.1.0/angular-material.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/ajax/libs/angular_material/1.1.0/angular-material.min.css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/ajax/libs/angular-moment/0.9.0/angular-moment.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/login",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/x-www-form-urlencoded"
+      ],
+      "parameters": [
+        {
+          "name": "user",
+          "location": "query",
+          "sample_value": "mail@example.com"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "/upload_photo/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "multipart/form-data",
+        "application/json",
+        "text/plain"
+      ],
+      "parameters": [
+        {
+          "name": "created_date",
+          "location": "body"
+        },
+        {
+          "name": "creator_id",
+          "location": "body"
+        },
+        {
+          "name": "description",
+          "location": "body"
+        },
+        {
+          "name": "filename",
+          "location": "body"
+        },
+        {
+          "name": "image_url",
+          "location": "body"
+        },
+        {
+          "name": "insertedCount",
+          "location": "body"
+        },
+        {
+          "name": "insertedIds",
+          "location": "body"
+        },
+        {
+          "name": "likes",
+          "location": "body"
+        },
+        {
+          "name": "money_made",
+          "location": "body"
+        },
+        {
+          "name": "n",
+          "location": "body"
+        },
+        {
+          "name": "name",
+          "location": "body"
+        },
+        {
+          "name": "ops",
+          "location": "body"
+        },
+        {
+          "name": "result",
+          "location": "body"
+        },
+        {
+          "name": "title",
+          "location": "body"
+        },
+        {
+          "name": "updated_date",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/s/titilliumweb/v19/NaPDcZTIAOhVxoMyOr9n_E7ffHjDGItzYw.woff2",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/s/titilliumweb/v19/NaPDcZTIAOhVxoMyOr9n_E7ffBzCGItzYw.woff2",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/s/sourcecodepro/v31/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPevW.woff2",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/s/opensans/v44/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/register",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "family",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api-docs/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": false
+    }
+  ],
+  "global_observations": {
+    "session_management": "cookie",
+    "auth_flow": "form_login",
+    "needs_observation": true
+  }
+}

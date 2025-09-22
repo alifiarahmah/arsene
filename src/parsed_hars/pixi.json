@@ -1,0 +1,1034 @@
+{
+  "separatedHeaders": {
+    "h1": {
+      "name": "user-agent",
+      "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    "h2": {
+      "name": "sec-ch-ua",
+      "value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+    },
+    "h3": {
+      "name": "referer",
+      "value": "http://localhost:8000/"
+    },
+    "h4": {
+      "name": "referer",
+      "value": "http://localhost:8000/login"
+    },
+    "h5": {
+      "name": "referer",
+      "value": "http://localhost:8000/login?user=mail@example.com"
+    },
+    "h6": {
+      "name": "referer",
+      "value": "http://localhost:8000/pixi"
+    },
+    "h7": {
+      "name": "referer",
+      "value": "http://localhost:8000/register"
+    },
+    "h8": {
+      "name": "referer",
+      "value": "https://fonts.googleapis.com/"
+    },
+    "h9": {
+      "name": "content-type",
+      "value": "application/x-www-form-urlencoded"
+    },
+    "h10": {
+      "name": "content-type",
+      "value": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k"
+    },
+    "h11": {
+      "name": "accept",
+      "value": "application/json, text/plain, */*"
+    }
+  },
+  "requests": [
+    {
+      "id": "GET:/js/jquery.min.js",
+      "method": "GET",
+      "path": "/js/jquery.min.js",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 6,
+      "statusHistogram": {
+        "2xx": 3,
+        "3xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": [
+          "@h1",
+          "@h2",
+          "@h3",
+          "@h4"
+        ],
+        "user-agent": "@h5",
+        "sec-ch-ua": "@h6",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "if-modified-since": "Sat, 20 Sep 2025 10:51:27 GMT",
+        "if-none-match": "W/\"152b5-19966c010d2\""
+      }
+    },
+    {
+      "id": "GET:/js/bootstrap.min.js",
+      "method": "GET",
+      "path": "/js/bootstrap.min.js",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 6,
+      "statusHistogram": {
+        "2xx": 3,
+        "3xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": [
+          "@h1",
+          "@h2",
+          "@h3",
+          "@h4"
+        ],
+        "user-agent": "@h5",
+        "sec-ch-ua": "@h6",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "if-modified-since": "Sat, 20 Sep 2025 10:51:27 GMT",
+        "if-none-match": "W/\"b63d-19966c010c0\""
+      }
+    },
+    {
+      "id": "GET:/pictures/",
+      "method": "GET",
+      "path": "/pictures/",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 4,
+      "statusHistogram": {
+        "2xx": 4
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [
+        [
+          "_id",
+          "integer"
+        ],
+        [
+          "created_date",
+          "string"
+        ],
+        [
+          "creator_id",
+          "integer"
+        ],
+        [
+          "description",
+          "string"
+        ],
+        [
+          "filename",
+          "string"
+        ],
+        [
+          "image_url",
+          "string"
+        ],
+        [
+          "likes",
+          "integer"
+        ],
+        [
+          "money_made",
+          "integer"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "title",
+          "string"
+        ],
+        [
+          "updated_date",
+          "string"
+        ],
+        [
+          "username",
+          "string"
+        ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/0215428b1ddcb8dc8fd93e4ced0cab97",
+      "method": "GET",
+      "path": "/0215428b1ddcb8dc8fd93e4ced0cab97",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 4,
+      "statusHistogram": {
+        "2xx": 2,
+        "3xx": 2
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "if-modified-since": "Mon, 22 Sep 2025 07:51:28 GMT",
+        "if-none-match": "W/\"12aab-19970680181\"",
+        "upgrade-insecure-requests": "1"
+      }
+    },
+    {
+      "id": "GET:/user_pictures/",
+      "method": "GET",
+      "path": "/user_pictures/",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/user_loves/",
+      "method": "GET",
+      "path": "/user_loves/",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/user_likes/",
+      "method": "GET",
+      "path": "/user_likes/",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/user_info/",
+      "method": "GET",
+      "path": "/user_info/",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [
+        [
+          "_id",
+          "integer"
+        ],
+        [
+          "account_balance",
+          "integer"
+        ],
+        [
+          "all_pictures",
+          "string"
+        ],
+        [
+          "email",
+          "string"
+        ],
+        [
+          "is_admin",
+          "boolean"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "password",
+          "string"
+        ],
+        [
+          "pic",
+          "string"
+        ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/total_money/",
+      "method": "GET",
+      "path": "/total_money/",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/pixi",
+      "method": "GET",
+      "path": "/pixi",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "content-type": "application/x-www-form-urlencoded",
+        "origin": "http://localhost:8000",
+        "referer": "@h1",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/all_users/",
+      "method": "GET",
+      "path": "/all_users/",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/ajax/libs/moment.js/2.9.0/moment.min.js",
+      "method": "GET",
+      "path": "/ajax/libs/moment.js/2.9.0/moment.min.js",
+      "hosts": [
+        "cdnjs.cloudflare.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2"
+      }
+    },
+    {
+      "id": "GET:/ajax/libs/angularjs/1.5.5/angular-aria.min.js",
+      "method": "GET",
+      "path": "/ajax/libs/angularjs/1.5.5/angular-aria.min.js",
+      "hosts": [
+        "ajax.googleapis.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/ajax/libs/angularjs/1.5.5/angular-animate.min.js",
+      "method": "GET",
+      "path": "/ajax/libs/angularjs/1.5.5/angular-animate.min.js",
+      "hosts": [
+        "ajax.googleapis.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/ajax/libs/angular_material/1.1.0/angular-material.min.js",
+      "method": "GET",
+      "path": "/ajax/libs/angular_material/1.1.0/angular-material.min.js",
+      "hosts": [
+        "ajax.googleapis.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/ajax/libs/angular_material/1.1.0/angular-material.min.css",
+      "method": "GET",
+      "path": "/ajax/libs/angular_material/1.1.0/angular-material.min.css",
+      "hosts": [
+        "ajax.googleapis.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/ajax/libs/angular-moment/0.9.0/angular-moment.min.js",
+      "method": "GET",
+      "path": "/ajax/libs/angular-moment/0.9.0/angular-moment.min.js",
+      "hosts": [
+        "cdnjs.cloudflare.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2"
+      }
+    },
+    {
+      "id": "GET:/login",
+      "method": "GET",
+      "path": "/login",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "authentication"
+      ],
+      "count": 2,
+      "statusHistogram": {
+        "2xx": 2
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "url_contains_login"
+      ],
+      "parameters": [
+        [
+          "user",
+          "string"
+        ]
+      ],
+      "headers": {
+        "upgrade-insecure-requests": "1",
+        "user-agent": "@h1",
+        "sec-ch-ua": "@h2",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "content-type": "application/x-www-form-urlencoded",
+        "origin": "http://localhost:8000",
+        "referer": "@h3"
+      }
+    },
+    {
+      "id": "POST:/upload_photo/",
+      "method": "POST",
+      "path": "/upload_photo/",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [
+        [
+          "created_date",
+          "string"
+        ],
+        [
+          "creator_id",
+          "integer"
+        ],
+        [
+          "description",
+          "string"
+        ],
+        [
+          "filename",
+          "string"
+        ],
+        [
+          "image_url",
+          "string"
+        ],
+        [
+          "insertedCount",
+          "integer"
+        ],
+        [
+          "insertedIds",
+          "string"
+        ],
+        [
+          "likes",
+          "integer"
+        ],
+        [
+          "money_made",
+          "integer"
+        ],
+        [
+          "n",
+          "integer"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "ops",
+          "string"
+        ],
+        [
+          "result",
+          "string"
+        ],
+        [
+          "title",
+          "string"
+        ],
+        [
+          "updated_date",
+          "string"
+        ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "content-type": "@h2",
+        "referer": "@h3",
+        "user-agent": "@h4",
+        "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z'/%3E%3C/svg%3E",
+      "method": "GET",
+      "path": "image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z'/%3E%3C/svg%3E",
+      "hosts": [],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2"
+      }
+    },
+    {
+      "id": "GET:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCI+ICAgIDxwYXRoIGQ9Ik0xMy40MTggNy44NTljLjI3MS0uMjY4LjcwOS0uMjY4Ljk3OCAwIC4yNy4yNjguMjcyLjcwMSAwIC45NjlsLTMuOTA4IDMuODNjLS4yNy4yNjgtLjcwNy4yNjgtLjk3OSAwbC0zLjkwOC0zLjgzYy0uMjctLjI2Ny0uMjctLjcwMSAwLS45NjkuMjcxLS4yNjguNzA5LS4yNjguOTc4IDBMMTAgMTFsMy40MTgtMy4xNDF6Ii8+PC9zdmc+",
+      "method": "GET",
+      "path": "image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCI+ICAgIDxwYXRoIGQ9Ik0xMy40MTggNy44NTljLjI3MS0uMjY4LjcwOS0uMjY4Ljk3OCAwIC4yNy4yNjguMjcyLjcwMSAwIC45NjlsLTMuOTA4IDMuODNjLS4yNy4yNjgtLjcwNy4yNjgtLjk3OSAwbC0zLjkwOC0zLjgzYy0uMjctLjI2Ny0uMjctLjcwMSAwLS45NjkuMjcxLS4yNjguNzA5LS4yNjguOTc4IDBMMTAgMTFsMy40MTgtMy4xNDF6Ii8+PC9zdmc+",
+      "hosts": [],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2"
+      }
+    },
+    {
+      "id": "GET:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAqRJREFUeNrEVz1s00AUfnGXii5maMXoEUEHVwIpEkPNgkBdMnQoU5ytiKHJwpp2Q2JIO8DCUDOxIJFIVOoWZyJSh3pp1Q2PVVlcCVBH3ufeVZZ9Zye1Ay86nXV+ue/9fO/lheg/Se02X1rvksmbnTiKvuxQMBNgBnN4a/LCbmnUAP6JV58NCUsBC8CuAJxGPF47OgNqBaA93tolUhnx6jC4NxGwyOEwlccyAs+3kwdzKq0HDn2vEBTi8J2XpyMaywNDE157BhXUE3zJhlq8GKq+Zd2zaWHepPA8oN9XkfLmRdOiJV4XUUg/IyWncLjCYY/SHndV2u7zHr3bPKZtdxgboJOnthvrfGj/oMf3G0r7JVmNlLfKklmrt2MvvcNO7LFOhoFHfuAJI5o6ta10jpt5CQLgwXhXG2YIwvu+34qf78ybOjWTnWwkgR36d7JqJOrW0hHmNrKg9xhiS4+1jFmrxymh03B0w+6kURIAu3yHtOD5oaUNojMnGgbcctNvwdAnyxvxRR+/vaJnjzbpzcZX+nN1SdGv85i9eH8w3qPO+mdm/y4dnQ1iI8Fq6Nf4cxL6GWSjiFDSs0VRnxC5g0xSB2cgHpaseTxfqOv5uoHkNQ6Ha/N1Yz9mNMppEkEkYKj79q6uCq4bCHcSX3fJ0Vk/k9siASjCm1N6gZH6Ec9IXt2WkFES2K/ixoIyktJPAu/ptOA1SgO5zqtr6KASJPF0nMV8dgMsRhRPOcMwqQAOoi0VAIMLAEWJ6YYC1c8ibj1GP51RqwzYwZVMHQuvOzMCBUtb2tGHx5NAdLKqp5AX7Ng4d+Zi8AGDI9z1ijx9yaCH04y3GCP2S+QcvaGl+pcxyUBvinFlawoDQjHSelX8hQEoIrAq8p/mgC88HOS1YCl/BRgAmiD/1gn6Nu8AAAAASUVORK5CYII=",
+      "method": "GET",
+      "path": "image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAqRJREFUeNrEVz1s00AUfnGXii5maMXoEUEHVwIpEkPNgkBdMnQoU5ytiKHJwpp2Q2JIO8DCUDOxIJFIVOoWZyJSh3pp1Q2PVVlcCVBH3ufeVZZ9Zye1Ay86nXV+ue/9fO/lheg/Se02X1rvksmbnTiKvuxQMBNgBnN4a/LCbmnUAP6JV58NCUsBC8CuAJxGPF47OgNqBaA93tolUhnx6jC4NxGwyOEwlccyAs+3kwdzKq0HDn2vEBTi8J2XpyMaywNDE157BhXUE3zJhlq8GKq+Zd2zaWHepPA8oN9XkfLmRdOiJV4XUUg/IyWncLjCYY/SHndV2u7zHr3bPKZtdxgboJOnthvrfGj/oMf3G0r7JVmNlLfKklmrt2MvvcNO7LFOhoFHfuAJI5o6ta10jpt5CQLgwXhXG2YIwvu+34qf78ybOjWTnWwkgR36d7JqJOrW0hHmNrKg9xhiS4+1jFmrxymh03B0w+6kURIAu3yHtOD5oaUNojMnGgbcctNvwdAnyxvxRR+/vaJnjzbpzcZX+nN1SdGv85i9eH8w3qPO+mdm/y4dnQ1iI8Fq6Nf4cxL6GWSjiFDSs0VRnxC5g0xSB2cgHpaseTxfqOv5uoHkNQ6Ha/N1Yz9mNMppEkEkYKj79q6uCq4bCHcSX3fJ0Vk/k9siASjCm1N6gZH6Ec9IXt2WkFES2K/ixoIyktJPAu/ptOA1SgO5zqtr6KASJPF0nMV8dgMsRhRPOcMwqQAOoi0VAIMLAEWJ6YYC1c8ibj1GP51RqwzYwZVMHQuvOzMCBUtb2tGHx5NAdLKqp5AX7Ng4d+Zi8AGDI9z1ijx9yaCH04y3GCP2S+QcvaGl+pcxyUBvinFlawoDQjHSelX8hQEoIrAq8p/mgC88HOS1YCl/BRgAmiD/1gn6Nu8AAAAASUVORK5CYII=",
+      "hosts": [],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2"
+      }
+    },
+    {
+      "id": "GET:/s/titilliumweb/v19/NaPDcZTIAOhVxoMyOr9n_E7ffHjDGItzYw.woff2",
+      "method": "GET",
+      "path": "/s/titilliumweb/v19/NaPDcZTIAOhVxoMyOr9n_E7ffHjDGItzYw.woff2",
+      "hosts": [
+        "fonts.gstatic.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "origin": "http://localhost:8000",
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/s/titilliumweb/v19/NaPDcZTIAOhVxoMyOr9n_E7ffBzCGItzYw.woff2",
+      "method": "GET",
+      "path": "/s/titilliumweb/v19/NaPDcZTIAOhVxoMyOr9n_E7ffBzCGItzYw.woff2",
+      "hosts": [
+        "fonts.gstatic.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "origin": "http://localhost:8000",
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/s/sourcecodepro/v31/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPevW.woff2",
+      "method": "GET",
+      "path": "/s/sourcecodepro/v31/HI_SiYsKILxRpg3hIP6sJ7fM7PqlPevW.woff2",
+      "hosts": [
+        "fonts.gstatic.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "origin": "http://localhost:8000",
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/s/opensans/v44/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2",
+      "method": "GET",
+      "path": "/s/opensans/v44/memvYaGs126MiZpBA-UvWbX2vVnXBbObj2OVTS-muw.woff2",
+      "hosts": [
+        "fonts.gstatic.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "origin": "http://localhost:8000",
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/register",
+      "method": "GET",
+      "path": "/register",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/css",
+      "method": "GET",
+      "path": "/css",
+      "hosts": [
+        "fonts.googleapis.com"
+      ],
+      "endpointTypes": [
+        "third_party"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [
+        [
+          "family",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/api-docs/",
+      "method": "GET",
+      "path": "/api-docs/",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "page_request"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    }
+  ]
+}
