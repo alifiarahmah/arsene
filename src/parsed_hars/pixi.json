@@ -14,35 +14,43 @@
     },
     "h4": {
       "name": "referer",
-      "value": "http://localhost:8000/login"
+      "value": "http://localhost:8000/api-docs/"
     },
     "h5": {
       "name": "referer",
-      "value": "http://localhost:8000/login?user=mail@example.com"
+      "value": "http://localhost:8000/login"
     },
     "h6": {
       "name": "referer",
-      "value": "http://localhost:8000/pixi"
+      "value": "http://localhost:8000/login?user=mail@example.com"
     },
     "h7": {
       "name": "referer",
-      "value": "http://localhost:8000/register"
+      "value": "http://localhost:8000/pixi"
     },
     "h8": {
       "name": "referer",
-      "value": "https://fonts.googleapis.com/"
+      "value": "http://localhost:8000/register"
     },
     "h9": {
-      "name": "content-type",
-      "value": "application/x-www-form-urlencoded"
+      "name": "referer",
+      "value": "https://fonts.googleapis.com/"
     },
     "h10": {
       "name": "content-type",
-      "value": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k"
+      "value": "application/x-www-form-urlencoded"
     },
     "h11": {
+      "name": "content-type",
+      "value": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k"
+    },
+    "h12": {
       "name": "accept",
       "value": "application/json, text/plain, */*"
+    },
+    "h13": {
+      "name": "accept",
+      "value": "application/json,*/*"
     }
   },
   "requests": [
@@ -66,7 +74,72 @@
         "auth_cookie_CSRF-TOKEN",
         "auth_cookie_session"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "ajaxSuccess",
+          "string"
+        ],
+        [
+          "border",
+          "string"
+        ],
+        [
+          "catch",
+          "string"
+        ],
+        [
+          "char",
+          "string"
+        ],
+        [
+          "class",
+          "string"
+        ],
+        [
+          "float",
+          "string"
+        ],
+        [
+          "for",
+          "string"
+        ],
+        [
+          "hide",
+          "string"
+        ],
+        [
+          "margin",
+          "string"
+        ],
+        [
+          "nextSibling",
+          "string"
+        ],
+        [
+          "nocontent",
+          "string"
+        ],
+        [
+          "object",
+          "string"
+        ],
+        [
+          "on",
+          "string"
+        ],
+        [
+          "px",
+          "string"
+        ],
+        [
+          "throws",
+          "string"
+        ],
+        [
+          "url",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": [
           "@h1",
@@ -102,7 +175,28 @@
         "auth_cookie_CSRF-TOKEN",
         "auth_cookie_session"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "element",
+          "string"
+        ],
+        [
+          "offsetWidth",
+          "string"
+        ],
+        [
+          "symbol",
+          "string"
+        ],
+        [
+          "toggle",
+          "string"
+        ],
+        [
+          "undefined",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": [
           "@h1",
@@ -116,6 +210,123 @@
         "sec-ch-ua-platform": "\"Windows\"",
         "if-modified-since": "Sat, 20 Sep 2025 10:51:27 GMT",
         "if-none-match": "W/\"b63d-19966c010c0\""
+      }
+    },
+    {
+      "id": "GET:/js/angular.min.js",
+      "method": "GET",
+      "path": "/js/angular.min.js",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 6,
+      "statusHistogram": {
+        "2xx": 3,
+        "3xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [
+        [
+          "EAC",
+          "string"
+        ],
+        [
+          "Object",
+          "string"
+        ],
+        [
+          "catch",
+          "string"
+        ],
+        [
+          "document",
+          "string"
+        ],
+        [
+          "false",
+          "string"
+        ],
+        [
+          "finally",
+          "string"
+        ],
+        [
+          "floor",
+          "string"
+        ],
+        [
+          "function",
+          "string"
+        ],
+        [
+          "name",
+          "string"
+        ],
+        [
+          "null",
+          "string"
+        ],
+        [
+          "number",
+          "string"
+        ],
+        [
+          "object",
+          "string"
+        ],
+        [
+          "removeClass",
+          "string"
+        ],
+        [
+          "replaceState",
+          "string"
+        ],
+        [
+          "s",
+          "string"
+        ],
+        [
+          "string",
+          "string"
+        ],
+        [
+          "svg",
+          "string"
+        ],
+        [
+          "this",
+          "string"
+        ],
+        [
+          "true",
+          "string"
+        ],
+        [
+          "undefined",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": [
+          "@h1",
+          "@h2",
+          "@h3",
+          "@h4"
+        ],
+        "user-agent": "@h5",
+        "sec-ch-ua": "@h6",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "if-modified-since": "Sat, 20 Sep 2025 10:51:27 GMT",
+        "if-none-match": "W/\"28472-19966c01093\""
       }
     },
     {
@@ -438,6 +649,140 @@
       }
     },
     {
+      "id": "GET:/js/ng-infinite-scroll.min.js",
+      "method": "GET",
+      "path": "/js/ng-infinite-scroll.min.js",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/js/ng-file-upload.min.js",
+      "method": "GET",
+      "path": "/js/ng-file-upload.min.js",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [
+        [
+          "audio",
+          "string"
+        ],
+        [
+          "image",
+          "string"
+        ],
+        [
+          "move",
+          "string"
+        ],
+        [
+          "video",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/js/ng-file-upload-shim.min.js",
+      "method": "GET",
+      "path": "/js/ng-file-upload-shim.min.js",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [
+        [
+          "file",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/js/angular-sanitize.min.js",
+      "method": "GET",
+      "path": "/js/angular-sanitize.min.js",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 3,
+      "statusHistogram": {
+        "2xx": 3
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
       "id": "GET:/all_users/",
       "method": "GET",
       "path": "/all_users/",
@@ -485,7 +830,88 @@
         "auth_cookie_CSRF-TOKEN",
         "auth_cookie_session"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "A",
+          "string"
+        ],
+        [
+          "DD",
+          "string"
+        ],
+        [
+          "G",
+          "string"
+        ],
+        [
+          "GG",
+          "string"
+        ],
+        [
+          "GGGGG",
+          "string"
+        ],
+        [
+          "HH",
+          "string"
+        ],
+        [
+          "MMM",
+          "string"
+        ],
+        [
+          "Q",
+          "string"
+        ],
+        [
+          "S",
+          "string"
+        ],
+        [
+          "SSS",
+          "string"
+        ],
+        [
+          "SSSS",
+          "string"
+        ],
+        [
+          "X",
+          "string"
+        ],
+        [
+          "YYYY",
+          "string"
+        ],
+        [
+          "YYYYYY",
+          "string"
+        ],
+        [
+          "ZZ",
+          "string"
+        ],
+        [
+          "dd",
+          "string"
+        ],
+        [
+          "dddd",
+          "string"
+        ],
+        [
+          "gggg",
+          "string"
+        ],
+        [
+          "mm",
+          "string"
+        ],
+        [
+          "ww",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2"
@@ -510,7 +936,20 @@
         "auth_cookie_CSRF-TOKEN",
         "auth_cookie_session"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "checkbox",
+          "string"
+        ],
+        [
+          "radio",
+          "string"
+        ],
+        [
+          "range",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2",
@@ -538,7 +977,40 @@
         "auth_cookie_CSRF-TOKEN",
         "auth_cookie_session"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "Duration",
+          "string"
+        ],
+        [
+          "addClass",
+          "string"
+        ],
+        [
+          "animate",
+          "string"
+        ],
+        [
+          "in",
+          "string"
+        ],
+        [
+          "removeClass",
+          "string"
+        ],
+        [
+          "setClass",
+          "string"
+        ],
+        [
+          "to",
+          "string"
+        ],
+        [
+          "top",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2",
@@ -566,7 +1038,88 @@
         "auth_cookie_CSRF-TOKEN",
         "auth_cookie_session"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "$mdAutocompleteCtrl.itemName",
+          "string"
+        ],
+        [
+          "TouchAction",
+          "string"
+        ],
+        [
+          "contrast",
+          "string"
+        ],
+        [
+          "default",
+          "string"
+        ],
+        [
+          "down",
+          "string"
+        ],
+        [
+          "flex",
+          "string"
+        ],
+        [
+          "layout",
+          "string"
+        ],
+        [
+          "ltr",
+          "string"
+        ],
+        [
+          "md-date-pane",
+          "string"
+        ],
+        [
+          "px",
+          "string"
+        ],
+        [
+          "right",
+          "string"
+        ],
+        [
+          "select_",
+          "string"
+        ],
+        [
+          "select_option_",
+          "string"
+        ],
+        [
+          "tab-content-{{::tab.id}}",
+          "string"
+        ],
+        [
+          "tab-item-{{::tab.id}}",
+          "string"
+        ],
+        [
+          "ul-{{$mdAutocompleteCtrl.id}}",
+          "string"
+        ],
+        [
+          "value",
+          "string"
+        ],
+        [
+          "{0}",
+          "string"
+        ],
+        [
+          "{{ inputId || \\",
+          "string"
+        ],
+        [
+          "{{inputName}}",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2",
@@ -825,6 +1378,35 @@
       }
     },
     {
+      "id": "GET:/swagger.json",
+      "method": "GET",
+      "path": "/swagger.json",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
       "id": "GET:/s/titilliumweb/v19/NaPDcZTIAOhVxoMyOr9n_E7ffHjDGItzYw.woff2",
       "method": "GET",
       "path": "/s/titilliumweb/v19/NaPDcZTIAOhVxoMyOr9n_E7ffHjDGItzYw.woff2",
@@ -993,6 +1575,62 @@
           "string"
         ]
       ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/api-docs/swagger-ui-standalone-preset.js",
+      "method": "GET",
+      "path": "/api-docs/swagger-ui-standalone-preset.js",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/api-docs/swagger-ui-bundle.js",
+      "method": "GET",
+      "path": "/api-docs/swagger-ui-bundle.js",
+      "hosts": [
+        "localhost:8000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_CSRF-TOKEN",
+        "auth_cookie_session"
+      ],
+      "parameters": [],
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2",

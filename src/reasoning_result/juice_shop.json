@@ -1,175 +1,112 @@
 {
   "test_cases": [
     {
-      "id": "exec-1-auth",
-      "hypothesis_id": "hypo-015",
-      "base_url": "http://localhost:3000",
-      "method": "POST",
-      "endpoint": "/rest/user/login",
-      "parameter": "email",
-      "payloads": [
-        {
-          "tier": "benign",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"email\":\"user@example.com\",\"password\":\"correcthorsebatterystaple\"}"
-            }
-          ],
-          "description": "Establish valid session/token baseline",
-          "encoding": "utf-8",
-          "content_type": "application/json",
-          "header": []
-        },
-        {
-          "tier": "probe",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"email\":\"user@example.com\",\"password\":\"wrongpass\"}"
-            }
-          ],
-          "description": "Single invalid attempt to observe status/timing",
-          "encoding": "utf-8",
-          "content_type": "application/json",
-          "header": []
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"email\":\"user@example.com\",\"password\":\"password1\"}"
-            }
-          ],
-          "description": "Additional safe attempts to detect lockout/rate-limit behavior",
-          "encoding": "utf-8",
-          "content_type": "application/json",
-          "header": []
-        }
-      ],
-      "prerequisites": [],
-      "oracle_rules": [
-        {
-          "signal": "status_code_change",
-          "condition": "response.status_code in [200,401,429] across attempts",
-          "threshold": {
-            "expected_codes": [
-              200,
-              401,
-              429
-            ]
-          },
-          "weight": 1.0
-        },
-        {
-          "signal": "timing_anomaly",
-          "condition": "response.time_ms > baseline.time_ms + 2000",
-          "threshold": {
-            "timing_ms": 2000
-          },
-          "weight": 1.0
-        }
-      ],
-      "pass_logic": "any",
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 50
-      },
-      "max_retries": 2,
-      "delay_between_requests": 2.0,
-      "notes": "Run first to obtain auth token if successful; stop if 429 returned",
-      "tags": [
-        "auth",
-        "bruteforce"
-      ],
-      "estimated_duration": 10
-    },
-    {
-      "id": "exec-2-whoami",
-      "hypothesis_id": "hypo-001",
-      "base_url": "http://localhost:3000",
+      "id": "exec-1-auth-gather",
+      "hypothesis_id": "h1,h3,h8",
+      "base_url": "http://localhost",
       "method": "GET",
       "endpoint": "/rest/user/whoami",
-      "parameter": "user",
+      "parameter": "profileImage",
       "payloads": [
         {
           "tier": "benign",
           "payloads": [
             {
               "location": "body",
-              "value": "{\"user\":\"current\"}"
+              "value": "{\"profileImage\":\"/assets/public/images/uploads/default.svg\"}"
             }
           ],
-          "description": "Authorized baseline using token from exec-1 if available",
+          "description": "Initial authenticated identity check to establish valid JWT behavior and baseline response",
           "encoding": "utf-8",
           "content_type": "application/json",
           "header": [
             {
               "header_name": "Authorization",
               "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-            }
-          ]
-        },
-        {
-          "tier": "probe",
-          "payloads": [
+            },
             {
-              "location": "body",
-              "value": "{\"user\":\"\"}"
-            }
-          ],
-          "description": "Authorized probe with blank user",
-          "encoding": "utf-8",
-          "content_type": "application/json",
-          "header": [
-            {
-              "header_name": "Authorization",
-              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-            }
-          ]
-        },
-        {
-          "tier": "exploit",
-          "payloads": [
-            {
-              "location": "body",
-              "value": "{\"user\":\"admin' OR 1=1 --\"}"
-            }
-          ],
-          "description": "Safe crafted probe to detect info disclosure",
-          "encoding": "utf-8",
-          "content_type": "application/json",
-          "header": [
-            {
-              "header_name": "Authorization",
-              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+              "header_name": "Content-Type",
+              "header_value": "application/json"
             }
           ]
         }
       ],
       "prerequisites": [
         {
-          "type": "login",
-          "description": "Use token from exec-1 if available; otherwise run exec-1 first",
-          "extract_from": "previous_step",
-          "bind_to": "Authorization"
+          "type": "jwt_refresh",
+          "description": "Use observed JWT for authenticated requests; include in Authorization header as Bearer token",
+          "bind_to": "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
         }
       ],
       "oracle_rules": [
         {
           "signal": "sensitive_data_exposed",
-          "condition": "response.body contains \"email\" or response.body contains \"id\"",
+          "condition": "capture and log JWT-validated whoami response and extract claims for later use",
           "weight": 1.0
-        },
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "First step: confirm authentication, collect baseline for auth-dependent endpoints and verify token works across services",
+      "tags": [
+        "auth",
+        "gather"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "exec-2-admin-config-authz-check",
+      "hypothesis_id": "h3,h8",
+      "base_url": "http://localhost",
+      "method": "GET",
+      "endpoint": "/rest/admin/application-configuration",
+      "parameter": "application",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"application\":\"test-app\"}"
+            }
+          ],
+          "description": "Check admin configuration endpoint with observed JWT to detect authz bypass",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Carry Authorization header from exec-1-auth-gather if token valid"
+        }
+      ],
+      "oracle_rules": [
         {
           "signal": "status_code_change",
-          "condition": "response.status_code in [200,401] (compare authorized vs no-auth)",
+          "condition": "if observed JWT (non-admin) yields 200 or large JSON, flag authz bypass",
           "threshold": {
+            "body_length_delta_pct": 40.0,
             "expected_codes": [
               200,
-              401
+              401,
+              403
             ]
           },
           "weight": 1.0
@@ -179,52 +116,38 @@
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 10
+        "max_requests": 3
       },
-      "max_retries": 2,
-      "delay_between_requests": 0.5,
-      "notes": "Run after auth to compare authorized vs missing/invalid token",
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Run only after confirming JWT works; stop further admin probing if 403/401 consistently returned",
       "tags": [
-        "info_disclosure",
-        "auth_bypass"
+        "authz-bypass",
+        "sensitive_config"
       ],
-      "estimated_duration": 2
+      "estimated_duration": 45
     },
     {
-      "id": "exec-3-idor-basket",
-      "hypothesis_id": "hypo-002",
-      "base_url": "http://localhost:3000",
+      "id": "exec-3-enum-idor-paths",
+      "hypothesis_id": "h2,h14,h5",
+      "base_url": "http://localhost",
       "method": "GET",
       "endpoint": "/rest/basket/6",
-      "parameter": "BasketId",
+      "parameter": "basketId",
       "payloads": [
         {
-          "tier": "benign",
+          "tier": "probe",
           "payloads": [
             {
               "location": "path",
               "value": "6"
-            }
-          ],
-          "description": "Baseline fetch for BasketId=6 with Authorization header",
-          "content_type": "*/*",
-          "header": [
-            {
-              "header_name": "Authorization",
-              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
-            }
-          ]
-        },
-        {
-          "tier": "probe",
-          "payloads": [
+            },
             {
               "location": "path",
               "value": "7"
             }
           ],
-          "description": "Probe other BasketId to observe access control",
-          "content_type": "*/*",
+          "description": "Enumerate adjacent resource IDs for basket/address to detect IDORs; reuse same auth header; iterate small id delta first",
           "header": [
             {
               "header_name": "Authorization",
@@ -237,11 +160,14 @@
           "payloads": [
             {
               "location": "path",
-              "value": "1"
+              "value": "999999"
+            },
+            {
+              "location": "path",
+              "value": "9999"
             }
           ],
-          "description": "Probe accessing a different known id (1) to check for leakage (safe probe)",
-          "content_type": "*/*",
+          "description": "High id probes to elicit 401/403/404 or large differences indicating access control issues; apply to basket and address endpoints sequentially",
           "header": [
             {
               "header_name": "Authorization",
@@ -252,77 +178,388 @@
       ],
       "prerequisites": [
         {
-          "type": "login",
-          "description": "Have valid Authorization Bearer token (from exec-1)",
-          "extract_from": "previous_step",
-          "bind_to": "Authorization"
+          "type": "session_state",
+          "description": "Use Authorization header from previous steps"
         }
       ],
       "oracle_rules": [
         {
-          "signal": "sensitive_data_exposed",
-          "condition": "response.body contains \"UserId\" or response.body contains \"Products\"",
-          "weight": 1.0
-        },
-        {
           "signal": "status_code_change",
-          "condition": "response.status_code in [200,403,404] across probes",
+          "condition": "compare status codes across ids and endpoints; flag 200 for unexpected ids or ACL differences",
           "threshold": {
             "expected_codes": [
               200,
               403,
-              404
+              404,
+              401
             ]
           },
           "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "flag if response size differs >=25% between baseline and probe/exploit ids",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.8
         }
       ],
       "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 20
+        "max_requests": 30
       },
-      "max_retries": 2,
-      "delay_between_requests": 0.5,
-      "notes": "Run after auth; stop if unexpected 200 on probes indicating potential IDOR",
+      "max_retries": 1,
+      "delay_between_requests": 0.7,
+      "notes": "Enumerate low-offset ids first; stop and escalate if unauthorized access discovered; avoid repeated large-id scanning if rate limits triggered",
       "tags": [
         "idor",
-        "authz"
+        "enumeration"
       ],
-      "estimated_duration": 3
+      "estimated_duration": 180
+    },
+    {
+      "id": "exec-4-nosql-injection-probes",
+      "hypothesis_id": "h5,h6,h7",
+      "base_url": "http://localhost",
+      "method": "GET",
+      "endpoint": "/rest/products/search",
+      "parameter": "name",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "Baseline search to compare later injection probes",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "Accept",
+              "header_value": "application/json"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "test'"
+            }
+          ],
+          "description": "SQL/NoSQL parse error probe (single-quote) to elicit error signatures",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "Accept",
+              "header_value": "application/json"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "{\"$ne\":null}"
+            },
+            {
+              "location": "query",
+              "value": "{\"$gt\":\"\"}"
+            }
+          ],
+          "description": "NoSQL operator probes to detect injection behavior across endpoints Product/Quantity/Address",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            },
+            {
+              "header_name": "Accept",
+              "header_value": "application/json"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Ensure Authorization header present; if endpoint allows anonymous tests skip auth header for control run"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "inspect responses for DB/driver error strings (MongoError, syntax, parse) after probe/exploit payloads",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "flag if response body length changes >=30% compared to baseline",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.6,
+      "notes": "Run simple parse-error probes first, then NoSQL operator probes; stop on evidence of injection or error leaks",
+      "tags": [
+        "injection",
+        "nosql"
+      ],
+      "estimated_duration": 240
+    },
+    {
+      "id": "exec-5-stored-xss-feedbacks",
+      "hypothesis_id": "h11",
+      "base_url": "http://localhost",
+      "method": "POST",
+      "endpoint": "/api/Feedbacks/",
+      "parameter": "comment",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"comment\":\"This is a harmless feedback.\"}"
+            }
+          ],
+          "description": "Submit benign feedback to confirm POST functionality and baseline listing behavior",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            },
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"comment\":\"Feedback probe 12345\"}"
+            }
+          ],
+          "description": "Probe to detect storage and reflection in listing endpoint",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            },
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"comment\":\"<script>console.log(\\\"xss_probe\\\")</script>\"}"
+            }
+          ],
+          "description": "Stored XSS probe payload (benign JS) to detect storage and reflection; do not attempt execution in clients, only verify persistence in GET responses",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            },
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "If anti-automation/captcha present, obey and pause; include JWT if API requires authentication to POST/list"
+        },
+        {
+          "type": "csrf_token",
+          "description": "If endpoint enforces CSRF, capture token from previous interaction and include; else continue"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "after POST, call GET /api/Feedbacks/ and confirm comment saved and appears verbatim",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "compare listing size before and after submission; flag >=20% increase",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 2,
+      "delay_between_requests": 2.0,
+      "notes": "Respect captcha/anti-automation; stop if submissions blocked. Store returned IDs for potential cleanup if required by rules.",
+      "tags": [
+        "xss-stored",
+        "state-changing"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "exec-6-socket-observation",
+      "hypothesis_id": "h4",
+      "base_url": "http://localhost",
+      "method": "GET",
+      "endpoint": "/socket.io/",
+      "parameter": "EIO",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3"
+            }
+          ],
+          "description": "Interactive observation of socket.io handshake (polling); requires live interaction to confirm behavior",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": ""
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3&transport=polling"
+            }
+          ],
+          "description": "Explicit transport probe",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": ""
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3&t=1"
+            }
+          ],
+          "description": "Additional probe to observe side effects; non-destructive",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": ""
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Endpoint flagged needs_observation; run interactively capturing traffic, timings, and any sid negotiation; set needs_observation if no live capture available"
+        }
+      ],
+      "oracle_rules": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Perform only after authenticated baseline; if unexpected long-polling or callbacks seen, escalate for deeper interactive testing. Mark needs_observation true if offline.",
+      "tags": [
+        "socket-io",
+        "interactive"
+      ],
+      "estimated_duration": 60
     }
   ],
   "global_prerequisites": [
     {
-      "type": "login",
-      "description": "Valid session cookie or Authorization Bearer token must be available for endpoints requiring auth",
-      "extract_from": "first_successful_login_response",
-      "bind_to": "Authorization"
+      "type": "session_state",
+      "description": "Client should maintain Authorization header (Bearer JWT) for authenticated tests where provided"
     }
   ],
   "execution_hints": [
     {
-      "key": "chain_order",
-      "value": "auth -> info_gathering (whoami,basket) -> idor/address/card checks -> state-changing probes (basket modifications) -> payment/account tests"
-    },
-    {
-      "key": "rate_limit_req_per_sec",
-      "value": "1"
-    },
-    {
-      "key": "stop_on_429_or_unexpected_200",
+      "key": "run_in_order",
       "value": "true"
     },
     {
-      "key": "max_total_requests",
-      "value": "200"
+      "key": "stop_on_signal",
+      "value": "auth_failure_or_rate_limit"
+    },
+    {
+      "key": "rate_limit_rps",
+      "value": "2"
+    },
+    {
+      "key": "retry_on_5xx",
+      "value": "1"
+    },
+    {
+      "key": "observe_responses",
+      "value": "capture body,status,headers,timing for baseline and each probe"
     }
   ],
   "metadata": [
     {
-      "key": "source",
-      "value": "HAR parsed SPA traffic"
+      "key": "plan",
+      "value": "chained: auth->admin-check->enumeration->injection->stored-xss->socket-observe"
+    },
+    {
+      "key": "priority",
+      "value": "auth/authz then idor then injection then stored-xss then socket"
     }
   ]
 }

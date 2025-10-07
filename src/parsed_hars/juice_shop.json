@@ -1317,6 +1317,118 @@
       }
     },
     {
+      "id": "GET:/vendor.js",
+      "method": "GET",
+      "path": "/vendor.js",
+      "hosts": [
+        "localhost:3000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 2,
+      "statusHistogram": {
+        "2xx": 1,
+        "3xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_token"
+      ],
+      "parameters": [
+        [
+          "${Pt}",
+          "string"
+        ],
+        [
+          "${j}",
+          "string"
+        ],
+        [
+          "EmptyError",
+          "string"
+        ],
+        [
+          "HttpErrorResponse",
+          "string"
+        ],
+        [
+          "InvalidCharacterError",
+          "string"
+        ],
+        [
+          "InvalidTokenError",
+          "string"
+        ],
+        [
+          "MissingIcon",
+          "string"
+        ],
+        [
+          "NullInjectorError",
+          "string"
+        ],
+        [
+          "ObjectUnsubscribedError",
+          "string"
+        ],
+        [
+          "UnsubscriptionError",
+          "string"
+        ],
+        [
+          "__lodash_hash_undefined__",
+          "string"
+        ],
+        [
+          "auto",
+          "string"
+        ],
+        [
+          "cdk-live-announcer-",
+          "string"
+        ],
+        [
+          "d",
+          "string"
+        ],
+        [
+          "dialog",
+          "string"
+        ],
+        [
+          "end",
+          "string"
+        ],
+        [
+          "open",
+          "string"
+        ],
+        [
+          "string",
+          "string"
+        ],
+        [
+          "true",
+          "boolean"
+        ],
+        [
+          "visible",
+          "string"
+        ]
+      ],
+      "headers": {
+        "origin": "http://localhost:3000",
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "if-modified-since": "Thu, 07 Aug 2025 08:41:00 GMT",
+        "if-none-match": "W/\"18c237-19883b0d160\""
+      }
+    },
+    {
       "id": "GET:/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2",
       "method": "GET",
       "path": "/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2",
@@ -1373,6 +1485,46 @@
         "sec-ch-ua": "@h4",
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/runtime.js",
+      "method": "GET",
+      "path": "/runtime.js",
+      "hosts": [
+        "localhost:3000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 2,
+      "statusHistogram": {
+        "2xx": 1,
+        "3xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_token"
+      ],
+      "parameters": [
+        [
+          "ChunkLoadError",
+          "string"
+        ],
+        [
+          "missing",
+          "string"
+        ]
+      ],
+      "headers": {
+        "origin": "http://localhost:3000",
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "if-modified-since": "Thu, 07 Aug 2025 08:41:00 GMT",
+        "if-none-match": "W/\"cf3-19883b0d160\""
       }
     },
     {
@@ -1825,6 +1977,130 @@
       }
     },
     {
+      "id": "GET:/polyfills.js",
+      "method": "GET",
+      "path": "/polyfills.js",
+      "hosts": [
+        "localhost:3000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 2,
+      "statusHistogram": {
+        "2xx": 1,
+        "3xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_token"
+      ],
+      "parameters": [
+        [
+          "unnamed",
+          "string"
+        ]
+      ],
+      "headers": {
+        "origin": "http://localhost:3000",
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "if-modified-since": "Thu, 07 Aug 2025 08:41:00 GMT",
+        "if-none-match": "W/\"8818-19883b0d160\""
+      }
+    },
+    {
+      "id": "GET:/main.js",
+      "method": "GET",
+      "path": "/main.js",
+      "hosts": [
+        "localhost:3000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 2,
+      "statusHistogram": {
+        "2xx": 1,
+        "3xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_token"
+      ],
+      "parameters": [
+        [
+          "LAUNCH_CODING_CHALLENGE",
+          "string"
+        ],
+        [
+          "block",
+          "string"
+        ],
+        [
+          "check",
+          "string"
+        ],
+        [
+          "clear",
+          "string"
+        ],
+        [
+          "confirmation",
+          "string"
+        ],
+        [
+          "ffd8ffe0",
+          "string"
+        ],
+        [
+          "ffd8ffe2",
+          "string"
+        ],
+        [
+          "ffd8ffe8",
+          "string"
+        ],
+        [
+          "flex",
+          "string"
+        ],
+        [
+          "lock",
+          "string"
+        ],
+        [
+          "lock_open",
+          "string"
+        ],
+        [
+          "password",
+          "string"
+        ],
+        [
+          "solved",
+          "string"
+        ],
+        [
+          "testing@juice-sh.op",
+          "string"
+        ]
+      ],
+      "headers": {
+        "origin": "http://localhost:3000",
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "if-modified-since": "Thu, 07 Aug 2025 08:41:00 GMT",
+        "if-none-match": "W/\"6fd0b-19883b0d160\""
+      }
+    },
+    {
       "id": "GET:/icon",
       "method": "GET",
       "path": "/icon",
@@ -1883,6 +2159,118 @@
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2"
+      }
+    },
+    {
+      "id": "GET:/assets/i18n/en.json",
+      "method": "GET",
+      "path": "/assets/i18n/en.json",
+      "hosts": [
+        "localhost:3000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 2,
+      "statusHistogram": {
+        "2xx": 2
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_token",
+        "authorization_header",
+        "bearer_token"
+      ],
+      "parameters": [
+        [
+          "ALREADY_A_CUSTOMER",
+          "string"
+        ],
+        [
+          "BTN_GOOGLE_LOGIN",
+          "string"
+        ],
+        [
+          "BTN_LOGIN",
+          "string"
+        ],
+        [
+          "DIGITS_CRITERIA_MSG",
+          "string"
+        ],
+        [
+          "LABEL_EMAIL",
+          "string"
+        ],
+        [
+          "LABEL_PASSWORD",
+          "string"
+        ],
+        [
+          "LANGUAGE",
+          "string"
+        ],
+        [
+          "LOWER_CASE_CRITERIA_MSG",
+          "string"
+        ],
+        [
+          "MANDATORY_EMAIL",
+          "string"
+        ],
+        [
+          "MANDATORY_PASSWORD",
+          "string"
+        ],
+        [
+          "MIN_CHARS_CRITERIA_MSG",
+          "string"
+        ],
+        [
+          "NAV_COMPLAIN",
+          "string"
+        ],
+        [
+          "NAV_SEARCH",
+          "string"
+        ],
+        [
+          "NO_CUSTOMER",
+          "string"
+        ],
+        [
+          "REMEMBER_ME",
+          "string"
+        ],
+        [
+          "SEARCH_PLACEHOLDER",
+          "string"
+        ],
+        [
+          "SHOW_PASSWORD_ADVICE",
+          "string"
+        ],
+        [
+          "SPECIAL_CHARS_CRITERIA_MSG",
+          "string"
+        ],
+        [
+          "TITLE_LOGIN",
+          "string"
+        ],
+        [
+          "UPPER_CASE_CRITERIA_MSG",
+          "string"
+        ]
+      ],
+      "headers": {
+        "accept": "@h1",
+        "referer": "@h2",
+        "user-agent": "@h3",
+        "sec-ch-ua": "@h4",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "@h5"
       }
     },
     {
@@ -2021,7 +2409,63 @@
       ],
       "parameters": [
         [
+          "ajaxSuccess",
+          "string"
+        ],
+        [
+          "border",
+          "string"
+        ],
+        [
+          "catch",
+          "string"
+        ],
+        [
+          "char",
+          "string"
+        ],
+        [
+          "class",
+          "string"
+        ],
+        [
+          "for",
+          "string"
+        ],
+        [
+          "hide",
+          "string"
+        ],
+        [
+          "margin",
+          "string"
+        ],
+        [
+          "nextSibling",
+          "string"
+        ],
+        [
+          "nocontent",
+          "string"
+        ],
+        [
           "object",
+          "string"
+        ],
+        [
+          "on",
+          "string"
+        ],
+        [
+          "px",
+          "string"
+        ],
+        [
+          "throws",
+          "string"
+        ],
+        [
+          "url",
           "string"
         ]
       ],
@@ -2048,7 +2492,64 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "ajaxSuccess",
+          "string"
+        ],
+        [
+          "border",
+          "string"
+        ],
+        [
+          "class",
+          "string"
+        ],
+        [
+          "float",
+          "string"
+        ],
+        [
+          "for",
+          "string"
+        ],
+        [
+          "hide",
+          "string"
+        ],
+        [
+          "margin",
+          "string"
+        ],
+        [
+          "nextSibling",
+          "string"
+        ],
+        [
+          "nocontent",
+          "string"
+        ],
+        [
+          "object",
+          "string"
+        ],
+        [
+          "on",
+          "string"
+        ],
+        [
+          "px",
+          "string"
+        ],
+        [
+          "throws",
+          "string"
+        ],
+        [
+          "url",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2"
@@ -2072,7 +2573,24 @@
       "authIndicatorsAny": [
         "auth_cookie_token"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "POST",
+          "string"
+        ],
+        [
+          "banner",
+          "string"
+        ],
+        [
+          "cookieconsent:desc",
+          "string"
+        ],
+        [
+          "static",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2"
@@ -2100,6 +2618,42 @@
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2"
+      }
+    },
+    {
+      "id": "GET:/1.3.0/material.min.js",
+      "method": "GET",
+      "path": "/1.3.0/material.min.js",
+      "hosts": [
+        "code.getmdl.io"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 2,
+      "statusHistogram": {
+        "2xx": 2
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_token"
+      ],
+      "parameters": [
+        [
+          "px",
+          "string"
+        ],
+        [
+          "s",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
       }
     },
     {
@@ -3281,6 +3835,34 @@
         "referer": "@h3",
         "user-agent": "@h4",
         "sec-ch-ua": "@h5",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/705.js",
+      "method": "GET",
+      "path": "/705.js",
+      "hosts": [
+        "localhost:3000"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_token"
+      ],
+      "parameters": [],
+      "headers": {
+        "origin": "http://localhost:3000",
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": "\"Windows\""
       }

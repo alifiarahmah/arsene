@@ -2,6 +2,15 @@ from pydantic import BaseModel, Field, Extra
 from typing import List, Optional, Literal, Dict, Any, Union
 from enum import Enum
 
+# Import static analysis schemas
+from schemas_static import (
+    StaticInitOutput,
+    StaticExtractionOutput,
+    StaticMappingOutput,
+    UnifiedInventoryOutput,
+    SinkAttachmentOutput
+)
+
 class HttpMethod(str, Enum):
     GET = "GET"
     POST = "POST"
@@ -50,6 +59,7 @@ class SessionManagement(str, Enum):
     COOKIE = "cookie"
     JWT = "jwt"
     URL_REWRITE = "url_rewrite"
+    NONE = "none"
 
 class AuthFlow(str, Enum):
     FORM_LOGIN = "form_login"
@@ -164,7 +174,7 @@ class AttackVector(BaseModel):
     needs_observation: bool
 
 class AttackVectorsContext(BaseModel):
-    vectors: List[AttackVector]
+    attack_vectors: List[AttackVector]
 
 class SafetyConfig(BaseModel, extra=Extra.forbid):
     idempotent_required: bool = Field(default=False)
@@ -275,3 +285,27 @@ class TestCasesContext(BaseModel, extra=Extra.forbid):
     global_prerequisites: List[Prerequisite] = Field(default_factory=list)
     execution_hints: Optional[List[KeyValue]] = None
     metadata: Optional[List[KeyValue]] = None
+
+# Re-export static analysis schemas for convenience
+__all__ = [
+    # Traffic Analysis
+    'HttpMethod', 'AuthScheme', 'CSRFProtection', 'SideEffect', 'AntiAutomation',
+    'ParamLocation', 'SessionManagement', 'AuthFlow', 'Parameter', 'Endpoint',
+    'GlobalObservations', 'TrafficAnalysisContext',
+
+    # Attack Vectors
+    'AttackCategory', 'ExpectedSignal', 'AttackVector', 'AttackVectorsContext',
+
+    # Vulnerability Hypotheses
+    'Signal', 'PassLogic', 'SafetyConfig', 'Threshold', 'Oracle', 'KeyValue',
+    'VulnHypothesis', 'VulnHypothesesContext',
+
+    # Test Cases
+    'PayloadTier', 'PrerequisiteType', 'OracleThreshold', 'OracleRule',
+    'Prerequisite', 'PayloadValues', 'TestCaseHeaders', 'TestPayload',
+    'TestCase', 'TestCasesContext',
+
+    # Static Analysis (re-exported from schemas_static)
+    'StaticInitOutput', 'StaticExtractionOutput', 'StaticMappingOutput',
+    'UnifiedInventoryOutput', 'SinkAttachmentOutput'
+]

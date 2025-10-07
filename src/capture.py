@@ -9,6 +9,10 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import threading
 import base64
 
+##
+## TODO: bugbait somehow not capturing API
+##
+
 class CaptureModule:
     def __init__(self, start_url, output_file="session.har"):
         self.start_url = start_url

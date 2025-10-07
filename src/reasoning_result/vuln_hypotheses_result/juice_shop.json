@@ -1,86 +1,71 @@
 {
   "hypotheses": [
     {
-      "id": "hypo-001",
+      "id": "h1",
       "method": "GET",
       "endpoint": "/rest/user/whoami",
       "parameters": [
-        "user"
+        "profileImage"
       ],
       "param_locations": [
         "body"
       ],
-      "category": "authentication_bypass_info_disclosure",
+      "category": "sensitive_data_exposure",
       "oracles": [
         {
-          "signal": "sensitive_data_exposed",
-          "description": "Response contains user identifying fields differing when Authorization header absent vs present"
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Significant body length increase when requesting profileImage indicates exposure of image data or additional fields"
         },
         {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              200,
-              401
-            ]
-          },
-          "description": "Status changes between authorized and unauthorized requests"
+          "signal": "reflected_input",
+          "description": "Profile image path reflected in response body"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Bearer token present in Authorization header observed"
-        },
-        {
-          "key": "csrf_token_required",
-          "value": "false"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
         "max_requests": 10
       },
-      "confidence": 0.6,
+      "confidence": 0.8,
       "priority": 3
     },
     {
-      "id": "hypo-002",
+      "id": "h2",
       "method": "GET",
       "endpoint": "/rest/basket/{basketId}",
       "parameters": [
-        "BasketId"
+        "basketId"
       ],
       "param_locations": [
         "path"
       ],
-      "category": "authorization_bypass_idor",
+      "category": "insecure_direct_object_reference",
       "oracles": [
-        {
-          "signal": "sensitive_data_exposed",
-          "description": "Response returns basket belonging to another user when BasketId changed"
-        },
         {
           "signal": "status_code_change",
           "threshold": {
             "expected_codes": [
               200,
               403,
-              404
+              404,
+              401
             ]
           },
-          "description": "Status changes when accessing different BasketId values"
+          "description": "Different basketId values produce differing status codes (200 vs 403/404/401) indicating access control enforcement or lack thereof"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Significant response size variation between basketIds"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Authorization header observed (Bearer) or session cookie present"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
@@ -90,7 +75,7 @@
       "priority": 4
     },
     {
-      "id": "hypo-003",
+      "id": "h3",
       "method": "GET",
       "endpoint": "/rest/admin/application-configuration",
       "parameters": [
@@ -99,50 +84,7 @@
       "param_locations": [
         "body"
       ],
-      "category": "privilege_escalation_info_leak",
-      "oracles": [
-        {
-          "signal": "sensitive_data_exposed",
-          "description": "Admin configuration returned without admin role present"
-        },
-        {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              200,
-              403,
-              401
-            ]
-          },
-          "description": "Different status codes for admin vs non-admin tokens"
-        }
-      ],
-      "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Authorization header observed; admin role observed in token for baseline"
-        }
-      ],
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "confidence": 0.6,
-      "priority": 5
-    },
-    {
-      "id": "hypo-004",
-      "method": "GET",
-      "endpoint": "/socket.io/",
-      "parameters": [
-        "sid"
-      ],
-      "param_locations": [
-        "query"
-      ],
-      "category": "session_management_weakness",
+      "category": "authz_bypass",
       "oracles": [
         {
           "signal": "status_code_change",
@@ -153,68 +95,87 @@
               403
             ]
           },
-          "description": "Different responses when using other sid values"
+          "description": "Unauthenticated or non-admin requests returning 200 suggests authorization bypass"
         },
         {
-          "signal": "timing_anomaly",
+          "signal": "response_length_diff",
           "threshold": {
-            "timing_ms": 3000
+            "body_length_delta_pct": 40.0
           },
-          "description": "Longer processing for unexpected sid values"
+          "description": "Large configuration payload returned to unauthorized user"
         }
       ],
-      "pass_logic": "any",
+      "pass_logic": "all",
       "preconditions": [
         {
-          "key": "needs_observation",
-          "value": "true"
+          "key": "auth_context",
+          "value": "requires_admin_or_authenticated_session"
         }
       ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 50
+        "max_requests": 5
       },
-      "confidence": 0.3,
-      "priority": 2
+      "confidence": 0.6,
+      "priority": 5
     },
     {
-      "id": "hypo-005",
+      "id": "h4",
+      "method": "GET",
+      "endpoint": "/socket.io/",
+      "parameters": [
+        "EIO"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.2,
+      "priority": 1
+    },
+    {
+      "id": "h5",
       "method": "GET",
       "endpoint": "/rest/products/search",
       "parameters": [
         "name"
       ],
       "param_locations": [
-        "body"
+        "query"
       ],
-      "category": "injection_reflection",
+      "category": "injection_nosql",
       "oracles": [
         {
-          "signal": "reflected_input",
+          "signal": "error_signature",
+          "description": "Database/driver error signatures (e.g., BSON/JSON parse errors) appear when injecting special characters/constructs into name"
+        },
+        {
+          "signal": "response_length_diff",
           "threshold": {
             "body_length_delta_pct": 30.0
           },
-          "description": "Injected string reflected in response body or changes body length >30%"
+          "description": "Response size changes indicating different query behavior"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Authorization header observed optionally"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
         "max_requests": 30
       },
-      "confidence": 0.4,
-      "priority": 3
+      "confidence": 0.5,
+      "priority": 4
     },
     {
-      "id": "hypo-006",
+      "id": "h6",
       "method": "GET",
       "endpoint": "/api/Quantitys/",
       "parameters": [
@@ -223,86 +184,219 @@
       "param_locations": [
         "query"
       ],
-      "category": "idor_authorization",
+      "category": "injection_nosql",
       "oracles": [
         {
-          "signal": "sensitive_data_exposed",
-          "description": "Quantitys for other ProductId returned when changing query param"
+          "signal": "error_signature",
+          "description": "NoSQL or DB driver error returned when ProductId contains special query operators"
         },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Significant size change in results"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "h7",
+      "method": "GET",
+      "endpoint": "/api/Addresss",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "description": "Error messages indicating query language injection when id contains operators"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Different response sizes after manipulating id"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "h8",
+      "method": "GET",
+      "endpoint": "/rest/admin/application-version",
+      "parameters": [
+        "version"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
         {
           "signal": "status_code_change",
           "threshold": {
             "expected_codes": [
               200,
-              403,
-              404
+              401,
+              403
             ]
           },
-          "description": "Status code varies with ProductId access"
+          "description": "Non-admin access returning 200 indicates authz bypass"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Detailed version info returned to unauthorized user"
         }
       ],
-      "pass_logic": "any",
+      "pass_logic": "all",
       "preconditions": [
         {
           "key": "auth_context",
-          "value": "Authorization header observed"
+          "value": "requires_admin_or_authenticated_session"
         }
       ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.6,
+      "priority": 5
+    },
+    {
+      "id": "h9",
+      "method": "GET",
+      "endpoint": "/api/Challenges/",
+      "parameters": [
+        "key"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "description": "DB/driver error when injecting operators into key parameter"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Result set size changes when altering key"
+        }
+      ],
+      "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
         "max_requests": 20
       },
       "confidence": 0.5,
-      "priority": 3
+      "priority": 4
     },
     {
-      "id": "hypo-007",
+      "id": "h10",
+      "method": "GET",
+      "endpoint": "/api/Cards",
+      "parameters": [
+        "cardNum"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Response reveals card data when querying with cardNum"
+        },
+        {
+          "signal": "error_signature",
+          "description": "Error messages leak card-related data or validation errors"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "h11",
       "method": "POST",
       "endpoint": "/api/Feedbacks/",
       "parameters": [
-        "comment",
-        "captchaId",
-        "captcha"
+        "comment"
       ],
       "param_locations": [
-        "body",
-        "body",
         "body"
       ],
-      "category": "captcha_bypass_automation",
+      "category": "xss_stored",
       "oracles": [
         {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              201,
-              400,
-              429
-            ]
-          },
-          "description": "Different status codes when submitting without valid captcha"
+          "signal": "reflected_input",
+          "description": "Submitted comment content appears verbatim in subsequent GET/listing responses"
         },
         {
           "signal": "response_length_diff",
           "threshold": {
-            "body_length_delta_pct": 50.0
+            "body_length_delta_pct": 20.0
           },
-          "description": "Response body differs significantly when bypassing captcha"
+          "description": "Stored comment causes change in response body size when retrieved"
         }
       ],
-      "pass_logic": "any",
-      "preconditions": [],
+      "pass_logic": "all",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_session_may_be_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "required_if_app_enforces_csrf"
+        }
+      ],
       "safety": {
         "idempotent_required": false,
         "destructive_ok": false,
         "max_requests": 10
       },
-      "confidence": 0.4,
-      "priority": 2
+      "confidence": 0.6,
+      "priority": 4
     },
     {
-      "id": "hypo-008",
+      "id": "h12",
       "method": "GET",
       "endpoint": "/rest/products/{productId}/reviews",
       "parameters": [
@@ -311,67 +405,17 @@
       "param_locations": [
         "path"
       ],
-      "category": "idor_information_exposure",
+      "category": "others",
       "oracles": [
-        {
-          "signal": "sensitive_data_exposed",
-          "description": "Reviews returned for arbitrary productId including private data"
-        },
-        {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              200,
-              404
-            ]
-          },
-          "description": "Status code differs for non-existing productId"
-        }
-      ],
-      "pass_logic": "any",
-      "preconditions": [],
-      "safety": {
-        "idempotent_required": true,
-        "destructive_ok": false,
-        "max_requests": 30
-      },
-      "confidence": 0.5,
-      "priority": 2
-    },
-    {
-      "id": "hypo-009",
-      "method": "GET",
-      "endpoint": "/rest/captcha/",
-      "parameters": [
-        "captchaId",
-        "answer"
-      ],
-      "param_locations": [
-        "query",
-        "query"
-      ],
-      "category": "captcha_weakness",
-      "oracles": [
-        {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              200,
-              400
-            ]
-          },
-          "description": "Answer parameter affects success/failure codes"
-        },
         {
           "signal": "response_length_diff",
           "threshold": {
-            "body_length_delta_pct": 30.0
+            "body_length_delta_pct": 25.0
           },
-          "description": "Different response size when correct vs incorrect answer"
+          "description": "Different productId values return differing numbers of reviews"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
@@ -381,7 +425,28 @@
       "priority": 2
     },
     {
-      "id": "hypo-010",
+      "id": "h13",
+      "method": "GET",
+      "endpoint": "/rest/captcha/",
+      "parameters": [
+        "captchaId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.2,
+      "priority": 1
+    },
+    {
+      "id": "h14",
       "method": "GET",
       "endpoint": "/api/Addresss/{addressId}",
       "parameters": [
@@ -390,78 +455,78 @@
       "param_locations": [
         "path"
       ],
-      "category": "authorization_bypass_idor",
+      "category": "insecure_direct_object_reference",
       "oracles": [
-        {
-          "signal": "sensitive_data_exposed",
-          "description": "Address details returned when accessing other addressId values"
-        },
         {
           "signal": "status_code_change",
           "threshold": {
             "expected_codes": [
               200,
               403,
-              404
+              404,
+              401
             ]
           },
-          "description": "Status varies by addressId access"
+          "description": "Accessing different addressId yields different HTTP statuses indicating access control"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Significant response content variation between addressIds"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Authorization header observed"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 20
+        "max_requests": 15
       },
       "confidence": 0.7,
       "priority": 4
     },
     {
-      "id": "hypo-011",
+      "id": "h15",
       "method": "PUT",
       "endpoint": "/api/BasketItems/{itemId}",
       "parameters": [
-        "itemId",
-        "quantity"
+        "itemId"
       ],
       "param_locations": [
-        "path",
-        "body"
+        "path"
       ],
-      "category": "authorization_override",
+      "category": "authz_bypass",
       "oracles": [
         {
           "signal": "status_code_change",
           "threshold": {
             "expected_codes": [
               200,
-              403,
-              404
+              204,
+              401,
+              403
             ]
           },
-          "description": "Modifying itemId or quantity returns different status codes for unauthorized vs authorized users"
+          "description": "Non-owner can modify item if PUT returns success codes for other user's itemId"
         },
         {
-          "signal": "sensitive_data_exposed",
-          "description": "Response shows modification of other user's basket items"
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Response indicates different content after update"
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
           "key": "auth_context",
-          "value": "Authorization header observed"
+          "value": "authenticated_session_required"
         },
         {
-          "key": "csrf_token_required",
-          "value": "token_in_form"
+          "key": "csrf_token",
+          "value": "required_if_present"
         }
       ],
       "safety": {
@@ -469,401 +534,217 @@
         "destructive_ok": false,
         "max_requests": 10
       },
-      "confidence": 0.6,
-      "priority": 4
+      "confidence": 0.7,
+      "priority": 5
     },
     {
-      "id": "hypo-012",
+      "id": "h16",
       "method": "POST",
       "endpoint": "/socket.io/",
       "parameters": [
-        "sid",
-        "transport"
+        "EIO"
       ],
       "param_locations": [
-        "body",
-        "query"
+        "body"
       ],
-      "category": "session_fixation",
-      "oracles": [
-        {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              200,
-              401,
-              403
-            ]
-          },
-          "description": "Using manipulated sid yields different responses"
-        },
-        {
-          "signal": "timing_anomaly",
-          "threshold": {
-            "timing_ms": 3000
-          },
-          "description": "Server delays when handling unexpected sid"
-        }
-      ],
+      "category": "others",
+      "oracles": [],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "needs_observation",
-          "value": "true"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 50
+        "max_requests": 5
       },
-      "confidence": 0.3,
-      "priority": 2
+      "confidence": 0.2,
+      "priority": 1
     },
     {
-      "id": "hypo-013",
+      "id": "h17",
       "method": "POST",
       "endpoint": "/api/BasketItems/",
       "parameters": [
-        "ProductId",
-        "BasketId"
+        "ProductId"
       ],
       "param_locations": [
-        "body",
         "body"
       ],
-      "category": "business_logic_fraud",
+      "category": "authz_bypass",
       "oracles": [
-        {
-          "signal": "sensitive_data_exposed",
-          "description": "Basket updated with manipulated ProductId/BasketId resulting in unexpected owner assignment"
-        },
         {
           "signal": "status_code_change",
           "threshold": {
             "expected_codes": [
               201,
-              400,
+              200,
+              401,
               403
             ]
           },
-          "description": "Different status codes when forging BasketId"
+          "description": "Adding ProductId succeeds for unauthorized user indicates authz bypass"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Response indicates item created"
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
           "key": "auth_context",
-          "value": "Authorization header observed"
+          "value": "authenticated_session_required"
         },
         {
-          "key": "csrf_token_required",
-          "value": "token_in_form"
+          "key": "csrf_token",
+          "value": "required_if_app_enforces_csrf"
         }
       ],
       "safety": {
         "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 15
+        "destructive_ok": true,
+        "max_requests": 5
       },
-      "confidence": 0.5,
-      "priority": 4
+      "confidence": 0.6,
+      "priority": 5
     },
     {
-      "id": "hypo-014",
+      "id": "h18",
       "method": "GET",
-      "endpoint": "/",
+      "endpoint": "/vendor.js",
       "parameters": [
-        "background"
+        "${Pt}"
       ],
       "param_locations": [
         "query"
       ],
-      "category": "stored_reflection_xss",
+      "category": "xss_dom",
       "oracles": [
         {
           "signal": "reflected_input",
+          "description": "Query parameter reflected into served JS indicating potential DOM XSS when executed in client"
+        },
+        {
+          "signal": "response_length_diff",
           "threshold": {
-            "body_length_delta_pct": 20.0
+            "body_length_delta_pct": 10.0
           },
-          "description": "Query param reflected in HTML body increasing length >20% or appearing in response"
+          "description": "Small change in JS file when parameter present"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 30
-      },
-      "confidence": 0.3,
-      "priority": 2
-    },
-    {
-      "id": "hypo-015",
-      "method": "POST",
-      "endpoint": "/rest/user/login",
-      "parameters": [
-        "email",
-        "password"
-      ],
-      "param_locations": [
-        "body",
-        "body"
-      ],
-      "category": "authentication_bruteforce_risk",
-      "oracles": [
-        {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              200,
-              401,
-              429
-            ]
-          },
-          "description": "Responses include 429 or consistent 401 indicating rate limiting or lockout"
-        },
-        {
-          "signal": "timing_anomaly",
-          "threshold": {
-            "timing_ms": 2000
-          },
-          "description": "Increased response time after multiple attempts"
-        }
-      ],
-      "pass_logic": "any",
-      "preconditions": [],
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 50
+        "max_requests": 10
       },
       "confidence": 0.5,
       "priority": 3
     },
     {
-      "id": "hypo-016",
-      "method": "POST",
-      "endpoint": "/rest/user/data-export",
-      "parameters": [
-        "confirmation"
-      ],
-      "param_locations": [
-        "body"
-      ],
-      "category": "unauthorized_data_export",
-      "oracles": [
-        {
-          "signal": "sensitive_data_exposed",
-          "description": "User data exported despite lacking proper authorization"
-        },
-        {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              200,
-              403,
-              401
-            ]
-          },
-          "description": "Status differs when called with/without auth"
-        }
-      ],
-      "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Authorization header observed"
-        }
-      ],
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 5
-      },
-      "confidence": 0.6,
-      "priority": 5
-    },
-    {
-      "id": "hypo-017",
-      "method": "POST",
-      "endpoint": "/rest/basket/{basketId}/checkout",
-      "parameters": [
-        "basketId",
-        "orderDetails.paymentId"
-      ],
-      "param_locations": [
-        "path",
-        "body"
-      ],
-      "category": "payment_forgery",
-      "oracles": [
-        {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              200,
-              400,
-              403
-            ]
-          },
-          "description": "Checkout succeeds with manipulated paymentId or is rejected"
-        }
-      ],
-      "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Authorization header observed"
-        }
-      ],
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 5
-      },
-      "confidence": 0.5,
-      "priority": 5
-    },
-    {
-      "id": "hypo-018",
-      "method": "POST",
-      "endpoint": "/api/Users/",
-      "parameters": [
-        "email",
-        "password",
-        "role"
-      ],
-      "param_locations": [
-        "body",
-        "body",
-        "body"
-      ],
-      "category": "account_creation_role_injection",
-      "oracles": [
-        {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              201,
-              400,
-              403
-            ]
-          },
-          "description": "Creating account with elevated role returns success code"
-        },
-        {
-          "signal": "sensitive_data_exposed",
-          "description": "Account created with admin privileges accessible afterwards"
-        }
-      ],
-      "pass_logic": "any",
-      "preconditions": [],
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "confidence": 0.4,
-      "priority": 4
-    },
-    {
-      "id": "hypo-019",
-      "method": "POST",
-      "endpoint": "/api/Cards/",
-      "parameters": [
-        "cardNum",
-        "UserId"
-      ],
-      "param_locations": [
-        "body",
-        "body"
-      ],
-      "category": "sensitive_data_exposure",
-      "oracles": [
-        {
-          "signal": "sensitive_data_exposed",
-          "description": "Card added or returned exposes full card details"
-        },
-        {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              201,
-              400,
-              403
-            ]
-          },
-          "description": "Different status codes when submitting card data"
-        }
-      ],
-      "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Authorization header observed"
-        },
-        {
-          "key": "csrf_token_required",
-          "value": "token_in_form"
-        }
-      ],
-      "safety": {
-        "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 10
-      },
-      "confidence": 0.6,
-      "priority": 5
-    },
-    {
-      "id": "hypo-020",
+      "id": "h19",
       "method": "GET",
-      "endpoint": "/rest/image-captcha/",
+      "endpoint": "/runtime.js",
       "parameters": [
-        "image"
+        "missing"
       ],
       "param_locations": [
         "query"
       ],
-      "category": "captcha_image_exposure",
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Parameter content reflected into served runtime JS"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Response JS changes when parameter provided"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "h20",
+      "method": "GET",
+      "endpoint": "/rest/wallet/balance",
+      "parameters": [
+        "data"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "sensitive_data_exposure",
       "oracles": [
         {
           "signal": "response_length_diff",
           "threshold": {
-            "body_length_delta_pct": 50.0
+            "body_length_delta_pct": 30.0
           },
-          "description": "Image payload differs significantly when requesting different image ids"
-        },
-        {
-          "signal": "status_code_change",
-          "threshold": {
-            "expected_codes": [
-              200,
-              404
-            ]
-          },
-          "description": "Invalid image id returns 404"
+          "description": "Balance or wallet details returned when data parameter modified"
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
           "key": "auth_context",
-          "value": "Authorization header observed"
+          "value": "authenticated_session_required"
         }
       ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 30
+        "max_requests": 10
       },
-      "confidence": 0.5,
-      "priority": 2
+      "confidence": 0.6,
+      "priority": 4
     },
     {
-      "id": "hypo-021",
+      "id": "h21",
+      "method": "GET",
+      "endpoint": "/rest/user/change-password",
+      "parameters": [
+        "password"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Sensitive info or password-related content appears in response"
+        },
+        {
+          "signal": "error_signature",
+          "description": "Error messages expose validation or sensitive info when password passed in query"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "h22",
       "method": "GET",
       "endpoint": "/rest/track-order/{orderRef}",
       "parameters": [
@@ -872,148 +753,442 @@
       "param_locations": [
         "path"
       ],
-      "category": "order_id_enumeration",
+      "category": "insecure_direct_object_reference",
       "oracles": [
         {
           "signal": "status_code_change",
           "threshold": {
             "expected_codes": [
               200,
-              404
+              403,
+              404,
+              401
             ]
           },
-          "description": "Sequential or modified orderRef yields consistent 200 for other orders"
+          "description": "Different orderRef values produce differing status codes indicating access control"
         },
         {
-          "signal": "sensitive_data_exposed",
-          "description": "Order details exposed for orderRef values not belonging to requester"
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Order data appears for some refs"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Authorization header observed"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 100
+        "max_requests": 15
       },
-      "confidence": 0.6,
+      "confidence": 0.7,
       "priority": 4
     },
     {
-      "id": "hypo-022",
+      "id": "h23",
       "method": "GET",
-      "endpoint": "/api/Products/{productId}",
+      "endpoint": "/rest/products/{productId}/reviews",
       "parameters": [
         "productId"
       ],
       "param_locations": [
         "path"
       ],
-      "category": "information_disclosure",
+      "category": "others",
       "oracles": [
         {
-          "signal": "sensitive_data_exposed",
-          "description": "Product endpoint returns internal fields when accessed with various productId values"
-        },
-        {
-          "signal": "status_code_change",
+          "signal": "response_length_diff",
           "threshold": {
-            "expected_codes": [
-              200,
-              404
-            ]
+            "body_length_delta_pct": 25.0
           },
-          "description": "Nonexistent productId returns 404"
+          "description": "Different productId returns different review lists"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Authorization header observed"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
-        "max_requests": 50
+        "max_requests": 20
       },
       "confidence": 0.5,
       "priority": 2
     },
     {
-      "id": "hypo-023",
+      "id": "h24",
       "method": "GET",
-      "endpoint": "/rest/wallet/balance",
+      "endpoint": "/rest/products/{productId}/reviews",
       "parameters": [
-        "data"
+        "productId"
       ],
       "param_locations": [
-        "body"
+        "path"
       ],
-      "category": "sensitive_info_disclosure",
+      "category": "others",
       "oracles": [
         {
-          "signal": "sensitive_data_exposed",
-          "description": "Balance returned when authorized only; accessible by manipulating auth token"
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Different productId returns different review lists"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.5,
+      "priority": 2
+    },
+    {
+      "id": "h25",
+      "method": "GET",
+      "endpoint": "/rest/languages",
+      "parameters": [
+        "key"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
         {
-          "key": "auth_context",
-          "value": "Authorization header observed"
+          "signal": "reflected_input",
+          "description": "Localization key parameter reflected in JSON or JS responses"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Language payload size changes when key provided"
         }
       ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "h26",
+      "method": "GET",
+      "endpoint": "/rest/2fa/status",
+      "parameters": [
+        "setupToken"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "2FA setup token reveals status or secrets in response"
+        },
+        {
+          "signal": "error_signature",
+          "description": "Errors disclose token validation details"
+        }
+      ],
+      "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
         "max_requests": 10
       },
-      "confidence": 0.7,
-      "priority": 5
+      "confidence": 0.5,
+      "priority": 4
     },
     {
-      "id": "hypo-024",
+      "id": "h27",
       "method": "GET",
-      "endpoint": "/rest/user/change-password",
+      "endpoint": "/profile",
       "parameters": [
-        "current",
-        "new"
+        "description"
       ],
       "param_locations": [
-        "body",
-        "body"
+        "query"
       ],
-      "category": "password_change_flow_bypass",
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Description parameter appears verbatim in HTML/JSON responses"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "description": "Response changes when description altered"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "h28",
+      "method": "GET",
+      "endpoint": "/polyfills.js",
+      "parameters": [
+        "unnamed"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Query parameter reflected into polyfills.js content"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Change in JS file size when parameter present"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "h29",
+      "method": "GET",
+      "endpoint": "/main.js",
+      "parameters": [
+        "password"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Main JS changes or includes sensitive values when password passed in query"
+        },
+        {
+          "signal": "error_signature",
+          "description": "Errors reveal sensitive tokens or stack traces"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "h30",
+      "method": "GET",
+      "endpoint": "/assets/i18n/en.json",
+      "parameters": [
+        "LABEL_EMAIL"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Localization file returns email labels or sensitive strings when parameter provided"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 2
+    },
+    {
+      "id": "h31",
+      "method": "GET",
+      "endpoint": "/api/Deliverys/{id}",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
       "oracles": [
         {
           "signal": "status_code_change",
           "threshold": {
             "expected_codes": [
               200,
-              400,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Different id yields different status codes indicating access control"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Delivery details appear for some ids"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "h32",
+      "method": "GET",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameters": [
+        "itemId"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Variation in status codes across itemIds indicates access control issues"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Different item details returned"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "h33",
+      "method": "POST",
+      "endpoint": "/rest/user/login",
+      "parameters": [
+        "email"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
               401,
               403
             ]
           },
-          "description": "Attempt to change password without current credentials produces unexpected success code"
+          "description": "Login attempts with crafted email producing success without valid creds indicates authn bypass"
         },
         {
-          "signal": "sensitive_data_exposed",
-          "description": "Response indicates password changed or leak of password-related data"
+          "signal": "error_signature",
+          "description": "Authentication-related error messages reveal bypass vectors"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 5
+    },
+    {
+      "id": "h34",
+      "method": "POST",
+      "endpoint": "/rest/user/data-export",
+      "parameters": [
+        "confirmation"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "description": "Large data export result returned after confirmation"
+        },
+        {
+          "signal": "response_length_diff",
+          "description": "State change observed as export initiated (size and subsequent endpoint behavior)"
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
           "key": "auth_context",
-          "value": "Authorization header observed"
+          "value": "authenticated_session_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "required_if_app_enforces_csrf"
         }
       ],
       "safety": {
@@ -1021,11 +1196,261 @@
         "destructive_ok": false,
         "max_requests": 5
       },
-      "confidence": 0.5,
+      "confidence": 0.7,
       "priority": 5
     },
     {
-      "id": "hypo-025",
+      "id": "h35",
+      "method": "POST",
+      "endpoint": "/rest/basket/{basketId}/checkout",
+      "parameters": [
+        "basketId"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              403,
+              401
+            ]
+          },
+          "description": "Checkout succeeds for baskets not owned by user indicates authz bypass"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Order confirmation returned"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_session_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "required_if_present"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": true,
+        "max_requests": 3
+      },
+      "confidence": 0.7,
+      "priority": 5
+    },
+    {
+      "id": "h36",
+      "method": "POST",
+      "endpoint": "/api/Users/",
+      "parameters": [
+        "email"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "business_logic",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              201,
+              200,
+              400
+            ]
+          },
+          "description": "User creation returns success indicating business logic flows"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Returned payload differs when user already exists vs created"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "h37",
+      "method": "POST",
+      "endpoint": "/api/SecurityAnswers/",
+      "parameters": [
+        "answer"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Submitted security answers cause sensitive data to be returned or stored"
+        },
+        {
+          "signal": "error_signature",
+          "description": "Errors reveal validation logic or stored secret material"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "h38",
+      "method": "POST",
+      "endpoint": "/api/Cards/",
+      "parameters": [
+        "cardNum"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Card submission returns card data or confirmation containing sensitive fragments"
+        },
+        {
+          "signal": "error_signature",
+          "description": "Validation errors leak card schema or BIN details"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.6,
+      "priority": 5
+    },
+    {
+      "id": "h39",
+      "method": "POST",
+      "endpoint": "/api/Addresss/",
+      "parameters": [
+        "streetAddress"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "description": "NoSQL error occurs when streetAddress contains query operators"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Result set or error details change with payload"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "h40",
+      "method": "GET",
+      "endpoint": "/rest/order-history",
+      "parameters": [
+        "status"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "description": "Database errors returned when status parameter contains query operators"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Order history size changes unexpectedly"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_session_required"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "h41",
+      "method": "GET",
+      "endpoint": "/rest/image-captcha/",
+      "parameters": [
+        "image"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.2,
+      "priority": 1
+    },
+    {
+      "id": "h42",
       "method": "GET",
       "endpoint": "/rest/continue-code",
       "parameters": [
@@ -1034,88 +1459,293 @@
       "param_locations": [
         "query"
       ],
-      "category": "open_redirect_or_token_reuse",
+      "category": "open_redirect",
       "oracles": [
         {
-          "signal": "status_code_change",
+          "signal": "header_change",
           "threshold": {
             "expected_codes": [
-              200,
+              301,
               302,
-              400,
-              404
+              200
             ]
           },
-          "description": "continueCode values produce redirects or return valid content for other users' tokens"
+          "description": "Location header or redirect responses point to attacker-controlled host (OOB) indicating open redirect"
         },
         {
-          "signal": "timing_anomaly",
+          "signal": "response_length_diff",
           "threshold": {
-            "timing_ms": 2000
+            "body_length_delta_pct": 20.0
           },
-          "description": "Processing tokens cause timing differences"
+          "description": "Response differs when continueCode set to external URL"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "h43",
+      "method": "GET",
+      "endpoint": "/api/SecurityQuestions/",
+      "parameters": [
+        "question"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
         {
-          "key": "auth_context",
-          "value": "Authorization header observed"
+          "signal": "reflected_input",
+          "description": "Question parameter appears unescaped in response payloads"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "description": "Response changes when question param provided"
         }
       ],
+      "pass_logic": "any",
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
         "max_requests": 20
       },
-      "confidence": 0.4,
+      "confidence": 0.5,
       "priority": 3
     },
     {
-      "id": "hypo-026",
+      "id": "h44",
       "method": "GET",
-      "endpoint": "/api/Cards/{cardId}",
+      "endpoint": "/api/Recycles/",
       "parameters": [
-        "cardId"
+        "status"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "description": "DB driver errors when status contains injection payloads"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Result set size changes"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "h45",
+      "method": "GET",
+      "endpoint": "/api/Products/{id}",
+      "parameters": [
+        "id"
       ],
       "param_locations": [
         "path"
       ],
-      "category": "card_data_exposure_idor",
+      "category": "insecure_direct_object_reference",
       "oracles": [
-        {
-          "signal": "sensitive_data_exposed",
-          "description": "Full card details returned when accessing cardId values not belonging to user"
-        },
         {
           "signal": "status_code_change",
           "threshold": {
             "expected_codes": [
               200,
               403,
-              404
+              404,
+              401
             ]
           },
-          "description": "Status varies by access"
+          "description": "Different product ids produce differing status codes indicating access control"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Product details vary by id"
         }
       ],
       "pass_logic": "any",
-      "preconditions": [
-        {
-          "key": "auth_context",
-          "value": "Authorization header observed"
-        }
-      ],
       "safety": {
         "idempotent_required": true,
         "destructive_ok": false,
         "max_requests": 20
       },
-      "confidence": 0.8,
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "h46",
+      "method": "GET",
+      "endpoint": "/api/Feedbacks/",
+      "parameters": [
+        "comment"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Comment query parameter reflected in responses"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "description": "Response content changes when comment parameter used"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "h47",
+      "method": "GET",
+      "endpoint": "/api/Deliverys",
+      "parameters": [
+        "name"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "description": "SQL/NoSQL error when injecting operators into name"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Result count changes unexpectedly"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "h48",
+      "method": "GET",
+      "endpoint": "/api/Cards/{id}",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Different card ids produce access control status variations"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Card details returned for some ids"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.7,
       "priority": 5
     },
     {
-      "id": "hypo-027",
+      "id": "h49",
+      "method": "GET",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameters": [
+        "itemId"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Status changes across itemIds indicate potential IDOR"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Different item details returned"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "h50",
       "method": "DELETE",
       "endpoint": "/api/BasketItems/{itemId}",
       "parameters": [
@@ -1124,39 +1754,46 @@
       "param_locations": [
         "path"
       ],
-      "category": "unauthorized_deletion",
+      "category": "authz_bypass",
       "oracles": [
         {
           "signal": "status_code_change",
           "threshold": {
             "expected_codes": [
               200,
-              403,
-              401
+              204,
+              401,
+              403
             ]
           },
-          "description": "Deleting itemId belonging to others returns success code"
+          "description": "DELETE succeeds for itemIds not owned by requester indicates authz bypass"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Response changes and state change observed after delete"
         }
       ],
       "pass_logic": "any",
       "preconditions": [
         {
           "key": "auth_context",
-          "value": "Authorization header observed"
+          "value": "authenticated_session_required"
         },
         {
-          "key": "csrf_token_required",
-          "value": "token_in_form"
+          "key": "csrf_token",
+          "value": "required_if_present"
         }
       ],
       "safety": {
         "idempotent_required": false,
-        "destructive_ok": false,
-        "max_requests": 10
+        "destructive_ok": true,
+        "max_requests": 5
       },
-      "confidence": 0.7,
+      "confidence": 0.8,
       "priority": 5
     }
-  ],
-  "metadata": []
+  ]
 }

@@ -5,7 +5,8 @@
       "path_template": "/rest/user/whoami",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [
         "customer"
@@ -31,7 +32,8 @@
         },
         {
           "name": "profileImage",
-          "location": "body"
+          "location": "body",
+          "sample_value": "/assets/public/images/uploads/default.svg"
         },
         {
           "name": "user",
@@ -39,7 +41,7 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -48,7 +50,8 @@
       "path_template": "/rest/basket/{basketId}",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -62,9 +65,13 @@
       ],
       "parameters": [
         {
-          "name": "BasketId",
+          "name": "basketId",
           "location": "path",
           "sample_value": "6"
+        },
+        {
+          "name": "BasketId",
+          "location": "body"
         },
         {
           "name": "BasketItem",
@@ -132,7 +139,7 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -141,7 +148,8 @@
       "path_template": "/rest/admin/application-configuration",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [
         "admin"
@@ -238,7 +246,7 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -260,15 +268,16 @@
       "parameters": [
         {
           "name": "EIO",
-          "location": "query"
+          "location": "query",
+          "sample_value": "3"
         },
         {
           "name": "pingInterval",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "pingTimeout",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "sid",
@@ -280,11 +289,12 @@
         },
         {
           "name": "transport",
-          "location": "query"
+          "location": "query",
+          "sample_value": "polling"
         },
         {
           "name": "upgrades",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [],
@@ -295,7 +305,8 @@
       "path_template": "/rest/products/search",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -310,51 +321,51 @@
       "parameters": [
         {
           "name": "createdAt",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "data",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "deletedAt",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "deluxePrice",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "description",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "id",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "image",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "name",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "price",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "status",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "updatedAt",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -363,7 +374,8 @@
       "path_template": "/api/Quantitys/",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -382,35 +394,35 @@
         },
         {
           "name": "createdAt",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "data",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "id",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "limitPerUser",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "quantity",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "status",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "updatedAt",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -419,7 +431,8 @@
       "path_template": "/api/Addresss",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -434,55 +447,55 @@
       "parameters": [
         {
           "name": "city",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "country",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "createdAt",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "data",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "fullName",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "id",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "mobileNum",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "state",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "status",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "streetAddress",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "updatedAt",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "zipCode",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -491,7 +504,8 @@
       "path_template": "/rest/admin/application-version",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [
         "admin"
@@ -508,11 +522,11 @@
       "parameters": [
         {
           "name": "version",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -521,7 +535,8 @@
       "path_template": "/api/Challenges/",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -536,79 +551,79 @@
       "parameters": [
         {
           "name": "category",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "codingChallengeStatus",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "createdAt",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "data",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "description",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "difficulty",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "disabledEnv",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "hasCodingChallenge",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "hint",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "hintUrl",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "key",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "mitigationUrl",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "name",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "solved",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "status",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "tags",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "tutorialOrder",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "updatedAt",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -617,7 +632,8 @@
       "path_template": "/api/Cards",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -632,35 +648,35 @@
       "parameters": [
         {
           "name": "cardNum",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "data",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "expMonth",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "expYear",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "fullName",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "id",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "status",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -769,7 +785,8 @@
         },
         {
           "name": "product",
-          "location": "body"
+          "location": "body",
+          "sample_value": "6"
         },
         {
           "name": "status",
@@ -792,6 +809,7 @@
       ],
       "protocol": "http",
       "content_types": [
+        "application/json",
         "*/*"
       ],
       "parameters": [
@@ -816,7 +834,8 @@
       "path_template": "/api/Addresss/{addressId}",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -884,7 +903,7 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -893,7 +912,8 @@
       "path_template": "/api/BasketItems/{itemId}",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "csrf_protection": "token_in_form",
@@ -941,7 +961,7 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -958,12 +978,14 @@
       ],
       "protocol": "http",
       "content_types": [
-        "text/plain;charset=UTF-8"
+        "text/plain;charset=UTF-8",
+        "*/*"
       ],
       "parameters": [
         {
           "name": "EIO",
-          "location": "query"
+          "location": "body",
+          "sample_value": "3"
         },
         {
           "name": "sid",
@@ -971,11 +993,12 @@
         },
         {
           "name": "t",
-          "location": "query"
+          "location": "body"
         },
         {
           "name": "transport",
-          "location": "query"
+          "location": "body",
+          "sample_value": "polling"
         }
       ],
       "tokens_observed": [],
@@ -986,7 +1009,8 @@
       "path_template": "/api/BasketItems/",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "csrf_protection": "token_in_form",
@@ -1029,13 +1053,13 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
     {
       "method": "GET",
-      "path_template": "/",
+      "path_template": "/vendor.js",
       "auth_schemes": [
         "cookie"
       ],
@@ -1046,504 +1070,29 @@
       ],
       "protocol": "http",
       "content_types": [
-        "text/html",
-        "*/*"
+        "application/javascript"
       ],
       "parameters": [
         {
-          "name": "background",
+          "name": "${Pt}",
           "location": "query"
         },
         {
-          "name": "button",
+          "name": "${j}",
           "location": "query"
         },
         {
-          "name": "description",
-          "location": "body"
-        },
-        {
-          "name": "favicon",
-          "location": "body"
-        },
-        {
-          "name": "palette",
+          "name": "EmptyError",
           "location": "query"
-        },
-        {
-          "name": "position",
-          "location": "query"
-        },
-        {
-          "name": "text",
-          "location": "body"
-        },
-        {
-          "name": "theme",
-          "location": "query"
-        },
-        {
-          "name": "viewport",
-          "location": "body"
         }
       ],
       "tokens_observed": [],
-      "needs_observation": false
-    },
-    {
-      "method": "PUT",
-      "path_template": "/api/BasketItems/{itemId}",
-      "auth_schemes": [
-        "jwt",
-        "cookie"
-      ],
-      "roles": [],
-      "csrf_protection": "token_in_form",
-      "side_effect": "state_changing",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "itemId",
-          "location": "path",
-          "sample_value": "10"
-        },
-        {
-          "name": "BasketId",
-          "location": "body"
-        },
-        {
-          "name": "createdAt",
-          "location": "body"
-        },
-        {
-          "name": "data",
-          "location": "body"
-        },
-        {
-          "name": "id",
-          "location": "body"
-        },
-        {
-          "name": "quantity",
-          "location": "body"
-        },
-        {
-          "name": "status",
-          "location": "body"
-        },
-        {
-          "name": "updatedAt",
-          "location": "body"
-        }
-      ],
-      "tokens_observed": [
-        "authorization"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "POST",
-      "path_template": "/rest/user/login",
-      "auth_schemes": [
-        "none"
-      ],
-      "roles": [],
-      "csrf_protection": "none",
-      "side_effect": "state_changing",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "authentication",
-          "location": "body"
-        },
-        {
-          "name": "bid",
-          "location": "body"
-        },
-        {
-          "name": "email",
-          "location": "body"
-        },
-        {
-          "name": "password",
-          "location": "body"
-        },
-        {
-          "name": "umail",
-          "location": "body"
-        }
-      ],
-      "tokens_observed": [],
-      "needs_observation": false
-    },
-    {
-      "method": "POST",
-      "path_template": "/rest/user/data-export",
-      "auth_schemes": [
-        "jwt",
-        "cookie"
-      ],
-      "roles": [],
-      "csrf_protection": "none",
-      "side_effect": "state_changing",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "confirmation",
-          "location": "body"
-        },
-        {
-          "name": "format",
-          "location": "body"
-        },
-        {
-          "name": "userData",
-          "location": "body"
-        }
-      ],
-      "tokens_observed": [
-        "authorization"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "POST",
-      "path_template": "/rest/basket/{basketId}/checkout",
-      "auth_schemes": [
-        "jwt",
-        "cookie"
-      ],
-      "roles": [],
-      "csrf_protection": "none",
-      "side_effect": "state_changing",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "basketId",
-          "location": "path",
-          "sample_value": "6"
-        },
-        {
-          "name": "couponData",
-          "location": "body"
-        },
-        {
-          "name": "orderConfirmation",
-          "location": "body"
-        },
-        {
-          "name": "orderDetails",
-          "location": "body"
-        },
-        {
-          "name": "orderDetails.addressId",
-          "location": "body"
-        },
-        {
-          "name": "orderDetails.deliveryMethodId",
-          "location": "body"
-        },
-        {
-          "name": "orderDetails.paymentId",
-          "location": "body"
-        }
-      ],
-      "tokens_observed": [
-        "authorization"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "POST",
-      "path_template": "/api/Users/",
-      "auth_schemes": [
-        "none"
-      ],
-      "roles": [],
-      "csrf_protection": "none",
-      "side_effect": "state_changing",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "createdAt",
-          "location": "body"
-        },
-        {
-          "name": "data",
-          "location": "body"
-        },
-        {
-          "name": "deletedAt",
-          "location": "body"
-        },
-        {
-          "name": "email",
-          "location": "body"
-        },
-        {
-          "name": "id",
-          "location": "body"
-        },
-        {
-          "name": "isActive",
-          "location": "body"
-        },
-        {
-          "name": "lastLoginIp",
-          "location": "body"
-        },
-        {
-          "name": "password",
-          "location": "body"
-        },
-        {
-          "name": "passwordRepeat",
-          "location": "body"
-        },
-        {
-          "name": "profileImage",
-          "location": "body"
-        },
-        {
-          "name": "role",
-          "location": "body"
-        },
-        {
-          "name": "securityAnswer",
-          "location": "body"
-        },
-        {
-          "name": "securityQuestion",
-          "location": "body"
-        },
-        {
-          "name": "status",
-          "location": "body"
-        },
-        {
-          "name": "updatedAt",
-          "location": "body"
-        }
-      ],
-      "tokens_observed": [],
-      "needs_observation": false
-    },
-    {
-      "method": "POST",
-      "path_template": "/api/SecurityAnswers/",
-      "auth_schemes": [
-        "none"
-      ],
-      "roles": [],
-      "csrf_protection": "none",
-      "side_effect": "state_changing",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "SecurityQuestionId",
-          "location": "body"
-        },
-        {
-          "name": "UserId",
-          "location": "body"
-        },
-        {
-          "name": "answer",
-          "location": "body"
-        },
-        {
-          "name": "createdAt",
-          "location": "body"
-        },
-        {
-          "name": "data",
-          "location": "body"
-        },
-        {
-          "name": "status",
-          "location": "body"
-        },
-        {
-          "name": "updatedAt",
-          "location": "body"
-        }
-      ],
-      "tokens_observed": [],
-      "needs_observation": false
-    },
-    {
-      "method": "POST",
-      "path_template": "/api/Cards/",
-      "auth_schemes": [
-        "jwt",
-        "cookie"
-      ],
-      "roles": [],
-      "csrf_protection": "token_in_form",
-      "side_effect": "state_changing",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "UserId",
-          "location": "body"
-        },
-        {
-          "name": "cardNum",
-          "location": "body"
-        },
-        {
-          "name": "createdAt",
-          "location": "body"
-        },
-        {
-          "name": "data",
-          "location": "body"
-        },
-        {
-          "name": "expMonth",
-          "location": "body"
-        },
-        {
-          "name": "expYear",
-          "location": "body"
-        },
-        {
-          "name": "fullName",
-          "location": "body"
-        },
-        {
-          "name": "status",
-          "location": "body"
-        },
-        {
-          "name": "updatedAt",
-          "location": "body"
-        }
-      ],
-      "tokens_observed": [
-        "authorization"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "POST",
-      "path_template": "/api/Addresss/",
-      "auth_schemes": [
-        "jwt",
-        "cookie"
-      ],
-      "roles": [],
-      "csrf_protection": "token_in_form",
-      "side_effect": "state_changing",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "application/json"
-      ],
-      "parameters": [
-        {
-          "name": "UserId",
-          "location": "body"
-        },
-        {
-          "name": "city",
-          "location": "body"
-        },
-        {
-          "name": "country",
-          "location": "body"
-        },
-        {
-          "name": "createdAt",
-          "location": "body"
-        },
-        {
-          "name": "data",
-          "location": "body"
-        },
-        {
-          "name": "fullName",
-          "location": "body"
-        },
-        {
-          "name": "mobileNum",
-          "location": "body"
-        },
-        {
-          "name": "state",
-          "location": "body"
-        },
-        {
-          "name": "status",
-          "location": "body"
-        },
-        {
-          "name": "streetAddress",
-          "location": "body"
-        },
-        {
-          "name": "updatedAt",
-          "location": "body"
-        },
-        {
-          "name": "zipCode",
-          "location": "body"
-        }
-      ],
-      "tokens_observed": [
-        "authorization"
-      ],
-      "needs_observation": false
+      "needs_observation": true
     },
     {
       "method": "GET",
-      "path_template": "/rest/order-history",
+      "path_template": "/s/roboto/v48/{fontfile}.woff2",
       "auth_schemes": [
-        "jwt",
         "cookie"
       ],
       "roles": [],
@@ -1551,131 +1100,18 @@
       "anti_automation": [
         "none"
       ],
-      "protocol": "http",
+      "protocol": "https",
       "content_types": [
-        "application/json",
-        "*/*"
+        "font/woff2"
       ],
-      "parameters": [
-        {
-          "name": "data",
-          "location": "body"
-        },
-        {
-          "name": "status",
-          "location": "body"
-        }
-      ],
-      "tokens_observed": [
-        "authorization"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "path_template": "/rest/image-captcha/",
-      "auth_schemes": [
-        "jwt",
-        "cookie"
-      ],
-      "roles": [],
-      "side_effect": "read_only",
-      "anti_automation": [
-        "captcha"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "*/*"
-      ],
-      "parameters": [
-        {
-          "name": "image",
-          "location": "query"
-        }
-      ],
-      "tokens_observed": [
-        "authorization"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "path_template": "/rest/continue-code",
-      "auth_schemes": [
-        "jwt",
-        "cookie"
-      ],
-      "roles": [],
-      "side_effect": "read_only",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "application/json",
-        "*/*"
-      ],
-      "parameters": [
-        {
-          "name": "continueCode",
-          "location": "query"
-        }
-      ],
-      "tokens_observed": [
-        "authorization"
-      ],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "path_template": "/api/SecurityQuestions/",
-      "auth_schemes": [
-        "none"
-      ],
-      "roles": [],
-      "side_effect": "read_only",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "http",
-      "content_types": [
-        "application/json",
-        "*/*"
-      ],
-      "parameters": [
-        {
-          "name": "createdAt",
-          "location": "body"
-        },
-        {
-          "name": "data",
-          "location": "body"
-        },
-        {
-          "name": "id",
-          "location": "body"
-        },
-        {
-          "name": "question",
-          "location": "body"
-        },
-        {
-          "name": "status",
-          "location": "body"
-        },
-        {
-          "name": "updatedAt",
-          "location": "body"
-        }
-      ],
+      "parameters": [],
       "tokens_observed": [],
       "needs_observation": false
     },
     {
       "method": "GET",
-      "path_template": "/api/Recycles/",
+      "path_template": "/s/materialicons/v143/{fontfile}.woff2",
       "auth_schemes": [
-        "jwt",
         "cookie"
       ],
       "roles": [],
@@ -1683,31 +1119,18 @@
       "anti_automation": [
         "none"
       ],
-      "protocol": "http",
+      "protocol": "https",
       "content_types": [
-        "application/json",
-        "*/*"
+        "font/woff2"
       ],
-      "parameters": [
-        {
-          "name": "data",
-          "location": "body"
-        },
-        {
-          "name": "status",
-          "location": "body"
-        }
-      ],
-      "tokens_observed": [
-        "authorization"
-      ],
+      "parameters": [],
+      "tokens_observed": [],
       "needs_observation": false
     },
     {
       "method": "GET",
-      "path_template": "/api/Products/{productId}",
+      "path_template": "/runtime.js",
       "auth_schemes": [
-        "jwt",
         "cookie"
       ],
       "roles": [],
@@ -1717,71 +1140,28 @@
       ],
       "protocol": "http",
       "content_types": [
-        "application/json",
-        "*/*"
+        "application/javascript"
       ],
       "parameters": [
         {
-          "name": "productId",
-          "location": "path",
-          "sample_value": "24"
+          "name": "ChunkLoadError",
+          "location": "query"
         },
         {
-          "name": "createdAt",
-          "location": "body"
-        },
-        {
-          "name": "d",
-          "location": "body"
-        },
-        {
-          "name": "data",
-          "location": "body"
-        },
-        {
-          "name": "deletedAt",
-          "location": "body"
-        },
-        {
-          "name": "deluxePrice",
-          "location": "body"
-        },
-        {
-          "name": "description",
-          "location": "body"
-        },
-        {
-          "name": "image",
-          "location": "body"
-        },
-        {
-          "name": "name",
-          "location": "body"
-        },
-        {
-          "name": "price",
-          "location": "body"
-        },
-        {
-          "name": "status",
-          "location": "body"
-        },
-        {
-          "name": "updatedAt",
-          "location": "body"
+          "name": "missing",
+          "location": "query"
         }
       ],
-      "tokens_observed": [
-        "authorization"
-      ],
-      "needs_observation": false
+      "tokens_observed": [],
+      "needs_observation": true
     },
     {
       "method": "GET",
       "path_template": "/rest/wallet/balance",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1796,15 +1176,15 @@
       "parameters": [
         {
           "name": "data",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "status",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -1813,7 +1193,8 @@
       "path_template": "/rest/user/change-password",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "unknown",
@@ -1827,64 +1208,32 @@
       ],
       "parameters": [
         {
-          "name": "createdAt",
-          "location": "body"
-        },
-        {
           "name": "current",
-          "location": "body"
-        },
-        {
-          "name": "deletedAt",
-          "location": "body"
-        },
-        {
-          "name": "email",
-          "location": "body"
-        },
-        {
-          "name": "isActive",
-          "location": "body"
-        },
-        {
-          "name": "lastLoginIp",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "new",
-          "location": "body"
-        },
-        {
-          "name": "password",
-          "location": "body"
-        },
-        {
-          "name": "profileImage",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "repeat",
-          "location": "body"
+          "location": "query"
         },
         {
-          "name": "role",
-          "location": "body"
+          "name": "password",
+          "location": "query"
         },
         {
-          "name": "updatedAt",
-          "location": "body"
-        },
-        {
-          "name": "user",
-          "location": "body"
+          "name": "email",
+          "location": "query"
         },
         {
           "name": "username",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -1893,7 +1242,8 @@
       "path_template": "/rest/track-order/{orderRef}",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -1953,7 +1303,8 @@
         },
         {
           "name": "orderId",
-          "location": "body"
+          "location": "body",
+          "sample_value": "789a-c954d34e39503081"
         },
         {
           "name": "paymentId",
@@ -1981,7 +1332,7 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -2058,7 +1409,8 @@
       "path_template": "/rest/languages",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -2073,31 +1425,31 @@
       "parameters": [
         {
           "name": "gauge",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "icons",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "key",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "lang",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "percentage",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "shortKey",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -2106,7 +1458,8 @@
       "path_template": "/rest/2fa/status",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -2121,23 +1474,23 @@
       "parameters": [
         {
           "name": "email",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "secret",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "setup",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "setupToken",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -2154,21 +1507,20 @@
       ],
       "protocol": "http",
       "content_types": [
-        "text/html",
-        "application/x-www-form-urlencoded"
+        "text/html"
       ],
       "parameters": [
         {
           "name": "description",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "keywords",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "viewport",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [],
@@ -2176,10 +1528,144 @@
     },
     {
       "method": "GET",
+      "path_template": "/polyfills.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [
+        {
+          "name": "unnamed",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/main.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [
+        {
+          "name": "LAUNCH_CODING_CHALLENGE",
+          "location": "query"
+        },
+        {
+          "name": "password",
+          "location": "query",
+          "sample_value": "testing@juice-sh.op"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/icon",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "image/*"
+      ],
+      "parameters": [
+        {
+          "name": "family",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/css",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/css"
+      ],
+      "parameters": [
+        {
+          "name": "family",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/i18n/en.json",
+      "auth_schemes": [
+        "jwt",
+        "cookie",
+        "api_key_header"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "LABEL_EMAIL",
+          "location": "query"
+        },
+        {
+          "name": "LABEL_PASSWORD",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
       "path_template": "/api/Deliverys/{id}",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -2223,7 +1709,7 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -2232,7 +1718,8 @@
       "path_template": "/api/BasketItems/{itemId}",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -2280,135 +1767,325 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
     {
-      "method": "GET",
-      "path_template": "/ajax/libs/jquery/3.3.1/jquery.min.js",
+      "method": "POST",
+      "path_template": "/rest/user/login",
       "auth_schemes": [
-        "cookie"
+        "none"
       ],
       "roles": [],
-      "side_effect": "read_only",
+      "csrf_protection": "none",
+      "side_effect": "state_changing",
       "anti_automation": [
-        "user_agent_checks"
+        "rate_limit"
       ],
-      "protocol": "https",
+      "protocol": "http",
       "content_types": [
-        "application/javascript"
+        "application/json"
       ],
       "parameters": [
         {
-          "name": "object",
-          "location": "query"
+          "name": "email",
+          "location": "body"
+        },
+        {
+          "name": "password",
+          "location": "body"
+        },
+        {
+          "name": "authentication",
+          "location": "body"
+        },
+        {
+          "name": "bid",
+          "location": "body"
+        },
+        {
+          "name": "umail",
+          "location": "body"
         }
       ],
       "tokens_observed": [],
       "needs_observation": false
     },
     {
-      "method": "GET",
-      "path_template": "/ajax/libs/jquery/2.2.4/jquery.min.js",
-      "auth_schemes": [
-        "cookie"
-      ],
-      "roles": [],
-      "side_effect": "read_only",
-      "anti_automation": [
-        "user_agent_checks"
-      ],
-      "protocol": "https",
-      "content_types": [
-        "application/javascript"
-      ],
-      "parameters": [],
-      "tokens_observed": [],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "path_template": "/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js",
-      "auth_schemes": [
-        "cookie"
-      ],
-      "roles": [],
-      "side_effect": "read_only",
-      "anti_automation": [
-        "user_agent_checks"
-      ],
-      "protocol": "https",
-      "content_types": [
-        "application/javascript"
-      ],
-      "parameters": [],
-      "tokens_observed": [],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "path_template": "/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css",
-      "auth_schemes": [
-        "cookie"
-      ],
-      "roles": [],
-      "side_effect": "read_only",
-      "anti_automation": [
-        "user_agent_checks"
-      ],
-      "protocol": "https",
-      "content_types": [
-        "text/css"
-      ],
-      "parameters": [],
-      "tokens_observed": [],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "path_template": "/s/roboto/v48/{fontfile}.woff2",
-      "auth_schemes": [
-        "cookie"
-      ],
-      "roles": [],
-      "side_effect": "read_only",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "https",
-      "content_types": [
-        "font/woff2"
-      ],
-      "parameters": [],
-      "tokens_observed": [],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "path_template": "/s/materialicons/v143/{fontfile}.woff2",
-      "auth_schemes": [
-        "cookie"
-      ],
-      "roles": [],
-      "side_effect": "read_only",
-      "anti_automation": [
-        "none"
-      ],
-      "protocol": "https",
-      "content_types": [
-        "font/woff2"
-      ],
-      "parameters": [],
-      "tokens_observed": [],
-      "needs_observation": false
-    },
-    {
-      "method": "GET",
-      "path_template": "/rest/wallet/balance",
+      "method": "POST",
+      "path_template": "/rest/user/data-export",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
+      ],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "confirmation",
+          "location": "body"
+        },
+        {
+          "name": "format",
+          "location": "body"
+        },
+        {
+          "name": "userData",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "/rest/basket/{basketId}/checkout",
+      "auth_schemes": [
+        "jwt",
+        "cookie",
+        "api_key_header"
+      ],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "basketId",
+          "location": "path",
+          "sample_value": "6"
+        },
+        {
+          "name": "couponData",
+          "location": "body"
+        },
+        {
+          "name": "orderConfirmation",
+          "location": "body"
+        },
+        {
+          "name": "orderDetails",
+          "location": "body"
+        },
+        {
+          "name": "orderDetails.addressId",
+          "location": "body"
+        },
+        {
+          "name": "orderDetails.deliveryMethodId",
+          "location": "body"
+        },
+        {
+          "name": "orderDetails.paymentId",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "/api/Users/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "email",
+          "location": "body"
+        },
+        {
+          "name": "password",
+          "location": "body"
+        },
+        {
+          "name": "passwordRepeat",
+          "location": "body"
+        },
+        {
+          "name": "securityQuestion.question",
+          "location": "body"
+        },
+        {
+          "name": "securityAnswer",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "/api/SecurityAnswers/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "SecurityQuestionId",
+          "location": "body"
+        },
+        {
+          "name": "UserId",
+          "location": "body"
+        },
+        {
+          "name": "answer",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "/api/Cards/",
+      "auth_schemes": [
+        "jwt",
+        "cookie",
+        "api_key_header"
+      ],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "UserId",
+          "location": "body"
+        },
+        {
+          "name": "cardNum",
+          "location": "body"
+        },
+        {
+          "name": "expMonth",
+          "location": "body"
+        },
+        {
+          "name": "expYear",
+          "location": "body"
+        },
+        {
+          "name": "fullName",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "/api/Addresss/",
+      "auth_schemes": [
+        "jwt",
+        "cookie",
+        "api_key_header"
+      ],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "UserId",
+          "location": "body"
+        },
+        {
+          "name": "city",
+          "location": "body"
+        },
+        {
+          "name": "country",
+          "location": "body"
+        },
+        {
+          "name": "fullName",
+          "location": "body"
+        },
+        {
+          "name": "mobileNum",
+          "location": "body"
+        },
+        {
+          "name": "state",
+          "location": "body"
+        },
+        {
+          "name": "streetAddress",
+          "location": "body"
+        },
+        {
+          "name": "zipCode",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/order-history",
+      "auth_schemes": [
+        "jwt",
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -2423,15 +2100,43 @@
       "parameters": [
         {
           "name": "data",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "status",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/rest/image-captcha/",
+      "auth_schemes": [
+        "jwt",
+        "cookie",
+        "api_key_header"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "image/*"
+      ],
+      "parameters": [
+        {
+          "name": "image",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -2440,7 +2145,8 @@
       "path_template": "/rest/continue-code",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -2459,16 +2165,53 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
     {
       "method": "GET",
-      "path_template": "/api/Cards/{cardId}",
+      "path_template": "/api/SecurityQuestions/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "id",
+          "location": "query"
+        },
+        {
+          "name": "question",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Recycles/",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -2482,41 +2225,323 @@
       ],
       "parameters": [
         {
-          "name": "cardId",
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Products/{id}",
+      "auth_schemes": [
+        "jwt",
+        "cookie",
+        "api_key_header"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "*/*"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "location": "path",
+          "sample_value": "24"
+        },
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "d",
+          "location": "query"
+        },
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "deletedAt",
+          "location": "query"
+        },
+        {
+          "name": "deluxePrice",
+          "location": "query"
+        },
+        {
+          "name": "description",
+          "location": "query"
+        },
+        {
+          "name": "image",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "price",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Products/{id}",
+      "auth_schemes": [
+        "jwt",
+        "cookie",
+        "api_key_header"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "*/*"
+      ],
+      "parameters": [
+        {
+          "name": "id",
+          "location": "path",
+          "sample_value": "1"
+        },
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "d",
+          "location": "query"
+        },
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "deletedAt",
+          "location": "query"
+        },
+        {
+          "name": "deluxePrice",
+          "location": "query"
+        },
+        {
+          "name": "description",
+          "location": "query"
+        },
+        {
+          "name": "image",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "price",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Feedbacks/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "UserId",
+          "location": "query"
+        },
+        {
+          "name": "comment",
+          "location": "query"
+        },
+        {
+          "name": "createdAt",
+          "location": "query"
+        },
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "id",
+          "location": "query"
+        },
+        {
+          "name": "rating",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        },
+        {
+          "name": "updatedAt",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Deliverys",
+      "auth_schemes": [
+        "jwt",
+        "cookie",
+        "api_key_header"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "*/*"
+      ],
+      "parameters": [
+        {
+          "name": "data",
+          "location": "query"
+        },
+        {
+          "name": "eta",
+          "location": "query"
+        },
+        {
+          "name": "icon",
+          "location": "query"
+        },
+        {
+          "name": "id",
+          "location": "query"
+        },
+        {
+          "name": "name",
+          "location": "query"
+        },
+        {
+          "name": "price",
+          "location": "query"
+        },
+        {
+          "name": "status",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/Cards/{id}",
+      "auth_schemes": [
+        "jwt",
+        "cookie",
+        "api_key_header"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json",
+        "*/*"
+      ],
+      "parameters": [
+        {
+          "name": "id",
           "location": "path",
           "sample_value": "7"
         },
         {
           "name": "cardNum",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "data",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "expMonth",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "expYear",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "fullName",
-          "location": "body"
-        },
-        {
-          "name": "id",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "status",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -2525,7 +2550,8 @@
       "path_template": "/api/BasketItems/{itemId}",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
       "side_effect": "read_only",
@@ -2573,7 +2599,7 @@
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     },
@@ -2582,10 +2608,10 @@
       "path_template": "/api/BasketItems/{itemId}",
       "auth_schemes": [
         "jwt",
-        "cookie"
+        "cookie",
+        "api_key_header"
       ],
       "roles": [],
-      "csrf_protection": "token_in_form",
       "side_effect": "state_changing",
       "anti_automation": [
         "none"
@@ -2603,21 +2629,21 @@
         },
         {
           "name": "data",
-          "location": "body"
+          "location": "query"
         },
         {
           "name": "status",
-          "location": "body"
+          "location": "query"
         }
       ],
       "tokens_observed": [
-        "authorization"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
       ],
       "needs_observation": false
     }
   ],
   "global_observations": {
-    "session_management": "cookie",
+    "session_management": "jwt",
     "auth_flow": "form_login",
     "needs_observation": false
   }

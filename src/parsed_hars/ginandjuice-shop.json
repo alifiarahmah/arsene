@@ -22,22 +22,290 @@
     },
     "h6": {
       "name": "referer",
-      "value": "https://ginandjuice.shop/catalog"
+      "value": "https://ginandjuice.shop/blog/post?postId=3"
     },
     "h7": {
       "name": "referer",
-      "value": "https://ginandjuice.shop/catalog/cart"
+      "value": "https://ginandjuice.shop/blog/post?postId=4"
     },
     "h8": {
       "name": "referer",
-      "value": "https://ginandjuice.shop/catalog/product?productId=17"
+      "value": "https://ginandjuice.shop/catalog"
     },
     "h9": {
+      "name": "referer",
+      "value": "https://ginandjuice.shop/catalog/cart"
+    },
+    "h10": {
+      "name": "referer",
+      "value": "https://ginandjuice.shop/catalog/product?productId=17"
+    },
+    "h11": {
       "name": "accept-encoding",
       "value": "identity;q=1, *;q=0"
     }
   },
   "requests": [
+    {
+      "id": "GET:/resources/js/react.development.js",
+      "method": "GET",
+      "path": "/resources/js/react.development.js",
+      "hosts": [
+        "ginandjuice.shop"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 8,
+      "statusHistogram": {
+        "2xx": 8
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": [
+          "@h1",
+          "@h2",
+          "@h3",
+          "@h4",
+          "@h5",
+          "@h6",
+          "@h7"
+        ],
+        "user-agent": "@h8",
+        "sec-ch-ua": "@h9",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/resources/js/react-dom.development.js",
+      "method": "GET",
+      "path": "/resources/js/react-dom.development.js",
+      "hosts": [
+        "ginandjuice.shop"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 8,
+      "statusHistogram": {
+        "2xx": 8
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_session"
+      ],
+      "parameters": [
+        [
+          " + JSON.stringify(",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": [
+          "@h1",
+          "@h2",
+          "@h3",
+          "@h4",
+          "@h5",
+          "@h6",
+          "@h7"
+        ],
+        "user-agent": "@h8",
+        "sec-ch-ua": "@h9",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/resources/js/angular_1-7-7.js",
+      "method": "GET",
+      "path": "/resources/js/angular_1-7-7.js",
+      "hosts": [
+        "ginandjuice.shop"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 8,
+      "statusHistogram": {
+        "2xx": 8
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_session"
+      ],
+      "parameters": [
+        [
+          "EAC",
+          "string"
+        ],
+        [
+          "NG_ENABLE_DEBUG_INFO!",
+          "string"
+        ],
+        [
+          "Object",
+          "string"
+        ],
+        [
+          "catch",
+          "string"
+        ],
+        [
+          "document",
+          "string"
+        ],
+        [
+          "false",
+          "string"
+        ],
+        [
+          "finally",
+          "string"
+        ],
+        [
+          "floor",
+          "string"
+        ],
+        [
+          "function",
+          "string"
+        ],
+        [
+          "null",
+          "string"
+        ],
+        [
+          "number",
+          "string"
+        ],
+        [
+          "object",
+          "string"
+        ],
+        [
+          "replaceState",
+          "string"
+        ],
+        [
+          "s",
+          "string"
+        ],
+        [
+          "string",
+          "string"
+        ],
+        [
+          "svg",
+          "string"
+        ],
+        [
+          "this",
+          "string"
+        ],
+        [
+          "timeout",
+          "string"
+        ],
+        [
+          "true",
+          "string"
+        ],
+        [
+          "undefined",
+          "string"
+        ]
+      ],
+      "headers": {
+        "referer": [
+          "@h1",
+          "@h2",
+          "@h3",
+          "@h4",
+          "@h5",
+          "@h6",
+          "@h7"
+        ],
+        "user-agent": "@h8",
+        "sec-ch-ua": "@h9",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/resources/footer/js/scanme.js",
+      "method": "GET",
+      "path": "/resources/footer/js/scanme.js",
+      "hosts": [
+        "ginandjuice.shop"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 8,
+      "statusHistogram": {
+        "2xx": 8
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": [
+          "@h1",
+          "@h2",
+          "@h3",
+          "@h4",
+          "@h5",
+          "@h6",
+          "@h7"
+        ],
+        "user-agent": "@h8",
+        "sec-ch-ua": "@h9",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/resources/js/subscribeNow.js",
+      "method": "GET",
+      "path": "/resources/js/subscribeNow.js",
+      "hosts": [
+        "ginandjuice.shop"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 7,
+      "statusHistogram": {
+        "2xx": 7
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": [
+          "@h1",
+          "@h2",
+          "@h3",
+          "@h4",
+          "@h5",
+          "@h6"
+        ],
+        "user-agent": "@h7",
+        "sec-ch-ua": "@h8",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
     {
       "id": "GET:/resources/images/gin-and-juice-team.mp4",
       "method": "GET",
@@ -268,7 +536,12 @@
       "authIndicatorsAny": [
         "auth_cookie_session"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "Layer_1",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2"
@@ -290,7 +563,12 @@
       "authIndicatorsAny": [
         "auth_cookie_session"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "Layer_1",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2"
@@ -312,10 +590,69 @@
       "authIndicatorsAny": [
         "auth_cookie_session"
       ],
-      "parameters": [],
+      "parameters": [
+        [
+          "Layer_1",
+          "string"
+        ]
+      ],
       "headers": {
         "referer": "@h1",
         "user-agent": "@h2"
+      }
+    },
+    {
+      "id": "GET:/resources/js/xmlStockCheckPayload.js",
+      "method": "GET",
+      "path": "/resources/js/xmlStockCheckPayload.js",
+      "hosts": [
+        "ginandjuice.shop"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      }
+    },
+    {
+      "id": "GET:/resources/js/stockCheck.js",
+      "method": "GET",
+      "path": "/resources/js/stockCheck.js",
+      "hosts": [
+        "ginandjuice.shop"
+      ],
+      "endpointTypes": [
+        "static_asset"
+      ],
+      "count": 1,
+      "statusHistogram": {
+        "2xx": 1
+      },
+      "isSensitiveAny": true,
+      "authIndicatorsAny": [
+        "auth_cookie_session"
+      ],
+      "parameters": [],
+      "headers": {
+        "referer": "@h1",
+        "user-agent": "@h2",
+        "sec-ch-ua": "@h3",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
       }
     },
     {

@@ -1,8 +1,10 @@
 import json
 import urllib.parse
 import re
+import os
+import base64
 from typing import Counter, Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from enum import Enum
 import argparse
 
@@ -32,10 +34,13 @@ class ParsedEndpoint:
     is_sensitive: bool
     authentication_indicators: List[str]
     potential_parameters: List[Dict[str, str]]
+    response_body_truncated: bool = False  # NEW: track truncation
+    response_encoding: Optional[str] = None  # NEW: track encoding
 
 class ParserModule:
     MAX_PARAM_KEYS = 20
     RESPONSE_BODY_SNIFF_LIMIT = 1200
+    STATIC_FILE_SIZE_LIMIT = 5 * 1024 * 1024  # NEW: 5MB limit for static files
     MAX_GROUPS = 250
     SHARD_SIZE = 250
     INCLUDE_STATIC_ASSETS = False
@@ -65,7 +70,12 @@ class ParserModule:
         }
 
         self.important_static_extensions = {
-            '.js', '.js.map', '.json', '.wasm'
+            '.js', '.js.map', '.json', '.wasm', '.html', '.htm'
+        }
+
+        # NEW: Categorize static files for analysis
+        self.analyzable_static_extensions = {
+            '.js', '.html', '.htm'  # Primary targets for static analysis
         }
 
         self.api_indicators = {
@@ -107,6 +117,32 @@ class ParserModule:
         except Exception as e:
             print(f"[ERROR] Failed to parse HAR file: {e}")
             return []
+
+    def _decode_response_body(self, content: Dict[str, Any]) -> Tuple[Optional[str], Optional[str], bool]:
+        """
+        Decode response body from HAR content object.
+        Returns: (decoded_text, encoding, was_truncated)
+        """
+        if 'text' not in content:
+            return None, None, False
+
+        text = content['text']
+        encoding = content.get('encoding', None)
+        size = content.get('size', 0)
+
+        if not text:
+            return None, encoding, False
+
+        # Decode base64 if needed
+        if encoding == 'base64':
+            try:
+                decoded_bytes = base64.b64decode(text)
+                text = decoded_bytes.decode('utf-8', errors='ignore')
+            except Exception as e:
+                print(f"[WARN] Failed to decode base64 content: {e}")
+                return None, encoding, False
+
+        return text, encoding, False
 
     def _parse_entry(self, entry: Dict[str, Any]) -> Optional[ParsedEndpoint]:
         """Parse single HAR entry into ParsedEndpoint"""
@@ -162,12 +198,36 @@ class ParserModule:
             if 'postData' in request:
                 request_body = request['postData'].get('text', '')
 
-            # response body (truncated for large responses)
+            # NEW: Decode response body properly
             response_body = None
-            if 'content' in response and 'text' in response['content']:
-                rb = response['content']['text']
-                if isinstance(rb, str) and rb:
-                    response_body = rb[: self.RESPONSE_BODY_SNIFF_LIMIT]
+            response_encoding = None
+            response_truncated = False
+
+            if 'content' in response:
+                content_obj = response['content']
+                decoded_text, encoding, _ = self._decode_response_body(content_obj)
+                response_encoding = encoding
+
+                if decoded_text:
+                    # Check if this is a static file we want to keep in full
+                    is_analyzable_static = any(
+                        url.lower().endswith(ext) for ext in self.analyzable_static_extensions
+                    )
+
+                    if is_analyzable_static:
+                        # Keep full content but enforce size limit
+                        if len(decoded_text) > self.STATIC_FILE_SIZE_LIMIT:
+                            response_body = decoded_text[:self.STATIC_FILE_SIZE_LIMIT]
+                            response_truncated = True
+                        else:
+                            response_body = decoded_text
+                    else:
+                        # For non-static, truncate for sniffing
+                        if len(decoded_text) > self.RESPONSE_BODY_SNIFF_LIMIT:
+                            response_body = decoded_text[:self.RESPONSE_BODY_SNIFF_LIMIT]
+                            response_truncated = True
+                        else:
+                            response_body = decoded_text
 
             # classify endpoint type
             endpoint_type = self._classify_endpoint(url, method, content_type, headers)
@@ -198,7 +258,9 @@ class ParserModule:
                 content_type=content_type,
                 is_sensitive=is_sensitive,
                 authentication_indicators=auth_indicators,
-                potential_parameters=potential_params
+                potential_parameters=potential_params,
+                response_body_truncated=response_truncated,
+                response_encoding=response_encoding
             )
 
         except Exception as e:
@@ -453,12 +515,174 @@ class ParserModule:
             'x-www-form-urlencoded' in ct
         )
 
+    def _save_static_assets(self, static_endpoints: List[ParsedEndpoint], assets_dir: str):
+        """Save static assets to files replicating the directory structure from endpoint paths"""
+        if not static_endpoints:
+            print("[DEBUG] No static endpoints to save")
+            return
+
+        # Create base assets directory if it doesn't exist
+        os.makedirs(assets_dir, exist_ok=True)
+        print(f"[DEBUG] Created assets directory: {assets_dir}")
+
+        saved_count = 0
+        for ep in static_endpoints:
+            if not ep.response_body:
+                print(f"[DEBUG] Skipping {ep.url} - no response body")
+                continue
+
+            try:
+                # Parse URL to get path structure
+                parsed_url = urllib.parse.urlparse(ep.url)
+                url_path = parsed_url.path.strip('/')
+
+                if not url_path:
+                    # Handle root path case
+                    filename = f"index_{hash(ep.url) % 10000}"
+                    # Add appropriate extension based on content type
+                    if 'javascript' in ep.content_type or ep.content_type == 'application/javascript':
+                        filename += '.js'
+                    elif 'html' in ep.content_type:
+                        filename += '.html'
+                    elif 'json' in ep.content_type:
+                        filename += '.json'
+                    file_path = os.path.join(assets_dir, filename)
+                else:
+                    # Split path into directory parts and filename
+                    path_parts = url_path.split('/')
+
+                    if len(path_parts) == 1:
+                        # File is at root level
+                        filename = path_parts[0]
+                        directory_path = assets_dir
+                    else:
+                        # File is in subdirectories
+                        directory_parts = path_parts[:-1]
+                        filename = path_parts[-1]
+
+                        # Sanitize directory names for filesystem
+                        sanitized_dirs = []
+                        for dir_part in directory_parts:
+                            sanitized_dir = re.sub(r'[<>:"/\\|?*]', '_', dir_part)
+                            if sanitized_dir:  # Skip empty parts
+                                sanitized_dirs.append(sanitized_dir)
+
+                        # Create full directory path
+                        directory_path = os.path.join(assets_dir, *sanitized_dirs)
+                        os.makedirs(directory_path, exist_ok=True)
+
+                    # Handle case where filename is empty (directory-only path)
+                    if not filename:
+                        filename = f"index_{hash(ep.url) % 10000}"
+                        # Add appropriate extension based on content type
+                        if 'javascript' in ep.content_type or ep.content_type == 'application/javascript':
+                            filename += '.js'
+                        elif 'html' in ep.content_type:
+                            filename += '.html'
+                        elif 'json' in ep.content_type:
+                            filename += '.json'
+
+                    # Sanitize filename for filesystem
+                    filename = re.sub(r'[<>:"/\\|?*]', '_', filename)
+
+                    # Build full file path
+                    file_path = os.path.join(directory_path, filename)
+
+                # Handle duplicate filenames by appending counter
+                counter = 1
+                original_file_path = file_path
+                original_filename = filename
+                while os.path.exists(file_path):
+                    name, ext = os.path.splitext(original_filename)
+                    new_filename = f"{name}_{counter}{ext}"
+                    file_path = os.path.join(os.path.dirname(original_file_path), new_filename)
+                    counter += 1
+
+                # Write file
+                with open(file_path, 'w', encoding='utf-8', errors='ignore') as f:
+                    f.write(ep.response_body)
+
+                saved_count += 1
+
+                # Log the relative path for debugging
+                relative_path = os.path.relpath(file_path, assets_dir)
+                print(f"[DEBUG] Saved: {ep.url} -> {relative_path}")
+
+            except Exception as e:
+                print(f"[ERROR] Failed to save static asset {ep.url}: {e}")
+                continue
+
+        print(f"[INFO] Saved {saved_count} static assets to {assets_dir} with directory structure preserved")
+
+    # NEW: Export static files for LLM analysis
+    def export_static_files_for_analysis(self, endpoints: List[ParsedEndpoint], output_file: str):
+        """
+        Export static files (.js, .html) with metadata for LLM analysis.
+        Output format matches STEP S1 input schema.
+        """
+        static_files = []
+        truncated_sources = []
+
+        for ep in endpoints:
+            # Only process analyzable static files
+            if ep.endpoint_type != EndpointType.STATIC_ASSET:
+                continue
+
+            is_analyzable = any(
+                ep.url.lower().endswith(ext) for ext in self.analyzable_static_extensions
+            )
+
+            if not is_analyzable:
+                continue
+
+            file_info = {
+                "url": ep.url,
+                "file_name": os.path.basename(urllib.parse.urlparse(ep.url).path),
+                "content_type": ep.content_type,
+                "size_bytes": len(ep.response_body) if ep.response_body else 0,
+                "encoding": ep.response_encoding,
+                "from_har": True,
+                "text": ep.response_body,
+                "truncated": ep.response_body_truncated,
+                "response_headers": ep.response_headers,
+                "referrer": ep.headers.get('referer', None)
+            }
+
+            static_files.append(file_info)
+
+            if ep.response_body_truncated:
+                truncated_sources.append(ep.url)
+
+        output = {
+            "file_index": [
+                {
+                    "url": f["url"],
+                    "file_name": f["file_name"],
+                    "content_type": f["content_type"],
+                    "size_bytes": f["size_bytes"],
+                    "truncated": f["truncated"]
+                }
+                for f in static_files
+            ],
+            "files": static_files,
+            "needs_observation": len(truncated_sources) > 0,
+            "truncated_sources": truncated_sources
+        }
+
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(output, f, ensure_ascii=False, indent=2)
+
+        print(f"[INFO] Exported {len(static_files)} static files for analysis -> {output_file}")
+        if truncated_sources:
+            print(f"[WARN] {len(truncated_sources)} files were truncated")
+
     def export_ultra_compact_json(
         self,
         endpoints: List[ParsedEndpoint],
         output_file: str,
         max_groups: Optional[int] = None,
-        include_static_assets: Optional[bool] = None
+        include_static_assets: Optional[bool] = None,
+        assets_dir: Optional[str] = None
     ):
         if include_static_assets is not None:
             # temporarily override class default for this call
@@ -467,11 +691,15 @@ class ParserModule:
 
         # Filter out static assets before processing
         filtered_endpoints = []
+        static_endpoints = []
         for ep in endpoints:
-            # Skip static assets (both unimportant and important static assets)
-            if ep.endpoint_type in [EndpointType.UNIMPORTANT_STATIC_ASSET, EndpointType.STATIC_ASSET]:
+            if ep.endpoint_type in [EndpointType.STATIC_ASSET]:
+                static_endpoints.append(ep)
+            if ep.endpoint_type in [EndpointType.UNIMPORTANT_STATIC_ASSET]:
                 continue
             filtered_endpoints.append(ep)
+
+        print(f"[DEBUG] Found {len(static_endpoints)} static assets to save")
 
         # Group by exact path (no normalization)
         groups: Dict[Tuple[str, str], Dict[str, Any]] = {}
@@ -568,6 +796,10 @@ class ParserModule:
 
         print(f"[INFO] Ultra-compact export: {len(flat)} requests, {len(separated_headers)} separated headers -> {output_file}")
 
+        # Save static assets to directory if assets_dir is provided
+        if assets_dir and static_endpoints:
+            self._save_static_assets(static_endpoints, assets_dir)
+
         if include_static_assets is not None:
             self.INCLUDE_STATIC_ASSETS = orig
 
@@ -584,8 +816,8 @@ class ParserModule:
             filtered.append(ep)
         return filtered
 
-    def export_to_json(self, endpoints: List[ParsedEndpoint], output_file: str):
-        self.export_ultra_compact_json(endpoints, output_file, max_groups=self.MAX_GROUPS, include_static_assets=False)
+    def export_to_json(self, endpoints: List[ParsedEndpoint], output_file: str, assets_dir: Optional[str] = None):
+        self.export_ultra_compact_json(endpoints, output_file, max_groups=self.MAX_GROUPS, include_static_assets=False, assets_dir=assets_dir)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Parse HAR files and extract endpoints')
@@ -604,6 +836,13 @@ if __name__ == "__main__":
         if count > 0:
             print(f"{endpoint_type.value}: {count}")
 
-    # Default: ultra-compact single file
+    # Create assets directory path based on filename
+    assets_dir = f'parsed_hars/{filename}'
+
+    # Default: ultra-compact single file for API endpoints
     out_path = f'parsed_hars/{filename}.json'
-    PM.export_to_json(endpoints, out_path)
+    PM.export_to_json(endpoints, out_path, assets_dir=assets_dir)
+
+    # NEW: Export static files for LLM analysis
+    static_out_path = f'parsed_hars/{filename}_static.json'
+    PM.export_static_files_for_analysis(endpoints, static_out_path)
