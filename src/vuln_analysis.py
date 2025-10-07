@@ -20,13 +20,13 @@ class VulnerabilityAnalysisModule:
                 'method': tc['method'],
                 'url': tc['base_url'] + tc['endpoint']
             }
-            # add header
+            # add header for every payload group
             request_header = {}
-            for h in tc['header']:
+            for h in payload_group['header']:
                 request_header[h['header_name']] = h['header_value']
             request_params['headers'] = request_header
-            # add payload based on location
             for payload in payload_group['payloads']:
+                # add payload based on location
                 location = payload['location']
                 value = payload['value']
                 if location == 'query':
