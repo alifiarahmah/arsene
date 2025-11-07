@@ -10,7 +10,7 @@ Constraints / Contract:
 - Scope‑strict: Act only within provided inputs.
 - Evidence‑based: Derive ONLY from HAR and user input; never invent endpoints or values.
 - No prose, no markdown, no placeholders like [URL] or <TOKEN>.
-- If data unclear → return null or [] and set needs_observation=true."""
+- If data unclear -> return null or [] and set needs_observation=true."""
 
 # =========================
 # STEP 2: Understanding Traffic Context
@@ -22,7 +22,7 @@ Rules:
 - Extract endpoints, parameters, header tokens, auth flows.
 - Deduplicate endpoints by method + templated path.
 - Very important: include `sample_value` for any observed parameter from actual request
-  (e.g., GET /users/1 → parameter=userId, location=path, sample_value="1").
+  (e.g., GET /users/1 -> parameter=userId, location=path, sample_value="1").
 - If a param lacks observed value, use null and needs_observation=true.
 - No payloads, no attacks, no mitigations at this stage."""
 
@@ -49,7 +49,7 @@ Instruction:
   - Estimated token lifetime if observed (integer, in seconds).
   - Authentication flow (form_login, oauth2, saml, none).
   - needs_observation: true if more traffic capture is required.
-- Ensure `sample_value` is populated with concrete values from requests/responses whenever available (example: path `/users/1/orders/123` → userId="1", orderId="123")."""
+- Ensure `sample_value` is populated with concrete values from requests/responses whenever available (example: path `/users/1/orders/123` -> userId="1", orderId="123")."""
 
 # =========================
 # STEP S1: Static File Init
@@ -106,7 +106,7 @@ Instruction:
 - Extract auth_hints: lookups of storage keys (getItem('token')), Authorization header set, CSRF meta, cookie names.
 - Extract sensitive_strings: values containing apiKey, token, clientId, secret, debug, env, uuid-like patterns.
 - Extract xss_sinks and interesting_patterns as defined.
-- Populate confidence based on directness (explicit axios.post → higher; bare string "/api/users" → lower)."""
+- Populate confidence based on directness (explicit axios.post -> higher; bare string "/api/users" -> lower)."""
 
 # =========================
 # STEP S3: Static -> API Mapping
@@ -218,9 +218,9 @@ You take endpoint context (with parameters+sample_values) and map them to plausi
 Rules:
 - Allowed fields: ["endpoint","parameter","param_location","sample_value","category","expected_signals","needs_observation"].
 - No prose, no descriptions, no mitigations, no extra keys.
-- Treat path template variables as attack surfaces: /users/:id with sample_value=1 → likely IDOR/authz_bypass.
+- Treat path template variables as attack surfaces: /users/:id with sample_value=1 -> likely IDOR/authz_bypass.
 - Treat query/body as injection or XSS surface depending on type.
-- Use sample_value to anchor reasoning (e.g., observed "1" → numeric id → IDOR, observed "redirect=google.com" → open_redirect).
+- Use sample_value to anchor reasoning (e.g., observed "1" -> numeric id -> IDOR, observed "redirect=google.com" -> open_redirect).
 - If cannot classify confidently, set needs_observation=true.
 - expected_signals must only come from enum provided.
 - Deduplicate by endpoint+parameter+category."""
@@ -252,14 +252,13 @@ Constraints:
 - Use pass_logic="any" unless strict confirmation needs "all".
 - NO payloads in this step."""
 
-STEP4_VULNS_USER_PROMPT = """Convert these attack vectors into vulnerability hypotheses with measurable detection oracles.
+STEP4_VULNS_USER_PROMPT = """Convert these attack vectors into vulnerability hypotheses
 
 Input AttackVectors:
 <<ATTACK_VECTORS_JSON>>
 
 Requirements:
 - Each hypothesis must have specific oracles with thresholds
-- Set confidence (0.0-1.0) and priority (1-5) based on attack vector reliability
 - Include preconditions if authentication/CSRF tokens are needed
 - Use appropriate safety settings"""
 
@@ -271,15 +270,15 @@ STEP5_TESTCASES_SYSTEM_PROMPT = """You are generating comprehensive, safety-firs
 
 Responsibilities:
 1. Create complete test cases from vulnerability hypotheses.
-2. Generate payload tiers: benign (baseline) → probe → exploit
+2. Generate payload tiers: benign (baseline) -> probe -> exploit
 3. Define precise oracle rules with measurable conditions
 4. Handle authentication, CSRF, and session state through prerequisites
 5. Ensure safety constraints are respected
 
 Rules:
 - Each TestCase may involve one or more parameters. payloads must cover all involved locations. Always include a benign baseline with same parameter set
-- ALWAYS start with benign payload for baseline comparison
 - Use probe payloads for safe detection
+- If the url path is dynamic (like /book/1, book/2), use curly brace to indicate the value
 - Map hypothesis oracles to executable oracle_rules with specific conditions
 - Include prerequisites for auth context, CSRF tokens, session management, cookies (take from context)"""
 

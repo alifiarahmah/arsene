@@ -282,9 +282,6 @@ class TestCase(BaseModel, extra=Extra.forbid):
 
 class TestCasesContext(BaseModel, extra=Extra.forbid):
     test_cases: List[TestCase]
-    global_prerequisites: List[Prerequisite] = Field(default_factory=list)
-    execution_hints: Optional[List[KeyValue]] = None
-    metadata: Optional[List[KeyValue]] = None
 
 # Re-export static analysis schemas for convenience
 __all__ = [

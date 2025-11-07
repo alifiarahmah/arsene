@@ -73,9 +73,8 @@ class ParserModule:
             '.js', '.js.map', '.json', '.wasm', '.html', '.htm'
         }
 
-        # NEW: Categorize static files for analysis
         self.analyzable_static_extensions = {
-            '.js', '.html', '.htm'  # Primary targets for static analysis
+            '.js', '.html', '.htm'
         }
 
         self.api_indicators = {

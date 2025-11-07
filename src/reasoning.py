@@ -17,6 +17,9 @@ from schemas_static import StaticInitOutput, StaticExtractionOutput, StaticMappi
 from utils import call_llm, fill
 import json
 import argparse
+import datetime
+import os
+from config import config
 from typing import Union
 
 class ReasoningModule():
@@ -210,11 +213,11 @@ class ReasoningModule():
         # STEP 2: Traffic Analysis
         print("\n[STEP 2] Traffic Analysis...")
         ta_result = self.traffic_analysis('parsed_hars/' + filename + '.json')
-        self.export_result(result=ta_result, output_path='reasoning_result/traffic_analysis_result/' + filename + '.json')
+        self.export_result(result=ta_result, filename = filename, output_path='reasoning_result/traffic_analysis_result/')
         print(f"✓ Extracted {len(ta_result.endpoints)} endpoints from traffic")
 
-        # STATIC FILE BRANCH (if provided)
-        unified_context: Union[TrafficAnalysisContext, UnifiedInventoryOutput] = ta_result  # Default to traffic-only context
+        # STATIC FILE BRANCH
+        unified_context: Union[TrafficAnalysisContext, UnifiedInventoryOutput] = ta_result
         if static_files_path:
             print("\n" + "=" * 60)
             print("STATIC FILE ANALYSIS BRANCH")
@@ -226,24 +229,24 @@ class ReasoningModule():
             # STEP S1: Static Init
             print("\n[STEP S1] Static File Init...")
             static_init_result = self.static_init(static_files_data.get('summary', []))
-            self.export_result(result=static_init_result, output_path='reasoning_result/static_init_result/' + filename + '.json')
+            self.export_result(result=static_init_result, filename = filename, output_path='reasoning_result/static_init_result/')
             print(f"✓ Indexed {len(static_init_result.file_index)} static files")
 
             # STEP S2: Static Extract
             print("\n[STEP S2] Static Extraction...")
             static_extract_result = self.static_extract(static_files_data.get('content', []))
-            self.export_result(result=static_extract_result, output_path='reasoning_result/static_extract_result/' + filename + '.json')
+            self.export_result(result=static_extract_result, filename = filename, output_path='reasoning_result/static_extract_result/')
             print(f"✓ Found {len(static_extract_result.candidate_endpoints)} candidate endpoints")
             print(f"✓ Found {len(static_extract_result.client_routes)} client routes")
             print(f"✓ Found {len(static_extract_result.xss_sinks)} XSS sinks")
 
             # STEP S3: Static Mapping
-            print("\n[STEP S3] Static→Traffic Mapping...")
+            print("\n[STEP S3] Static->Traffic Mapping...")
             static_mapping_result = self.static_mapping(
                 static_artifacts=static_extract_result.model_dump_json(),
                 traffic_endpoints=ta_result.model_dump_json()
             )
-            self.export_result(result=static_mapping_result, output_path='reasoning_result/static_mapping_result/' + filename + '.json')
+            self.export_result(result=static_mapping_result, filename = filename, output_path='reasoning_result/static_mapping_result/')
             print(f"✓ Enriched {len(static_mapping_result.enriched_endpoints)} endpoints")
             print(f"✓ Found {len(static_mapping_result.hidden_candidates)} hidden candidates")
 
@@ -253,7 +256,7 @@ class ReasoningModule():
                 enriched_static=static_mapping_result.model_dump_json(),
                 traffic_context=ta_result.model_dump_json()
             )
-            self.export_result(result=unified_inventory_result, output_path='reasoning_result/unified_inventory_result/' + filename + '.json')
+            self.export_result(result=unified_inventory_result, filename = filename, output_path='reasoning_result/unified_inventory_result/')
             print(f"✓ Unified inventory: {len(unified_inventory_result.endpoints)} total endpoints")
 
             # STEP I2: Sink Attachment (optional)
@@ -267,7 +270,7 @@ class ReasoningModule():
                 unified_inventory=unified_inventory_result.model_dump_json(),
                 static_sinks=static_sinks_data
             )
-            self.export_result(result=sink_attachment_result, output_path='reasoning_result/sink_attachment_result/' + filename + '.json')
+            self.export_result(result=sink_attachment_result, filename = filename, output_path='reasoning_result/sink_attachment_result/')
             print(f"✓ Attached sinks to {len(sink_attachment_result.endpoint_sinks)} endpoints")
 
             # Use unified inventory as context for attack vectors
@@ -279,25 +282,25 @@ class ReasoningModule():
         print("=" * 60)
         print("\n[STEP 3] Attack Vector Enumeration...")
         av_result = self.av_enum(unified_context)
-        self.export_result(result=av_result, output_path='reasoning_result/av_enum_result/' + filename + '.json')
+        self.export_result(result=av_result, filename = filename, output_path='reasoning_result/av_enum_result/')
         print(f"✓ Identified {len(av_result.attack_vectors)} attack vectors")
 
         # STEP 4: Vulnerability Hypotheses
         print("\n[STEP 4] Vulnerability Hypothesis Generation...")
         vh_result = self.vuln_hypothesis(av_result)
-        self.export_result(result=vh_result, output_path='reasoning_result/vuln_hypotheses_result/' + filename + '.json')
+        self.export_result(result=vh_result, filename = filename, output_path='reasoning_result/vuln_hypotheses_result/')
         print(f"✓ Generated {len(vh_result.hypotheses)} vulnerability hypotheses")
 
         # STEP 5: Test Case Generation
         print("\n[STEP 5] Test Case Generation...")
         tc_gen_result = self.tc_gen(unified_context, vh_result)
-        self.export_result(result=tc_gen_result, output_path='reasoning_result/tc_gen_result/' + filename + '.json')
+        self.export_result(result=tc_gen_result, filename = filename, output_path='reasoning_result/tc_gen_result/')
         print(f"✓ Generated {len(tc_gen_result.test_cases)} test cases")
 
         # STEP 6: Chaining & Final Plan
         print("\n[STEP 6] Test Case Chaining & Prioritization...")
         final_plan_json = self.chain_tc_context(unified_context, tc_gen_result)
-        self.export_result(result=final_plan_json, output_path='reasoning_result/' + filename + '.json')
+        self.export_result(result=final_plan_json, filename = filename, output_path='reasoning_result/')
         print(f"✓ Final execution plan ready with {len(final_plan_json.test_cases)} chained tests")
 
         print("\n" + "=" * 60)
@@ -305,11 +308,12 @@ class ReasoningModule():
         print("=" * 60)
         return final_plan_json
 
-    def export_result(self, result, output_path: str):
+    def export_result(self, result, filename: str, output_path: str):
         """Export result to JSON file"""
-        import os
+        current_datetime = datetime.datetime.now()
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        with open(output_path, 'w', encoding='utf-8') as f:
+        export_filename = current_datetime.strftime('%Y%m%d%H%M%S_') + filename + '_' + config['MODEL'] + '.json'
+        with open(output_path + export_filename, 'w', encoding='utf-8') as f:
             if isinstance(result, BaseModel):
                 f.write(result.model_dump_json(indent=2, exclude_none=True))
             else:
