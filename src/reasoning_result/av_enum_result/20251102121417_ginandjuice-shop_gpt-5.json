@@ -1,0 +1,216 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/resources/js/react.development.js",
+      "parameter": [
+        "referer"
+      ],
+      "param_location": "header",
+      "sample_value": "@h1, @h2, @h3, @h4, @h5, @h6, @h7",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/resources/footer/js/scanme.js",
+      "parameter": [
+        "referer"
+      ],
+      "param_location": "header",
+      "sample_value": "@h1, @h2, @h3, @h4, @h5, @h6, @h7",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/resources/js/subscribeNow.js",
+      "parameter": [
+        "referer"
+      ],
+      "param_location": "header",
+      "sample_value": "@h1, @h2, @h3, @h4, @h5, @h6",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/resources/images/gin-and-juice-team.mp4",
+      "parameter": [
+        "range"
+      ],
+      "param_location": "header",
+      "sample_value": "bytes=0-",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": [
+        "postId"
+      ],
+      "param_location": "query",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": [
+        "email"
+      ],
+      "param_location": "body",
+      "category": "injection_sql",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": [
+        "coupon"
+      ],
+      "param_location": "body",
+      "category": "injection_sql",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": [
+        "csrf"
+      ],
+      "param_location": "body",
+      "category": "csrf",
+      "expected_signals": [
+        "token_reuse_failure",
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/resources/js/xmlStockCheckPayload.js",
+      "parameter": [
+        "referer"
+      ],
+      "param_location": "header",
+      "sample_value": "https://ginandjuice.shop/catalog/product?productId=17",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/resources/js/stockCheck.js",
+      "parameter": [
+        "referer"
+      ],
+      "param_location": "header",
+      "sample_value": "https://ginandjuice.shop/catalog/product?productId=17",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": [
+        "productId"
+      ],
+      "param_location": "query",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog/cart",
+      "parameter": [
+        "scanMeHeader"
+      ],
+      "param_location": "header",
+      "sample_value": "https://ginandjuice.shop/catalog",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/catalog",
+      "parameter": [
+        "scanMeHeader"
+      ],
+      "param_location": "header",
+      "sample_value": "https://ginandjuice.shop/blog/post?postId=4",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/about",
+      "parameter": [
+        "scanMeHeader"
+      ],
+      "param_location": "header",
+      "sample_value": "https://ginandjuice.shop/",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    }
+  ]
+}

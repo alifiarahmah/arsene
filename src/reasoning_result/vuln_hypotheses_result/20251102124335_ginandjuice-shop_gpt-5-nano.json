@@ -1,0 +1,397 @@
+{
+  "hypotheses": [
+    {
+      "id": "H-GET-resources-js-file",
+      "method": "GET",
+      "endpoint": "/resources/js/{file}.js",
+      "parameters": [
+        "file"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Check if requested {file} is reflected in response body."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              500
+            ]
+          },
+          "description": "Monitor for status code change when varying {file} value."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H-GET-resources-js-library-development",
+      "method": "GET",
+      "endpoint": "/resources/js/{library}.development.js",
+      "parameters": [
+        "library"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Check if {library}.development.js is reflected."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              500
+            ]
+          },
+          "description": "Observe status codes with varying {library}."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.55,
+      "priority": 3
+    },
+    {
+      "id": "H-GET-resources-js-asset",
+      "method": "GET",
+      "endpoint": "/resources/js/{asset}.js",
+      "parameters": [
+        "asset"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Check reflection of {asset}.js request."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              500
+            ]
+          },
+          "description": "Observe status codes with {asset}."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.55,
+      "priority": 3
+    },
+    {
+      "id": "H-GET-resources-footer-js-file",
+      "method": "GET",
+      "endpoint": "/resources/footer/js/{file}.js",
+      "parameters": [
+        "file"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Reflection of {file}.js in response."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              500
+            ]
+          },
+          "description": "Status variation with {file}."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.55,
+      "priority": 3
+    },
+    {
+      "id": "H-GET-resources-images-image",
+      "method": "GET",
+      "endpoint": "/resources/images/{image}.mp4",
+      "parameters": [
+        "image"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Reflection of {image}.mp4 in response."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              500
+            ]
+          },
+          "description": "Status variation with {image}."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.55,
+      "priority": 3
+    },
+    {
+      "id": "H-GET-blog-post",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameters": [
+        "postId",
+        "scanMeHeader",
+        "viewport"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Reflection of query parameters in /blog/post."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              500
+            ]
+          },
+          "description": "Status variation on parameter changes."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H-GET-root-header-scanMe",
+      "method": "GET",
+      "endpoint": "/",
+      "parameters": [
+        "scanMeHeader",
+        "viewport"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Reflection of header values."
+        },
+        {
+          "signal": "timing_anomaly",
+          "threshold": {
+            "timing_ms": 500
+          },
+          "description": "Timing variation from header input."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "csrf_token",
+          "value": "present"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H-POST-catalog-subscribe-authz",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameters": [
+        "coupon",
+        "csrf",
+        "email"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Reflection of body parameters."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Unexpected response length upon input variation."
+        },
+        {
+          "signal": "authentication_bypassed",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Authentication check bypass."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "csrf_required"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 12
+      },
+      "confidence": 0.65,
+      "priority": 4
+    }
+  ],
+  "metadata": []
+}

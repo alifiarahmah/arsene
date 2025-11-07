@@ -1,0 +1,139 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/resources/js/{file}.js",
+      "parameter": [
+        "file"
+      ],
+      "param_location": "path",
+      "sample_value": "{file}",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/resources/js/{library}.development.js",
+      "parameter": [
+        "library"
+      ],
+      "param_location": "path",
+      "sample_value": "{library}",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/resources/js/{asset}.js",
+      "parameter": [
+        "asset"
+      ],
+      "param_location": "path",
+      "sample_value": "{asset}",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/resources/footer/js/{file}.js",
+      "parameter": [
+        "file"
+      ],
+      "param_location": "path",
+      "sample_value": "{file}",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/resources/js/subscribeNow.js",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/resources/images/{image}.mp4",
+      "parameter": [
+        "image"
+      ],
+      "param_location": "path",
+      "sample_value": "{image}",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": [
+        "postId",
+        "scanMeHeader",
+        "viewport"
+      ],
+      "param_location": "query",
+      "sample_value": "null",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "scanMeHeader",
+        "viewport"
+      ],
+      "param_location": "header",
+      "sample_value": "null",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "timing_variation"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": [
+        "coupon",
+        "csrf",
+        "email"
+      ],
+      "param_location": "body",
+      "sample_value": "null",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "reflected_input",
+        "token_reuse_failure"
+      ],
+      "needs_observation": true
+    }
+  ]
+}

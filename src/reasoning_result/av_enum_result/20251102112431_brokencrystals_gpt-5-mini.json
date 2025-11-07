@@ -1,0 +1,124 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/vendor/counter-up/jquery.waypoints.min.js",
+      "parameter": [
+        "horizontal"
+      ],
+      "param_location": "query",
+      "sample_value": "string",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/maps/embed",
+      "parameter": [
+        "pb"
+      ],
+      "param_location": "query",
+      "sample_value": "string",
+      "category": "ssrf",
+      "expected_signals": [
+        "out_of_band_call",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/css",
+      "parameter": [
+        "family"
+      ],
+      "param_location": "query",
+      "sample_value": "string",
+      "category": "open_redirect",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery/jquery.min.js",
+      "parameter": [
+        "object"
+      ],
+      "param_location": "query",
+      "sample_value": "string",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "config"
+      ],
+      "param_location": "query",
+      "sample_value": "string",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "description"
+      ],
+      "param_location": "query",
+      "sample_value": "string",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "theme-color"
+      ],
+      "param_location": "query",
+      "sample_value": "string",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "viewport"
+      ],
+      "param_location": "query",
+      "sample_value": "string",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    }
+  ]
+}

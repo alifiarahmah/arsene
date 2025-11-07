@@ -1,0 +1,346 @@
+{
+  "hypotheses": [
+    {
+      "id": "H1",
+      "method": "GET",
+      "endpoint": "/vendor/counter-up/jquery.waypoints.min.js",
+      "parameters": [
+        "horizontal"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Reflected input appears in response body or script without encoding"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Response length changes significantly when varying parameter value length/content"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.7,
+      "priority": 3
+    },
+    {
+      "id": "H2",
+      "method": "GET",
+      "endpoint": "/maps/embed",
+      "parameters": [
+        "pb"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "ssrf",
+      "oracles": [
+        {
+          "signal": "http_callback",
+          "threshold": {
+            "timing_ms": 5000
+          },
+          "description": "Out-of-band interaction detected from server to attacker-controlled host (DNS/HTTP) within 5s"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              500,
+              502,
+              504
+            ]
+          },
+          "description": "Unexpected status codes or differences compared to baseline indicate server-side fetch behavior"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 5
+    },
+    {
+      "id": "H3",
+      "method": "GET",
+      "endpoint": "/css",
+      "parameters": [
+        "family"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "open_redirect",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              301,
+              302,
+              303,
+              307,
+              308,
+              200
+            ]
+          },
+          "description": "Parameter triggers redirect status codes or changes compared to baseline"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200,
+              301,
+              302
+            ]
+          },
+          "description": "Large response length differences indicating redirect or content swap"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "H4",
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery/jquery.min.js",
+      "parameters": [
+        "object"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Parameter value reflected into DOM-related script or attributes without proper sanitization"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Significant response length change when varying input suggests injection into script"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.65,
+      "priority": 3
+    },
+    {
+      "id": "H5",
+      "method": "GET",
+      "endpoint": "/",
+      "parameters": [
+        "config"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Input reflected in page HTML or inline scripts without encoding"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Response size changes when altering parameter content"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.7,
+      "priority": 3
+    },
+    {
+      "id": "H6",
+      "method": "GET",
+      "endpoint": "/",
+      "parameters": [
+        "description"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Parameter reflected in page output or metadata without proper encoding"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Noticeable length delta when varying input"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.7,
+      "priority": 3
+    },
+    {
+      "id": "H7",
+      "method": "GET",
+      "endpoint": "/",
+      "parameters": [
+        "theme-color"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Theme-color value is reflected into meta/theme tags or CSS without sanitization"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Response length variation when modifying parameter"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H8",
+      "method": "GET",
+      "endpoint": "/",
+      "parameters": [
+        "viewport"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Viewport parameter reflected into meta viewport or inline content without encoding"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Length delta when altering input suggests reflection"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 3
+    }
+  ]
+}

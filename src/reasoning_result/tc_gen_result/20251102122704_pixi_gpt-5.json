@@ -1,0 +1,1175 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-H1-GET-/login-user",
+      "hypothesis_id": "H1",
+      "base_url": "",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": "query:user",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query:user",
+              "value": "mail@example.com"
+            }
+          ],
+          "description": "Baseline valid-looking user value",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "content-type",
+              "header_value": "application/x-www-form-urlencoded"
+            },
+            {
+              "header_name": "origin",
+              "header_value": "http://localhost:8000"
+            },
+            {
+              "header_name": "referer",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query:user",
+              "value": "../../../../../etc/passwd"
+            }
+          ],
+          "description": "Traversal-ish probe to test auth handling quirks",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "content-type",
+              "header_value": "application/x-www-form-urlencoded"
+            },
+            {
+              "header_name": "origin",
+              "header_value": "http://localhost:8000"
+            },
+            {
+              "header_name": "referer",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query:user",
+              "value": "%00admin"
+            }
+          ],
+          "description": "Null byte attempt to bypass comparison logic",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "content-type",
+              "header_value": "application/x-www-form-urlencoded"
+            },
+            {
+              "header_name": "origin",
+              "header_value": "http://localhost:8000"
+            },
+            {
+              "header_name": "referer",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Ensure no authenticated session cookies are sent to observe true unauthenticated behavior",
+          "custom_logic": "clear cookies for domain before requests"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "compare each probe/exploit response code vs benign baseline",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              303,
+              307,
+              401,
+              403,
+              404,
+              500,
+              503,
+              301,
+              308,
+              400,
+              422,
+              429
+            ]
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "absolute(body_length_delta_pct) >= threshold compared to benign",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.3
+        },
+        {
+          "signal": "error_signature",
+          "condition": "response body contains common error markers",
+          "threshold": {
+            "string_value": "Exception|Traceback|stack trace|ValueError|TypeError|KeyError|NullReference|SQLSTATE|PDOException"
+          },
+          "weight": 0.2
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "authn_bypass",
+        "content-negotiation",
+        "unauthenticated"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-H2-POST-/upload_photo/-content-type",
+      "hypothesis_id": "H2",
+      "base_url": "",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "header:content-type",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "header:content-type",
+              "value": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k"
+            }
+          ],
+          "description": "Baseline standard multipart upload header",
+          "header": [
+            {
+              "header_name": "accept",
+              "header_value": "application/json, text/plain, */*"
+            },
+            {
+              "header_name": "referer",
+              "header_value": "http://localhost:8000/pixi"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "x-csrf-token",
+              "header_value": "CSRF-TOKEN"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header:content-type",
+              "value": "application/json"
+            }
+          ],
+          "description": "Probe alternate parser path with JSON",
+          "header": [
+            {
+              "header_name": "accept",
+              "header_value": "application/json, text/plain, */*"
+            },
+            {
+              "header_name": "referer",
+              "header_value": "http://localhost:8000/pixi"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "x-csrf-token",
+              "header_value": "CSRF-TOKEN"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header:content-type",
+              "value": "multipart/form-data; boundary=invalidboundary"
+            }
+          ],
+          "description": "Malformed multipart boundary to trigger parser errors/info leaks",
+          "header": [
+            {
+              "header_name": "accept",
+              "header_value": "application/json, text/plain, */*"
+            },
+            {
+              "header_name": "referer",
+              "header_value": "http://localhost:8000/pixi"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "x-csrf-token",
+              "header_value": "CSRF-TOKEN"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Obtain authenticated session via form_login to access upload endpoint",
+          "bind_to": "session",
+          "custom_logic": "perform login flow and store session cookie"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Capture CSRF token value for double submit",
+          "extract_from": "cookie:CSRF-TOKEN",
+          "bind_to": "csrf",
+          "custom_logic": "read CSRF-TOKEN cookie and set x-csrf-token header with same value"
+        },
+        {
+          "type": "session_state",
+          "description": "Maintain session cookie across requests",
+          "extract_from": "set-cookie:session",
+          "bind_to": "cookie_store",
+          "custom_logic": "persist cookie jar"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "compare status vs baseline across header variants",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              202,
+              204,
+              400,
+              401,
+              403,
+              415,
+              422,
+              500,
+              413,
+              405
+            ]
+          },
+          "weight": 0.4
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "size delta >= threshold vs baseline",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 0.3
+        },
+        {
+          "signal": "error_signature",
+          "condition": "look for parser and tmp path leaks",
+          "threshold": {
+            "string_value": "boundary not found|unexpected end of multipart|Tmp file|TemporaryFile|/tmp/|C:\\\\Windows\\\\Temp|Stack trace|Traceback|IllegalStateException|MultipartException|Busboy|multer|werkzeug|PHP Warning|PHP Notice"
+          },
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Send minimal bodies to avoid actual uploads. For JSON or malformed types, send empty body.",
+      "tags": [
+        "sensitive_data_exposure",
+        "content-type-mismatch",
+        "csrf-protected"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-H3-GET-/pictures/-accept",
+      "hypothesis_id": "H3",
+      "base_url": "",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "header:accept",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json, text/plain, */*"
+            }
+          ],
+          "description": "Baseline Accept from observations",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json"
+            }
+          ],
+          "description": "Request strict JSON to see if extra data returned",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "*/*;q=1,text/html;q=0"
+            }
+          ],
+          "description": "Prefer non-HTML to force machine-readable responses",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Run unauthenticated to detect exposure without login",
+          "custom_logic": "no cookies sent"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "compare status codes across Accept variants",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406,
+              404,
+              500
+            ]
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >= threshold vs baseline",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sensitive_data_exposure",
+        "content-negotiation"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-H4-GET-/user_pictures/-accept",
+      "hypothesis_id": "H4",
+      "base_url": "",
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameter": "header:accept",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json, text/plain, */*"
+            }
+          ],
+          "description": "Baseline Accept",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json;q=1,text/html;q=0.1"
+            }
+          ],
+          "description": "Bias toward JSON",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/*, text/*;q=0.9"
+            }
+          ],
+          "description": "Force broad machine-readable types",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Unauthenticated requests to detect leakage",
+          "custom_logic": "no cookies sent"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status comparison across Accept headers",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406,
+              404,
+              500
+            ]
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "length change >= threshold",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-H5-GET-/user_loves/-accept",
+      "hypothesis_id": "H5",
+      "base_url": "",
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameter": "header:accept",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json, text/plain, */*"
+            }
+          ],
+          "description": "Baseline Accept",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json"
+            }
+          ],
+          "description": "Request JSON explicitly",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "*/*;q=1,text/html;q=0"
+            }
+          ],
+          "description": "Force non-HTML preferred",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Unauthenticated",
+          "custom_logic": "no cookies"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "compare status vs baseline",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406,
+              404,
+              500
+            ]
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >= threshold",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-H6-GET-/user_likes/-accept",
+      "hypothesis_id": "H6",
+      "base_url": "",
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameter": "header:accept",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json, text/plain, */*"
+            }
+          ],
+          "description": "Baseline Accept",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json"
+            }
+          ],
+          "description": "Prefer JSON",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/*;q=1,text/*;q=0.9"
+            }
+          ],
+          "description": "Favor machine-readable",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Unauthenticated",
+          "custom_logic": "no cookies"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status comparison across Accept variants",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406,
+              404,
+              500
+            ]
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "length delta >= threshold",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-H7-GET-/user_info/-accept",
+      "hypothesis_id": "H7",
+      "base_url": "",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "header:accept",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json, text/plain, */*"
+            }
+          ],
+          "description": "Baseline Accept",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json"
+            }
+          ],
+          "description": "JSON-only to expose PII fields",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "*/*;q=1,text/html;q=0"
+            }
+          ],
+          "description": "Force non-HTML response",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Unauthenticated",
+          "custom_logic": "no cookies"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status comparison across variants",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406,
+              404,
+              500
+            ]
+          },
+          "weight": 0.45
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >= threshold",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.55
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sensitive_data_exposure",
+        "pii"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-H8-GET-/total_money/-accept",
+      "hypothesis_id": "H8",
+      "base_url": "",
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameter": "header:accept",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json, text/plain, */*"
+            }
+          ],
+          "description": "Baseline Accept",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json"
+            }
+          ],
+          "description": "Prefer JSON for numeric disclosure",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/*;q=1,text/*;q=0.9"
+            }
+          ],
+          "description": "Broaden to any machine-readable",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Unauthenticated",
+          "custom_logic": "no cookies"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status comparison across variants",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406,
+              404,
+              500
+            ]
+          },
+          "weight": 0.45
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >= threshold",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.55
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sensitive_data_exposure",
+        "financial"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-H9-GET-/all_users/-accept",
+      "hypothesis_id": "H9",
+      "base_url": "",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameter": "header:accept",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json, text/plain, */*"
+            }
+          ],
+          "description": "Baseline Accept",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "application/json"
+            }
+          ],
+          "description": "JSON-only to elicit directory data",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header:accept",
+              "value": "*/*;q=1,text/html;q=0"
+            }
+          ],
+          "description": "Prefer non-HTML to maximize data fields",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "http://localhost:8000/"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Unauthenticated",
+          "custom_logic": "no cookies"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status comparison",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406,
+              404,
+              500
+            ]
+          },
+          "weight": 0.45
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >= threshold",
+          "threshold": {
+            "body_length_delta_pct": 35.0
+          },
+          "weight": 0.55
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sensitive_data_exposure",
+        "directory-listing"
+      ],
+      "estimated_duration": 1
+    }
+  ]
+}

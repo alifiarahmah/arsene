@@ -1,0 +1,381 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path_template": "/resources/js/react.development.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript",
+        "text/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/react-dom.development.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript",
+        "text/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/angular_1-7-7.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript",
+        "text/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/footer/js/scanme.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript",
+        "text/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/subscribeNow.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript",
+        "text/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/images/gin-and-juice-team.mp4",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "video/mp4"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/blog/post",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html",
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "postId",
+          "location": "query",
+          "sample_value": "3"
+        },
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html"
+      ],
+      "parameters": [
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/catalog/subscribe",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "user_agent_checks",
+        "csrf"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/json;charset=UTF-8",
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "coupon",
+          "location": "body"
+        },
+        {
+          "name": "csrf",
+          "location": "body"
+        },
+        {
+          "name": "email",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/catalog/product",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html"
+      ],
+      "parameters": [
+        {
+          "name": "productId",
+          "location": "query"
+        },
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/catalog/cart",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html"
+      ],
+      "parameters": [
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/catalog",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html"
+      ],
+      "parameters": [
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/about",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html"
+      ],
+      "parameters": [
+        {
+          "name": "scanMeHeader",
+          "location": "query"
+        },
+        {
+          "name": "viewport",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/xmlStockCheckPayload.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript",
+        "text/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/stockCheck.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript",
+        "text/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    }
+  ],
+  "global_observations": {
+    "session_management": "cookie",
+    "auth_flow": "none",
+    "needs_observation": true
+  }
+}

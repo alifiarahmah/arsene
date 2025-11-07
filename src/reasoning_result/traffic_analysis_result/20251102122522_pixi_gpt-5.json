@@ -1,0 +1,921 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path_template": "/js/jquery.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks",
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/bootstrap.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks",
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/angular.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks",
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/pictures/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json, text/plain, */*"
+      ],
+      "parameters": [
+        {
+          "name": "accept",
+          "location": "header",
+          "sample_value": "application/json, text/plain, */*"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/0215428b1ddcb8dc8fd93e4ced0cab97",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks",
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_pictures/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json, text/plain, */*"
+      ],
+      "parameters": [
+        {
+          "name": "accept",
+          "location": "header",
+          "sample_value": "application/json, text/plain, */*"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_loves/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json, text/plain, */*"
+      ],
+      "parameters": [
+        {
+          "name": "accept",
+          "location": "header",
+          "sample_value": "application/json, text/plain, */*"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_likes/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json, text/plain, */*"
+      ],
+      "parameters": [
+        {
+          "name": "accept",
+          "location": "header",
+          "sample_value": "application/json, text/plain, */*"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_info/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json, text/plain, */*"
+      ],
+      "parameters": [
+        {
+          "name": "accept",
+          "location": "header",
+          "sample_value": "application/json, text/plain, */*"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/total_money/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json, text/plain, */*"
+      ],
+      "parameters": [
+        {
+          "name": "accept",
+          "location": "header",
+          "sample_value": "application/json, text/plain, */*"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/pixi",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks",
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "content-type",
+          "location": "header",
+          "sample_value": "application/x-www-form-urlencoded"
+        },
+        {
+          "name": "origin",
+          "location": "header",
+          "sample_value": "http://localhost:8000"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/pixi"
+        },
+        {
+          "name": "upgrade-insecure-requests",
+          "location": "header",
+          "sample_value": "1"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/ng-infinite-scroll.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/pixi"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/ng-file-upload.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/pixi"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/ng-file-upload-shim.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/pixi"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/angular-sanitize.min.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/pixi"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/all_users/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json, text/plain, */*"
+      ],
+      "parameters": [
+        {
+          "name": "accept",
+          "location": "header",
+          "sample_value": "application/json, text/plain, */*"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/login",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "same_site_cookie",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks",
+        "csrf",
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/x-www-form-urlencoded"
+      ],
+      "parameters": [
+        {
+          "name": "user",
+          "location": "query",
+          "sample_value": "mail@example.com"
+        },
+        {
+          "name": "upgrade-insecure-requests",
+          "location": "header",
+          "sample_value": "1"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        },
+        {
+          "name": "content-type",
+          "location": "header",
+          "sample_value": "application/x-www-form-urlencoded"
+        },
+        {
+          "name": "origin",
+          "location": "header",
+          "sample_value": "http://localhost:8000"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/upload_photo/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "double_submit_cookie",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "csrf",
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k",
+        "application/json, text/plain, */*"
+      ],
+      "parameters": [
+        {
+          "name": "accept",
+          "location": "header",
+          "sample_value": "application/json, text/plain, */*"
+        },
+        {
+          "name": "content-type",
+          "location": "header",
+          "sample_value": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/pixi"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/swagger.json",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "accept",
+          "location": "header",
+          "sample_value": "application/json,*/*"
+        },
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/api-docs/"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api-docs/",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks",
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        },
+        {
+          "name": "upgrade-insecure-requests",
+          "location": "header",
+          "sample_value": "1"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/register",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks",
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/"
+        },
+        {
+          "name": "upgrade-insecure-requests",
+          "location": "header",
+          "sample_value": "1"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api-docs/swagger-ui-standalone-preset.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/api-docs/"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/api-docs/swagger-ui-bundle.js",
+      "auth_schemes": [
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "referer",
+          "location": "header",
+          "sample_value": "http://localhost:8000/api-docs/"
+        },
+        {
+          "name": "user-agent",
+          "location": "header",
+          "sample_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+        },
+        {
+          "name": "sec-ch-ua",
+          "location": "header",
+          "sample_value": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\""
+        }
+      ],
+      "tokens_observed": [
+        "CSRF-TOKEN",
+        "session"
+      ],
+      "needs_observation": true
+    }
+  ],
+  "global_observations": {
+    "session_management": "cookie",
+    "auth_flow": "form_login",
+    "needs_observation": true
+  }
+}

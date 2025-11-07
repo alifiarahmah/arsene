@@ -1,0 +1,455 @@
+{
+  "hypotheses": [
+    {
+      "id": "authz_bypass_vendor_wow_resource",
+      "method": "GET",
+      "endpoint": "/vendor/wow/{resource}",
+      "parameters": [
+        "resource"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Detect reflected input via path parameter in response body."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              500
+            ]
+          },
+          "description": "Observe status code changes when injecting unusual resource values."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "authentication",
+          "value": "required_or_none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "nosql_maps_embed_pb",
+      "method": "GET",
+      "endpoint": "/maps/embed",
+      "parameters": [
+        "pb"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Unexpected response size suggesting NoSQL-like injection effects."
+        },
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Value echoes in response."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "authentication",
+          "value": "required_or_none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.65,
+      "priority": 3
+    },
+    {
+      "id": "injection_sql_css",
+      "method": "GET",
+      "endpoint": "/css",
+      "parameters": [
+        "family"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_sql",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Longer/shorter responses indicating injection effect."
+        },
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Input echoed in response."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "authentication",
+          "value": "required_or_none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.7,
+      "priority": 3
+    },
+    {
+      "id": "authz_vendor_jquery_resource",
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery/{resource}",
+      "parameters": [
+        "resource"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Path parameter reflected in response."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "description": "Status variability with resource value."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "authentication",
+          "value": "required_or_none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "authz_vendor_bootstrap_resource",
+      "method": "GET",
+      "endpoint": "/assets/vendor/bootstrap/{resource}",
+      "parameters": [
+        "resource"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Path parameter reflected in response."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404
+            ]
+          },
+          "description": "Status change with resource value."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "authentication",
+          "value": "required_or_none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "others_vendor_aos",
+      "method": "GET",
+      "endpoint": "/assets/vendor/aos/{resource}",
+      "parameters": [
+        "resource"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Unusual length change for resource path."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "confidence": 0.4,
+      "priority": 1
+    },
+    {
+      "id": "assets_vendor_icofont_resource",
+      "method": "GET",
+      "endpoint": "/assets/vendor/icofont/{resource}",
+      "parameters": [
+        "resource"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Unexpected length in ICOfont resource fetch."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "confidence": 0.4,
+      "priority": 1
+    },
+    {
+      "id": "assets_vendor_counterup_resource",
+      "method": "GET",
+      "endpoint": "/assets/vendor/counterup/{resource}",
+      "parameters": [
+        "resource"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "CounterUp resource fetch length anomaly."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "confidence": 0.4,
+      "priority": 1
+    },
+    {
+      "id": "maps_root_query_nosql",
+      "method": "GET",
+      "endpoint": "/maps",
+      "parameters": [
+        "pb"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "NoSQL-like length change on maps pb param."
+        },
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Reflected input in maps response."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "authentication",
+          "value": "required_or_none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.65,
+      "priority": 3
+    },
+    {
+      "id": "css_maps_config_nosql",
+      "method": "GET",
+      "endpoint": "/css",
+      "parameters": [
+        "family"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "NoSQL-like length change on css family param."
+        },
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Reflected input in css response."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "authentication",
+          "value": "required_or_none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.65,
+      "priority": 3
+    },
+    {
+      "id": "root_config_injection_nosql",
+      "method": "GET",
+      "endpoint": "/",
+      "parameters": [
+        "config",
+        "description",
+        "theme-color",
+        "viewport"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Overall root config response length change."
+        },
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Input echoed in root config response."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "authentication",
+          "value": "required_or_none"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.65,
+      "priority": 3
+    }
+  ],
+  "metadata": []
+}

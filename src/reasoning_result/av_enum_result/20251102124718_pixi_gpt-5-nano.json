@@ -1,0 +1,228 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/js/{resource}.min.js",
+      "parameter": [
+        "ajaxSuccess"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/js/{resource}.min.js",
+      "parameter": [
+        "border"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "injection_sql",
+      "expected_signals": [
+        "reflected_input",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/js/bootstrap.min.js",
+      "parameter": [
+        "element"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "injection_sql",
+      "expected_signals": [
+        "reflected_input",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/js/bootstrap.min.js",
+      "parameter": [
+        "offsetWidth"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "injection_sql",
+      "expected_signals": [
+        "reflected_input",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/js/bootstrap.min.js",
+      "parameter": [
+        "symbol"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "injection_sql",
+      "expected_signals": [
+        "reflected_input",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/js/angular.min.js",
+      "parameter": [
+        "EAC"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/js/angular.min.js",
+      "parameter": [
+        "Object"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": [
+        "_id"
+      ],
+      "param_location": "query",
+      "sample_value": "\"integer\"",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": [
+        "creator_id"
+      ],
+      "param_location": "query",
+      "sample_value": "\"integer\"",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": [
+        "description"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "reflected_input",
+        "token_reuse_failure"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": [
+        "filename"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "reflected_input",
+        "token_reuse_failure"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": [
+        "image_url"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "reflected_input",
+        "token_reuse_failure"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": [
+        "user"
+      ],
+      "param_location": "query",
+      "sample_value": "\"string\"",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/upload_photo/",
+      "parameter": [
+        "created_date",
+        "creator_id",
+        "description",
+        "filename",
+        "image_url",
+        "insertedCount",
+        "insertedIds",
+        "likes",
+        "money_made",
+        "n",
+        "name",
+        "ops",
+        "result",
+        "title",
+        "updated_date"
+      ],
+      "param_location": "body",
+      "sample_value": "\"string\"",
+      "category": "deserialization",
+      "expected_signals": [
+        "reflected_input",
+        "out_of_band_call"
+      ],
+      "needs_observation": true
+    }
+  ]
+}

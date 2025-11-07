@@ -1,0 +1,316 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path_template": "/resources/js/{file}.js",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha",
+        "rate_limit",
+        "user_agent_checks",
+        "ip_blocking",
+        "csrf",
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript",
+        "text/javascript",
+        "application/json"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "auth_cookie_session"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/{library}.development.js",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha",
+        "rate_limit",
+        "user_agent_checks",
+        "ip_blocking",
+        "csrf",
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [
+        {
+          "name": " ",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/{asset}.js",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha",
+        "rate_limit",
+        "user_agent_checks",
+        "ip_blocking",
+        "csrf",
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [
+        {
+          "name": "EAC",
+          "location": "query",
+          "sample_value": "EAC"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/footer/js/{file}.js",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha",
+        "rate_limit",
+        "user_agent_checks",
+        "ip_blocking",
+        "csrf",
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "auth_cookie_session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/subscribeNow.js",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha",
+        "rate_limit",
+        "user_agent_checks",
+        "ip_blocking",
+        "csrf",
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "auth_cookie_session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/images/{image}.mp4",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha",
+        "rate_limit",
+        "user_agent_checks",
+        "ip_blocking",
+        "csrf",
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "video/mp4",
+        "image/jpeg",
+        "image/png"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "auth_cookie_session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/blog/post",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha",
+        "rate_limit",
+        "user_agent_checks",
+        "ip_blocking",
+        "csrf",
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/json",
+        "text/html",
+        "application/xhtml+xml"
+      ],
+      "parameters": [
+        {
+          "name": "postId",
+          "location": "query",
+          "sample_value": "null"
+        },
+        {
+          "name": "scanMeHeader",
+          "location": "header"
+        },
+        {
+          "name": "viewport",
+          "location": "header"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha",
+        "rate_limit",
+        "user_agent_checks",
+        "ip_blocking",
+        "csrf",
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html",
+        "application/json",
+        "image/svg+xml"
+      ],
+      "parameters": [
+        {
+          "name": "scanMeHeader",
+          "location": "header"
+        },
+        {
+          "name": "viewport",
+          "location": "header"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_session"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "path_template": "/catalog/subscribe",
+      "auth_schemes": [
+        "cookie",
+        "jwt"
+      ],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "captcha",
+        "rate_limit",
+        "user_agent_checks",
+        "ip_blocking",
+        "csrf",
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "coupon",
+          "location": "body"
+        },
+        {
+          "name": "csrf",
+          "location": "body"
+        },
+        {
+          "name": "email",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [
+        "auth_cookie_session"
+      ],
+      "needs_observation": true
+    }
+  ],
+  "global_observations": {
+    "session_management": "cookie",
+    "auth_flow": "form_login",
+    "needs_observation": true
+  }
+}

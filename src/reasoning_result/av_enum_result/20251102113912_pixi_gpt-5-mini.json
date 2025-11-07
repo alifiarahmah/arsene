@@ -1,0 +1,197 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/js/jquery.min.js",
+      "parameter": [
+        "url"
+      ],
+      "param_location": "query",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/js/bootstrap.min.js",
+      "parameter": [
+        "toggle"
+      ],
+      "param_location": "query",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/js/angular.min.js",
+      "parameter": [
+        "document"
+      ],
+      "param_location": "query",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": [
+        "image_url"
+      ],
+      "param_location": "query",
+      "category": "xss_stored",
+      "expected_signals": [
+        "response_length_diff",
+        "reflected_input"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": [
+        "filename"
+      ],
+      "param_location": "query",
+      "category": "file_inclusion",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": [
+        "_id"
+      ],
+      "param_location": "query",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": [
+        "_id"
+      ],
+      "param_location": "query",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": [
+        "password"
+      ],
+      "param_location": "query",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "reflected_input"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": [
+        "image_url"
+      ],
+      "param_location": "body",
+      "category": "ssrf",
+      "expected_signals": [
+        "out_of_band_call",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": [
+        "filename"
+      ],
+      "param_location": "body",
+      "category": "file_inclusion",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": [
+        "description"
+      ],
+      "param_location": "body",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": [
+        "user"
+      ],
+      "param_location": "query",
+      "sample_value": "mail@example.com",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "token_reuse_failure"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/css",
+      "parameter": [
+        "family"
+      ],
+      "param_location": "query",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/js/ng-file-upload-shim.min.js",
+      "parameter": [
+        "file"
+      ],
+      "param_location": "query",
+      "category": "file_inclusion",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    }
+  ]
+}

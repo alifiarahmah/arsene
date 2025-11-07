@@ -1,0 +1,402 @@
+{
+  "hypotheses": [
+    {
+      "id": "H1",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameters": [
+        "user"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              303,
+              307,
+              401,
+              403
+            ]
+          },
+          "description": "Deviation from baseline unauthenticated/invalid user response may indicate bypass or unexpected state change"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Significant body size change suggests alternate code path (e.g., authenticated view)"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Presence of stack traces or framework errors reveals auth handling flaws"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 4
+    },
+    {
+      "id": "H2",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameters": [
+        "content-type"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              202,
+              204,
+              400,
+              401,
+              403,
+              415
+            ]
+          },
+          "description": "Unexpected acceptance or rejection paths can expose internals"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Large response diffs may leak metadata or internal paths"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Parser/handler errors may disclose server details or temporary file locations"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.35,
+      "priority": 3
+    },
+    {
+      "id": "H3",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameters": [
+        "accept"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406
+            ]
+          },
+          "description": "Content negotiation leading to access despite lack of auth suggests exposure"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Switching to JSON or other formats yields more data than intended"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "H4",
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameters": [
+        "accept"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406
+            ]
+          },
+          "description": "Unauthorized access via Accept negotiation"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Response grows when requesting machine-readable formats"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 4
+    },
+    {
+      "id": "H5",
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameters": [
+        "accept"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406
+            ]
+          },
+          "description": "Access control inconsistent across negotiated content types"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Data volume change implies leakage"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.35,
+      "priority": 3
+    },
+    {
+      "id": "H6",
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameters": [
+        "accept"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406
+            ]
+          },
+          "description": "Unexpected success indicates exposure via content negotiation"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Machine-readable response larger than human-readable"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.35,
+      "priority": 3
+    },
+    {
+      "id": "H7",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameters": [
+        "accept"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406
+            ]
+          },
+          "description": "Endpoint reveals PII when requesting JSON/plain"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Significant content increase suggests extra fields disclosed"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.45,
+      "priority": 4
+    },
+    {
+      "id": "H8",
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameters": [
+        "accept"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406
+            ]
+          },
+          "description": "Financial data accessible via Accept manipulation"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "JSON/plain responses disclose numeric details"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.5,
+      "priority": 5
+    },
+    {
+      "id": "H9",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameters": [
+        "accept"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206,
+              401,
+              403,
+              406
+            ]
+          },
+          "description": "Directory/listing exposure when negotiating content type"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 35.0
+          },
+          "description": "Bulk user data leak indicated by large response delta"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.45,
+      "priority": 5
+    }
+  ],
+  "metadata": [
+    {
+      "key": "needs_observation",
+      "value": "true"
+    }
+  ]
+}

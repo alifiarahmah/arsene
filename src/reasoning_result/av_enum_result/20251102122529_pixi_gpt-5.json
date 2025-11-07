@@ -1,0 +1,142 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": [
+        "user"
+      ],
+      "param_location": "query",
+      "sample_value": "mail@example.com",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff",
+        "error_signature",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": [
+        "content-type"
+      ],
+      "param_location": "header",
+      "sample_value": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": [
+        "accept"
+      ],
+      "param_location": "header",
+      "sample_value": "application/json, text/plain, */*",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameter": [
+        "accept"
+      ],
+      "param_location": "header",
+      "sample_value": "application/json, text/plain, */*",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameter": [
+        "accept"
+      ],
+      "param_location": "header",
+      "sample_value": "application/json, text/plain, */*",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameter": [
+        "accept"
+      ],
+      "param_location": "header",
+      "sample_value": "application/json, text/plain, */*",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": [
+        "accept"
+      ],
+      "param_location": "header",
+      "sample_value": "application/json, text/plain, */*",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameter": [
+        "accept"
+      ],
+      "param_location": "header",
+      "sample_value": "application/json, text/plain, */*",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameter": [
+        "accept"
+      ],
+      "param_location": "header",
+      "sample_value": "application/json, text/plain, */*",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    }
+  ]
+}

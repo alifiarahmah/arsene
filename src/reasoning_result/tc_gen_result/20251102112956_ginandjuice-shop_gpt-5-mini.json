@@ -1,0 +1,578 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-H001-idor-postId-baseline-probe",
+      "hypothesis_id": "H001",
+      "base_url": "https://{{host}}",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.postId",
+              "value": "3"
+            }
+          ],
+          "description": "Baseline request using observed sample postId=3 to establish response code and length",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.postId",
+              "value": "4"
+            },
+            {
+              "location": "query.postId",
+              "value": "9999"
+            }
+          ],
+          "description": "Probe with another valid-looking id and a high id to detect access control differences",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.postId",
+              "value": "2"
+            },
+            {
+              "location": "query.postId",
+              "value": "1"
+            }
+          ],
+          "description": "Additional id variants to confirm deterministic access differences across IDs",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare HTTP status codes returned for baseline (postId=3) and probe/exploit ids. If any probe id returns an expected code different from baseline and within [200,401,403,404], flag as signal.",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Measure baseline body length for postId=3. If any probe/exploit id yields body length differing by >=40% (increase or decrease) and HTTP status is 200, flag as signal.",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Requests are read-only. Use same cookie session as observed. Host must be substituted in executor. User-Agent included to satisfy anti-automation.",
+      "tags": [
+        "idor",
+        "baseline",
+        "probe"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H002-xss-postId-reflection",
+      "hypothesis_id": "H002",
+      "base_url": "https://{{host}}",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.postId",
+              "value": "3"
+            }
+          ],
+          "description": "Baseline to capture normal response body and code",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.postId",
+              "value": "INJECTION_TEST_TOKEN_abc123"
+            },
+            {
+              "location": "query.postId",
+              "value": "%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "Probe with a unique token to detect reflection and a safe-encoded script token (encoded) to detect naive reflection without executing JS",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.postId",
+              "value": "<img src=x onerror=console.log('XSS')>"
+            },
+            {
+              "location": "query.postId",
+              "value": "\"><svg/onload=console.log('XSS')>"
+            }
+          ],
+          "description": "Higher-risk payloads to confirm reflected XSS. Run only if probes indicate reflection and manual review allowed.",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Search response body and headers for exact substring INJECTION_TEST_TOKEN_abc123 (case-sensitive) when returned with HTTP 200. If found unescaped in HTML or JSON, flag as reflection.",
+          "threshold": {
+            "expected_codes": [
+              200
+            ],
+            "string_value": "INJECTION_TEST_TOKEN_abc123"
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Compare body length for baseline (postId=3) against probe with token. If length difference >=20% and probe returned 200, flag as anomaly.",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Exploit-tier payloads are potentially hazardous; only execute if probe-tier reflection confirmed and permitted. Use URL encoding for probe encoded payload.",
+      "tags": [
+        "xss",
+        "reflected",
+        "probe"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H003-xss-scanMeHeader",
+      "hypothesis_id": "H003",
+      "base_url": "https://{{host}}",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "scanMeHeader",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.scanMeHeader",
+              "value": "baseline"
+            }
+          ],
+          "description": "Baseline to capture normal response",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.scanMeHeader",
+              "value": "SCAN_REFLECT_zz99"
+            },
+            {
+              "location": "query.scanMeHeader",
+              "value": "%3Ctest%3E"
+            }
+          ],
+          "description": "Probe reflection with unique token and encoded angle-brackets to detect naive inclusion",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.scanMeHeader",
+              "value": "<script>console.log(1)</script>"
+            }
+          ],
+          "description": "Exploit-tier test for unescaped reflection; run only if probe indicates reflection",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Look for exact token SCAN_REFLECT_zz99 in response body or headers on HTTP 200 responses. If present unescaped, signal reflection.",
+          "threshold": {
+            "expected_codes": [
+              200
+            ],
+            "string_value": "SCAN_REFLECT_zz99"
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response length changes by >=15% between baseline and probe (token) with HTTP 200, flag as anomaly.",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "scanMeHeader may be used by client scripts; observe both body and headers. Use benign baseline first.",
+      "tags": [
+        "xss",
+        "reflected"
+      ],
+      "estimated_duration": 45
+    },
+    {
+      "id": "TC-H004-xss-viewport-dom",
+      "hypothesis_id": "H004",
+      "base_url": "https://{{host}}",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "viewport",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.viewport",
+              "value": "desktop"
+            }
+          ],
+          "description": "Baseline to capture normal response and inline scripts",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.viewport",
+              "value": "DOM_TEST_TOKEN_vw1"
+            },
+            {
+              "location": "query.viewport",
+              "value": "%22%3E%3Csvg%2Fonload%3Dconsole.log(1)%3E"
+            }
+          ],
+          "description": "Probe for DOM-reflection using unique token and encoded SVG onload pattern to detect injection into scripts/DOM without executing JS on server",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.viewport",
+              "value": "\"><script>console.log('DOM')</script>"
+            }
+          ],
+          "description": "Exploit-tier payload to confirm DOM XSS when allowed by probe results and rules",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Detect exact token DOM_TEST_TOKEN_vw1 inside inline scripts or HTML body on HTTP 200 responses. If found unescaped within script or DOM-manipulated sections, flag potential DOM XSS sink.",
+          "threshold": {
+            "expected_codes": [
+              200
+            ],
+            "string_value": "DOM_TEST_TOKEN_vw1"
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response length changes by >=10% between baseline and probe for viewport with HTTP 200, flag as anomaly.",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.4
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "DOM XSS requires inspection of returned HTML/JS. Do not execute exploit-tier payloads in automated high-impact contexts.",
+      "tags": [
+        "xss",
+        "dom"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H009-csrf-token-handling",
+      "hypothesis_id": "H009",
+      "base_url": "https://{{host}}",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "csrf",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body.email",
+              "value": "test@example.com"
+            },
+            {
+              "location": "body.coupon",
+              "value": ""
+            },
+            {
+              "location": "body.csrf",
+              "value": "FETCHED_CSRF_TOKEN"
+            }
+          ],
+          "description": "Baseline valid subscription POST including valid CSRF token and benign email. 'FETCHED_CSRF_TOKEN' must be obtained via prerequisite step.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            },
+            {
+              "header_name": "Cookie",
+              "header_value": "SESSION=VALID_SESSION_COOKIE"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body.email",
+              "value": "test@example.com"
+            },
+            {
+              "location": "body.coupon",
+              "value": ""
+            },
+            {
+              "location": "body.csrf",
+              "value": ""
+            }
+          ],
+          "description": "Probe with missing CSRF token to observe status code and error behaviour",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            },
+            {
+              "header_name": "Cookie",
+              "header_value": "SESSION=VALID_SESSION_COOKIE"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body.email",
+              "value": "test@example.com"
+            },
+            {
+              "location": "body.coupon",
+              "value": ""
+            },
+            {
+              "location": "body.csrf",
+              "value": "INVALID_TOKEN"
+            }
+          ],
+          "description": "Probe with explicitly invalid CSRF token to elicit CSRF-specific errors. Do not use real accounts for side-effects.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            },
+            {
+              "header_name": "Cookie",
+              "header_value": "SESSION=VALID_SESSION_COOKIE"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Obtain valid authenticated session cookie for endpoints protected by cookie auth."
+        },
+        {
+          "type": "csrf_token",
+          "description": "Fetch valid CSRF token by performing GET on /catalog or retrieving form token from page; bind token to body.csrf in baseline payload.",
+          "extract_from": "/catalog (GET) response body form input named csrf",
+          "bind_to": "body.csrf"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare status code of baseline (valid CSRF) with missing and invalid token probes. If missing or invalid token requests return codes in [400,401,403] while baseline returns 200/201, flag as CSRF protection present.",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Inspect response body for CSRF-specific error messages (e.g., 'CSRF', 'invalid token', 'missing token', 'forbidden'). If present for probe requests and absent for baseline, flag as CSRF enforcement.",
+          "threshold": {
+            "expected_codes": [
+              400,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Prerequisite steps must extract a live CSRF token and a valid session cookie before executing baseline. Do not exceed max_requests. Use non-privileged test email.",
+      "tags": [
+        "csrf",
+        "state-changing"
+      ],
+      "estimated_duration": 300
+    }
+  ]
+}

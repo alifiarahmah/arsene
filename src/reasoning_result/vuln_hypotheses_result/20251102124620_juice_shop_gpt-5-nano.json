@@ -1,0 +1,193 @@
+{
+  "hypotheses": [
+    {
+      "id": "hyp-authz-whoami-email-query",
+      "method": "GET",
+      "endpoint": "/rest/user/whoami",
+      "parameters": [
+        "email"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect reflected user input in response"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403
+            ]
+          },
+          "description": "Observe status code changes when varying input"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "required"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.65,
+      "priority": 3
+    },
+    {
+      "id": "hyp-authz-whoami-lastLoginIp-query",
+      "method": "GET",
+      "endpoint": "/rest/user/whoami",
+      "parameters": [
+        "lastLoginIp"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Reflected lastLoginIp in response"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Response body length differing with input"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "required"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "hyp-inj-nosql-whoami-profileImage",
+      "method": "GET",
+      "endpoint": "/rest/user/whoami",
+      "parameters": [
+        "profileImage"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Reflected input in response"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              400,
+              500
+            ]
+          },
+          "description": "Status code change on injection attempt"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "required"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 12
+      },
+      "confidence": 0.7,
+      "priority": 2
+    },
+    {
+      "id": "hyp-authz-user-query",
+      "method": "GET",
+      "endpoint": "/rest/user/whoami",
+      "parameters": [
+        "user"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Reflected user parameter in response"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403
+            ]
+          },
+          "description": "Status code change when varying user"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "required"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 3
+    }
+  ],
+  "metadata": []
+}

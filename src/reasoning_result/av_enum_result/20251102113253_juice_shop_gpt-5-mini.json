@@ -1,0 +1,636 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/rest/user/whoami",
+      "parameter": [
+        "authorization"
+      ],
+      "param_location": "header",
+      "sample_value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MjMsInVzZXJuYW1lIjoiIiwiZW1haWwiOiJnZ2dnZ0BtYWlsLmNvbSIsInBhc3N3b3JkIjoiOWEwZmUyN2M4YmNjOWFhZDUxZWRhNTVlMWI3MzVlYjUiLCJyb2xlIjoiY3VzdG9tZXIiLCJkZWx1eGVUb2tlbiI6IiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6Ii9hc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTE1IDA2OjM4OjU2Ljc4NiArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3NTUyMzk5NDZ9.NvVTXZsk8zrJqC1BIESlmzmMwy3o646U8KHx0Y8bu1Vf-tqIp5oii9hatVub2JERDq9OYCEHaM8wPJBlZvAI8QLm3GUBgWITFO7d_sCWHEuvAY1XMZYcDxgtoP08Wxv0H9_NZVGBQ7wMddu0tWLMwPjhxmtO4MoypcLEhMoNxOg",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "token_reuse_failure",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/basket/{basketId}",
+      "parameter": [
+        "basketId"
+      ],
+      "param_location": "path",
+      "sample_value": "6",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/admin/application-configuration",
+      "parameter": [
+        "authorization"
+      ],
+      "param_location": "header",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/socket.io/",
+      "parameter": [
+        "sid"
+      ],
+      "param_location": "query",
+      "category": "ssrf",
+      "expected_signals": [
+        "out_of_band_call"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/products/search",
+      "parameter": [
+        "name"
+      ],
+      "param_location": "body",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/Quantitys/",
+      "parameter": [
+        "ProductId"
+      ],
+      "param_location": "body",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/Addresss",
+      "parameter": [
+        "streetAddress"
+      ],
+      "param_location": "body",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/admin/application-version",
+      "parameter": [
+        "authorization"
+      ],
+      "param_location": "header",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/Challenges/",
+      "parameter": [
+        "name"
+      ],
+      "param_location": "body",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/Cards",
+      "parameter": [
+        "cardNum"
+      ],
+      "param_location": "body",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/Feedbacks/",
+      "parameter": [
+        "comment"
+      ],
+      "param_location": "body",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/products/{productId}/reviews",
+      "parameter": [
+        "productId"
+      ],
+      "param_location": "path",
+      "sample_value": "6",
+      "category": "open_redirect",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/captcha/",
+      "parameter": [
+        "captchaId"
+      ],
+      "param_location": "query",
+      "category": "open_redirect",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/Addresss/{addressId}",
+      "parameter": [
+        "addressId"
+      ],
+      "param_location": "path",
+      "sample_value": "7",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": [
+        "itemId"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "/socket.io/",
+      "parameter": [
+        "sid"
+      ],
+      "param_location": "body",
+      "category": "ssrf",
+      "expected_signals": [
+        "out_of_band_call"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/BasketItems/",
+      "parameter": [
+        "ProductId"
+      ],
+      "param_location": "body",
+      "category": "business_logic",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/wallet/balance",
+      "parameter": [
+        "authorization"
+      ],
+      "param_location": "header",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "token_reuse_failure",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/user/change-password",
+      "parameter": [
+        "current"
+      ],
+      "param_location": "query",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/track-order/{orderId}",
+      "parameter": [
+        "orderId"
+      ],
+      "param_location": "path",
+      "sample_value": "789a-c954d34e39503081",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/products/{productId}/reviews",
+      "parameter": [
+        "productId"
+      ],
+      "param_location": "path",
+      "sample_value": "24",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/products/{productId}/reviews",
+      "parameter": [
+        "productId"
+      ],
+      "param_location": "path",
+      "sample_value": "16",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/languages",
+      "parameter": [
+        "key"
+      ],
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/2fa/status",
+      "parameter": [
+        "setupToken"
+      ],
+      "param_location": "body",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/profile",
+      "parameter": [
+        "description"
+      ],
+      "param_location": "body",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/order-history",
+      "parameter": [
+        "authorization"
+      ],
+      "param_location": "header",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/continue-code",
+      "parameter": [
+        "continueCode"
+      ],
+      "param_location": "query",
+      "category": "open_redirect",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/Deliverys/{id}",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "1",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": [
+        "itemId"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": [
+        "itemId",
+        "quantity"
+      ],
+      "param_location": "path",
+      "sample_value": "10",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "/rest/user/login",
+      "parameter": [
+        "email"
+      ],
+      "param_location": "body",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/rest/user/data-export",
+      "parameter": [
+        "format"
+      ],
+      "param_location": "body",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "state_change_observed",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/rest/basket/{basketId}/checkout",
+      "parameter": [
+        "basketId"
+      ],
+      "param_location": "path",
+      "sample_value": "6",
+      "category": "business_logic",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/Users/",
+      "parameter": [
+        "email"
+      ],
+      "param_location": "body",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/SecurityAnswers/",
+      "parameter": [
+        "answer"
+      ],
+      "param_location": "body",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/Cards/",
+      "parameter": [
+        "cardNum"
+      ],
+      "param_location": "body",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/Addresss/",
+      "parameter": [
+        "city"
+      ],
+      "param_location": "body",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/image-captcha/",
+      "parameter": [
+        "image"
+      ],
+      "param_location": "query",
+      "category": "open_redirect",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/rest/continue-code",
+      "parameter": [
+        "continueCode",
+        "authorization"
+      ],
+      "param_location": "query",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/Products/{productId}",
+      "parameter": [
+        "productId"
+      ],
+      "param_location": "path",
+      "sample_value": "24",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/Products/{productId}",
+      "parameter": [
+        "productId"
+      ],
+      "param_location": "path",
+      "sample_value": "1",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/Feedbacks/",
+      "parameter": [
+        "comment"
+      ],
+      "param_location": "query",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/Cards/{cardId}",
+      "parameter": [
+        "cardId"
+      ],
+      "param_location": "path",
+      "sample_value": "7",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "/api/BasketItems/{itemId}",
+      "parameter": [
+        "itemId"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    }
+  ]
+}

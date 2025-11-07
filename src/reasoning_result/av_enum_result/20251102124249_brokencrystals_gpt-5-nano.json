@@ -1,0 +1,157 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/vendor/wow/{resource}",
+      "parameter": [
+        "resource"
+      ],
+      "param_location": "path",
+      "sample_value": "{resource}",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "reflected_input",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/maps/embed",
+      "parameter": [
+        "pb"
+      ],
+      "param_location": "query",
+      "sample_value": "pb",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "response_length_diff",
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/css",
+      "parameter": [
+        "family"
+      ],
+      "param_location": "query",
+      "sample_value": "family",
+      "category": "injection_sql",
+      "expected_signals": [
+        "response_length_diff",
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery/{resource}",
+      "parameter": [
+        "resource"
+      ],
+      "param_location": "path",
+      "sample_value": "{resource}",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/assets/vendor/bootstrap/{resource}",
+      "parameter": [
+        "resource"
+      ],
+      "param_location": "path",
+      "sample_value": "min.js",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/assets/vendor/aos/{resource}",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/assets/vendor/icofont/{resource}",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/assets/vendor/counterup/{resource}",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/maps",
+      "parameter": [
+        "pb"
+      ],
+      "param_location": "query",
+      "sample_value": "pb",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "response_length_diff",
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/css",
+      "parameter": [
+        "family"
+      ],
+      "param_location": "query",
+      "sample_value": "family",
+      "category": "injection_sql",
+      "expected_signals": [
+        "response_length_diff",
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": [
+        "config",
+        "description",
+        "theme-color",
+        "viewport"
+      ],
+      "param_location": "query",
+      "sample_value": "config",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "response_length_diff",
+        "reflected_input"
+      ],
+      "needs_observation": false
+    }
+  ]
+}
