@@ -1,0 +1,6 @@
+Location (Endpoint),Vulnerability Type,Payload,Vulnerability Description
+POST /login,A03:2021 Injection; API8:2019 Injection,pass[$ne]=1,Authentication bypass via NoSQL (MongoDB) injection in login parameters allowing login without valid credentials.
+POST /login,A03:2021 Injection (Template Injection/XSS); API8:2019 Injection,{{constructor.constructor('alert(1)')()}},AngularJS client-side template injection leading to XSS when client-side checks are disabled.
+GET /search?q=...,A03:2021 Injection (XSS); API8:2019 Injection,<script>alert('xss')</script>,Reflected XSS in search field renders attacker-controlled script.
+GET /admin,A05:2021 Security Misconfiguration; API8:2023 Security Misconfiguration,,Verbose error (HTTP 500) reveals internal details when accessing admin path without authentication.
+GET /server.conf,A01:2021 Broken Access Control (IDOR); API1:2019 Broken Object Level Authorization (BOLA),,"Direct access to configuration file discloses sensitive data (e.g., session_secret)."

