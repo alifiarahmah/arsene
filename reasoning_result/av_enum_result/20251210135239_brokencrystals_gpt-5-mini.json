@@ -1,0 +1,183 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "0",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "1",
+      "parameter": [
+        "Origin",
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "2",
+      "parameter": [
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com/",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "3",
+      "parameter": [
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com/",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "4",
+      "parameter": [
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com/",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "5",
+      "parameter": [
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com/",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "6",
+      "parameter": [
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com/",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "7",
+      "parameter": [
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com/",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "8",
+      "parameter": [
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com/",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "9",
+      "parameter": [
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com/",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "10",
+      "parameter": [
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com/",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "11",
+      "parameter": [
+        "Referer"
+      ],
+      "sample_value": "https://brokencrystals.com/",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "12",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "13",
+      "parameter": [
+        "pb"
+      ],
+      "param_location": "query",
+      "sample_value": "!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621",
+      "category": "open_redirect",
+      "expected_signals": [
+        "out_of_band_call",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    }
+  ]
+}

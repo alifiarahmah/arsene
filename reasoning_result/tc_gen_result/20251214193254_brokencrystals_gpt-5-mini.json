@@ -1,0 +1,449 @@
+{
+  "test_cases": [
+    {
+      "id": "tc_h0_e0",
+      "hypothesis_id": "h0",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "url",
+              "value": "https://brokencrystals.com/"
+            }
+          ],
+          "description": "Baseline fetch to measure response size for response_length_diff oracle",
+          "content_type": "text/html; charset=UTF-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "baseline_vs_probe",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Measure baseline and compare subsequent responses for size changes",
+      "tags": [
+        "response-diff"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "tc_h1_e1",
+      "hypothesis_id": "h1",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/assets/index-CHOz83TQ.js",
+      "parameter": "Origin,Referer",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "Origin",
+              "value": "https://attacker.example"
+            },
+            {
+              "location": "Referer",
+              "value": "https://attacker.example/page"
+            }
+          ],
+          "description": "Send crafted Origin and Referer headers to detect header reflection or inclusion in served JS",
+          "content_type": "application/javascript; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Origin",
+              "header_value": "https://attacker.example"
+            },
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.example/page"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "header_change",
+          "condition": "response_contains_origin_or_referer_values",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Inspect JS response body and response headers for reflection of provided header values",
+      "tags": [
+        "header-reflection",
+        "sensitive-data-exposure"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "tc_h2_e2",
+      "hypothesis_id": "h2",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery/jquery.min.js",
+      "parameter": "Referer",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "Referer",
+              "value": "https://attacker.example/ref"
+            }
+          ],
+          "description": "Probe for Referer reflection in JS resource",
+          "content_type": "application/javascript; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.example/ref"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "header_change",
+          "condition": "response_contains_referer_value",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Check response body and headers for attacker-controlled Referer",
+      "tags": [
+        "referer-reflection"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "tc_h3_e3",
+      "hypothesis_id": "h3",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/assets/vendor/bootstrap/js/bootstrap.bundle.min.js",
+      "parameter": "Referer",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "Referer",
+              "value": "https://attacker.example/bootstrap"
+            }
+          ],
+          "description": "Probe Referer handling for bootstrap bundle",
+          "content_type": "application/javascript; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.example/bootstrap"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "header_change",
+          "condition": "response_contains_referer_value",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Validate whether Referer is reflected or affects response headers/body",
+      "tags": [
+        "header-reflection"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "tc_h4_e4",
+      "hypothesis_id": "h4",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery.easing/jquery.easing.min.js",
+      "parameter": "Referer",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "Referer",
+              "value": "https://attacker.example/easing"
+            }
+          ],
+          "description": "Test Referer influence on easing JS resource",
+          "content_type": "application/javascript; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.example/easing"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "header_change",
+          "condition": "response_contains_referer_value",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Inspect for Referer leakage",
+      "tags": [
+        "referer-leak"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "tc_h12_e12",
+      "hypothesis_id": "h12",
+      "base_url": "https://brokencrystals.com",
+      "method": "GET",
+      "endpoint": "/api/config",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "id",
+              "value": "1"
+            }
+          ],
+          "description": "Request /api/config with id=1 to observe baseline status and body",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "id",
+              "value": "9999"
+            }
+          ],
+          "description": "Request /api/config with a high id value to detect status code or body size differences",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "id",
+              "value": "0"
+            }
+          ],
+          "description": "Request /api/config with id=0 to check for differing responses (enumeration/AC issues)",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Observe /api/config behavior across multiple id values"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_varies_across_ids",
+          "threshold": {
+            "expected_codes": [
+              200,
+              404,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "body_size_varies_significantly",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 100
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.2,
+      "notes": "Needs observation=true in endpoint; vary id to detect resource enumeration or access control differences",
+      "tags": [
+        "idor",
+        "resource-enumeration"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "tc_h17_e17",
+      "hypothesis_id": "h17",
+      "base_url": "https://www.google.com/maps/embed",
+      "method": "GET",
+      "endpoint": "https://www.google.com/maps/embed",
+      "parameter": "pb,Referer,Upgrade-Insecure-Requests",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "pb",
+              "value": "!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621"
+            },
+            {
+              "location": "Referer",
+              "value": "https://attacker.example/map"
+            },
+            {
+              "location": "Upgrade-Insecure-Requests",
+              "value": "1"
+            }
+          ],
+          "description": "Embed URL probe using observed pb query and modified headers to detect response size or status changes",
+          "content_type": "text/html",
+          "header": [
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.example/map"
+            },
+            {
+              "header_name": "Upgrade-Insecure-Requests",
+              "header_value": "1"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "pb",
+              "value": "!1m8!1m3!1d99999!2d0!3d0"
+            },
+            {
+              "location": "Referer",
+              "value": "https://attacker.example/alt"
+            },
+            {
+              "location": "Upgrade-Insecure-Requests",
+              "value": "0"
+            }
+          ],
+          "description": "Alter pb to a different map region and headers to detect response differences",
+          "content_type": "text/html",
+          "header": [
+            {
+              "header_name": "Referer",
+              "header_value": "https://attacker.example/alt"
+            },
+            {
+              "header_name": "Upgrade-Insecure-Requests",
+              "header_value": "0"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "pb_or_header_variation_changes_body_size",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "status_varies_when_modifying_pb_or_headers",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              404,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Vary pb and headers to observe embed response changes",
+      "tags": [
+        "embed-probe",
+        "response-diff"
+      ],
+      "estimated_duration": 3
+    }
+  ]
+}

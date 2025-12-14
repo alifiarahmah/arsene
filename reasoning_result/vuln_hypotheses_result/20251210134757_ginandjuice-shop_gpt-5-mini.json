@@ -1,0 +1,265 @@
+{
+  "hypotheses": [
+    {
+      "id": "H001",
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameters": [
+        "productId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Different productId values produce different HTTP status codes (e.g., 200 vs 403/404/401)."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Response body length changes by >=30% when enumerating productId values indicating different resource visibility/content."
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              302,
+              301
+            ]
+          },
+          "description": "Redirects for some productId values indicating access control behavior differences."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none_required_or_same_as_observed"
+        },
+        {
+          "key": "csrf_token",
+          "value": "not_required"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H002",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameters": [
+        "postId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Varying postId values yield differing status codes indicating potential access control differences."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Body length changes by >=25% across postId values, suggesting different content exposure."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none_required_or_same_as_observed"
+        },
+        {
+          "key": "csrf_token",
+          "value": "not_required"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "H003",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameters": [
+        "postId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Different postId values (sample 4) cause status changes versus baseline."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Response body length delta >=25% when enumerating around sample value."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none_required_or_same_as_observed"
+        },
+        {
+          "key": "csrf_token",
+          "value": "not_required"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "H004",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameters": [
+        "email",
+        "csrf"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "csrf",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              403,
+              401,
+              400
+            ]
+          },
+          "description": "Request with missing/invalid CSRF token yields status code indicating rejection (403/401/400) vs accepted (200/201)."
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Response body contains server-side error messages or stack traces when CSRF token handling fails or is malformed."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "as_observed_if_present"
+        },
+        {
+          "key": "csrf_token",
+          "value": "valid_token_required_for_successful_subscribe; test should include valid and missing/invalid token cases"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "H005",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameters": [
+        "email",
+        "csrf"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Submitted email value is reflected verbatim or altered in response body indicating possible reflected XSS."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Response length changes significantly when injecting test strings into email parameter, suggesting reflection or content insertion."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "as_observed_if_present"
+        },
+        {
+          "key": "csrf_token",
+          "value": "valid_token_required_for_form_submission"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.4,
+      "priority": 3
+    }
+  ]
+}

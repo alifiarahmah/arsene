@@ -1,0 +1,598 @@
+{
+  "test_cases": [
+    {
+      "id": "EXEC-01-auth-discovery",
+      "hypothesis_id": "H12",
+      "base_url": "http://swagger.json",
+      "method": "GET",
+      "endpoint": "/swagger.json",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "swagger.json returns a sizable JSON spec (>=40% larger than 404 payload)",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "reflected_input",
+          "condition": "Spec contains host/basePath/example server values that match observed request host or reflect request parameters",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "High-value: fetch API spec first to reveal endpoints, auth requirements, schemas. Stop further probing on 401/403 unless spec reveals public endpoints.",
+      "tags": [
+        "discovery",
+        "swagger"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "EXEC-02-docs-check",
+      "hypothesis_id": "H11",
+      "base_url": "http://api-docs/",
+      "method": "GET",
+      "endpoint": "/api-docs/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Run after EXEC-01; skip if swagger.json returned full spec with endpoints",
+          "custom_logic": "If EXEC-01 yields usable spec, deprioritize this request."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Endpoint returns 200 or 301 (not 404) indicating docs accessible",
+          "threshold": {
+            "expected_codes": [
+              200,
+              301,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response content size is large (>50% vs 404) suggesting full documentation served",
+          "threshold": {
+            "body_length_delta_pct": 50.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Supplementary docs retrieval if swagger.json incomplete. Abort if rate limit or 403 encountered repeatedly.",
+      "tags": [
+        "discovery",
+        "docs"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "EXEC-03-enumeration-static",
+      "hypothesis_id": "H10",
+      "base_url": "http://0215428b1ddcb8dc8fd93e4ced0cab97",
+      "method": "GET",
+      "endpoint": "/0215428b1ddcb8dc8fd93e4ced0cab97",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Run after discovery; include Referer and User-Agent same as prior requests",
+          "custom_logic": "If swagger.json indicates this resource is static, mark as low priority."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body size differs by >=20% from typical 404 baseline or contains non-error content",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              404,
+              301
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Returned status is 200 or 301 instead of 404 indicating reachable resource",
+          "threshold": {
+            "expected_codes": [
+              200,
+              301,
+              404
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Quick check for embedded static resource; useful for fingerprinting",
+      "tags": [
+        "discovery"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "EXEC-04-surf-public-api-list",
+      "hypothesis_id": "H5",
+      "base_url": "http://all_users/",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "If swagger.json indicated auth scheme, include no-auth first then include observed auth header/cookie if found in context",
+          "custom_logic": "Compare unauthenticated vs authenticated responses; abort enumeration if 401 returned consistently."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response contains arrays or objects representing multiple users with PII-like fields",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response size is substantially larger than typical error page (>50%) indicating bulk data",
+          "threshold": {
+            "body_length_delta_pct": 50.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "High-impact enumeration for PII; run early after discovery. If returns 200 unauthenticated, escalate to detailed sensitive-data tests.",
+      "tags": [
+        "sensitive_data",
+        "bulk"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "EXEC-05-user-info-check",
+      "hypothesis_id": "H2",
+      "base_url": "http://user_info/",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Run unauthenticated then authenticated (if token/cookie discovered) to find PII exposures",
+          "custom_logic": "Extract any user fields (name,email,id) for use in later targeted tests; stop if response is 401."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response contains PII-like keys such as name, email, phone, address in unauthenticated response",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Status code remains 200 for unauthenticated access or differs between auth and unauth contexts",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Use extracted identifiers for correlating findings; if unauthenticated 200, raise priority for data exposure chain.",
+      "tags": [
+        "sensitive_data",
+        "auth"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "EXEC-06-media-enumeration",
+      "hypothesis_id": "H8",
+      "base_url": "http://pictures/",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Unauthenticated then authenticated if possible; include Accept header for image types to detect content negotiation",
+          "custom_logic": "If response includes links, queue GETs for listed media paths later under media retrieval controls."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Unauthenticated response includes picture metadata or direct links to media revealing user content",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Large response size consistent with media listing (>40% difference)",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "If media links enumerated, limit follow-up media fetches to 10 and respect content-size thresholds to avoid bandwidth abuse.",
+      "tags": [
+        "media",
+        "sensitive_data"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "EXEC-07-user-pictures-detail",
+      "hypothesis_id": "H7",
+      "base_url": "http://user_pictures/",
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Run after EXEC-05 to reuse any user identifiers to look for user-specific images",
+          "custom_logic": "If identifiers found, append query tokens per swagger spec if applicable."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response contains image URLs, base64 images, or user-identifying metadata in unauthenticated response",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Payload size suggests media content (>=40% larger than error pages)",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Targeted media check; follow-up only if prior enumeration indicates exposure.",
+      "tags": [
+        "media",
+        "sensitive_data"
+      ],
+      "estimated_duration": 4
+    },
+    {
+      "id": "EXEC-08-financial-data-check",
+      "hypothesis_id": "H6",
+      "base_url": "http://total_money/",
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Unauthenticated then authenticated if possible; abort if swagger indicates this is an admin-only endpoint",
+          "custom_logic": "Treat any 200 unauthenticated response as high-severity and escalate exploitation attempts for auth bypass."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response contains financial fields like balance, total_money, amount, currency without auth",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Status code remains 200 when unauthenticated indicating exposure",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "High-impact; if returns sensitive data, pause other probes and notify.",
+      "tags": [
+        "sensitive_data",
+        "financial"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "EXEC-09-authenticated-paths-enum",
+      "hypothesis_id": "H1",
+      "base_url": "http://login",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": "(none)",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "DOM XSS probe delivered to SPA entry point to detect reflection or template injection.",
+          "content_type": "text/html; charset=UTF-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Alternative vector for DOM-based XSS.",
+          "content_type": "text/html; charset=UTF-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Execute after discovery and initial unauthenticated enumeration; include any cookies/tokens found in prior responses for authenticated context if present",
+          "custom_logic": "If login page includes anti-CSRF tokens in HTML, extract and bind to later POSTs; otherwise proceed with probes."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Response body contains unescaped injected payload or scriptable fragment",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body length increases by >=15% compared to baseline when payload provided",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.7,
+      "notes": "Low-impact XSS probes on SPA entry; monitor DOM execution via instrumentation if available.",
+      "tags": [
+        "xss",
+        "dom"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "EXEC-10-file-upload-probing",
+      "hypothesis_id": "H9",
+      "base_url": "http://upload_photo/",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "file",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "filename=test.txt\r\nContent-Type: text/plain\r\n\r\ntest-content"
+            }
+          ],
+          "description": "Upload a small benign text file as multipart to observe server handling and error messages.",
+          "encoding": "multipart/form-data",
+          "content_type": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "filename=../etc/passwd\r\nContent-Type: text/plain\r\n\r\n../../etc/passwd"
+            }
+          ],
+          "description": "Path-traversal style filename to trigger server-side errors or inclusion attempts (benign payload).",
+          "encoding": "multipart/form-data",
+          "content_type": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "If prior discovery reveals auth or CSRF tokens, bind them into headers/cookies/form fields; otherwise attempt unauthenticated upload first",
+          "custom_logic": "On successful upload, capture returned file URL for OOB follow-up; limit retries to avoid storage abuse."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "Server returns 4xx/5xx with stack trace or detailed error message referencing file handling",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              400,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "http_callback",
+          "condition": "Out-of-band HTTP interaction observed after upload indicating server processed external URL or inclusion",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              202
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 2,
+      "delay_between_requests": 2.0,
+      "notes": "Conservative upload attempts; do not upload large binaries. If responses indicate unauthorized, stop further upload attempts.",
+      "tags": [
+        "file-upload",
+        "oob"
+      ],
+      "estimated_duration": 8
+    }
+  ]
+}

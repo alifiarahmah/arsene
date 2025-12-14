@@ -36,7 +36,7 @@ STATIC_JS_MIME = [
     "text/ecmascript",
 ]
 
-# signature klasik vendor library -> dianggap tidak penting
+# signature vendor library
 VENDOR_SIGNATURE_PATTERNS = [
     r"jquery\.org",
     r"jQuery Foundation",
@@ -48,9 +48,21 @@ VENDOR_SIGNATURE_PATTERNS = [
     r"Copyright \(c\) [0-9]{4}",
 ]
 
-# ukuran threshold (bytes) untuk dianggap besar → diekstrak ke file
-# (HAR ZAP kamu pakai Content-Length tipikal, kita gunakan ini saja)
-LARGE_STATIC_THRESHOLD = 4096  # 4 KB (silakan adjust)
+# threshold (bytes) to extract to file
+LARGE_STATIC_THRESHOLD = 4096  # 4 KB
+
+# toggle HAR size reduction
+REDUCE_HAR_SIZE = True
+
+# important header whitelist in security reasoning (case-insensitive)
+IMPORTANT_HEADERS = {
+    "authorization", "cookie", "set-cookie", "x-csrf-token", "content-type",
+    "location", "www-authenticate", "access-control-allow-origin",
+    "access-control-allow-credentials", "access-control-allow-headers",
+    "access-control-allow-methods", "x-forwarded-for", "x-real-ip",
+    "origin", "referer", "sec-fetch-dest", "sec-fetch-mode",
+    "sec-fetch-site", "sec-fetch-user", "upgrade-insecure-requests",
+}
 
 # ---------- Helpers ----------
 
@@ -170,12 +182,9 @@ def safe_filename_from_url(url: str, default: str) -> str:
 
 
 def parse_datetime(dt_str: str) -> datetime:
-    # ZAP HAR biasanya ISO 8601
-    # gunakan fromisoformat jika memungkinkan; fallback ke strptime
     try:
         # handle trailing 'Z'
         if dt_str.endswith("Z"):
-            # Python fromisoformat tidak support 'Z', ganti ke +00:00
             return datetime.fromisoformat(dt_str.replace("Z", "+00:00"))
         return datetime.fromisoformat(dt_str)
     except Exception:
@@ -230,8 +239,60 @@ def process_har(input_har_path: str, har_basename: str):
         # decode body
         decoded_body = decode_response_body(entry)
 
-        # siapkan copy entry agar tidak ngotorin objek asli terlalu dalam
         new_entry = json.loads(json.dumps(entry))
+
+        # Reduksi ukuran HAR jika diaktifkan
+        if REDUCE_HAR_SIZE:
+            # Hapus timing information
+            new_entry.pop("time", None)
+            new_entry.pop("timings", None)
+
+            # Hapus connection dan pageref
+            new_entry.pop("connection", None)
+            new_entry.pop("pageref", None)
+
+            # Hapus serverIPAddress
+            new_entry.pop("serverIPAddress", None)
+
+            # Hapus comment
+            new_entry.pop("comment", None)
+
+            # Hapus cache info (biasanya tidak relevan untuk security)
+            new_entry.pop("cache", None)
+
+            # Filter request headers
+            if "request" in new_entry and "headers" in new_entry["request"]:
+                new_entry["request"]["headers"] = [
+                    h for h in new_entry["request"]["headers"]
+                    if h.get("name", "").lower() in IMPORTANT_HEADERS
+                ]
+
+            # Hapus queryString dari request (sudah ada di URL)
+            if "request" in new_entry:
+                new_entry["request"].pop("queryString", None)
+                # Hapus headersSize dan bodySize (tidak kritis)
+                new_entry["request"].pop("headersSize", None)
+                new_entry["request"].pop("bodySize", None)
+
+            # Filter response headers
+            if "response" in new_entry and "headers" in new_entry["response"]:
+                new_entry["response"]["headers"] = [
+                    h for h in new_entry["response"]["headers"]
+                    if h.get("name", "").lower() in IMPORTANT_HEADERS
+                ]
+
+            # Hapus response metadata yang tidak kritis
+            if "response" in new_entry:
+                new_entry["response"].pop("headersSize", None)
+                new_entry["response"].pop("bodySize", None)
+                new_entry["response"].pop("redirectURL", None)
+                new_entry["response"].pop("_transferSize", None)
+                # Hapus cookies dari response
+                new_entry["response"].pop("cookies", None)
+
+            # Hapus cookies dari request
+            if "request" in new_entry:
+                new_entry["request"].pop("cookies", None)
 
         # update reference vars
         new_resp = new_entry.get("response", {}) or {}
@@ -310,14 +371,13 @@ def process_har(input_har_path: str, har_basename: str):
         parsed_entries.append(new_entry)
 
     # simpan HAR yang sudah diproses
-    har["log"]["entries"] = parsed_entries
-
     output_path = os.path.join(out_dir, f"{har_basename}.json")
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(har, f, indent=2, ensure_ascii=False)
+        json.dump(parsed_entries, f, separators=(',', ':'))
 
     print(f"[+] Parsed HAR written to: {output_path}")
     print(f"[+] Extracted static files (if any) in: {static_dir}")
+    print(f"[+] Total entries: {len(parsed_entries)}")
 
 
 def main():

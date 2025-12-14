@@ -1,0 +1,854 @@
+{
+  "test_cases": [
+    {
+      "id": "plan-001-auth-setup",
+      "hypothesis_id": "setup-auth",
+      "base_url": "http://example",
+      "method": "POST",
+      "endpoint": "/rest/user/login",
+      "parameter": "email,password",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "dummy"
+            }
+          ],
+          "description": "Obtain JWT for authenticated tests; use observed valid credentials if available in HAR",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "header_change",
+          "condition": "Authorization or Set-Cookie with JWT observed in response headers or body",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "login returns 200 for valid creds and 401/403 for invalid",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Primary auth step to bind JWT for subsequent authenticated endpoints. If HAR already contains usable JWT, skip.",
+      "tags": [
+        "setup",
+        "auth"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "plan-002-gather-public",
+      "hypothesis_id": "info-001",
+      "base_url": "http://example",
+      "method": "GET",
+      "endpoint": "/rest/products",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "Enumerate public products to build baseline responses and DOM/JSON shapes",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "baseline captured for comparison with injection probes",
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Run early to gather shapes for XSS/error detection and to record baseline body lengths and status codes.",
+      "tags": [
+        "recon",
+        "baseline"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "plan-003-recon-i18n-assets",
+      "hypothesis_id": "info-002",
+      "base_url": "http://example",
+      "method": "GET",
+      "endpoint": "/assets/i18n/en.json",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": ""
+            }
+          ],
+          "description": "Fetch translation/resource files to search for injectable placeholders or secrets",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "secrets, keys, or endpoints exposed in asset files",
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Low-risk info-gathering; may reveal vectors for injection or endpoints.",
+      "tags": [
+        "recon",
+        "assets"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "plan-004-probe-reflected-xss-search",
+      "hypothesis_id": "hv-028",
+      "base_url": "http://example",
+      "method": "GET",
+      "endpoint": "/rest/products/search",
+      "parameter": "q",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "<script>alert(1)</script>"
+            },
+            {
+              "location": "query",
+              "value": "\"><svg onload=alert(1)>"
+            },
+            {
+              "location": "query",
+              "value": "test"
+            }
+          ],
+          "description": "High-confidence reflected XSS probes against search endpoint; use baseline from plan-002 to detect deviations",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {JWT}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Bind JWT from plan-001 response if login succeeded",
+          "extract_from": "login_response.headers.Authorization||login_response.body.token",
+          "bind_to": "{JWT}"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "xss_payload_executed",
+          "condition": "payload triggers execution in instrumented browser or reflected unencoded in response/DOM",
+          "weight": 1.0
+        },
+        {
+          "signal": "reflected_input",
+          "condition": "payload present in response body/JSON without encoding",
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "notes": "Prioritize due to high-impact client-side XSS; include Authorization only if JWT obtained. Stop early on confirmed execution.",
+      "tags": [
+        "xss",
+        "high-priority",
+        "search"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "plan-005-probe-reflected-xss-securityquestions",
+      "hypothesis_id": "hv-001",
+      "base_url": "http://example",
+      "method": "GET",
+      "endpoint": "/api/SecurityQuestions",
+      "parameter": "name",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "<script>alert(1)</script>"
+            },
+            {
+              "location": "query",
+              "value": "Score Board<script>console.log(1)</script>"
+            }
+          ],
+          "description": "Reflected XSS probes for SecurityQuestions name parameter; compare with baseline for encoding behaviors",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "in response body the injected payload or encoded equivalent appears",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=30% length change compared to baseline",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Run after baseline; no auth required. If positive, escalate to stored XSS probes where applicable.",
+      "tags": [
+        "xss",
+        "query"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "plan-006-idor-basket-enumeration",
+      "hypothesis_id": "hv-002",
+      "base_url": "http://example",
+      "method": "GET",
+      "endpoint": "/rest/basket/6",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            },
+            {
+              "location": "path",
+              "value": "2"
+            },
+            {
+              "location": "path",
+              "value": "9999"
+            },
+            {
+              "location": "path",
+              "value": "../7"
+            }
+          ],
+          "description": "IDOR probes across basket endpoint to detect authorization bypass; requires JWT",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {JWT}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user session required",
+          "extract_from": "plan-001-auth-setup.login_response.headers.Authorization||plan-001-auth-setup.login_response.body.token",
+          "bind_to": "{JWT}"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "altering id yields differing HTTP status codes among [200,403,404,401]",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=50% body length difference indicates different resource visibility",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "notes": "Run after obtaining JWT. Stop if 403 consistently returned for non-owned IDs. Escalate to write endpoints if access found.",
+      "tags": [
+        "idor",
+        "authorization"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "plan-007-coupon-idor-probe",
+      "hypothesis_id": "hv-003",
+      "base_url": "http://example",
+      "method": "GET",
+      "endpoint": "/rest/basket/6/coupon",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            },
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "path",
+              "value": "9999"
+            },
+            {
+              "location": "path",
+              "value": "../5"
+            }
+          ],
+          "description": "Coupon path id variation to detect access control issues; requires JWT",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {JWT}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user session required",
+          "extract_from": "plan-001-auth-setup.login_response.headers.Authorization||plan-001-auth-setup.login_response.body.token",
+          "bind_to": "{JWT}"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "changing path id yields differing HTTP status codes among [200,403,404,401]",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=40% body length delta when accessing different ids",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "notes": "Follow plan-006 for sequencing; prioritize if coupon leads to financial actions.",
+      "tags": [
+        "idor",
+        "coupon"
+      ],
+      "estimated_duration": 90
+    },
+    {
+      "id": "plan-008-input-fuzz-product-date",
+      "hypothesis_id": "hv-004",
+      "base_url": "http://example",
+      "method": "GET",
+      "endpoint": "/api/Products/1",
+      "parameter": "d",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "'%20OR%20'1'='1"
+            },
+            {
+              "location": "query",
+              "value": "../../etc/passwd"
+            },
+            {
+              "location": "query",
+              "value": "Tue%20Dec%2002%202025"
+            }
+          ],
+          "description": "Fuzz d parameter for injection or path traversal error disclosure",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {JWT}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "If endpoint requires JWT per HAR, bind token from auth step",
+          "extract_from": "plan-001-auth-setup.login_response.headers.Authorization||plan-001-auth-setup.login_response.body.token",
+          "bind_to": "{JWT}"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "server error strings or stack traces appear when manipulating d",
+          "weight": 0.9
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=30% body length difference compared to baseline",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Run after baseline gather. If error disclosure found, record exact error for exploitation guidance.",
+      "tags": [
+        "fuzz",
+        "error-disclosure"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "plan-009-stored-xss-review",
+      "hypothesis_id": "hv-014",
+      "base_url": "http://example",
+      "method": "PUT",
+      "endpoint": "/rest/products/1/reviews",
+      "parameter": "message",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "<script>alert(1)</script>"
+            },
+            {
+              "location": "body",
+              "value": "Good product"
+            }
+          ],
+          "description": "Attempt to create review with XSS payloads and then fetch reviews to detect stored XSS",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {JWT}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user session required",
+          "extract_from": "plan-001-auth-setup.login_response.headers.Authorization||plan-001-auth-setup.login_response.body.token",
+          "bind_to": "{JWT}"
+        },
+        {
+          "type": "csrf_token",
+          "description": "If required, extract CSRF token from prior GET responses (product page) and include in body/header",
+          "extract_from": "/rest/products/1 GET response body",
+          "bind_to": "{CSRF_TOKEN}"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "submitted message appears in reviews endpoint without encoding or executes in instrumented browser",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "creation changes responses by >=30% indicating storage",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 2.0,
+      "notes": "Low-volume stored XSS attempt; ensure CSRF token and Authorization bound. If confirmed, escalate to payloads for exploitation.",
+      "tags": [
+        "xss-stored",
+        "reviews"
+      ],
+      "estimated_duration": 180
+    },
+    {
+      "id": "plan-010-business-logic-registration",
+      "hypothesis_id": "hv-011",
+      "base_url": "http://example",
+      "method": "POST",
+      "endpoint": "/api/Users/",
+      "parameter": "email,password,securityQuestion.id,securityAnswer",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "test+dup@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "P@ssw0rd"
+            },
+            {
+              "location": "body",
+              "value": "11"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            }
+          ],
+          "description": "Attempt registrations to elicit duplicate handling and weak-password acceptance; capture errors",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "API returns business-logic error messages (duplicate allowed or weak password accepted)",
+          "weight": 0.9
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": ">=40% response difference when altering fields",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Run after basic recon; stop if account creation locked or CAPTCHA enforced repeatedly.",
+      "tags": [
+        "business-logic",
+        "registration"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "plan-011-feedback-captcha-bypass-probe",
+      "hypothesis_id": "hv-feedback-captcha",
+      "base_url": "http://example",
+      "method": "POST",
+      "endpoint": "/api/Feedbacks/",
+      "parameter": "comment,captchaId,captcha",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "gggrerfre (attacker@mail.com)"
+            },
+            {
+              "location": "body",
+              "value": "17"
+            },
+            {
+              "location": "body",
+              "value": "17"
+            }
+          ],
+          "description": "Test feedback endpoint behavior with captcha variations and content including email to detect injection or leakage",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {JWT}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user required for some endpoints",
+          "extract_from": "plan-001-auth-setup.login_response.headers.Authorization||plan-001-auth-setup.login_response.body.token",
+          "bind_to": "{JWT}"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "captcha variations produce differing status codes indicating bypassable anti-automation",
+          "weight": 0.8
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response echoes email or internal ids indicating leakage",
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 2.0,
+      "notes": "Respect captcha anti-automation; stop if repeated failures or lockouts observed.",
+      "tags": [
+        "captcha",
+        "business-logic"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "plan-012-data-export-check",
+      "hypothesis_id": "hv-data-export",
+      "base_url": "http://example",
+      "method": "POST",
+      "endpoint": "/rest/user/data-export",
+      "parameter": "format",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "1"
+            }
+          ],
+          "description": "Attempt user data export to verify access controls and data returned; requires JWT",
+          "encoding": "utf-8",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {JWT}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user session required",
+          "extract_from": "plan-001-auth-setup.login_response.headers.Authorization||plan-001-auth-setup.login_response.body.token",
+          "bind_to": "{JWT}"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "personal data or export file link returned",
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "access denied vs success codes indicate improper access controls",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              401,
+              404
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "High-sensitivity test; stop immediately if export returns PII beyond test account.",
+      "tags": [
+        "data-exfiltration",
+        "high-impact"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "plan-013-control-and-rate-limits",
+      "hypothesis_id": "exec-control",
+      "base_url": "http://example",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": ""
+            }
+          ],
+          "description": "Execution control placeholder for global rate limits, stop conditions, and telemetry binding",
+          "encoding": "utf-8",
+          "content_type": "text/html",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "timing_anomaly",
+          "condition": "server rate-limit responses or increased latency observed when exceeding thresholds",
+          "threshold": {
+            "timing_ms": 2000,
+            "expected_codes": [
+              429
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.0,
+      "notes": "Global execution controls: default rate 1 req/sec per endpoint, max concurrent endpoints 4. Stop on repeated 429/401/403 (>=3) or if JWT revoked. Abort destructive tests if anomalous errors occur.",
+      "tags": [
+        "control"
+      ],
+      "estimated_duration": 0
+    }
+  ]
+}

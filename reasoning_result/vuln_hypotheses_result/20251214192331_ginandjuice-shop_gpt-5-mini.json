@@ -1,0 +1,414 @@
+{
+  "hypotheses": [
+    {
+      "id": "hyp-000",
+      "method": "GET",
+      "endpoint": "0",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-001",
+      "method": "GET",
+      "endpoint": "1",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-002",
+      "method": "GET",
+      "endpoint": "2",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-003",
+      "method": "GET",
+      "endpoint": "3",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-004",
+      "method": "GET",
+      "endpoint": "4",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-005",
+      "method": "GET",
+      "endpoint": "5",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-006",
+      "method": "GET",
+      "endpoint": "6",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-007",
+      "method": "GET",
+      "endpoint": "7",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-008",
+      "method": "GET",
+      "endpoint": "8",
+      "parameters": [
+        "productId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Search for direct reflection of productId in response body/HTML"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Significant body size change when injecting distinctive input into productId"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "false"
+        },
+        {
+          "key": "csrf_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.65,
+      "priority": 2
+    },
+    {
+      "id": "hyp-009",
+      "method": "GET",
+      "endpoint": "9",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-010",
+      "method": "GET",
+      "endpoint": "10",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-011",
+      "method": "GET",
+      "endpoint": "11",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "hyp-012",
+      "method": "GET",
+      "endpoint": "12",
+      "parameters": [
+        "postId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect postId value reflected into DOM/response"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 12.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect size change when injecting unique postId"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "false"
+        },
+        {
+          "key": "csrf_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.65,
+      "priority": 2
+    },
+    {
+      "id": "hyp-013",
+      "method": "GET",
+      "endpoint": "13",
+      "parameters": [
+        "postId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect postId reflected into DOM/response"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 12.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Body size changes when manipulating postId"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "false"
+        },
+        {
+          "key": "csrf_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.65,
+      "priority": 2
+    },
+    {
+      "id": "hyp-014",
+      "method": "POST",
+      "endpoint": "14",
+      "parameters": [
+        "email",
+        "csrf"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              201
+            ]
+          },
+          "description": "Successful state-change responses when submitting recovery/email flow"
+        },
+        {
+          "signal": "authentication_bypassed",
+          "threshold": {},
+          "description": "Token or session issued/reused after submission indicating auth bypass or account takeover flow"
+        }
+      ],
+      "pass_logic": "all",
+      "preconditions": [
+        {
+          "key": "csrf_required",
+          "value": "true"
+        },
+        {
+          "key": "valid_csrf_value_observed",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 1
+    },
+    {
+      "id": "hyp-015",
+      "method": "GET",
+      "endpoint": "15",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    }
+  ]
+}

@@ -1,0 +1,585 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/{resource}",
+      "parameter": [
+        "resource"
+      ],
+      "param_location": "path",
+      "sample_value": "Users",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Products/{id}",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "1",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Products/{id}",
+      "parameter": [
+        "d"
+      ],
+      "param_location": "query",
+      "sample_value": "Tue Dec 02 2025",
+      "category": "others",
+      "expected_signals": [
+        "response_length_diff",
+        "timing_variation"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Challenges",
+      "parameter": [
+        "name"
+      ],
+      "param_location": "query",
+      "sample_value": "Score Board",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Users/",
+      "parameter": [
+        "email"
+      ],
+      "param_location": "body",
+      "sample_value": "dummy@mail.com",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Users/",
+      "parameter": [
+        "password"
+      ],
+      "param_location": "body",
+      "sample_value": "dummy",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "token_reuse_failure"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Users/",
+      "parameter": [
+        "securityQuestion.id"
+      ],
+      "param_location": "body",
+      "sample_value": "11",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/SecurityAnswers/",
+      "parameter": [
+        "UserId"
+      ],
+      "param_location": "body",
+      "sample_value": "23",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/rest/user/login",
+      "parameter": [
+        "email"
+      ],
+      "param_location": "body",
+      "sample_value": "dummy@mail.com",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "token_reuse_failure"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/rest/user/login",
+      "parameter": [
+        "password"
+      ],
+      "param_location": "body",
+      "sample_value": "dummy",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "token_reuse_failure"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/BasketItems/",
+      "parameter": [
+        "ProductId"
+      ],
+      "param_location": "body",
+      "sample_value": "1",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/BasketItems/",
+      "parameter": [
+        "BasketId"
+      ],
+      "param_location": "body",
+      "sample_value": "6",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/BasketItems/{id}",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/api/BasketItems/{id}",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/api/BasketItems/{id}",
+      "parameter": [
+        "quantity"
+      ],
+      "param_location": "body",
+      "sample_value": "1",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "http://localhost:3000/api/BasketItems/{id}",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/products/{id}/reviews",
+      "parameter": [
+        "message"
+      ],
+      "param_location": "body",
+      "sample_value": "good",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/products/{id}/reviews",
+      "parameter": [
+        "author"
+      ],
+      "param_location": "body",
+      "sample_value": "dummy@mail.com",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/rest/products/{id}/reviews",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "1",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Addresss/",
+      "parameter": [
+        "streetAddress"
+      ],
+      "param_location": "body",
+      "sample_value": "Jl. Raya No. 1",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/basket/{BasketId}/coupon/{coupon}",
+      "parameter": [
+        "coupon"
+      ],
+      "param_location": "path",
+      "sample_value": "6665434535",
+      "category": "open_redirect",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Cards/",
+      "parameter": [
+        "cardNum"
+      ],
+      "param_location": "body",
+      "sample_value": "1111234455555555",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "header_injection",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/rest/basket/{BasketId}/checkout",
+      "parameter": [
+        "couponData"
+      ],
+      "param_location": "body",
+      "sample_value": "NjY2NTQzNDUzNS0xNzY0NjMwMDAwMDAw",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Feedbacks/",
+      "parameter": [
+        "comment"
+      ],
+      "param_location": "body",
+      "sample_value": "wheskaldjfew (***my@mail.com)",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Complaints/",
+      "parameter": [
+        "message"
+      ],
+      "param_location": "body",
+      "sample_value": "cmoplaint",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/rest/chatbot/respond",
+      "parameter": [
+        "query"
+      ],
+      "param_location": "body",
+      "sample_value": "hi",
+      "category": "command_injection",
+      "expected_signals": [
+        "error_signature",
+        "out_of_band_call"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/rest/products/{id}",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "24",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Recycles/",
+      "parameter": [
+        "quantity"
+      ],
+      "param_location": "body",
+      "sample_value": "10",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/api/Addresss/{id}",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "7",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/wallet/balance",
+      "parameter": [
+        "balance"
+      ],
+      "param_location": "body",
+      "sample_value": "555",
+      "category": "business_logic",
+      "expected_signals": [
+        "state_change_observed",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/rest/deluxe-membership",
+      "parameter": [
+        "paymentMode"
+      ],
+      "param_location": "body",
+      "sample_value": "card",
+      "category": "business_logic",
+      "expected_signals": [
+        "state_change_observed",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/ftp/{file}",
+      "parameter": [
+        "file"
+      ],
+      "param_location": "path",
+      "sample_value": "order_b783-167bf60f01c1a3bb.pdf",
+      "category": "file_inclusion",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/rest/track-order/{orderId}",
+      "parameter": [
+        "orderId"
+      ],
+      "param_location": "path",
+      "sample_value": "b783-167bf60f01c1a3bb",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/socket.io",
+      "parameter": [
+        "sid"
+      ],
+      "param_location": "query",
+      "sample_value": "bqFZXYSuwOfYgU7zAAAE",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "token_reuse_failure"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/socket.io/?EIO=4&transport=polling&t={t}&sid={sid}",
+      "parameter": [
+        "post_body"
+      ],
+      "param_location": "body",
+      "sample_value": "42[\"verifyLocalXssChallenge\",\"shirt\"]",
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "timing_variation"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/assets{i*}",
+      "parameter": [
+        "path"
+      ],
+      "param_location": "path",
+      "sample_value": "/i18n/id_ID.json",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/rest/user/data-export",
+      "parameter": [
+        "format"
+      ],
+      "param_location": "body",
+      "sample_value": "1",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "state_change_observed",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/rest/2fa/status",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/user/change-password",
+      "parameter": [
+        "current"
+      ],
+      "param_location": "query",
+      "sample_value": "dummy",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "token_reuse_failure"
+      ],
+      "needs_observation": true
+    }
+  ]
+}

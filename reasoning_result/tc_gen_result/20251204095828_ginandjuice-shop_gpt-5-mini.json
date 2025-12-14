@@ -1,0 +1,683 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-H-1-1",
+      "hypothesis_id": "H-1",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": "productId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17"
+            }
+          ],
+          "description": "Baseline request for productId=17 (observed sample).",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "18"
+            }
+          ],
+          "description": "Probe with a neighboring productId to detect access differences.",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "999999"
+            }
+          ],
+          "description": "Access a likely-unowned/nonexistent productId to trigger access control differences.",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare status code of each request against baseline (productId=17).",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Compute body length delta pct between baseline and each other response; flag if >=40%.",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "idor",
+        "parameter_tampering"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H-2-1",
+      "hypothesis_id": "H-2",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": "productId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17"
+            }
+          ],
+          "description": "Baseline request for timing/error comparison.",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17'"
+            }
+          ],
+          "description": "Probe injecting a quote to trigger NoSQL parsing errors or different behavior (safe probe).",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "{$ne:null}"
+            }
+          ],
+          "description": "NoSQL-style payload to detect error messages or time differences; sent as raw query value.",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Observation required: collect baseline response times and bodies for productId=17 to compute timing anomaly and error signatures.",
+          "custom_logic": "Perform initial benign GET to /catalog/product?productId=17 and record status code, response time(ms), and body length."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "If response status is in [400,500] or body contains typical NoSQL error signatures (e.g., 'Mongo', 'mongo', 'exception', 'stack trace'), mark as triggered.",
+          "threshold": {
+            "expected_codes": [
+              500,
+              400
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "timing_anomaly",
+          "condition": "If probe or exploit request response_time - baseline_response_time >= 2000 ms, flag timing anomaly.",
+          "threshold": {
+            "timing_ms": 2000
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "notes": "Needs initial observation run as prerequisite.",
+      "tags": [
+        "nosql_injection",
+        "timing"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "TC-H-3-1",
+      "hypothesis_id": "H-3",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3"
+            }
+          ],
+          "description": "Baseline for postId=3 (observed sample).",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "4"
+            }
+          ],
+          "description": "Probe with another observed postId to check for access differences.",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "9999"
+            }
+          ],
+          "description": "Probe with large/nonexistent postId to detect IDOR behavior.",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare status codes against baseline (postId=3); expected codes [200,403,404,500].",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Flag if response body length change >=40% relative to baseline.",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "idor"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H-4-1",
+      "hypothesis_id": "H-4",
+      "base_url": "https://HOST",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "4"
+            }
+          ],
+          "description": "Baseline for postId=4 (observed sample).",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3"
+            }
+          ],
+          "description": "Probe using another known postId to detect access differences.",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "10000"
+            }
+          ],
+          "description": "Nonexistent postId to provoke differing responses.",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare status codes against baseline (postId=4); expected codes [200,403,404,500].",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Flag when body length delta pct >=40% compared to baseline.",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "idor"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H-5-1",
+      "hypothesis_id": "H-5",
+      "base_url": "https://HOST",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "mail@example.com"
+            },
+            {
+              "location": "body",
+              "value": "sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ"
+            }
+          ],
+          "description": "Baseline subscribe with observed valid csrf token and benign email.",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "test+probe@example.com"
+            },
+            {
+              "location": "body",
+              "value": "sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ"
+            }
+          ],
+          "description": "Probe with harmless payload containing HTML-ambiguous characters excluded to be safe; using same observed CSRF token.",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "<script>alert(1)</script>test@example.com"
+            },
+            {
+              "location": "body",
+              "value": "sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ"
+            }
+          ],
+          "description": "Stored XSS probe payload in email field to detect reflection/storage in subsequent GETs. Proceed only if observation prerequisite satisfied.",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Observation required: identify subscription listing or confirmation endpoint/page where submitted email would appear to verify stored XSS; capture baseline of that page before injection.",
+          "custom_logic": "Fetch subscription confirmation or listing pages after benign submission to establish baseline for reflection check."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "After submission, fetch subscription-related pages; if the submitted email string appears in response unencoded or as raw HTML (e.g., contains '<script>alert(1)</script>'), flag stored XSS.",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If subscription page body length increases by >=30% after submission compared to baseline, and contains submitted marker, flag as stored content.",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Exploit payload is a probe for stored XSS; run only after locating where submissions are displayed. Do not execute in production without authorization.",
+      "tags": [
+        "xss_stored",
+        "csrf_token_present"
+      ],
+      "estimated_duration": 600
+    },
+    {
+      "id": "TC-H-6-1",
+      "hypothesis_id": "H-6",
+      "base_url": "https://HOST",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "csrf",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ"
+            },
+            {
+              "location": "body",
+              "value": "mail@example.com"
+            }
+          ],
+          "description": "Valid request using observed csrf token and benign email.",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": ""
+            },
+            {
+              "location": "body",
+              "value": "mail@example.com"
+            }
+          ],
+          "description": "Request with missing csrf token to observe server behavior.",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "invalid_token_123"
+            },
+            {
+              "location": "body",
+              "value": "mail@example.com"
+            }
+          ],
+          "description": "Request with malformed/invalid CSRF token to test enforcement.",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Valid CSRF token observed in input; use sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ for baseline requests.",
+          "bind_to": "csrf"
+        },
+        {
+          "type": "custom",
+          "description": "If subscription requires authentication, ensure an authenticated session is used; otherwise proceed unauthenticated.",
+          "custom_logic": "Use cookie-based session if available in the test harness."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare status codes for missing/invalid token requests against baseline valid-token request; expected codes include [200,403,400].",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              400
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response body length changes by >=30% for invalid/missing token compared to valid request, flag enforcement change.",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "tags": [
+        "csrf"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H-7-1",
+      "hypothesis_id": "H-7",
+      "base_url": "https://HOST",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "csrf",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ"
+            }
+          ],
+          "description": "Baseline using observed valid CSRF token.",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ"
+            }
+          ],
+          "description": "Reuse same token in rapid succession or from different session context to detect reuse vulnerabilities.",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ"
+            }
+          ],
+          "description": "Attempt token reuse across contexts; requires observation to run safely.",
+          "encoding": "utf-8",
+          "content_type": "application/json;charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json;charset=UTF-8"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Use observed CSRF token value sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ.",
+          "bind_to": "csrf"
+        },
+        {
+          "type": "custom",
+          "description": "Observation required: capture behavior when submitting same token from different sessions or after token expiry to test reuse; create second session cookie if needed.",
+          "custom_logic": "Perform baseline submit with token in session A, then attempt same token in session B (different cookie jar) and observe response codes and errors."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "If reuse across contexts results in different status codes (e.g., 200 -> 401/403/302), flag potential token validation flaw.",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              401,
+              403,
+              400
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "If server returns 500 or includes error details when token reused/manipulated, flag potential handling flaw.",
+          "threshold": {
+            "expected_codes": [
+              500
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "notes": "Requires creating separate session contexts; ensure compliance with safety and authorization before running.",
+      "tags": [
+        "csrf",
+        "authn_bypass"
+      ],
+      "estimated_duration": 600
+    }
+  ]
+}

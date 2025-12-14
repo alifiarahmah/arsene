@@ -1,0 +1,680 @@
+{
+  "test_cases": [
+    {
+      "id": "T-H1-001",
+      "hypothesis_id": "H1",
+      "base_url": "http://(none)",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": "(none)",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            }
+          ],
+          "description": "Inject a benign XSS probe into the query/hash if accepted by SPA routing; observe DOM reflection.",
+          "content_type": "text/html; charset=UTF-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "%3Csvg%2Fonload%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Alternative scriptable vector to detect DOM-based XSS reflection.",
+          "content_type": "text/html; charset=UTF-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Response body contains unescaped injected payload or scriptable fragment",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body length increases by >=15% compared to baseline when payload provided",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "dom",
+        "reflected"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H2-001",
+      "hypothesis_id": "H2",
+      "base_url": "http://user_info/",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Perform unauthenticated request first; then perform authenticated request if session token available in context",
+          "custom_logic": "Compare both responses for presence of PII fields"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response contains PII-like keys such as name, email, phone, address in unauthenticated response",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Status code remains 200 for unauthenticated access or differs between auth and unauth contexts",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data",
+        "auth"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H3-001",
+      "hypothesis_id": "H3",
+      "base_url": "http://user_likes/",
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Request unauthenticated then authenticated if credentials available; compare outputs",
+          "custom_logic": "Look for lists or arrays of likes and identifying metadata"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Unauthenticated response contains user-like lists, identifiers, or profile references",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Status code differs when auth present versus absent (200 vs 401/403)",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data",
+        "auth"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H4-001",
+      "hypothesis_id": "H4",
+      "base_url": "http://user_loves/",
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Perform unauthenticated and authenticated requests; compare for personal data exposure",
+          "custom_logic": "Detect lists of 'loves' with user identifiers or personal info"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Presence of user-specific 'loves' entries or metadata in unauthenticated response",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Auth state changes response code indicating improper access control if unauthenticated 200",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data",
+        "auth"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H5-001",
+      "hypothesis_id": "H5",
+      "base_url": "http://all_users/",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Compare unauthenticated and authenticated responses to determine if bulk user list is exposed",
+          "custom_logic": "Measure response size and search for arrays of user objects"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response contains arrays or objects representing multiple users with PII-like fields",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response size is substantially larger than typical error page (>50%) indicating bulk data",
+          "threshold": {
+            "body_length_delta_pct": 50.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data",
+        "bulk"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H6-001",
+      "hypothesis_id": "H6",
+      "base_url": "http://total_money/",
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Request endpoint unauthenticated and authenticated if possible; compare responses for financial data exposure",
+          "custom_logic": "Look for numeric balances, totals, currency fields"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response contains financial fields like balance, total_money, amount, currency without auth",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Status code remains 200 when unauthenticated indicating exposure",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data",
+        "financial"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H7-001",
+      "hypothesis_id": "H7",
+      "base_url": "http://user_pictures/",
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Fetch unauthenticated then authenticated responses; inspect for image URLs or base64 data exposing user identities",
+          "custom_logic": "Check content-type headers and payload sizes for media"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response contains image URLs, base64 images, or user-identifying metadata in unauthenticated response",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Payload size suggests media content (>=40% larger than error pages)",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "media",
+        "sensitive_data"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H8-001",
+      "hypothesis_id": "H8",
+      "base_url": "http://pictures/",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Request unauthenticated and authenticated contexts; check for listing of pictures or direct media resources",
+          "custom_logic": "Evaluate response size and content-type for media list or binaries"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Unauthenticated response includes picture metadata or direct links to media revealing user content",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Large response size consistent with media listing (>40% difference)",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "media",
+        "sensitive_data"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H9-001",
+      "hypothesis_id": "H9",
+      "base_url": "http://upload_photo/",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "file",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "filename=test.txt\r\nContent-Type: text/plain\r\n\r\ntest-content"
+            }
+          ],
+          "description": "Upload a small benign text file as multipart to observe server handling and error messages.",
+          "encoding": "multipart/form-data",
+          "content_type": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "filename=../etc/passwd\r\nContent-Type: text/plain\r\n\r\n../../etc/passwd"
+            }
+          ],
+          "description": "Path-traversal style filename to trigger server-side errors or inclusion attempts (benign payload).",
+          "encoding": "multipart/form-data",
+          "content_type": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "If auth required, include valid session cookie or token; if CSRF required include valid token",
+          "custom_logic": "Retry with and without auth/CSRF to observe differences"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "Server returns 4xx/5xx with stack trace or detailed error message referencing file handling",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              400,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "http_callback",
+          "condition": "Out-of-band HTTP interaction observed after upload indicating server processed external URL or inclusion",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              202
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "tags": [
+        "file-upload",
+        "rce-probe",
+        "oob"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "T-H10-001",
+      "hypothesis_id": "H10",
+      "base_url": "http://0215428b1ddcb8dc8fd93e4ced0cab97",
+      "method": "GET",
+      "endpoint": "/0215428b1ddcb8dc8fd93e4ced0cab97",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body size differs by >=20% from typical 404 baseline or contains non-error content",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              404,
+              301
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Returned status is 200 or 301 instead of 404 indicating reachable resource",
+          "threshold": {
+            "expected_codes": [
+              200,
+              301,
+              404
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "discovery"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "T-H11-001",
+      "hypothesis_id": "H11",
+      "base_url": "http://api-docs/",
+      "method": "GET",
+      "endpoint": "/api-docs/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Endpoint returns 200 or 301 (not 404) indicating docs accessible",
+          "threshold": {
+            "expected_codes": [
+              200,
+              301,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response content size is large (>50% vs 404) suggesting full documentation served",
+          "threshold": {
+            "body_length_delta_pct": 50.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "discovery",
+        "docs"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "T-H12-001",
+      "hypothesis_id": "H12",
+      "base_url": "http://swagger.json",
+      "method": "GET",
+      "endpoint": "/swagger.json",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "swagger.json returns a sizable JSON spec (>=40% larger than 404 payload)",
+          "threshold": {
+            "body_length_delta_pct": 40.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "reflected_input",
+          "condition": "Spec contains host/basePath/example server values that match observed request host or reflect request parameters",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "swagger",
+        "discovery"
+      ],
+      "estimated_duration": 3
+    }
+  ]
+}

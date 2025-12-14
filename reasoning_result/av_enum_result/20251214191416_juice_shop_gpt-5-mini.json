@@ -1,0 +1,391 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "0",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "1",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "2",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "3",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "4",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "5",
+      "parameter": [
+        "name"
+      ],
+      "param_location": "query",
+      "sample_value": "Score%20Board",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "6",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "7",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "8",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "9",
+      "parameter": [
+        "d"
+      ],
+      "param_location": "query",
+      "sample_value": "Tue%20Dec%2002%202025",
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "10",
+      "parameter": [
+        "id",
+        "d"
+      ],
+      "param_location": "path",
+      "sample_value": "1",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "11",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "12",
+      "parameter": [
+        "email",
+        "password",
+        "passwordRepeat",
+        "securityQuestion",
+        "securityAnswer"
+      ],
+      "param_location": "body",
+      "sample_value": "dummy@mail.com",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "13",
+      "parameter": [
+        "UserId",
+        "answer",
+        "SecurityQuestionId"
+      ],
+      "param_location": "body",
+      "sample_value": "23",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "14",
+      "parameter": [
+        "email",
+        "password"
+      ],
+      "param_location": "body",
+      "sample_value": "dummy@mail.com",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "token_reuse_failure"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "15",
+      "parameter": [
+        "ProductId",
+        "BasketId",
+        "quantity"
+      ],
+      "param_location": "body",
+      "sample_value": "1",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "16",
+      "parameter": [
+        "message",
+        "author"
+      ],
+      "param_location": "body",
+      "sample_value": "good",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "17",
+      "parameter": [
+        "message",
+        "author"
+      ],
+      "param_location": "body",
+      "sample_value": "good",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "18",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "19",
+      "parameter": [
+        "id",
+        "quantity"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "20",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "21",
+      "parameter": [
+        "couponData",
+        "orderDetails"
+      ],
+      "param_location": "body",
+      "sample_value": "NjY2NTQzNDUzNS0xNzY0NjMwMDAwMDAw",
+      "category": "others",
+      "expected_signals": [
+        "status_code_change",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "22",
+      "parameter": [
+        "UserId",
+        "captchaId",
+        "captcha",
+        "comment",
+        "rating"
+      ],
+      "param_location": "body",
+      "sample_value": "wheskaldjfew (***my@mail.com)",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "23",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "24",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "25",
+      "parameter": [
+        "caption",
+        "image"
+      ],
+      "param_location": "body",
+      "sample_value": "memory",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "out_of_band_call"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "26",
+      "parameter": [],
+      "category": "others",
+      "expected_signals": [
+        "none"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "27",
+      "parameter": [
+        "action",
+        "query"
+      ],
+      "param_location": "body",
+      "sample_value": "what can you do?",
+      "category": "injection_nosql",
+      "expected_signals": [
+        "error_signature",
+        "timing_variation"
+      ],
+      "needs_observation": true
+    }
+  ]
+}

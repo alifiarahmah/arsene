@@ -1,0 +1,675 @@
+{
+  "hypotheses": [
+    {
+      "id": "H-001",
+      "method": "POST",
+      "endpoint": "/login",
+      "parameters": [
+        "user"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              302
+            ]
+          },
+          "description": "Unexpected success status codes or changes compared to baseline when altering user field"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Application returns authentication-related error messages or stack traces when user field manipulated"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "if_present_must_be_valid"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.35,
+      "priority": 3
+    },
+    {
+      "id": "H-002",
+      "method": "POST",
+      "endpoint": "/login",
+      "parameters": [
+        "pass"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              302
+            ]
+          },
+          "description": "Observed success codes or deviation from baseline when altering password field"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Authentication error messages, stack traces, or DB errors returned when manipulating password"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "if_present_must_be_valid"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.35,
+      "priority": 3
+    },
+    {
+      "id": "H-003",
+      "method": "POST",
+      "endpoint": "/login",
+      "parameters": [
+        "user",
+        "pass"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              302
+            ]
+          },
+          "description": "Credential combinations produce success codes different from baseline unauthenticated responses"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Detailed error messages or authentication bypass indicators when providing crafted user+pass pairs"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "if_present_must_be_valid"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "H-004",
+      "method": "POST",
+      "endpoint": "/register",
+      "parameters": [
+        "email"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "NoSQL-related error messages or stack traces exposed in response when email value contains special constructs"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200,
+              201,
+              400,
+              500
+            ]
+          },
+          "description": "Response codes or body size deviate from baseline indicating parsing/execution difference"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "if_present_must_be_valid"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.45,
+      "priority": 4
+    },
+    {
+      "id": "H-005",
+      "method": "POST",
+      "endpoint": "/register",
+      "parameters": [
+        "password"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              201,
+              302
+            ]
+          },
+          "description": "Unexpected acceptance or status changes when varying password field"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Password-processing errors or stack traces returned"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "required_if_endpoint_protected"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.3,
+      "priority": 3
+    },
+    {
+      "id": "H-006",
+      "method": "POST",
+      "endpoint": "/register",
+      "parameters": [
+        "email",
+        "password"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "business_logic",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200,
+              201,
+              400
+            ]
+          },
+          "description": "Registration responses differ indicating unexpected acceptance or rejection patterns"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Significant body size changes indicating state changes (account created vs error)"
+        }
+      ],
+      "pass_logic": "all",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "none_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "required_if_present"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "H-007",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          },
+          "description": "Status code differs when accessing other users' resources compared to own baseline"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Response body size indicates more/less data returned (sensitive fields present/absent)"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_user_token_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "not_required_for_get"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "H-008",
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Accessing likes for different user IDs returns 200 vs expected authorization failures"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Different response sizes indicate exposure of other users' likes"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_user_token_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "not_required_for_get"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H-009",
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Owner checks missing if other users' loves return 200"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Body size differences indicate unauthorized data exposure"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_user_token_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "not_required_for_get"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H-010",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "description": "Large response bodies indicating list of all users returned to requester"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Endpoint returns 200 when it should require admin auth"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_user_token_required; admin_role_if_expected"
+        },
+        {
+          "key": "csrf_token",
+          "value": "not_required_for_get"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.7,
+      "priority": 5
+    },
+    {
+      "id": "H-011",
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "description": "Response reveals aggregate/individual monetary values (large body change)"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Endpoint accessible without proper privileges"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_user_token_required; privileged_role_expected"
+        },
+        {
+          "key": "csrf_token",
+          "value": "not_required_for_get"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.7,
+      "priority": 5
+    },
+    {
+      "id": "H-012",
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Returned picture list size indicates other users' pictures exposed"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Accessible without owning or proper permission"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_user_token_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "not_required_for_get"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "H-013",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Endpoint returns more image resources than baseline suggesting exposure"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Should be protected but returns 200"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_user_token_required_if_personal"
+        },
+        {
+          "key": "csrf_token",
+          "value": "not_required_for_get"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "H-014",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameters": [
+        "file"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "file_inclusion",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "File-handling errors, path traversal traces, or inclusion-related stack traces returned in response"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200,
+              201,
+              400,
+              500
+            ]
+          },
+          "description": "Unexpected acceptance or server error codes when uploading crafted file input"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_user_token_required"
+        },
+        {
+          "key": "csrf_token",
+          "value": "required"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 4
+    }
+  ]
+}

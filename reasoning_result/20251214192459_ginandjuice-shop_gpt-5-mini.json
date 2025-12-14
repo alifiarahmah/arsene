@@ -1,0 +1,260 @@
+{
+  "test_cases": [
+    {
+      "id": "tc-chain-001-auth-enum",
+      "hypothesis_id": "chain-auth-enum-001",
+      "base_url": "https://<needs_observation=true>",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"attacker+probe@example.com\",\"csrf\":\"sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ\"}"
+            }
+          ],
+          "description": "Verify state-change with observed CSRF token and detect session/auth issuance via Set-Cookie or response body. Low-impact initial action.",
+          "encoding": "utf-8",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Valid CSRF token must be present in request body as observed.",
+          "bind_to": "csrf"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Request returns one of expected success codes indicating state change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              201
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "authentication_bypassed",
+          "condition": "Response sets auth/session token or returns content indicative of authenticated context (needs observation)",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "all",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 2,
+      "delay_between_requests": 2.0,
+      "notes": "First step: attempt benign subscription using observed CSRF token to confirm CSRF enforcement and check for side-effects such as Set-Cookie auth/session. Collect baseline response headers and body.",
+      "tags": [
+        "auth_flow",
+        "csrf",
+        "enumeration"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "tc-chain-002-xss-product",
+      "hypothesis_id": "chain-xss-002",
+      "base_url": "https://<needs_observation=true>",
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": "productId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17-UNIQUE_PAYLOAD_9f2b"
+            },
+            {
+              "location": "query",
+              "value": "17'><script>console.log('xss-test-1')</script>"
+            },
+            {
+              "location": "query",
+              "value": "17%22%3E%3Cscript%3Econsole.log('xss-test-1')%3C%2Fscript%3E"
+            }
+          ],
+          "description": "Probe for DOM reflection/XSS on product page. Start with unique marker then encoded and plain script payloads if marker is reflected.",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response body contains exact payload or decoded variant",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "response length changes >= threshold when comparing baseline to injected request",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Collect baseline GET /catalog/product?productId=17 before injections. If unique marker reflected, escalate to encoded/script payloads. Use same headers/cookies observed during baseline (needs_observation=true to resolve).",
+      "tags": [
+        "xss",
+        "dom-reflection",
+        "probe"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "tc-chain-003-xss-blog-batch",
+      "hypothesis_id": "chain-xss-003",
+      "base_url": "https://<needs_observation=true>",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3-UNIQUE_PAYLOAD_a7c1"
+            },
+            {
+              "location": "query",
+              "value": "3'><img src=x onerror=console.log('xss-post-3')>"
+            },
+            {
+              "location": "query",
+              "value": "4-UNIQUE_PAYLOAD_b3d4"
+            },
+            {
+              "location": "query",
+              "value": "4'><svg/onload=console.log('xss-post-4')>"
+            }
+          ],
+          "description": "Combined probing for blog post endpoints postId=3 and postId=4. Start with unique markers for both, then encoded/plain XSS probes if markers reflected. Batched to reduce redundancy.",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response contains the literal injected string or decoded equivalent within HTML/JS",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "compare baseline and injected responses; detect >=12% change",
+          "threshold": {
+            "body_length_delta_pct": 12.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Run baseline fetches for /blog/post?postId=3 and ?postId=4 before probes. Execute unique marker probes first; only send active script/img/svg payloads when markers are reflected to minimize noise.",
+      "tags": [
+        "xss",
+        "dom-reflection",
+        "probe"
+      ],
+      "estimated_duration": 180
+    },
+    {
+      "id": "tc-chain-004-runtime-adaptive",
+      "hypothesis_id": "chain-adapt-004",
+      "base_url": "https://<needs_observation=true>",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            }
+          ],
+          "description": "Runtime observation step: fetch root and JS bundles to collect cookies, headers, CSRF tokens and confirm client-side frameworks. Required to resolve runtime headers/tokens for subsequent tests.",
+          "content_type": "text/html; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "header_change",
+          "condition": "Collect Set-Cookie, CSP, and any inlined CSRF tokens or config in JS bundles",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Mandatory initial observation to extract runtime tokens/headers (e.g., cookies, CSRF tokens in HTML or JS). Set needs_observation=true in base_url indicates runtime binding required before other tests proceed.",
+      "tags": [
+        "recon",
+        "runtime"
+      ],
+      "estimated_duration": 60
+    }
+  ]
+}

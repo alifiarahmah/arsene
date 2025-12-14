@@ -1,0 +1,376 @@
+{
+  "test_cases": [
+    {
+      "id": "T-H001-01",
+      "hypothesis_id": "H001",
+      "base_url": "https://example.com",
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": "productId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "1"
+            },
+            {
+              "location": "query",
+              "value": "2"
+            },
+            {
+              "location": "query",
+              "value": "17"
+            },
+            {
+              "location": "query",
+              "value": "9999"
+            },
+            {
+              "location": "query",
+              "value": "0"
+            }
+          ],
+          "description": "Enumerate productId values including observed sample and out-of-range ids to detect status or content differences",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Different productId values produce differing HTTP status codes",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body length changes by >=30% between tested productId values",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Some productId values cause redirects (301/302)",
+          "threshold": {
+            "expected_codes": [
+              302,
+              301
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "idor",
+        "enumeration"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H002-01",
+      "hypothesis_id": "H002",
+      "base_url": "https://example.com",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "1"
+            },
+            {
+              "location": "query",
+              "value": "2"
+            },
+            {
+              "location": "query",
+              "value": "3"
+            },
+            {
+              "location": "query",
+              "value": "4"
+            },
+            {
+              "location": "query",
+              "value": "10"
+            }
+          ],
+          "description": "Enumerate postId around observed samples to detect status or content differences",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Varying postId values yield differing status codes indicating access control differences",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Body length changes by >=25% across postId values",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "idor",
+        "enumeration",
+        "blog"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H003-01",
+      "hypothesis_id": "H003",
+      "base_url": "https://example.com",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3"
+            },
+            {
+              "location": "query",
+              "value": "4"
+            },
+            {
+              "location": "query",
+              "value": "5"
+            },
+            {
+              "location": "query",
+              "value": "999"
+            }
+          ],
+          "description": "Focused enumeration around sample value 4 to detect status or content differences",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Different postId values produce differing status codes versus baseline",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body length delta >=25% when enumerating around sample value",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 40
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "idor",
+        "focused-enum"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "T-H004-01",
+      "hypothesis_id": "H004",
+      "base_url": "https://example.com",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "csrf",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "MISSING"
+            },
+            {
+              "location": "body",
+              "value": "invalid-token"
+            },
+            {
+              "location": "body",
+              "value": "sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ"
+            }
+          ],
+          "description": "Submit subscription with missing, invalid, and observed valid CSRF token to verify CSRF enforcement",
+          "encoding": "json",
+          "content_type": "application/json;charset=UTF-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Valid CSRF token observed in context; include known sample token for valid case"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Missing/invalid CSRF token yields rejection codes vs accepted codes for valid token",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              403,
+              401,
+              400
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Response body contains server-side error or stack trace when CSRF handling fails",
+          "threshold": {},
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Ensure email parameter uses benign address to avoid spamming",
+      "tags": [
+        "csrf",
+        "state-changing"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "T-H005-01",
+      "hypothesis_id": "H005",
+      "base_url": "https://example.com",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "test@example.com"
+            },
+            {
+              "location": "body",
+              "value": "<script>alert(1)</script>"
+            },
+            {
+              "location": "body",
+              "value": "\"'><img src=x onerror=alert(1)>"
+            }
+          ],
+          "description": "Inject common reflected XSS payloads into email parameter while supplying valid CSRF token to detect reflection",
+          "encoding": "json",
+          "content_type": "application/json;charset=UTF-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Valid CSRF token required for submission; include valid token to reach reflection handling"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Submitted email value is reflected verbatim or altered in response body indicating potential reflected XSS",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response length changes by >=30% when injecting test strings into email parameter",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Use benign payloads; do not trigger real users; monitor responses for reflection only",
+      "tags": [
+        "xss",
+        "reflected"
+      ],
+      "estimated_duration": 10
+    }
+  ]
+}

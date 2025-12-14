@@ -1,0 +1,1006 @@
+{
+  "hypotheses": [
+    {
+      "id": "GET-0-others",
+      "method": "GET",
+      "endpoint": "0",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.2,
+      "priority": 5
+    },
+    {
+      "id": "GET-1-others",
+      "method": "GET",
+      "endpoint": "1",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.2,
+      "priority": 5
+    },
+    {
+      "id": "GET-2-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "2",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Trigger variations (e.g., with/without auth) produce >=30% response length change indicating data exposure differences."
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Response contains clearly sensitive fields (email, token, secret) — needs observation."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "GET-3-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "3",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Observe >=30% response length difference between contexts (auth vs unauth)."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "GET-4-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "4",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Significant response size change suggests conditional data exposure."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "GET-5-xss_reflected",
+      "method": "GET",
+      "endpoint": "5",
+      "parameters": [
+        "name"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Injected input value reflected verbatim in response body or DOM."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Response length changes >=10% when varying 'name' parameter."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.7,
+      "priority": 2
+    },
+    {
+      "id": "GET-6-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "6",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Conditional content exposure indicated by size delta."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "GET-7-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "7",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Observe >=30% body length change under different contexts."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "GET-8-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "8",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Significant size variance may indicate data exposure."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "GET-9-others",
+      "method": "GET",
+      "endpoint": "9",
+      "parameters": [
+        "d"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.2,
+      "priority": 5
+    },
+    {
+      "id": "GET-10-idor",
+      "method": "GET",
+      "endpoint": "10",
+      "parameters": [
+        "id",
+        "d"
+      ],
+      "param_locations": [
+        "path",
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Changing id in path results in different status codes indicating access control enforcement."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Large body size differences when varying id may indicate access-restricted data."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.7,
+      "priority": 2
+    },
+    {
+      "id": "GET-11-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "11",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Response size differences suggest conditional exposure."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "POST-12-authn_bypass",
+      "method": "POST",
+      "endpoint": "12",
+      "parameters": [
+        "email",
+        "password",
+        "passwordRepeat",
+        "securityQuestion",
+        "securityAnswer"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              401,
+              403
+            ]
+          },
+          "description": "Unexpected success codes on crafted inputs may indicate bypassable checks."
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Server error messages revealing authentication logic or account creation issues."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "POST-13-authn_bypass-recovery",
+      "method": "POST",
+      "endpoint": "13",
+      "parameters": [
+        "UserId",
+        "answer",
+        "SecurityQuestionId"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              403
+            ]
+          },
+          "description": "Password recovery endpoint returns success or differing codes when varying UserId indicating potential bypass."
+        },
+        {
+          "signal": "error_signature",
+          "description": "Error messages exposing validation logic or user existence."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "csrf_token_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "POST-14-authn_bypass-login",
+      "method": "POST",
+      "endpoint": "14",
+      "parameters": [
+        "email",
+        "password"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Authentication success or abnormal status codes when presenting credentials."
+        },
+        {
+          "signal": "error_signature",
+          "description": "Error messages indicating token/session handling issues (observe token reuse failure)."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.7,
+      "priority": 1
+    },
+    {
+      "id": "POST-15-idor",
+      "method": "POST",
+      "endpoint": "15",
+      "parameters": [
+        "ProductId",
+        "BasketId",
+        "quantity"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              403,
+              404,
+              400
+            ]
+          },
+          "description": "Altering ProductId/BasketId results in different status codes indicating access control."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Response changes when modifying object IDs."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "unknown"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.7,
+      "priority": 2
+    },
+    {
+      "id": "PUT-16-xss_stored",
+      "method": "PUT",
+      "endpoint": "16",
+      "parameters": [
+        "message",
+        "author"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Submitted message/author later reflected in responses or DOM."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "description": "State change observable via response size differences after PUT."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "unknown"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "POST-17-xss_stored",
+      "method": "POST",
+      "endpoint": "17",
+      "parameters": [
+        "message",
+        "author"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Stored input appears verbatim when retrieving listing or rendering."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "description": "State change visible after POST (listing growth or item present)."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "csrf_token_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "GET-18-idor",
+      "method": "GET",
+      "endpoint": "18",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Varying id produces differing status codes revealing ACL issues."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Large body variance when switching id indicates potential IDOR."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.7,
+      "priority": 2
+    },
+    {
+      "id": "PUT-19-idor",
+      "method": "PUT",
+      "endpoint": "19",
+      "parameters": [
+        "id",
+        "quantity"
+      ],
+      "param_locations": [
+        "path",
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Modifying id/quantity yields different status codes indicating authorization checks."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Observable state change via response size difference."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "unknown"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.7,
+      "priority": 2
+    },
+    {
+      "id": "DELETE-20-idor",
+      "method": "DELETE",
+      "endpoint": "20",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204,
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Delete attempts on various ids produce differing status codes indicating possible IDOR."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "State change observable after DELETE."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "unknown"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "POST-21-others",
+      "method": "POST",
+      "endpoint": "21",
+      "parameters": [
+        "couponData",
+        "orderDetails"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              500
+            ]
+          },
+          "description": "Error or status differences when submitting couponData may reveal parsing/validation issues."
+        },
+        {
+          "signal": "error_signature",
+          "description": "Server errors disclosing internal parsing or coupon handling logic."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "unknown"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.3,
+      "priority": 4
+    },
+    {
+      "id": "POST-22-xss_stored",
+      "method": "POST",
+      "endpoint": "22",
+      "parameters": [
+        "UserId",
+        "captchaId",
+        "captcha",
+        "comment",
+        "rating"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "description": "Submitted comment appears verbatim in later responses or DOM."
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "description": "State change observed after submission (listing includes comment)."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "csrf_token_required",
+          "value": "unknown"
+        },
+        {
+          "key": "auth_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.65,
+      "priority": 2
+    },
+    {
+      "id": "GET-23-others",
+      "method": "GET",
+      "endpoint": "23",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.2,
+      "priority": 5
+    },
+    {
+      "id": "GET-24-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "24",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Size differences between contexts indicate conditional exposure."
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Presence of sensitive data fields in response — needs observation."
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "POST-25-sensitive_data_exposure-upload",
+      "method": "POST",
+      "endpoint": "25",
+      "parameters": [
+        "caption",
+        "image"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Response content or subsequent retrieval reveals uploaded metadata or image data differences."
+        },
+        {
+          "signal": "dns_callback",
+          "description": "Out-of-band interaction detected when processing image (external fetch) indicating possible SSRF or data leakage."
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_required",
+          "value": "unknown"
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "GET-26-others",
+      "method": "GET",
+      "endpoint": "26",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.2,
+      "priority": 5
+    },
+    {
+      "id": "POST-27-injection_nosql",
+      "method": "POST",
+      "endpoint": "27",
+      "parameters": [
+        "action",
+        "query"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "injection_nosql",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "threshold": {
+            "expected_codes": [
+              500,
+              400
+            ]
+          },
+          "description": "Server returns database/NoSQL error messages when injecting malicious query constructs."
+        },
+        {
+          "signal": "timing_anomaly",
+          "threshold": {
+            "timing_ms": 2000
+          },
+          "description": "Significant timing variation (>2000ms) indicates time-based NoSQL injection behavior."
+        }
+      ],
+      "pass_logic": "all",
+      "preconditions": [
+        {
+          "key": "needs_observation",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.45,
+      "priority": 1
+    }
+  ]
+}

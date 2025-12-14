@@ -1,0 +1,555 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path_template": "/login",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "text/html; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "/login",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "text/html; charset=UTF-8",
+        "application/x-www-form-urlencoded"
+      ],
+      "parameters": [
+        {
+          "name": "user",
+          "location": "body"
+        },
+        {
+          "name": "pass",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/register",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "text/html; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "/register",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "text/html; charset=UTF-8",
+        "application/x-www-form-urlencoded"
+      ],
+      "parameters": [
+        {
+          "name": "email",
+          "location": "body"
+        },
+        {
+          "name": "password",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/pixi",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "text/html; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/jquery.min.js",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/bootstrap.min.js",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/angular.min.js",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/angular-sanitize.min.js",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/ng-file-upload.min.js",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/ng-file-upload-shim.min.js",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/js/ng-infinite-scroll.min.js",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_info/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_likes/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_loves/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/all_users/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/total_money/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/user_pictures/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/pictures/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/0215428b1ddcb8dc8fd93e4ced0cab97",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/octet-stream"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api-docs/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "text/html; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api-docs/swagger-ui-bundle.js",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api-docs/swagger-ui-standalone-preset.js",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/swagger.json",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "/upload_photo/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8",
+        "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k"
+      ],
+      "parameters": [
+        {
+          "name": "file",
+          "location": "body"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "/swagger-ui-bundle.js",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    }
+  ],
+  "global_observations": {
+    "session_management": "none",
+    "auth_flow": "form_login",
+    "needs_observation": true
+  }
+}
