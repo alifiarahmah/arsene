@@ -9,3 +9,6 @@ __pycache__/
 
 # scapegoat folder (for testing)
 scapegoat/
+
+# zap session and result
+zap_session/*
