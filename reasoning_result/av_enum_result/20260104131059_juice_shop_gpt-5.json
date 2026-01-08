@@ -1,0 +1,386 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Addresss/7",
+      "parameter": [],
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/api/Addresss/7",
+      "parameter": [
+        "country",
+        "fullName",
+        "mobileNum",
+        "zipCode",
+        "streetAddress",
+        "city",
+        "state"
+      ],
+      "param_location": "body",
+      "sample_value": "homee",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/BasketItems/9",
+      "parameter": [],
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/api/BasketItems/9",
+      "parameter": [
+        "quantity"
+      ],
+      "param_location": "body",
+      "sample_value": "1",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "http://localhost:3000/api/BasketItems/9",
+      "parameter": [],
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/BasketItems/",
+      "parameter": [
+        "ProductId",
+        "BasketId",
+        "quantity"
+      ],
+      "param_location": "body",
+      "sample_value": "6",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Cards/7",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Cards/",
+      "parameter": [
+        "fullName",
+        "cardNum",
+        "expMonth",
+        "expYear"
+      ],
+      "param_location": "body",
+      "sample_value": "1111234455555555",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Complaints",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Complaints/",
+      "parameter": [
+        "UserId",
+        "message"
+      ],
+      "param_location": "body",
+      "sample_value": "23",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Deliverys/1",
+      "parameter": [],
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Feedbacks/",
+      "parameter": [
+        "UserId",
+        "captchaId",
+        "captcha",
+        "comment",
+        "rating"
+      ],
+      "param_location": "body",
+      "sample_value": "wheskaldjfew (***my@mail.com)",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Feedbacks/",
+      "parameter": [
+        "UserId",
+        "captchaId",
+        "captcha",
+        "comment",
+        "rating"
+      ],
+      "param_location": "body",
+      "sample_value": "gggrerfre (***my@mail.com)",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Recycles/",
+      "parameter": [
+        "UserId",
+        "AddressId",
+        "quantity"
+      ],
+      "param_location": "body",
+      "sample_value": "23",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Products/1",
+      "parameter": [
+        "d"
+      ],
+      "param_location": "query",
+      "sample_value": "Tue Dec 02 2025",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Products/24",
+      "parameter": [
+        "d"
+      ],
+      "param_location": "query",
+      "sample_value": "Tue Dec 02 2025",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/SecurityAnswers/",
+      "parameter": [
+        "UserId",
+        "answer",
+        "SecurityQuestionId"
+      ],
+      "param_location": "body",
+      "sample_value": "harry potter",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Users/",
+      "parameter": [
+        "email",
+        "password",
+        "passwordRepeat",
+        "securityQuestion",
+        "securityAnswer"
+      ],
+      "param_location": "body",
+      "sample_value": "{\"id\":11,\"question\":\"Your favorite book?\",\"createdAt\":\"2025-12-02T07:01:52.877Z\",\"updatedAt\":\"2025-12-02T07:01:52.877Z\"}",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/products/1/reviews",
+      "parameter": [
+        "message",
+        "author"
+      ],
+      "param_location": "body",
+      "sample_value": "good",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/rest/products/1/reviews",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/rest/basket/6",
+      "parameter": [],
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "http://localhost:3000/rest/basket/6/coupon",
+      "parameter": [],
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/basket/6/coupon/6665434535",
+      "parameter": [],
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/rest/basket/6/checkout",
+      "parameter": [
+        "couponData",
+        "orderDetails"
+      ],
+      "param_location": "body",
+      "sample_value": "{\"paymentId\":\"7\",\"addressId\":\"7\",\"deliveryMethodId\":\"1\"}",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "http://localhost:3000/rest/memories",
+      "parameter": [
+        "image",
+        "caption"
+      ],
+      "param_location": "body",
+      "sample_value": "memory",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/wallet/balance",
+      "parameter": [
+        "balance",
+        "paymentId"
+      ],
+      "param_location": "body",
+      "sample_value": "555",
+      "category": "business_logic",
+      "expected_signals": [
+        "status_code_change",
+        "state_change_observed"
+      ],
+      "needs_observation": false
+    }
+  ]
+}

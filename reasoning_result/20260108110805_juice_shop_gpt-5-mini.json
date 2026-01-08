@@ -1,0 +1,950 @@
+{
+  "test_cases": [
+    {
+      "id": "EXEC-01-AuthFlow",
+      "hypothesis_id": "chained_auth_01",
+      "base_url": "http://",
+      "method": "POST",
+      "endpoint": "/rest/user/login",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "dummy"
+            }
+          ],
+          "description": "Baseline login to obtain JWT from /rest/user/login (observed auth flow). On success extract Bearer token from response for downstream requests.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "invalid@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "wrongpassword"
+            }
+          ],
+          "description": "Invalid login to confirm proper failure responses and detect token issuance on failure.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code observed is one of [200,401,403]; unexpected 200 for invalid creds is a positive signal",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "authentication_bypassed",
+          "condition": "Response contains tokens or session identifiers on attempts that should fail",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Primary step: obtain JWT for chained requests. Extract Authorization: Bearer <token> when present and save to runtime token store.",
+      "tags": [
+        "authn_bypass",
+        "login"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "EXEC-02-TokenValidationAndInfo",
+      "hypothesis_id": "post_auth_info_01",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/api",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Query /api with obtained JWT (if available) to enumerate API surface and public config. If token absent, run unauthenticated fetch to compare responses.",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Use JWT extracted from EXEC-01-AuthFlow if obtained"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body differs >50% compared to minimal baseline indicating extra info/config",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Gather API metadata and confirm token scope. Save any additional endpoints or capabilities observed for later chaining.",
+      "tags": [
+        "information_disclosure"
+      ],
+      "estimated_duration": 20
+    },
+    {
+      "id": "EXEC-03-EnumerateSensitiveEndpoints",
+      "hypothesis_id": "enumeration_apis_01",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/rest/continue-code",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Fetch /rest/continue-code using authenticated JWT when available to detect large content or secrets/config. Also perform unauthenticated fetch to compare.",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Response is significantly larger (>40%) than typical public endpoints indicating possible secrets/configs",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response body contains stack traces, error strings, or secret-looking fields",
+          "threshold": {},
+          "weight": 0.75
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "High priority information disclosure check. If sensitive content found, stop subsequent destructive tests and escalate.",
+      "tags": [
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "EXEC-04-PII-Addresses-Read",
+      "hypothesis_id": "pii_addresses_01",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/api/Addresss",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Fetch /api/Addresss with observed JWT to detect PII exposure (fullName,mobileNum,streetAddress,zipCode). If token not available, run unauthenticated request to compare.",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Use JWT from EXEC-01-AuthFlow if obtained"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response contains PII-like fields such as 'fullName', 'mobileNum', 'email', 'streetAddress', 'zipCode'",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "header_change",
+          "condition": "CORS or auth headers allow wider access than expected",
+          "threshold": {},
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "If PII exposure confirmed, record affected records and cease modifying tests that would alter PII.",
+      "tags": [
+        "sensitive_data_exposure",
+        "pii"
+      ],
+      "estimated_duration": 45
+    },
+    {
+      "id": "EXEC-05-IDOR-SecurityAnswers",
+      "hypothesis_id": "idor_securityanswers_01",
+      "base_url": "http://",
+      "method": "POST",
+      "endpoint": "/api/SecurityAnswers/",
+      "parameter": "UserId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "23"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            },
+            {
+              "location": "body",
+              "value": "11"
+            }
+          ],
+          "description": "Submit observed SecurityAnswer for UserId=23 to confirm baseline behavior.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "24"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            },
+            {
+              "location": "body",
+              "value": "11"
+            }
+          ],
+          "description": "Alter UserId to adjacent id to test for IDOR or insufficient authorization.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required (use observed JWT)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code is one of [200,201,400,401,403,404] indicating potential access control difference",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              401,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body size differs by >30% between UserId=23 and UserId=24 attempts",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.75
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "notes": "High-priority authorization test. Stop if unexpected sensitive data returned or destructive signs.",
+      "tags": [
+        "idor",
+        "authz"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "EXEC-06-IDOR-BasketItems",
+      "hypothesis_id": "idor_basket_01",
+      "base_url": "http://",
+      "method": "POST",
+      "endpoint": "/api/BasketItems/",
+      "parameter": "BasketId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "1"
+            },
+            {
+              "location": "body",
+              "value": "6"
+            },
+            {
+              "location": "body",
+              "value": "1"
+            }
+          ],
+          "description": "Baseline add item to observed BasketId=6.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "1"
+            },
+            {
+              "location": "body",
+              "value": "7"
+            },
+            {
+              "location": "body",
+              "value": "1"
+            }
+          ],
+          "description": "Alter BasketId to test adding to another user's basket (IDOR).",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required (use observed JWT)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code in [200,201,400,401,403,404] indicates access control differences",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              401,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "authorization_bypassed",
+          "condition": "Receiving 2xx (200/204) for other user's basket indicates authorization bypass",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "notes": "Prefer non-destructive verification. If 2xx observed on other BasketId, stop further state-changing tests and escalate.",
+      "tags": [
+        "idor",
+        "basket"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "EXEC-07-Reflected-XSS-Products",
+      "hypothesis_id": "xss_reflected_01",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/api/Products/1",
+      "parameter": "d",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "Tue Dec 02 2025"
+            }
+          ],
+          "description": "Baseline request for /api/Products/1 with observed 'd' value.",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"><script>alert(1)</script>"
+            }
+          ],
+          "description": "Inject reflective XSS probe in 'd' query parameter. Only run after baseline and with idempotent safety.",
+          "encoding": "url",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Encoded XSS probe in 'd' parameter to test alternate encoding handling.",
+          "encoding": "url",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Response body contains the exact 'd' value supplied verbatim",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "xss_payload_executed",
+          "condition": "DOM script execution observed via runtime callback or reflected script in HTML responses",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 12
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Run only after token use and baseline. If reflected input detected, schedule DOM execution verification in client context.",
+      "tags": [
+        "xss",
+        "reflected"
+      ],
+      "estimated_duration": 45
+    },
+    {
+      "id": "EXEC-08-Stored-XSS-ProductReviews",
+      "hypothesis_id": "xss_stored_01",
+      "base_url": "http://",
+      "method": "PUT",
+      "endpoint": "/rest/products/1/reviews",
+      "parameter": "message",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "good"
+            },
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            }
+          ],
+          "description": "Baseline review submission for product reviews.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "<script>console.log('xss')</script>"
+            },
+            {
+              "location": "body",
+              "value": "attacker@mail.com"
+            }
+          ],
+          "description": "Stored XSS probe inserted into 'message' to check persistence. After insertion, fetch product reviews to detect unescaped content.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required (use observed JWT)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Stored 'message' appears unescaped in subsequent GET responses for product reviews",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "xss_payload_executed",
+          "condition": "DOM execution observed when reviews are rendered in SPA client",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 3,
+      "delay_between_requests": 2.0,
+      "notes": "Verify persistence by fetching reviews after insertion. If PII or admin-only content appears, halt further writes.",
+      "tags": [
+        "xss",
+        "stored"
+      ],
+      "estimated_duration": 180
+    },
+    {
+      "id": "EXEC-09-CreateUser-And-Validation",
+      "hypothesis_id": "user_creation_01",
+      "base_url": "http://",
+      "method": "POST",
+      "endpoint": "/api/Users/",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "dummy"
+            },
+            {
+              "location": "body",
+              "value": "dummy"
+            },
+            {
+              "location": "body",
+              "value": "{\"id\":11,\"question\":\"Your favorite book?\",\"createdAt\":\"2025-12-02T07:01:52.877Z\",\"updatedAt\":\"2025-12-02T07:01:52.877Z\"}"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            }
+          ],
+          "description": "Baseline create user using observed sample values to validate registration behavior.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy+test@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "passwordMismatch"
+            },
+            {
+              "location": "body",
+              "value": "different"
+            },
+            {
+              "location": "body",
+              "value": "{\"id\":11,\"question\":\"Your favorite book?\",\"createdAt\":\"2025-12-02T07:01:52.877Z\",\"updatedAt\":\"2025-12-02T07:01:52.877Z\"}"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            }
+          ],
+          "description": "Invalid passwordRepeat to trigger validation differences and account existence checks.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Response status code is one of [201,400,401,403,409]",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              401,
+              403,
+              409
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Response body contains validation or authentication error keywords (e.g., 'password', 'invalid', 'exists', 'required')",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Run after non-sensitive enumeration. Avoid creating many accounts; limit attempts.",
+      "tags": [
+        "authn_bypass",
+        "validation"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "EXEC-10-CreateAddress-AuthzCheck",
+      "hypothesis_id": "address_create_01",
+      "base_url": "http://",
+      "method": "POST",
+      "endpoint": "/api/Addresss/",
+      "parameter": "fullName",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "Indonesia"
+            },
+            {
+              "location": "body",
+              "value": "home"
+            },
+            {
+              "location": "body",
+              "value": "6277711133"
+            },
+            {
+              "location": "body",
+              "value": "144444"
+            },
+            {
+              "location": "body",
+              "value": "Jl. Raya No. 1"
+            },
+            {
+              "location": "body",
+              "value": "Bandung"
+            },
+            {
+              "location": "body",
+              "value": "Jawa Barat"
+            }
+          ],
+          "description": "Baseline create address with observed sample values.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "Indonesia"
+            },
+            {
+              "location": "body",
+              "value": "attacker"
+            },
+            {
+              "location": "body",
+              "value": "6277711133"
+            },
+            {
+              "location": "body",
+              "value": "144444"
+            },
+            {
+              "location": "body",
+              "value": "Jl. Raya No. 1"
+            },
+            {
+              "location": "body",
+              "value": "Bandung"
+            },
+            {
+              "location": "body",
+              "value": "Jawa Barat"
+            }
+          ],
+          "description": "Create address with altered fullName to detect acceptance for other users or missing ownership checks.",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required (use observed JWT); CSRF may be required"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code in [201,400,401,403] to identify unexpected acceptance",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body varies >25% indicating accepted vs rejected submissions",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.75
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 12
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Moderate priority. If create accepted for other users or returns unexpected data, pause further state changes and escalate.",
+      "tags": [
+        "access_control",
+        "address"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "EXEC-11-Enumerate-Deliverys-And-Feedbacks",
+      "hypothesis_id": "data_endpoints_01",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/api/Deliverys",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Fetch /api/Deliverys and /api/Feedbacks/ with JWT when available to compare content sizes and detect sensitive exposures. Run Deliverys first, then Feedbacks.",
+          "content_type": "application/json",
+          "header": [
+            {
+              "header_name": "Authorization",
+              "header_value": "Bearer {extracted_token}"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Authentication observation may be required to determine access"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body larger >40% than baseline endpoints indicating delivery data exposure",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body increases >30% compared to baseline indicating potentially sensitive feedback content",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Run Deliverys then Feedbacks. If sensitive data found in either, halt writes and escalate.",
+      "tags": [
+        "sensitive_data_exposure",
+        "delivery",
+        "feedback"
+      ],
+      "estimated_duration": 40
+    }
+  ]
+}

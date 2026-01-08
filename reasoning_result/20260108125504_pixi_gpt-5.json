@@ -1,0 +1,660 @@
+{
+  "test_cases": [
+    {
+      "id": "plan-1-auth-enum-baseline-login",
+      "hypothesis_id": "chain-auth-enum",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "0",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "Baseline /login without params",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status in [200,302,401,403]",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              401,
+              403
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "notes": "Establish unauthenticated baseline and cookies if any",
+      "tags": [
+        "baseline",
+        "auth-context"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-2-xss-reflected-login-user",
+      "hypothesis_id": "hyp-GET-4-xss_reflected-user",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "4",
+      "parameter": "user",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query.user",
+              "value": "mail@example.com"
+            }
+          ],
+          "description": "Baseline benign user value",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.user",
+              "value": "<svg/onload=alert(1)>"
+            }
+          ],
+          "description": "XSS probe payload in user parameter",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.user",
+              "value": "\"'><img src=x onerror=alert(1)>"
+            }
+          ],
+          "description": "Attribute/context breaking XSS probe",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query.user",
+              "value": "{{7*7}}"
+            }
+          ],
+          "description": "Template expression probe",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "status_probe in [200] and any(p in body_probe for p in [\"<svg/onload=alert(1)>\",\"\\\"'><img src=x onerror=alert(1)>\",\"{{7*7}}\"] )",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_base==200 and status_probe==200 and abs(len(body_probe)-len(body_base))/max(len(body_base),1)*100 >= 20.0",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "error_signature",
+          "condition": "status_probe in [400,500] or any(s in body_probe for s in [\"template\",\"render\",\"syntax\",\"Unexpected token\"])",
+          "threshold": {
+            "expected_codes": [
+              400,
+              500
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss_reflected",
+        "query-param",
+        "high-impact"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "plan-3-openapi-discovery",
+      "hypothesis_id": "hyp-GET-26-sensitive_data_exposure",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "26",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "Fetch /swagger.json once",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "status_0==200",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "notes": "If available, drive further endpoint enumeration from schema (runtime)",
+      "tags": [
+        "docs",
+        "enumeration",
+        "low-risk"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-4-api-enum-user-and-pictures",
+      "hypothesis_id": "enum-apis-json",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "18",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "GET /user_info/",
+          "header": []
+        },
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "GET /user_pictures/",
+          "header": []
+        },
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "GET /pictures/",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.15,
+      "notes": "Gather baseline JSON structures to inform later stored-XSS verification and IDOR hypotheses",
+      "tags": [
+        "enumeration",
+        "api-json"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-5-sensitive-enum-stats",
+      "hypothesis_id": "enum-apis-stats",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "21",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "GET /all_users/",
+          "header": []
+        },
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "GET /total_money/",
+          "header": []
+        },
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "GET /user_likes/",
+          "header": []
+        },
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "GET /user_loves/",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.15,
+      "notes": "Assess exposure of user listings and financial totals unauthenticated",
+      "tags": [
+        "sensitive_data_exposure",
+        "api-json",
+        "unauthenticated"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "plan-6-upload-robustness",
+      "hypothesis_id": "hyp-POST-27-content-type-robustness",
+      "base_url": "http://localhost:8000",
+      "method": "POST",
+      "endpoint": "27",
+      "parameter": "Content-Type",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header.Content-Type",
+              "value": "multipart/form-data; boundary=----WebKitFormBoundaryAAAAAA"
+            }
+          ],
+          "description": "Alter multipart boundary to short predictable value",
+          "header": [
+            {
+              "header_name": "Referer",
+              "header_value": "http://localhost:8000/pixi"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header.Content-Type",
+              "value": "multipart/form-data;boundary=----WebKitFormBoundaryBBBBBBBB"
+            }
+          ],
+          "description": "No space before boundary parameter",
+          "header": [
+            {
+              "header_name": "Referer",
+              "header_value": "http://localhost:8000/pixi"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header.Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "description": "Wrong content-type to trigger 415/400",
+          "header": [
+            {
+              "header_name": "Referer",
+              "header_value": "http://localhost:8000/pixi"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "status in [400,415,500] or any(e in body for e in [\"multipart\",\"boundary\",\"parse\",\"invalid\",\"error\"])",
+          "threshold": {
+            "expected_codes": [
+              400,
+              415,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "exists_prior_status and status != prior_status and status in [200,201,204,400,415,500]",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              204,
+              400,
+              415,
+              500
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "notes": "Stop this group if any 500 observed to reduce risk",
+      "tags": [
+        "robustness",
+        "upload"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "plan-7-upload-stored-xss",
+      "hypothesis_id": "hyp-POST-27-xss_stored",
+      "base_url": "http://localhost:8000",
+      "method": "POST",
+      "endpoint": "27",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "header.Content-Type",
+              "value": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k"
+            }
+          ],
+          "description": "Upload with XSS markers in filename and fields; then view galleries to detect execution",
+          "header": [
+            {
+              "header_name": "Referer",
+              "header_value": "http://localhost:8000/pixi"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Maintain same unauthenticated session/cookies across upload and subsequent GETs",
+          "bind_to": "cookie_jar"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "xss_payload_executed",
+          "condition": "follow_up_render_detected == true",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              202,
+              204
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status in [200,201,202,204] and len(body) != 0",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              201,
+              202,
+              204
+            ]
+          },
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "After upload, load /pixi then /pictures/ and /user_pictures/ to detect execution. Stop on first execution signal.",
+      "tags": [
+        "xss_stored",
+        "upload",
+        "high-impact"
+      ],
+      "estimated_duration": 3
+    },
+    {
+      "id": "plan-8-delta-check-all-apis",
+      "hypothesis_id": "consolidated-diff-check",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "24",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "Revisit /pictures/ to diff against earlier baseline",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "Revisit /user_info/ to diff against earlier baseline",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "Revisit /all_users/ to diff for variance",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Reuse prior cookies/session for consistent comparison",
+          "extract_from": "plan-1-auth-enum-baseline-login",
+          "bind_to": "cookie_jar"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "have_prior_bodies == true and abs(len(body_current)-len(body_prior))/max(len(body_prior),1)*100 >= 30.0",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "notes": "Adaptive: if swagger.json indicated auth required, downgrade priority of deltas",
+      "tags": [
+        "diffing",
+        "adaptive"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-controls-rate-and-stop",
+      "hypothesis_id": "execution-controls",
+      "base_url": "http://localhost:8000",
+      "method": "GET",
+      "endpoint": "15",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "",
+              "value": ""
+            }
+          ],
+          "description": "No-op control step to convey rate/stop policies",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "timing_anomaly",
+          "condition": "rps<=3 and consecutive_500<2 and total_requests<=25",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "notes": "Global execution controls: RPS<=3; stop conditions: any auth_bypass detected, or 2 consecutive 500s on same endpoint, or xss_payload_executed true.",
+      "tags": [
+        "controls",
+        "rate-limit"
+      ],
+      "estimated_duration": 0
+    }
+  ]
+}

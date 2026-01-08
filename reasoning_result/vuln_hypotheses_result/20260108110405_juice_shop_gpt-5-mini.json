@@ -1,0 +1,517 @@
+{
+  "hypotheses": [
+    {
+      "id": "H001",
+      "method": "POST",
+      "endpoint": "/api/Users/",
+      "parameters": [
+        "email",
+        "password",
+        "passwordRepeat",
+        "securityQuestion",
+        "securityAnswer"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              401,
+              403,
+              409
+            ]
+          },
+          "description": "Create user returns differing status codes vs baseline (201 on success, 4xx on failure)"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Response contains authentication/validation error strings indicating bypass or logic fault"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H002",
+      "method": "POST",
+      "endpoint": "/api/SecurityAnswers/",
+      "parameters": [
+        "UserId",
+        "answer",
+        "SecurityQuestionId"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              401,
+              403,
+              404
+            ]
+          },
+          "description": "Altering UserId may change status codes (403/404 vs 200) indicating access control enforcement issues"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Responses vary >30% when swapping UserId to another user's id"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Error messages leak user-identifying information or confirm existence/state change"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth",
+          "value": "requires_authenticated_session"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "H003",
+      "method": "POST",
+      "endpoint": "/rest/user/login",
+      "parameters": [
+        "email",
+        "password"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "description": "Successful/failed login yields different status codes; unexpected 200 for invalid creds indicates auth bypass"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Response contains tokens or session identifiers on login attempts that should fail"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.65,
+      "priority": 5
+    },
+    {
+      "id": "H004",
+      "method": "POST",
+      "endpoint": "/api/BasketItems/",
+      "parameters": [
+        "ProductId",
+        "BasketId",
+        "quantity"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              401,
+              403,
+              404
+            ]
+          },
+          "description": "Changing BasketId to another user's id results in different status codes indicating possible IDOR"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Response body changes >25% when BasketId altered"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204
+            ]
+          },
+          "description": "Successful addition with 2xx when acting on other user's basket signals authorization bypass"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth",
+          "value": "requires_authenticated_session"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "confidence": 0.75,
+      "priority": 4
+    },
+    {
+      "id": "H005",
+      "method": "GET",
+      "endpoint": "/api/Products/1",
+      "parameters": [
+        "d"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "description": "Query parameter 'd' value is reflected in response body verbatim"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Response length differs >30% when supplying varied 'd' values compared to baseline"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "H006",
+      "method": "PUT",
+      "endpoint": "/rest/products/1/reviews",
+      "parameters": [
+        "message",
+        "author"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "description": "Submitted review 'message' later appears unescaped in product review GET responses"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Stored review causes subsequent GET responses to change >20% consistent with persisted content"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth",
+          "value": "requires_authenticated_session"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "H007",
+      "method": "GET",
+      "endpoint": "/rest/continue-code",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Endpoint returns substantially larger payloads indicative of secrets/configs compared to baseline endpoints"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Response contains error strings or stack traces revealing sensitive data or implementation details"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H008",
+      "method": "GET",
+      "endpoint": "/api/Addresss",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Endpoint returns address data larger than typical public endpoints"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Response contains address or PII fields (names, phones) in body"
+        },
+        {
+          "signal": "header_change",
+          "threshold": {},
+          "description": "CORS or auth headers differ indicating sensitive exposure to unauthenticated clients"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "H009",
+      "method": "POST",
+      "endpoint": "/api/Addresss/",
+      "parameters": [
+        "country",
+        "fullName",
+        "mobileNum",
+        "zipCode",
+        "streetAddress",
+        "city",
+        "state"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              401,
+              403
+            ]
+          },
+          "description": "Creating address returns 2xx when allowed; unexpected 2xx for other users indicates access control issues"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Response body varies >25% indicating accepted vs rejected submissions"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth",
+          "value": "requires_authenticated_session"
+        },
+        {
+          "key": "csrf",
+          "value": "may_require_csrf_token"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H010",
+      "method": "GET",
+      "endpoint": "/api/Deliverys",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "description": "Endpoint returns delivery-related data larger than baseline"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth",
+          "value": "needs_observation_if_auth_unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "H011",
+      "method": "GET",
+      "endpoint": "/api/Feedbacks/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Endpoint returns potentially sensitive feedback content larger than baseline"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth",
+          "value": "needs_observation_if_auth_unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "H012",
+      "method": "GET",
+      "endpoint": "/api",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "description": "Root API path returns additional info/configuration compared to baseline"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "H013",
+      "method": "GET",
+      "endpoint": "/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Main page size differs from minimal baseline indicating exposed data or debug info"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 1
+    }
+  ]
+}

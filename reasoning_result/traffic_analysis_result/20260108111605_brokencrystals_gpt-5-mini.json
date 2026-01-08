@@ -1,0 +1,352 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path_template": "/",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/index-CHOz83TQ.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Origin",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com"
+        },
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/jquery/jquery.min.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/bootstrap/js/bootstrap.bundle.min.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/jquery.easing/jquery.easing.min.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/counterup/counterup.min.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/venobox/venobox.min.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/vendor/aos/aos.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/vendor/slick/slick.min.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/vendor/wow/wow.min.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/vendor/counter-up/jquery.waypoints.min.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/vendor/counter-up/jquery.counterup.min.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/assets/index-Bm2fv7OY.css",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/css"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/api/config",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "id",
+          "location": "query"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "path_template": "https://www.google.com/maps/embed",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "https",
+      "content_types": [
+        "text/html"
+      ],
+      "parameters": [
+        {
+          "name": "pb",
+          "location": "query",
+          "sample_value": "!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621"
+        },
+        {
+          "name": "Referer",
+          "location": "header",
+          "sample_value": "https://brokencrystals.com/"
+        },
+        {
+          "name": "Upgrade-Insecure-Requests",
+          "location": "header",
+          "sample_value": "1"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    }
+  ],
+  "global_observations": {
+    "needs_observation": false
+  }
+}

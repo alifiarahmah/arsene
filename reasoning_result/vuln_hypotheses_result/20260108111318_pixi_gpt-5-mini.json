@@ -1,0 +1,697 @@
+{
+  "hypotheses": [
+    {
+      "id": "H-001",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameters": [
+        "user"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 5.0
+          },
+          "description": "Injected marker reflected in response body within HTML context or attribute"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Response body length changes by >=10% when varying 'user' parameter to different-length markers"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.8,
+      "priority": 3
+    },
+    {
+      "id": "H-002",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Endpoint returns user-identifying or private fields in response visible without auth"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "needs_observation",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.0,
+      "priority": 2
+    },
+    {
+      "id": "H-003",
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Endpoint returns lists of other users' likes or private preference data without proper auth"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "needs_observation",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.0,
+      "priority": 2
+    },
+    {
+      "id": "H-004",
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Endpoint returns sensitive relational data without authentication"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "needs_observation",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.0,
+      "priority": 2
+    },
+    {
+      "id": "H-005",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Endpoint exposes full user lists or user metadata without auth"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "needs_observation",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.0,
+      "priority": 2
+    },
+    {
+      "id": "H-006",
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Endpoint discloses financial aggregates or balances without proper authorization"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "needs_observation",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.0,
+      "priority": 2
+    },
+    {
+      "id": "H-007",
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Endpoint returns private user images or direct links without auth"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "needs_observation",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.0,
+      "priority": 2
+    },
+    {
+      "id": "H-008",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Public picture listing exposes user media or private content"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "needs_observation",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.0,
+      "priority": 2
+    },
+    {
+      "id": "H-009",
+      "method": "GET",
+      "endpoint": "/api-docs",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Discovery of API docs UI resource (large HTML/JS payload) indicates accessible documentation"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.7,
+      "priority": 2
+    },
+    {
+      "id": "H-010",
+      "method": "GET",
+      "endpoint": "/swagger.json",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "swagger.json contains API schema and potentially sensitive endpoints/definitions"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.9,
+      "priority": 4
+    },
+    {
+      "id": "H-011",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameters": [
+        "file"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "file_inclusion",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "threshold": {
+            "expected_codes": [
+              400,
+              413,
+              415,
+              500
+            ]
+          },
+          "description": "Server error messages or stack traces when uploading crafted multipart content"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              413,
+              415,
+              500
+            ]
+          },
+          "description": "Unexpected status codes indicate file handling issues (e.g., inclusion, parsing errors)"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.7,
+      "priority": 3
+    },
+    {
+      "id": "H-012",
+      "method": "GET",
+      "endpoint": "/0215428b1ddcb8dc8fd93e4ced0cab97",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "sensitive_data_exposed",
+          "description": "Accessing obfuscated or hashed path may return secrets or data blobs"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "needs_observation",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.0,
+      "priority": 3
+    },
+    {
+      "id": "H-013",
+      "method": "GET",
+      "endpoint": "/js/angular.min.js",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Static JS bundle served; presence may enable client-side template/XSS analysis"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.8,
+      "priority": 2
+    },
+    {
+      "id": "H-014",
+      "method": "GET",
+      "endpoint": "/js/angular-sanitize.min.js",
+      "parameters": [],
+      "param_locations": [],
+      "category": "xss_dom",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Presence of angular-sanitize suggests client may sanitize DOM but may be misused; look for reflected user-controlled content in DOM"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              404
+            ]
+          },
+          "description": "Resource served (200) vs missing (404) indicates presence"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.7,
+      "priority": 3
+    },
+    {
+      "id": "H-015",
+      "method": "GET",
+      "endpoint": "/js/ng-file-upload.min.js",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "File upload client library present"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.6,
+      "priority": 2
+    },
+    {
+      "id": "H-016",
+      "method": "GET",
+      "endpoint": "/js/ng-file-upload-shim.min.js",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Shim library present"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.6,
+      "priority": 5
+    },
+    {
+      "id": "H-017",
+      "method": "GET",
+      "endpoint": "/js/ng-infinite-scroll.min.js",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Infinite scroll client library present"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.6,
+      "priority": 5
+    },
+    {
+      "id": "H-018",
+      "method": "GET",
+      "endpoint": "/api-docs/swagger-ui-bundle.js",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Swagger UI JS bundle present"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.8,
+      "priority": 2
+    },
+    {
+      "id": "H-019",
+      "method": "GET",
+      "endpoint": "/api-docs/swagger-ui-standalone-preset.js",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Swagger standalone preset JS present"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.8,
+      "priority": 2
+    },
+    {
+      "id": "H-020",
+      "method": "GET",
+      "endpoint": "/js/jquery.min.js",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "jQuery library served"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.8,
+      "priority": 4
+    },
+    {
+      "id": "H-021",
+      "method": "GET",
+      "endpoint": "/js/bootstrap.min.js",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Bootstrap JS present"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.7,
+      "priority": 5
+    },
+    {
+      "id": "H-022",
+      "method": "GET",
+      "endpoint": "/register",
+      "parameters": [],
+      "param_locations": [],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              403
+            ]
+          },
+          "description": "Registration endpoint accessible; observe state change (account created) or redirect"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Registration UI present; client-side flow may allow account creation"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "needs_observation",
+          "value": "true"
+        }
+      ],
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.0,
+      "priority": 3
+    },
+    {
+      "id": "H-023",
+      "method": "GET",
+      "endpoint": "/pixi",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Static or demo resource present"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.6,
+      "priority": 5
+    }
+  ]
+}

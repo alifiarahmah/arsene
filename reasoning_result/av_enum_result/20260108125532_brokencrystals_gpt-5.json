@@ -1,0 +1,188 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "0",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "1",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "2",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "3",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "4",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "5",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "6",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "7",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "8",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "9",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "10",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "11",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "12",
+      "parameter": [],
+      "category": "xss_dom",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "13",
+      "parameter": [
+        "pb"
+      ],
+      "param_location": "query",
+      "sample_value": "!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621",
+      "category": "open_redirect",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "13",
+      "parameter": [
+        "pb"
+      ],
+      "param_location": "query",
+      "sample_value": "!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "14",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    }
+  ]
+}

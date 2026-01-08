@@ -1,0 +1,365 @@
+{
+  "hypotheses": [
+    {
+      "id": "H001",
+      "method": "GET",
+      "endpoint": "/",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H002",
+      "method": "GET",
+      "endpoint": "/assets/index-CHOz83TQ.js",
+      "parameters": [
+        "Origin",
+        "Referer"
+      ],
+      "param_locations": [
+        "header",
+        "header"
+      ],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "header_change",
+          "threshold": {},
+          "description": "Server reflects or alters Origin/Referer into response headers (possible header injection or CORS misconfiguration) & presence of unexpected Access-Control-Allow-Origin header matching Origin value"
+        },
+        {
+          "signal": "http_callback",
+          "description": "Out-of-band interaction observed when resource is requested with attacker-controlled Origin/Referer (indicates remote resource fetch or inclusion)"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "H003",
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery/jquery.min.js",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H004",
+      "method": "GET",
+      "endpoint": "/assets/vendor/bootstrap/js/bootstrap.bundle.min.js",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H005",
+      "method": "GET",
+      "endpoint": "/assets/vendor/jquery.easing/jquery.easing.min.js",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H006",
+      "method": "GET",
+      "endpoint": "/assets/vendor/counterup/counterup.min.js",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H007",
+      "method": "GET",
+      "endpoint": "/assets/vendor/venobox/venobox.min.js",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H008",
+      "method": "GET",
+      "endpoint": "/assets/vendor/aos/aos.js",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H009",
+      "method": "GET",
+      "endpoint": "/vendor/slick/slick.min.js",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H010",
+      "method": "GET",
+      "endpoint": "/vendor/wow/wow.min.js",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H011",
+      "method": "GET",
+      "endpoint": "/vendor/counter-up/jquery.waypoints.min.js",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H012",
+      "method": "GET",
+      "endpoint": "/vendor/counter-up/jquery.counterup.min.js",
+      "parameters": [
+        "Referer"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H013",
+      "method": "GET",
+      "endpoint": "/assets/index-Bm2fv7OY.css",
+      "parameters": [],
+      "param_locations": [],
+      "category": "others",
+      "oracles": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.1,
+      "priority": 5
+    },
+    {
+      "id": "H014",
+      "method": "GET",
+      "endpoint": "/api/config",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Different id values produce >30% response body size changes indicating id-based data exposure"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              404,
+              403
+            ]
+          },
+          "description": "Server returns varying status codes (200 vs 404/403) depending on id, indicating possible access control or existence differences"
+        },
+        {
+          "signal": "http_callback",
+          "description": "Out-of-band interaction occurs when probing id parameter (indicates sensitive backend fetch or external service)"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": ""
+        },
+        {
+          "key": "csrf_token_required",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "confidence": 0.4,
+      "priority": 2
+    },
+    {
+      "id": "H015",
+      "method": "GET",
+      "endpoint": "https://www.google.com/maps/embed",
+      "parameters": [
+        "pb",
+        "Referer",
+        "Upgrade-Insecure-Requests"
+      ],
+      "param_locations": [
+        "query",
+        "header",
+        "header"
+      ],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "http_callback",
+          "description": "Out-of-band call observable to google.com when embedding pb parameter (external resource fetch)"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.8,
+      "priority": 5
+    }
+  ]
+}

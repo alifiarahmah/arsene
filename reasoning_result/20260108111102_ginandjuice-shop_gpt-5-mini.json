@@ -1,0 +1,344 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-H-17-01",
+      "hypothesis_id": "H-17-csrf-state-change",
+      "base_url": "https://example.com",
+      "method": "POST",
+      "endpoint": "/catalog/subscribe",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"mail@example.com\",\"csrf\":\"sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ\"}"
+            }
+          ],
+          "description": "Submit subscription with observed CSRF token to confirm expected success",
+          "encoding": "utf-8",
+          "content_type": "application/json; charset=utf-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json; charset=utf-8"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"mail+probe@example.com\",\"csrf\":\"\"}"
+            }
+          ],
+          "description": "Submit subscription with empty CSRF to test server-side CSRF enforcement",
+          "encoding": "utf-8",
+          "content_type": "application/json; charset=utf-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json; charset=utf-8"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "{\"email\":\"mail+replay@example.com\",\"csrf\":\"sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ\"}"
+            }
+          ],
+          "description": "Replay observed CSRF token to test token reuse acceptance",
+          "encoding": "utf-8",
+          "content_type": "application/json; charset=utf-8",
+          "header": [
+            {
+              "header_name": "Content-Type",
+              "header_value": "application/json; charset=utf-8"
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "csrf_token",
+          "description": "Observed CSRF token from prior traffic",
+          "bind_to": "csrf"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Request with valid CSRF returns status code in [200,201,204,302]",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              204,
+              302
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "authentication_bypassed",
+          "condition": "Request with empty CSRF or replayed CSRF also returns success code from expected_codes or causes state change",
+          "threshold": {},
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Validates CSRF enforcement and token reuse policy using observed token sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ",
+      "tags": [
+        "csrf",
+        "state-change"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H-10-01",
+      "hypothesis_id": "H-10-dom-xss-reflection",
+      "base_url": "https://example.com",
+      "method": "GET",
+      "endpoint": "/catalog/product",
+      "parameter": "productId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17"
+            }
+          ],
+          "description": "Baseline request with original sample value",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "17<unique>INJECTION"
+            }
+          ],
+          "description": "Inject a unique marker with angle brackets to check for DOM reflection in HTML/JS contexts",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Compare response body and DOM reflection between baseline and probe",
+          "custom_logic": "Fetch baseline then probe; preserve cookies/headers between requests"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response contains literal substring \"17<unique>INJECTION\" in HTML or JS payloads",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "probe response body length >= 120% of baseline response body length",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Designed to detect DOM-based reflection of productId",
+      "tags": [
+        "xss",
+        "dom",
+        "probe"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H-16-01",
+      "hypothesis_id": "H-16-dom-xss-reflection",
+      "base_url": "https://example.com",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "4"
+            }
+          ],
+          "description": "Baseline for postId=4",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "4<script>p=1</script>"
+            }
+          ],
+          "description": "Probe for DOM reflection using script-like marker appended to postId=4",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Fetch baseline then probe; analyze client-rendered DOM for executed payload or literal reflection",
+          "custom_logic": "Use browser instrumentation to detect script execution; compare body lengths"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "xss_payload_executed",
+          "condition": "Browser instrumentation shows execution of injected script marker or mutation in DOM attributable to payload",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "probe response body length >= 115% of baseline response body length",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Attempt to detect DOM XSS where postId is reflected into executable context",
+      "tags": [
+        "xss",
+        "dom",
+        "browser-instrumentation"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H-15-01",
+      "hypothesis_id": "H-15-dom-xss-reflection",
+      "base_url": "https://example.com",
+      "method": "GET",
+      "endpoint": "/blog/post",
+      "parameter": "postId",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3"
+            }
+          ],
+          "description": "Baseline for postId=3",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "3<post_test_marker>"
+            }
+          ],
+          "description": "Probe for DOM reflection by appending a marker with angle brackets to postId",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Collect baseline then probe; preserve any session state",
+          "custom_logic": "Compare rendered HTML/JS for literal marker and body length delta"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response contains literal substring \"3<post_test_marker>\" in HTML or JS",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "probe response body length >= 115% of baseline response body length",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 50
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Checks for DOM-based XSS reflection for postId=3",
+      "tags": [
+        "xss",
+        "dom",
+        "probe"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H-others-01",
+      "hypothesis_id": "H-others-1-9-11-14-18",
+      "base_url": "https://example.com",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 200
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Smoke requests to listed static endpoints are covered by other test cases; no parameters to manipulate",
+      "tags": [
+        "smoke"
+      ],
+      "estimated_duration": 10
+    }
+  ]
+}

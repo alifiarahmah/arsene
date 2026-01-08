@@ -1,0 +1,954 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-H001-001",
+      "hypothesis_id": "H001",
+      "base_url": "http://",
+      "method": "POST",
+      "endpoint": "/api/Users/",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "dummy"
+            },
+            {
+              "location": "body",
+              "value": "dummy"
+            },
+            {
+              "location": "body",
+              "value": "{\"id\":11,\"question\":\"Your favorite book?\",\"createdAt\":\"2025-12-02T07:01:52.877Z\",\"updatedAt\":\"2025-12-02T07:01:52.877Z\"}"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            }
+          ],
+          "description": "Baseline create user using observed sample values",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy+test@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "passwordMismatch"
+            },
+            {
+              "location": "body",
+              "value": "different"
+            },
+            {
+              "location": "body",
+              "value": "{\"id\":11,\"question\":\"Your favorite book?\",\"createdAt\":\"2025-12-02T07:01:52.877Z\",\"updatedAt\":\"2025-12-02T07:01:52.877Z\"}"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            }
+          ],
+          "description": "Invalid passwordRepeat to trigger validation differences",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Response status code is one of [201,400,401,403,409]",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              401,
+              403,
+              409
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Response body contains validation or authentication error keywords (e.g., 'password', 'invalid', 'exists', 'required')",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "authn_bypass",
+        "validation"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H002-001",
+      "hypothesis_id": "H002",
+      "base_url": "http://",
+      "method": "POST",
+      "endpoint": "/api/SecurityAnswers/",
+      "parameter": "UserId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "23"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            },
+            {
+              "location": "body",
+              "value": "11"
+            }
+          ],
+          "description": "Submit observed SecurityAnswer for UserId 23",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "24"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            },
+            {
+              "location": "body",
+              "value": "11"
+            }
+          ],
+          "description": "Swap UserId to adjacent id to test IDOR / access control",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required (use observed JWT)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code is one of [200,201,400,401,403,404] indicating potential access control difference",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              401,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body size differs by >30% between UserId=23 and UserId=24 attempts",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.75
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Response contains user-existence or detail leakage (e.g., 'user', 'not found', 'already')",
+          "threshold": {},
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 30
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "idor",
+        "authz"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H003-001",
+      "hypothesis_id": "H003",
+      "base_url": "http://",
+      "method": "POST",
+      "endpoint": "/rest/user/login",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "dummy"
+            }
+          ],
+          "description": "Baseline login with observed credentials",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "invalid@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "wrongpassword"
+            }
+          ],
+          "description": "Invalid credentials to detect unexpected 200 or token issuance",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code observed is one of [200,401,403]; unexpected 200 for invalid creds is a positive signal",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Response body contains tokens or session identifiers on attempts that should fail",
+          "threshold": {},
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "authn_bypass",
+        "login"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H004-001",
+      "hypothesis_id": "H004",
+      "base_url": "http://",
+      "method": "POST",
+      "endpoint": "/api/BasketItems/",
+      "parameter": "BasketId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "1"
+            },
+            {
+              "location": "body",
+              "value": "6"
+            },
+            {
+              "location": "body",
+              "value": "1"
+            }
+          ],
+          "description": "Baseline add to observed BasketId using sample values",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "1"
+            },
+            {
+              "location": "body",
+              "value": "7"
+            },
+            {
+              "location": "body",
+              "value": "1"
+            }
+          ],
+          "description": "Alter BasketId to test adding to another user's basket (IDOR)",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required (use observed JWT)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code in [200,201,400,401,403,404] indicates access control differences",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              401,
+              403,
+              404
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body changes >25% when BasketId altered",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.75
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Receiving 2xx (200/204) for other user's basket indicates authorization bypass",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 25
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "idor",
+        "basket"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H005-001",
+      "hypothesis_id": "H005",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/api/Products/1",
+      "parameter": "d",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "Tue Dec 02 2025"
+            }
+          ],
+          "description": "Baseline request with observed 'd' value",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"><script>alert(1)</script>"
+            }
+          ],
+          "description": "Inject reflective XSS probe in 'd' query parameter",
+          "encoding": "url",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E"
+            }
+          ],
+          "description": "Encoded XSS probe in 'd' parameter",
+          "encoding": "url",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Response body contains the exact 'd' value supplied verbatim",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response length differs >30% between baseline and injected 'd' values",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.75
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 15
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "reflected"
+      ],
+      "estimated_duration": 45
+    },
+    {
+      "id": "TC-H006-001",
+      "hypothesis_id": "H006",
+      "base_url": "http://",
+      "method": "PUT",
+      "endpoint": "/rest/products/1/reviews",
+      "parameter": "message",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "good"
+            },
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            }
+          ],
+          "description": "Baseline review submission with observed values",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "<script>console.log('xss')</script>"
+            },
+            {
+              "location": "body",
+              "value": "attacker@mail.com"
+            }
+          ],
+          "description": "Stored XSS probe in 'message' to detect persistence and execution",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required (use observed JWT)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Stored 'message' appears unescaped in subsequent GET responses for product reviews",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Subsequent GET responses change >20% consistent with persisted content",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.75
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 3,
+      "delay_between_requests": 1.0,
+      "tags": [
+        "xss",
+        "stored"
+      ],
+      "estimated_duration": 180
+    },
+    {
+      "id": "TC-H007-001",
+      "hypothesis_id": "H007",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/rest/continue-code",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Fetch endpoint to observe payload size and content for sensitive data",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Response is significantly larger (>40%) than typical public endpoints indicating possible secrets/configs",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Response body contains stack traces, error strings, or secret-looking fields",
+          "threshold": {},
+          "weight": 0.75
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H008-001",
+      "hypothesis_id": "H008",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/api/Addresss",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Fetch addresses to check for PII exposure",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body larger >40% than baseline endpoints indicating address data",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "Response contains PII-like fields such as 'fullName', 'mobileNum', 'email', 'streetAddress', 'zipCode'",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "header_change",
+          "condition": "CORS or auth headers allow wider access than expected",
+          "threshold": {},
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data_exposure",
+        "pii"
+      ],
+      "estimated_duration": 45
+    },
+    {
+      "id": "TC-H009-001",
+      "hypothesis_id": "H009",
+      "base_url": "http://",
+      "method": "POST",
+      "endpoint": "/api/Addresss/",
+      "parameter": "fullName",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "Indonesia"
+            },
+            {
+              "location": "body",
+              "value": "home"
+            },
+            {
+              "location": "body",
+              "value": "6277711133"
+            },
+            {
+              "location": "body",
+              "value": "144444"
+            },
+            {
+              "location": "body",
+              "value": "Jl. Raya No. 1"
+            },
+            {
+              "location": "body",
+              "value": "Bandung"
+            },
+            {
+              "location": "body",
+              "value": "Jawa Barat"
+            }
+          ],
+          "description": "Baseline create address with observed sample values",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "Indonesia"
+            },
+            {
+              "location": "body",
+              "value": "attacker"
+            },
+            {
+              "location": "body",
+              "value": "6277711133"
+            },
+            {
+              "location": "body",
+              "value": "144444"
+            },
+            {
+              "location": "body",
+              "value": "Jl. Raya No. 1"
+            },
+            {
+              "location": "body",
+              "value": "Bandung"
+            },
+            {
+              "location": "body",
+              "value": "Jawa Barat"
+            }
+          ],
+          "description": "Create address with altered fullName to detect acceptance for other users",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session required (use observed JWT); CSRF may be required"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Status code in [201,400,401,403] to identify unexpected acceptance",
+          "threshold": {
+            "expected_codes": [
+              201,
+              400,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body varies >25% indicating accepted vs rejected submissions",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.75
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 3,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "access_control",
+        "address"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H010-001",
+      "hypothesis_id": "H010",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/api/Deliverys",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Fetch deliveries endpoint to compare payload size and content",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Authentication observation may be required to determine access"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body larger >40% than baseline endpoints indicating delivery data exposure",
+          "threshold": {
+            "body_length_delta_pct": 40.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data_exposure",
+        "delivery"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H011-001",
+      "hypothesis_id": "H011",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/api/Feedbacks/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Fetch feedbacks to detect sensitive content exposure",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Authentication observation may be required to determine access"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body increases >30% compared to baseline indicating potentially sensitive feedback content",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data_exposure",
+        "feedback"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H012-001",
+      "hypothesis_id": "H012",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/api",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Fetch root API path to observe additional info/configuration",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body differs >50% compared to minimal baseline indicating extra info/config",
+          "threshold": {
+            "body_length_delta_pct": 50.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "information_disclosure"
+      ],
+      "estimated_duration": 15
+    },
+    {
+      "id": "TC-H013-001",
+      "hypothesis_id": "H013",
+      "base_url": "http://",
+      "method": "GET",
+      "endpoint": "/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Fetch main page to compare size against minimal baseline",
+          "content_type": "text/html",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "Main page size differs by >30% from minimal baseline indicating exposed data or debug info",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "info_leak",
+        "ui"
+      ],
+      "estimated_duration": 10
+    }
+  ]
+}

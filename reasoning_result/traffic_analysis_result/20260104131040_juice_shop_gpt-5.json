@@ -1,0 +1,2325 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Addresss",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/api/Addresss/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "country",
+          "location": "body",
+          "sample_value": "Indonesia"
+        },
+        {
+          "name": "fullName",
+          "location": "body",
+          "sample_value": "home"
+        },
+        {
+          "name": "mobileNum",
+          "location": "body",
+          "sample_value": "6277711133"
+        },
+        {
+          "name": "zipCode",
+          "location": "body",
+          "sample_value": "144444"
+        },
+        {
+          "name": "streetAddress",
+          "location": "body",
+          "sample_value": "Jl. Raya No. 1"
+        },
+        {
+          "name": "city",
+          "location": "body",
+          "sample_value": "Bandung"
+        },
+        {
+          "name": "state",
+          "location": "body",
+          "sample_value": "Jawa Barat"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "path_template": "http://localhost:3000/api/Addresss/7",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "country",
+          "location": "body",
+          "sample_value": "Indonesia"
+        },
+        {
+          "name": "fullName",
+          "location": "body",
+          "sample_value": "homee"
+        },
+        {
+          "name": "mobileNum",
+          "location": "body",
+          "sample_value": "6277711133"
+        },
+        {
+          "name": "zipCode",
+          "location": "body",
+          "sample_value": "144444"
+        },
+        {
+          "name": "streetAddress",
+          "location": "body",
+          "sample_value": "Jl. Raya No. 1"
+        },
+        {
+          "name": "city",
+          "location": "body",
+          "sample_value": "Bandung"
+        },
+        {
+          "name": "state",
+          "location": "body",
+          "sample_value": "Jawa Barat"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Addresss/7",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/BasketItems",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/BasketItems/9",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/api/BasketItems/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "ProductId",
+          "location": "body",
+          "sample_value": "1"
+        },
+        {
+          "name": "BasketId",
+          "location": "body",
+          "sample_value": "6"
+        },
+        {
+          "name": "quantity",
+          "location": "body",
+          "sample_value": "1"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "path_template": "http://localhost:3000/api/BasketItems/9",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "quantity",
+          "location": "body",
+          "sample_value": "1"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "DELETE",
+      "path_template": "http://localhost:3000/api/BasketItems/9",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Cards",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/api/Cards/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "fullName",
+          "location": "body",
+          "sample_value": "Dummy"
+        },
+        {
+          "name": "cardNum",
+          "location": "body",
+          "sample_value": "1111234455555555"
+        },
+        {
+          "name": "expMonth",
+          "location": "body",
+          "sample_value": "4"
+        },
+        {
+          "name": "expYear",
+          "location": "body",
+          "sample_value": "2080"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Cards/7",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Challenges",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Challenges/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Challenges/?name=Score Board",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [
+        {
+          "name": "name",
+          "location": "query",
+          "sample_value": "Score Board"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Complaints",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/api/Complaints/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "UserId",
+          "location": "body",
+          "sample_value": "23"
+        },
+        {
+          "name": "message",
+          "location": "body",
+          "sample_value": "cmoplaint"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Deliverys",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Deliverys/1",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/api/Feedbacks/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "captcha"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "UserId",
+          "location": "body",
+          "sample_value": "23"
+        },
+        {
+          "name": "captchaId",
+          "location": "body",
+          "sample_value": "0"
+        },
+        {
+          "name": "captcha",
+          "location": "body",
+          "sample_value": "17"
+        },
+        {
+          "name": "comment",
+          "location": "body",
+          "sample_value": "wheskaldjfew (***my@mail.com)"
+        },
+        {
+          "name": "rating",
+          "location": "body",
+          "sample_value": "5"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/api/Feedbacks/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "captcha"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "UserId",
+          "location": "body",
+          "sample_value": "23"
+        },
+        {
+          "name": "captchaId",
+          "location": "body",
+          "sample_value": "1"
+        },
+        {
+          "name": "captcha",
+          "location": "body",
+          "sample_value": "5"
+        },
+        {
+          "name": "comment",
+          "location": "body",
+          "sample_value": "gggrerfre (***my@mail.com)"
+        },
+        {
+          "name": "rating",
+          "location": "body",
+          "sample_value": "1"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Feedbacks/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/api/Recycles/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "UserId",
+          "location": "body",
+          "sample_value": "23"
+        },
+        {
+          "name": "AddressId",
+          "location": "body",
+          "sample_value": "7"
+        },
+        {
+          "name": "quantity",
+          "location": "body",
+          "sample_value": "10"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Recycles/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Products",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Products/1",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [
+        {
+          "name": "d",
+          "location": "query",
+          "sample_value": "Tue Dec 02 2025"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Products/24",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [
+        {
+          "name": "d",
+          "location": "query",
+          "sample_value": "Tue Dec 02 2025"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Products/42",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/SecurityAnswers",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/api/SecurityAnswers/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "UserId",
+          "location": "body",
+          "sample_value": "23"
+        },
+        {
+          "name": "answer",
+          "location": "body",
+          "sample_value": "harry potter"
+        },
+        {
+          "name": "SecurityQuestionId",
+          "location": "body",
+          "sample_value": "11"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/SecurityQuestions",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/SecurityQuestions/",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/api/Users/",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "captcha"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "email",
+          "location": "body",
+          "sample_value": "dummy@mail.com"
+        },
+        {
+          "name": "password",
+          "location": "body",
+          "sample_value": "dummy"
+        },
+        {
+          "name": "passwordRepeat",
+          "location": "body",
+          "sample_value": "dummy"
+        },
+        {
+          "name": "securityQuestion",
+          "location": "body",
+          "sample_value": "{\"id\":11,\"question\":\"Your favorite book?\",\"createdAt\":\"2025-12-02T07:01:52.877Z\",\"updatedAt\":\"2025-12-02T07:01:52.877Z\"}"
+        },
+        {
+          "name": "securityAnswer",
+          "location": "body",
+          "sample_value": "harry potter"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/assets",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/assets/i18n",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/assets/i18n/id_ID.json",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/assets/i18n/en.json",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/assets/public",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/assets/public/css",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "continueCode",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/assets/public/images",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/assets/public/images/uploads",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/assets/public/images/uploads/ᓚᘏᗢ-",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/common.js",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/989.js",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/675.js",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/rest/user/login",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "email",
+          "location": "body",
+          "sample_value": "dummy@mail.com"
+        },
+        {
+          "name": "password",
+          "location": "body",
+          "sample_value": "dummy"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/polyfills.js",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/main.js",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/vendor.js",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "path_template": "http://localhost:3000/rest/products/1/reviews",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "message",
+          "location": "body",
+          "sample_value": "good"
+        },
+        {
+          "name": "author",
+          "location": "body",
+          "sample_value": "dummy@mail.com"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/products/1/reviews",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/api/Products/24?d=Tue Dec 02 2025",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [
+        {
+          "name": "d",
+          "location": "query",
+          "sample_value": "Tue Dec 02 2025"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/products",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/products/1",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/products/24",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/products/42",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/basket",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/basket/6",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/basket/6/coupon",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "path_template": "http://localhost:3000/rest/basket/6/coupon/6665434535",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/rest/basket/6/checkout",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "couponData",
+          "location": "body",
+          "sample_value": "NjY2NTQzNDUzNS0xNzY0NjMwMDAwMDAw"
+        },
+        {
+          "name": "orderDetails",
+          "location": "body",
+          "sample_value": "{\"paymentId\":\"7\",\"addressId\":\"7\",\"deliveryMethodId\":\"1\"}"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/captcha",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/captcha/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/chatbot",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/rest/chatbot/respond",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "unknown",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "action",
+          "location": "body",
+          "sample_value": "setname"
+        },
+        {
+          "name": "query",
+          "location": "body",
+          "sample_value": "hi"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/chatbot/status",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/image-captcha",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token",
+        "continueCode"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/image-captcha/",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "csrf_protection": "none",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "captcha"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token",
+        "continueCode"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/memories",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/rest/memories",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "multipart/form-data; boundary=----WebKitFormBoundarymFG6Y4SHgGWtrT7N"
+      ],
+      "parameters": [
+        {
+          "name": "image",
+          "location": "body",
+          "sample_value": "memory"
+        },
+        {
+          "name": "caption",
+          "location": "body",
+          "sample_value": "memory"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/2fa",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token",
+        "continueCode"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/2fa/status",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token",
+        "continueCode"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/admin",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/admin/application-version",
+      "auth_schemes": [
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/admin/application-configuration",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "continueCode"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/languages",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/rest/user/data-export",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "format",
+          "location": "body",
+          "sample_value": "1"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token",
+        "continueCode"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/order-history",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token",
+        "continueCode"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/track-order",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/track-order/b783-167bf60f01c1a3bb",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token",
+        "continueCode"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/user",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/user/whoami",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token",
+        "continueCode"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/rest/wallet",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "path_template": "http://localhost:3000/rest/wallet/balance",
+      "auth_schemes": [
+        "jwt",
+        "cookie"
+      ],
+      "roles": [],
+      "side_effect": "state_changing",
+      "anti_automation": [
+        "rate_limit"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "balance",
+          "location": "body",
+          "sample_value": "555"
+        },
+        {
+          "name": "paymentId",
+          "location": "body",
+          "sample_value": "7"
+        }
+      ],
+      "tokens_observed": [
+        "Authorization",
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/runtime.js",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/javascript; charset=UTF-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/socket.io",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "unknown",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "text/plain; charset=UTF-8",
+        "text/html"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "http://localhost:3000/socket.io/?EIO=4&transport=polling&t=PhTuTp9&sid=bqFZXYSuwOfYgU7zAAAE",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "unknown",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "text/plain;charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "EIO",
+          "location": "query",
+          "sample_value": "4"
+        },
+        {
+          "name": "transport",
+          "location": "query",
+          "sample_value": "polling"
+        },
+        {
+          "name": "t",
+          "location": "query",
+          "sample_value": "PhTuTp9"
+        },
+        {
+          "name": "sid",
+          "location": "query",
+          "sample_value": "bqFZXYSuwOfYgU7zAAAE"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/ftp",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [],
+      "parameters": [],
+      "tokens_observed": [
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/ftp/order_b783-167bf60f01c1a3bb.pdf",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [
+        "user_agent_checks"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "application/pdf"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "token"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "http://localhost:3000/dataerasure",
+      "auth_schemes": [
+        "cookie",
+        "none"
+      ],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "read_only",
+      "anti_automation": [
+        "none"
+      ],
+      "protocol": "http",
+      "content_types": [
+        "text/html; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [
+        "continueCode"
+      ],
+      "needs_observation": false
+    }
+  ],
+  "global_observations": {
+    "session_management": "jwt",
+    "auth_flow": "form_login",
+    "needs_observation": false
+  }
+}

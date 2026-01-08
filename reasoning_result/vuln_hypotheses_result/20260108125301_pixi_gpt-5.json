@@ -1,0 +1,429 @@
+{
+  "hypotheses": [
+    {
+      "id": "hyp-GET-0-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "0",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Significant body size change may indicate exposure of additional data"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "hyp-GET-4-xss_reflected-user",
+      "method": "GET",
+      "endpoint": "4",
+      "parameters": [
+        "user"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "User-controlled query value reflected in response"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Response length changes when input altered"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {
+            "expected_codes": [
+              400,
+              500
+            ]
+          },
+          "description": "Template or rendering error triggered by crafted input"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "hyp-GET-4-sensitive_data_exposure-user",
+      "method": "GET",
+      "endpoint": "4",
+      "parameters": [
+        "user"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Changing user value alters amount of data returned"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "confidence": 0.45,
+      "priority": 3
+    },
+    {
+      "id": "hyp-GET-18-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "18",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect extra fields or records"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "hyp-GET-19-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "19",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect extra fields or records"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "hyp-GET-20-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "20",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect extra fields or records"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "hyp-GET-21-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "21",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect extra fields or records"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "hyp-GET-22-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "22",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect extra fields or records"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "hyp-GET-23-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "23",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect extra fields or records"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "hyp-POST-27-content-type-robustness",
+      "method": "POST",
+      "endpoint": "27",
+      "parameters": [
+        "Content-Type"
+      ],
+      "param_locations": [
+        "header"
+      ],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "threshold": {
+            "expected_codes": [
+              400,
+              415,
+              500
+            ]
+          },
+          "description": "Parser or backend error on unusual multipart boundary"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              204,
+              400,
+              415,
+              500
+            ]
+          },
+          "description": "Status changes when toggling Content-Type formatting"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "confidence": 0.45,
+      "priority": 2
+    },
+    {
+      "id": "hyp-POST-27-xss_stored",
+      "method": "POST",
+      "endpoint": "27",
+      "parameters": [],
+      "param_locations": [],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200,
+              201,
+              202,
+              204
+            ]
+          },
+          "description": "Store operation echoes or changes response"
+        },
+        {
+          "signal": "xss_payload_executed",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              202,
+              204
+            ]
+          },
+          "description": "Subsequent render triggers client-side execution"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 4
+    },
+    {
+      "id": "hyp-GET-24-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "24",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect extra fields or records"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "hyp-GET-26-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "26",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "description": "Detect extra fields or records"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.4,
+      "priority": 3
+    }
+  ]
+}

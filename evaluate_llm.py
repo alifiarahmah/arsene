@@ -260,27 +260,28 @@ def calculate_metrics(tp, fp, fn):
     return precision, recall, f1
 
 
-def main():
-    if len(sys.argv) != 3:
-        print("Usage: python3 evaluate.py <reasoning_json> <ground_truth_csv>")
-        print("Example: python3 evaluate.py reasoning_result/20251203135957_juice_shop_gpt-5-mini.json csv_vuln_list/juice_shop.csv")
-        sys.exit(1)
+def evaluate_llm(reasoning_json_path: str, ground_truth_csv_path: str) -> dict:
+    """
+    Evaluate LLM reasoning output against ground-truth CSV.
 
-    reasoning_json = sys.argv[1]
-    ground_truth_csv = sys.argv[2]
+    Args:
+        reasoning_json_path: Path to reasoning JSON file
+        ground_truth_csv_path: Path to ground-truth CSV file
 
-    # Validate files exist
-    if not Path('reasoning_result/' + reasoning_json).exists():
-        print(f"Error: File not found: {reasoning_json}")
-        sys.exit(1)
-
-    if not Path('csv_vuln_list/' + ground_truth_csv).exists():
-        print(f"Error: File not found: {ground_truth_csv}")
-        sys.exit(1)
-
+    Returns:
+        Dictionary containing:
+        - tp: True positives
+        - fp: False positives
+        - fn: False negatives
+        - precision: Precision score
+        - recall: Recall score
+        - f1: F1 score
+        - total_gt: Total number of ground truth rows
+        - total_llm_endpoints: Total number of LLM endpoints found
+    """
     # Load data
-    reasoning_result = load_json('reasoning_result/' + reasoning_json)
-    gt_data = load_csv_manual('csv_vuln_list/' + ground_truth_csv)
+    reasoning_result = load_json(reasoning_json_path)
+    gt_data = load_csv_manual(ground_truth_csv_path)
 
     # Extract test cases
     test_cases = reasoning_result.get('test_cases', reasoning_result if isinstance(reasoning_result, list) else [])
@@ -297,24 +298,60 @@ def main():
     fp_keys = pred_keys - gt_keys
     fn_keys = gt_keys - pred_keys
 
-    TP = len(tp_keys)
-    FP = len(fp_keys)
-    FN = len(fn_keys)
+    tp = len(tp_keys)
+    fp = len(fp_keys)
+    fn = len(fn_keys)
 
-    precision, recall, f1 = calculate_metrics(TP, FP, FN)
+    precision, recall, f1 = calculate_metrics(tp, fp, fn)
+
+    result = {
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "precision": round(precision, 4),
+        "recall": round(recall, 4),
+        "f1": round(f1, 4),
+        "total_gt": int(len(gt_data)),
+        "total_llm_endpoints": int(len(test_cases)),
+    }
+
+    return result
+
+
+def main():
+    if len(sys.argv) != 3:
+        print("Usage: python3 evaluate.py <reasoning_json> <ground_truth_csv>")
+        print("Example: python3 evaluate.py reasoning_result/20251203135957_juice_shop_gpt-5-mini.json csv_vuln_list/juice_shop.csv")
+        sys.exit(1)
+
+    reasoning_json = sys.argv[1]
+    ground_truth_csv = sys.argv[2]
+
+    # Construct full paths
+    reasoning_json_path = 'reasoning_result/' + reasoning_json
+    ground_truth_csv_path = 'csv_vuln_list/' + ground_truth_csv
+
+    # Validate files exist
+    if not Path(reasoning_json_path).exists():
+        print(f"Error: File not found: {reasoning_json_path}")
+        sys.exit(1)
+
+    if not Path(ground_truth_csv_path).exists():
+        print(f"Error: File not found: {ground_truth_csv_path}")
+        sys.exit(1)
+
+    result = evaluate_llm(reasoning_json_path, ground_truth_csv_path)
 
     # Print output
-    print(f"TP: {TP}")
-    print(f"FP: {FP}")
-    print(f"FN: {FN}")
-    print(f"Precision: {precision:.4f}")
-    print(f"Recall:    {recall:.4f}")
-    print(f"F1-score:  {f1:.4f}")
+    print(f"TP: {result['tp']}")
+    print(f"FP: {result['fp']}")
+    print(f"FN: {result['fn']}")
+    print(f"Precision: {result['precision']:.4f}")
+    print(f"Recall:    {result['recall']:.4f}")
+    print(f"F1-score:  {result['f1']:.4f}")
     print()
-    print(f"Total GT rows:      {len(gt_data)}")
-    print(f"Total reasoning result endpoints: {len(test_cases)}")
-
-    return TP, FP, FN, precision, recall, f1, gt_data, test_cases
+    print(f"Total GT rows:      {result['total_gt']}")
+    print(f"Total reasoning result endpoints: {result['total_llm_endpoints']}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,879 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-H-001-1",
+      "hypothesis_id": "H-001",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": "user",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "<script>1</script>"
+            }
+          ],
+          "description": "Reflected XSS probe with simple script tag",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"onmouseover=alert(1) x=\""
+            }
+          ],
+          "description": "Attribute context probe to detect HTML attribute reflection",
+          "header": []
+        },
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "normaluser@mail.com"
+            }
+          ],
+          "description": "Control request using normal value to compare response length",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response body contains payload value or HTML-escaped variant",
+          "threshold": {
+            "body_length_delta_pct": 5.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "response body length differs by >=10% between control and probe requests",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "reflected",
+        "login"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-H-002-1",
+      "hypothesis_id": "H-002",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response JSON contains keys indicative of user identity (e.g., id,email,name) or PII without auth",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H-003-1",
+      "hypothesis_id": "H-003",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response JSON contains lists of likes or user-related preference data accessible without authentication",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H-004-1",
+      "hypothesis_id": "H-004",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response JSON returns relational/private data (e.g., lovers, connections) without auth",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H-005-1",
+      "hypothesis_id": "H-005",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response JSON enumerates multiple users or user metadata accessible without auth",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data",
+        "enumeration"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H-006-1",
+      "hypothesis_id": "H-006",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response contains financial aggregates, balances, or numeric sensitive fields without auth",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data",
+        "financial"
+      ],
+      "estimated_duration": 20
+    },
+    {
+      "id": "TC-H-007-1",
+      "hypothesis_id": "H-007",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response includes direct URLs or binary references to user images accessible without auth",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data",
+        "media"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H-008-1",
+      "hypothesis_id": "H-008",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response lists pictures or media items that may be private and accessible without auth",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data",
+        "media"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-H-009-1",
+      "hypothesis_id": "H-009",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/api-docs/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response body length >= baseline * 1.20 indicating documentation UI content",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "discovery",
+        "api-docs"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "TC-H-010-1",
+      "hypothesis_id": "H-010",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/swagger.json",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "swagger.json contains API paths, schemas, or definitions that reveal internal endpoints or sensitive models",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "swagger",
+        "sensitive_data"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "TC-H-011-1",
+      "hypothesis_id": "H-011",
+      "base_url": "http://example.local",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "file",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "--boundary\r\nContent-Disposition: form-data; name=\"file\"; filename=\"test.txt\"\r\nContent-Type: text/plain\r\n\r\n<%E0%80%80%>\r\n--boundary--"
+            }
+          ],
+          "description": "Multipart upload with unusual bytes to trigger parser errors",
+          "content_type": "multipart/form-data; boundary=boundary",
+          "header": []
+        },
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "--boundary\r\nContent-Disposition: form-data; name=\"file\"; filename=\"photo.jpg\"\r\nContent-Type: image/jpeg\r\n\r\nJPEGDATA\r\n--boundary--"
+            }
+          ],
+          "description": "Valid multipart upload control to compare responses",
+          "content_type": "multipart/form-data; boundary=boundary",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "response status in [400,413,415,500] or body contains parsing/stack-trace indicators",
+          "threshold": {
+            "expected_codes": [
+              400,
+              413,
+              415,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Observed status code not equal to expected 200/201 for valid upload or unexpected codes for probe",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              413,
+              415,
+              500
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 20
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "tags": [
+        "file-upload",
+        "parsing"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-H-012-1",
+      "hypothesis_id": "H-012",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/0215428b1ddcb8dc8fd93e4ced0cab97",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "Response returns data blob or sensitive content from obfuscated path",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "sensitive_data",
+        "blob"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "TC-H-013-1",
+      "hypothesis_id": "H-013",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/js/angular.min.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response size changes compared to baseline by >=5% indicating bundle present",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "static-js"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-H-014-1",
+      "hypothesis_id": "H-014",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/js/angular-sanitize.min.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "Resource served with 200 and enables client-side sanitization analysis",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Resource returns 200 (present) vs 404 (missing)",
+          "threshold": {
+            "expected_codes": [
+              200,
+              404
+            ]
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "angular",
+        "sanitize"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-H-015-1",
+      "hypothesis_id": "H-015",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/js/ng-file-upload.min.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response size >= baseline *1.05 indicating library present",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "static-js",
+        "file-upload-client"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-H-016-1",
+      "hypothesis_id": "H-016",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/js/ng-file-upload-shim.min.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response size >= baseline *1.05 indicating shim present",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "static-js",
+        "shim"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-H-017-1",
+      "hypothesis_id": "H-017",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/js/ng-infinite-scroll.min.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response size >= baseline *1.05 indicating infinite-scroll lib present",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "static-js",
+        "infinite-scroll"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-H-018-1",
+      "hypothesis_id": "H-018",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/api-docs/swagger-ui-bundle.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response body length >= baseline *1.20 indicating Swagger UI bundle present",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "swagger",
+        "static-js"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-H-019-1",
+      "hypothesis_id": "H-019",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/api-docs/swagger-ui-standalone-preset.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response length >= baseline *1.20 indicating standalone preset present",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "swagger",
+        "static-js"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-H-020-1",
+      "hypothesis_id": "H-020",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/js/jquery.min.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response size >= baseline *1.05 indicating jQuery present",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "static-js",
+        "jquery"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-H-021-1",
+      "hypothesis_id": "H-021",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/js/bootstrap.min.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response size >= baseline *1.05 indicating bootstrap JS present",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "static-js",
+        "bootstrap"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-H-022-1",
+      "hypothesis_id": "H-022",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/register",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Endpoint accessible and returns 200/302 indicating registration UI; follow-up needed to test account creation",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "Response body length >= baseline *1.20 indicating registration UI presence",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "registration",
+        "auth"
+      ],
+      "estimated_duration": 20
+    },
+    {
+      "id": "TC-H-023-1",
+      "hypothesis_id": "H-023",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/pixi",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response body length >= baseline *1.10 indicating demo/static resource present",
+          "threshold": {
+            "body_length_delta_pct": 10.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "static",
+        "demo"
+      ],
+      "estimated_duration": 5
+    }
+  ]
+}

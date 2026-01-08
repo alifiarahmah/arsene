@@ -1,0 +1,164 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "0",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "1",
+      "parameter": [
+        "user"
+      ],
+      "param_location": "query",
+      "sample_value": "mail@example.com",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "4",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "5",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "6",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "7",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "8",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "9",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "10",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "11",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "12",
+      "parameter": [
+        "file"
+      ],
+      "param_location": "body",
+      "sample_value": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k",
+      "category": "others",
+      "expected_signals": [
+        "error_signature",
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "13",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "16",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "17",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    }
+  ]
+}

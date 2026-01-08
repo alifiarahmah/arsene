@@ -1,0 +1,813 @@
+{
+  "hypotheses": [
+    {
+      "id": "idor-put-addresss-id",
+      "method": "PUT",
+      "endpoint": "/api/Addresss/{id}",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              204,
+              401,
+              403,
+              404
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "idor-get-addresss-id",
+      "method": "GET",
+      "endpoint": "/api/Addresss/{id}",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "idor-post-basketitems-basketid",
+      "method": "POST",
+      "endpoint": "/api/BasketItems",
+      "parameters": [
+        "BasketId"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              201,
+              200,
+              204,
+              400,
+              401,
+              403
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.65,
+      "priority": 4
+    },
+    {
+      "id": "idor-get-basketitems-id",
+      "method": "GET",
+      "endpoint": "/api/BasketItems/{id}",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.65,
+      "priority": 4
+    },
+    {
+      "id": "idor-put-basketitems-id",
+      "method": "PUT",
+      "endpoint": "/api/BasketItems/{id}",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204,
+              400,
+              401,
+              403,
+              404
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.65,
+      "priority": 4
+    },
+    {
+      "id": "idor-delete-basketitems-id",
+      "method": "DELETE",
+      "endpoint": "/api/BasketItems/{id}",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204,
+              401,
+              403,
+              404
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "confidence": 0.65,
+      "priority": 5
+    },
+    {
+      "id": "idor-post-complaints-userid",
+      "method": "POST",
+      "endpoint": "/api/Complaints",
+      "parameters": [
+        "UserId"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              201,
+              200,
+              400,
+              401,
+              403
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "idor-post-recycles-userid-addressid",
+      "method": "POST",
+      "endpoint": "/api/Recycles",
+      "parameters": [
+        "UserId",
+        "AddressId"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              201,
+              200,
+              400,
+              401,
+              403
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.6,
+      "priority": 3
+    },
+    {
+      "id": "idor-get-cards-id",
+      "method": "GET",
+      "endpoint": "/api/Cards/{id}",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.7,
+      "priority": 5
+    },
+    {
+      "id": "idor-put-rest-basket-id-coupon-code",
+      "method": "PUT",
+      "endpoint": "/rest/basket/{id}/coupon/{code}",
+      "parameters": [
+        "id",
+        "code"
+      ],
+      "param_locations": [
+        "path",
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204,
+              400,
+              401,
+              403,
+              404
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "confidence": 0.65,
+      "priority": 4
+    },
+    {
+      "id": "idor-post-rest-basket-id-checkout",
+      "method": "POST",
+      "endpoint": "/rest/basket/{id}/checkout",
+      "parameters": [
+        "id",
+        "couponData",
+        "orderDetails"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              202,
+              400,
+              401,
+              403
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "confidence": 0.6,
+      "priority": 5
+    },
+    {
+      "id": "idor-put-rest-wallet-balance",
+      "method": "PUT",
+      "endpoint": "/rest/wallet/balance",
+      "parameters": [
+        "paymentId",
+        "balance"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              204,
+              400,
+              401,
+              403
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "confidence": 0.6,
+      "priority": 5
+    },
+    {
+      "id": "idor-get-rest-track-order-orderid",
+      "method": "GET",
+      "endpoint": "/rest/track-order/{orderId}",
+      "parameters": [
+        "orderId"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.65,
+      "priority": 4
+    },
+    {
+      "id": "idor-get-ftp-order-pdf-order",
+      "method": "GET",
+      "endpoint": "/ftp/order_{order}.pdf",
+      "parameters": [
+        "order"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.55,
+      "priority": 3
+    },
+    {
+      "id": "sqli-get-api-products-id-path",
+      "method": "GET",
+      "endpoint": "/api/Products/{id}",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "injection_sql",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "threshold": {
+            "expected_codes": [
+              500,
+              400,
+              200
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          }
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              404,
+              500
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "sqli-get-api-products-id-query-d",
+      "method": "GET",
+      "endpoint": "/api/Products/{id}",
+      "parameters": [
+        "d"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "injection_sql",
+      "oracles": [
+        {
+          "signal": "error_signature",
+          "threshold": {
+            "expected_codes": [
+              500,
+              400,
+              200
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          }
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              404,
+              500
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "xss-stored-put-rest-products-id-reviews",
+      "method": "PUT",
+      "endpoint": "/rest/products/{id}/reviews",
+      "parameters": [
+        "message",
+        "author"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              204,
+              400
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          }
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              204,
+              400,
+              500
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "xss-stored-post-api-feedbacks",
+      "method": "POST",
+      "endpoint": "/api/Feedbacks",
+      "parameters": [
+        "comment"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              204,
+              400
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          }
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              204,
+              400,
+              500
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "xss-reflected-post-rest-chatbot-respond",
+      "method": "POST",
+      "endpoint": "/rest/chatbot/respond",
+      "parameters": [
+        "query"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400
+            ]
+          }
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          }
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              500
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "csrf-get-rest-user-change-password",
+      "method": "GET",
+      "endpoint": "/rest/user/change-password",
+      "parameters": [
+        "current",
+        "new",
+        "repeat"
+      ],
+      "param_locations": [
+        "query",
+        "query",
+        "query"
+      ],
+      "category": "csrf",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              400,
+              401,
+              403
+            ]
+          }
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "confidence": 0.6,
+      "priority": 5
+    }
+  ]
+}

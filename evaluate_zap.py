@@ -133,6 +133,45 @@ def compute_metrics(tp: int, fp: int, fn: int):
     return precision, recall, f1
 
 
+def evaluate_zap(zap_html_path: str, csv_gt_path: str) -> dict:
+    """
+    Evaluate ZAP HTML report against ground-truth CSV.
+
+    Args:
+        zap_html_path: Path to ZAP HTML report
+        csv_gt_path: Path to ground-truth CSV file
+
+    Returns:
+        Dictionary containing:
+        - tp: True positives
+        - fp: False positives
+        - fn: False negatives
+        - precision: Precision score
+        - recall: Recall score
+        - f1: F1 score
+        - total_gt: Total number of ground truth rows
+        - total_zap_paths: Total number of ZAP paths found
+    """
+    gt_df = load_ground_truth(csv_gt_path)
+    zap_paths = extract_zap_paths(zap_html_path)
+
+    tp, fp, fn = match_endpoints(gt_df, zap_paths)
+    precision, recall, f1 = compute_metrics(tp, fp, fn)
+
+    result = {
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "precision": round(precision, 3),
+        "recall": round(recall, 3),
+        "f1": round(f1, 3),
+        "total_gt": int(len(gt_df)),
+        "total_zap_paths": int(len(zap_paths)),
+    }
+
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Evaluate ZAP HTML report against ground-truth CSV for Juice Shop."
@@ -146,35 +185,31 @@ def main():
     )
     args = parser.parse_args()
 
-    gt_df = load_ground_truth(args.csv_gt)
-    zap_paths = extract_zap_paths(args.zap_html)
-
-    tp, fp, fn = match_endpoints(gt_df, zap_paths)
-    precision, recall, f1 = compute_metrics(tp, fp, fn)
-
-    result = {
-        "TP": tp,
-        "FP": fp,
-        "FN": fn,
-        "precision": round(precision, 3),
-        "recall": round(recall, 3),
-        "f1": round(f1, 3),
-        "total_gt": int(len(gt_df)),
-        "total_zap_paths": int(len(zap_paths)),
-    }
+    result = evaluate_zap(args.zap_html, args.csv_gt)
 
     if args.json:
-        print(json.dumps(result, indent=2))
+        # Convert to uppercase keys for JSON output to maintain backward compatibility
+        json_result = {
+            "TP": result["tp"],
+            "FP": result["fp"],
+            "FN": result["fn"],
+            "precision": result["precision"],
+            "recall": result["recall"],
+            "f1": result["f1"],
+            "total_gt": result["total_gt"],
+            "total_zap_paths": result["total_zap_paths"],
+        }
+        print(json.dumps(json_result, indent=2))
     else:
-        print(f"TP: {tp}")
-        print(f"FP: {fp}")
-        print(f"FN: {fn}")
-        print(f"Precision: {precision:.3f}")
-        print(f"Recall:    {recall:.3f}")
-        print(f"F1-score:  {f1:.3f}")
+        print(f"TP: {result['tp']}")
+        print(f"FP: {result['fp']}")
+        print(f"FN: {result['fn']}")
+        print(f"Precision: {result['precision']:.3f}")
+        print(f"Recall:    {result['recall']:.3f}")
+        print(f"F1-score:  {result['f1']:.3f}")
         print()
-        print(f"Total GT rows:      {len(gt_df)}")
-        print(f"Total ZAP endpoints: {len(zap_paths)}")
+        print(f"Total GT rows:      {result['total_gt']}")
+        print(f"Total ZAP endpoints: {result['total_zap_paths']}")
 
 
 if __name__ == "__main__":

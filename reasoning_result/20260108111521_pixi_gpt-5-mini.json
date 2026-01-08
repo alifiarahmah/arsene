@@ -1,0 +1,460 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-EXEC-001",
+      "hypothesis_id": "H-010|H-009|H-018",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/swagger.json",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "swagger.json contains API paths, schemas, or definitions that reveal internal endpoints or sensitive models",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Seed discovery: fetch swagger.json to enumerate API surface. If present, use returned paths to dynamically expand follow-up tests for listed endpoints (adaptive chaining).",
+      "tags": [
+        "discovery",
+        "swagger",
+        "high-priority"
+      ],
+      "estimated_duration": 10
+    },
+    {
+      "id": "TC-EXEC-002",
+      "hypothesis_id": "H-009|H-018|H-019",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/api-docs/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response body length >= baseline * 1.20 indicating documentation UI content",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Fetch API docs UI to confirm interactive discovery. If UI present, extract links to swagger.json and bundled JS for deeper analysis.",
+      "tags": [
+        "discovery",
+        "api-docs",
+        "high-priority"
+      ],
+      "estimated_duration": 5
+    },
+    {
+      "id": "TC-EXEC-003",
+      "hypothesis_id": "H-013|H-020|H-021|H-014|H-015|H-016|H-017|H-018|H-019",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/js/angular.min.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response size changes compared to baseline by >=5% indicating bundle present",
+          "threshold": {
+            "body_length_delta_pct": 5.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Collect core JS bundles (angular, jquery, bootstrap, sanitize, file-upload libs). If present, schedule local static analysis to identify client-side controls, DOM sinks, and endpoints referenced in XHR/fetch calls.",
+      "tags": [
+        "static-js",
+        "client-analysis",
+        "high-priority"
+      ],
+      "estimated_duration": 15
+    },
+    {
+      "id": "TC-EXEC-004",
+      "hypothesis_id": "H-022",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/register",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "Endpoint accessible and returns 200/302 indicating registration UI; follow-up needed to test account creation",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              403
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 1.0,
+      "notes": "Confirm registration UI. If present and account creation endpoint discovered in swagger or JS, create low-impact test account (benign) to enable authenticated flows.",
+      "tags": [
+        "registration",
+        "auth",
+        "medium-priority"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-EXEC-005",
+      "hypothesis_id": "H-001",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": "user",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "normaluser@mail.com"
+            }
+          ],
+          "description": "Control request using normal value to compare response length",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "<script>1</script>"
+            }
+          ],
+          "description": "Reflected XSS probe with simple script tag",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "\"onmouseover=alert(1) x=\""
+            }
+          ],
+          "description": "Attribute context probe to detect HTML attribute reflection",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response body contains payload value or HTML-escaped variant",
+          "threshold": {
+            "body_length_delta_pct": 5.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "response body length differs by >=10% between control and probe requests",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 0.5,
+      "notes": "Run after JS bundles analyzed to confirm sinks and contexts. Stop if XSS payloads are executed (oracle xss_payload_executed would be raised by runtime telemetry).",
+      "tags": [
+        "xss",
+        "reflected",
+        "login",
+        "high-priority"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-EXEC-006",
+      "hypothesis_id": "H-011",
+      "base_url": "http://example.local",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "file",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "--boundary\r\nContent-Disposition: form-data; name=\"file\"; filename=\"photo.jpg\"\r\nContent-Type: image/jpeg\r\n\r\nJPEGDATA\r\n--boundary--"
+            }
+          ],
+          "description": "Valid multipart upload control to compare responses",
+          "content_type": "multipart/form-data; boundary=boundary",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "--boundary\r\nContent-Disposition: form-data; name=\"file\"; filename=\"test.txt\"\r\nContent-Type: text/plain\r\n\r\n<%E0%80%80%>\r\n--boundary--"
+            }
+          ],
+          "description": "Multipart upload with unusual bytes to trigger parser errors",
+          "content_type": "multipart/form-data; boundary=boundary",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "error_signature",
+          "condition": "response status in [400,413,415,500] or body contains parsing/stack-trace indicators",
+          "threshold": {
+            "expected_codes": [
+              400,
+              413,
+              415,
+              500
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "Observed status code not equal to expected 200/201 for valid upload or unexpected codes for probe",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              400,
+              413,
+              415,
+              500
+            ]
+          },
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 2,
+      "delay_between_requests": 1.0,
+      "notes": "Perform benign upload first. If swagger or JS reveals auth requirement, bind authentication prerequisite before further probes. Monitor for error signatures and stop if server returns stack traces.",
+      "tags": [
+        "file-upload",
+        "parsing",
+        "medium-priority"
+      ],
+      "estimated_duration": 120
+    },
+    {
+      "id": "TC-EXEC-007",
+      "hypothesis_id": "H-002|H-003|H-004|H-005|H-006|H-007|H-008|H-012",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response JSON contains keys indicative of user identity (e.g., id,email,name) or PII without auth",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Aggregate unauthenticated API endpoints that return JSON (user_info, user_likes, user_loves, all_users, total_money, user_pictures, pictures, blob path). Execute in a single phased enumeration step to reduce redundant requests. If swagger indicates auth required, mark needs_observation for those endpoints and pause further probes until auth obtained.",
+      "tags": [
+        "sensitive_data",
+        "enumeration",
+        "high-priority"
+      ],
+      "estimated_duration": 60
+    },
+    {
+      "id": "TC-EXEC-008",
+      "hypothesis_id": "H-001-ADAPT",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": "user",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "<img src=x onerror=alert(1)>"
+            }
+          ],
+          "description": "DOM-context XSS probe after client JS analysis (only if angular sanitize absent or custom sinks found)",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "custom",
+          "description": "Requires static JS analysis output indicating DOM sinks or missing angular-sanitize usage",
+          "custom_logic": "run only if /js/angular-sanitize.min.js is absent or client bundles contain direct innerHTML assignments"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "xss_payload_executed",
+          "condition": "runtime telemetry indicates injected payload executed in browser context",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Adaptive DOM XSS probing only after client-side analysis. Stop immediately if xss_payload_executed signal observed.",
+      "tags": [
+        "xss",
+        "dom",
+        "adaptive"
+      ],
+      "estimated_duration": 30
+    },
+    {
+      "id": "TC-EXEC-009",
+      "hypothesis_id": "H-005-ENUM",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "response JSON enumerates multiple users or user metadata accessible without auth",
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "If swagger or JS reveals pagination or ID parameters, schedule additional enumeration requests (adaptive). Respect rate-limit controls if server responds with 429.",
+      "tags": [
+        "enumeration",
+        "sensitive_data"
+      ],
+      "estimated_duration": 20
+    },
+    {
+      "id": "TC-EXEC-010",
+      "hypothesis_id": "H-RUNTIME-CONTROLS",
+      "base_url": "http://example.local",
+      "method": "GET",
+      "endpoint": "/api-docs/swagger-ui-bundle.js",
+      "parameter": "",
+      "payloads": [],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "HTTP 200 and response body length >= baseline *1.20 indicating Swagger UI bundle present",
+          "threshold": {
+            "body_length_delta_pct": 20.0,
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "notes": "Collect swagger UI bundle to cross-check endpoints discovered in swagger.json and client bundles. Use this to refine headers/tokens extraction.",
+      "tags": [
+        "discovery",
+        "swagger",
+        "support"
+      ],
+      "estimated_duration": 5
+    }
+  ]
+}
