@@ -1,0 +1,264 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path_template": "/",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "text/html; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/react.development.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/react-dom.development.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/angular_1-7-7.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/subscribeNow.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/footer/js/scanme.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/catalog",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "text/html; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/catalog/product",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "text/html; charset=utf-8"
+      ],
+      "parameters": [
+        {
+          "name": "productId",
+          "location": "query",
+          "sample_value": "17"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/xmlStockCheckPayload.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/resources/js/stockCheck.js",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "application/javascript; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/catalog/cart",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "text/html; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/blog/post",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "text/html; charset=utf-8"
+      ],
+      "parameters": [
+        {
+          "name": "postId",
+          "location": "query",
+          "sample_value": "3"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/blog/post",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "text/html; charset=utf-8"
+      ],
+      "parameters": [
+        {
+          "name": "postId",
+          "location": "query",
+          "sample_value": "4"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "path_template": "/catalog/subscribe",
+      "auth_schemes": [],
+      "roles": [],
+      "csrf_protection": "token_in_form",
+      "side_effect": "state_changing",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "application/json; charset=utf-8",
+        "application/json;charset=UTF-8"
+      ],
+      "parameters": [
+        {
+          "name": "email",
+          "location": "body",
+          "sample_value": "mail@example.com"
+        },
+        {
+          "name": "csrf",
+          "location": "body",
+          "sample_value": "sRlHA2cQXlSVetz3ApxB4TLvIoiRwTpZ"
+        }
+      ],
+      "tokens_observed": [],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "path_template": "/about",
+      "auth_schemes": [],
+      "roles": [],
+      "side_effect": "read_only",
+      "anti_automation": [],
+      "protocol": "https",
+      "content_types": [
+        "text/html; charset=utf-8"
+      ],
+      "parameters": [],
+      "tokens_observed": [],
+      "needs_observation": false
+    }
+  ],
+  "global_observations": {
+    "auth_flow": "none",
+    "needs_observation": false
+  }
+}

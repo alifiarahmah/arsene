@@ -1,0 +1,1388 @@
+{
+  "hypotheses": [
+    {
+      "id": "AV-3-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "3",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Body length difference may indicate disclosure of extra data under variant states"
+        },
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              304
+            ]
+          },
+          "description": "Unexpected 200 vs 401/403/404 could indicate exposure"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.5,
+      "priority": 3
+    },
+    {
+      "id": "AV-4-idor",
+      "method": "GET",
+      "endpoint": "4",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Changing path id causing 200 suggests IDOR if not owned"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Material change in content length across IDs"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "AV-5-idor",
+      "method": "POST",
+      "endpoint": "5",
+      "parameters": [
+        "country",
+        "fullName",
+        "mobileNum",
+        "zipCode",
+        "streetAddress",
+        "city",
+        "state"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body",
+        "body",
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Submission with other-user-linked values accepted (200/201) vs rejected (403) indicates IDOR"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "AV-6-idor",
+      "method": "PUT",
+      "endpoint": "6",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Updating non-owned resource returns success vs forbidden indicates IDOR"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.7,
+      "priority": 5
+    },
+    {
+      "id": "AV-8-idor",
+      "method": "GET",
+      "endpoint": "8",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Access to other users' id should be denied"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Significant content difference across IDs"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "AV-9-idor",
+      "method": "POST",
+      "endpoint": "9",
+      "parameters": [
+        "BasketId",
+        "ProductId",
+        "quantity"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Adding to another user's basket should be rejected"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "AV-10-idor",
+      "method": "PUT",
+      "endpoint": "10",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Modifying resource by id without ownership control indicates IDOR"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "AV-11-idor",
+      "method": "DELETE",
+      "endpoint": "11",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Deleting another user's resource should be denied"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "confidence": 0.7,
+      "priority": 5
+    },
+    {
+      "id": "AV-13-idor",
+      "method": "GET",
+      "endpoint": "13",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Cross-user access should be blocked"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Different object size hints unauthorized data access"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "AV-14-sensitive_data_exposure",
+      "method": "POST",
+      "endpoint": "14",
+      "parameters": [
+        "fullName",
+        "cardNum",
+        "expMonth",
+        "expYear"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Differences when masking vs unmasking indicators"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "AV-16-xss_reflected",
+      "method": "GET",
+      "endpoint": "16",
+      "parameters": [
+        "name"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Parameter value reflected in response without encoding"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "description": "Page length shifts with input size"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "AV-19-idor",
+      "method": "POST",
+      "endpoint": "19",
+      "parameters": [
+        "UserId",
+        "message"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Posting as another UserId should be rejected"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "AV-21-idor",
+      "method": "GET",
+      "endpoint": "21",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Access to foreign id should fail"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Different body size may indicate different user data"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "AV-24-xss_stored",
+      "method": "POST",
+      "endpoint": "24",
+      "parameters": [
+        "UserId",
+        "captchaId",
+        "captcha",
+        "comment",
+        "rating"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Subsequent reads show stored payload unencoded"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Content size varies when payload stored"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "AV-25-xss_stored",
+      "method": "POST",
+      "endpoint": "25",
+      "parameters": [
+        "UserId",
+        "captchaId",
+        "captcha",
+        "comment",
+        "rating"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Stored comment appears unescaped"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Length change on retrieval after storing payload"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "AV-28-idor",
+      "method": "GET",
+      "endpoint": "28",
+      "parameters": [
+        "id",
+        "d"
+      ],
+      "param_locations": [
+        "path",
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Combined path params leading to unauthorized access"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "AV-29-idor",
+      "method": "GET",
+      "endpoint": "29",
+      "parameters": [
+        "id",
+        "d"
+      ],
+      "param_locations": [
+        "path",
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Unauthorized combo should be denied"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "AV-33-idor",
+      "method": "POST",
+      "endpoint": "33",
+      "parameters": [
+        "UserId",
+        "AddressId",
+        "quantity"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Ordering with another user's AddressId/UserId should fail"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "AV-35-idor",
+      "method": "POST",
+      "endpoint": "35",
+      "parameters": [
+        "UserId",
+        "answer",
+        "SecurityQuestionId"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Resetting with another user's identifiers should be denied"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 4
+    },
+    {
+      "id": "AV-39-sensitive_data_exposure",
+      "method": "POST",
+      "endpoint": "39",
+      "parameters": [
+        "email",
+        "password",
+        "passwordRepeat",
+        "securityQuestion.id",
+        "securityQuestion.question",
+        "securityQuestion.createdAt",
+        "securityQuestion.updatedAt",
+        "securityAnswer"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body",
+        "body",
+        "body",
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Registration responses leak verbose data vs minimal"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "AV-49-idor",
+      "method": "GET",
+      "endpoint": "49",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "GUID-like id access control check"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Content size varies across ids"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "AV-56-idor",
+      "method": "GET",
+      "endpoint": "56",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Should not access foreign id"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Significant body change across ids"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "AV-57-idor",
+      "method": "GET",
+      "endpoint": "57",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Unauthorized id access should fail"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "AV-58-idor",
+      "method": "PUT",
+      "endpoint": "58",
+      "parameters": [
+        "id",
+        "id"
+      ],
+      "param_locations": [
+        "path",
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Cross-tenant update should be denied"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "AV-59-idor",
+      "method": "POST",
+      "endpoint": "59",
+      "parameters": [
+        "id",
+        "couponData",
+        "orderDetails.paymentId",
+        "orderDetails.addressId",
+        "orderDetails.deliveryMethodId"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Placing order with other user's payment/address should fail"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.6,
+      "priority": 5
+    },
+    {
+      "id": "AV-67-xss_stored",
+      "method": "POST",
+      "endpoint": "67",
+      "parameters": [
+        "image",
+        "caption"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Caption later rendered unescaped in gallery/feed"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Stored caption affects page length"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "AV-72-xss_stored",
+      "method": "PUT",
+      "endpoint": "72",
+      "parameters": [
+        "id",
+        "message",
+        "author"
+      ],
+      "param_locations": [
+        "body",
+        "body",
+        "body"
+      ],
+      "category": "xss_stored",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Updated message appears unescaped on retrieval"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "description": "Length variation after storing special content"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.5,
+      "priority": 4
+    },
+    {
+      "id": "AV-75-xss_reflected",
+      "method": "GET",
+      "endpoint": "75",
+      "parameters": [
+        "q"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "xss_reflected",
+      "oracles": [
+        {
+          "signal": "reflected_input",
+          "threshold": {},
+          "description": "Search query reflected in results without encoding"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "description": "Body length correlates with input"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "AV-78-idor",
+      "method": "GET",
+      "endpoint": "78",
+      "parameters": [
+        "id"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "description": "Cross-resource GUID access should be denied"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Significant content differences across ids"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "confidence": 0.7,
+      "priority": 4
+    },
+    {
+      "id": "AV-81-authn_bypass",
+      "method": "POST",
+      "endpoint": "81",
+      "parameters": [
+        "email",
+        "password"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "authn_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              401,
+              403
+            ]
+          },
+          "description": "Unexpected success on malformed/invalid creds indicates bypass"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Distinct error pattern differences for invalid vs manipulated flows"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.4,
+      "priority": 5
+    },
+    {
+      "id": "AV-82-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "82",
+      "parameters": [
+        "current",
+        "new",
+        "repeat"
+      ],
+      "param_locations": [
+        "query",
+        "query",
+        "query"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Password values in query may change response size"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Verbose error includes sensitive password hints"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "AV-83-authz_bypass",
+      "method": "POST",
+      "endpoint": "83",
+      "parameters": [
+        "format"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Unprivileged request returns success for privileged export"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Large export-like body indicates unauthorized data"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "confidence": 0.4,
+      "priority": 4
+    },
+    {
+      "id": "AV-87-idor",
+      "method": "PUT",
+      "endpoint": "87",
+      "parameters": [
+        "balance",
+        "paymentId"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Updating another user's paymentId should fail"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "AV-88-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "88",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Anonymous endpoint may expose data volume differences"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "AV-94-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "94",
+      "parameters": [
+        "name"
+      ],
+      "param_locations": [
+        "path"
+      ],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Unicode/encoded names trigger verbose leakage"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.4,
+      "priority": 3
+    },
+    {
+      "id": "AV-95-authz_bypass",
+      "method": "POST",
+      "endpoint": "95",
+      "parameters": [
+        "email",
+        "securityAnswer"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "authz_bypass",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Password reset/privileged flow without proper checks"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "description": "Large response indicates acceptance of bypass"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 4
+    },
+    {
+      "id": "AV-96-idor",
+      "method": "POST",
+      "endpoint": "96",
+      "parameters": [
+        "paymentMode",
+        "paymentId"
+      ],
+      "param_locations": [
+        "body",
+        "body"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "description": "Charging with another user's paymentId should fail"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.6,
+      "priority": 5
+    },
+    {
+      "id": "AV-97-sensitive_data_exposure",
+      "method": "GET",
+      "endpoint": "97",
+      "parameters": [],
+      "param_locations": [],
+      "category": "sensitive_data_exposure",
+      "oracles": [
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Endpoint may leak more data depending on state"
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "confidence": 0.4,
+      "priority": 3
+    }
+  ]
+}

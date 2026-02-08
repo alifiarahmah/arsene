@@ -1,0 +1,674 @@
+{
+  "test_cases": [
+    {
+      "id": "plan-1-auth-enum-baseline-login",
+      "hypothesis_id": "hyp-GET-0-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline unauth login page fetch for later diffs",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "tags": [
+        "baseline",
+        "unauthenticated"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-2-xss-login-user-param",
+      "hypothesis_id": "hyp-GET-1-xss_reflected",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/login",
+      "parameter": "user",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "user=%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+            },
+            {
+              "location": "query",
+              "value": "user=%22%27%3E%3Csvg%2Fonload%3Dconfirm(1)%3E"
+            },
+            {
+              "location": "query",
+              "value": "user=%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E"
+            },
+            {
+              "location": "query",
+              "value": "user=%3Cscript%3E/*x*/%3C%2Fscript%3E"
+            }
+          ],
+          "description": "Reflected XSS probes on user parameter",
+          "encoding": "url",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "response.status in [200] and any(p in response.body for p in [\"<script>alert(1)</script>\",\"\\\"\"><svg/onload=confirm(1)>\",\"<img src=x onerror=alert(1)>\",\"<script>/*x*/</script>\"] )",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "regex_search(response.body, '(template|render|jsx|mustache|handlebars|react|vue).*(error|exception|stack)')",
+          "threshold": {},
+          "weight": 0.3
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss_reflected",
+        "dom",
+        "high_impact"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "plan-3-enum-openapi",
+      "hypothesis_id": "hyp-GET-15-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/swagger.json",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Fetch OpenAPI for route discovery and data exposure",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "regex_search(response.body, '(apiKey|token|secret|bearer|basic)', flags='i')",
+          "threshold": {},
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 2
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "tags": [
+        "openapi",
+        "discovery"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-4-enum-swagger-ui",
+      "hypothesis_id": "hyp-GET-11-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/api-docs/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Fetch Swagger UI page for embedded config",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.05,
+      "tags": [
+        "docs",
+        "discovery"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-5-api-sensitive-enum",
+      "hypothesis_id": "hyp-GET-4-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/user_info/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Probe user_info for unauth data exposure",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "regex_search(response.body, '(email|password|token|money|balance|role|admin)', flags='i')",
+          "threshold": {},
+          "weight": 0.9
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "tags": [
+        "sensitive_data_exposure",
+        "api-json",
+        "high_impact"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-6-api-sensitive-bulk",
+      "hypothesis_id": "hyp-GET-7-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/all_users/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Probe all_users for bulk exposure",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "regex_search(response.body, '(email|username|id\\\":|role|admin)', flags='i')",
+          "threshold": {},
+          "weight": 0.8
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "tags": [
+        "sensitive_data_exposure",
+        "list_exposure"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-7-api-sensitive-finance",
+      "hypothesis_id": "hyp-GET-8-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/total_money/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Probe financial aggregate exposure",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "regex_search(response.body, '(total|money|balance|amount)', flags='i')",
+          "threshold": {},
+          "weight": 0.7
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "tags": [
+        "sensitive_data_exposure",
+        "finance"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-8-api-sensitive-pictures",
+      "hypothesis_id": "hyp-GET-9-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/user_pictures/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Probe user_pictures for enumeration leakage",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "sensitive_data_exposed",
+          "condition": "regex_search(response.body, '(file|id|url|path|public)', flags='i')",
+          "threshold": {},
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "tags": [
+        "sensitive_data_exposure",
+        "media"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-9-idor-file-download",
+      "hypothesis_id": "hyp-GET-17-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/{file_id}",
+      "parameter": "file_id",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "0215428b1ddcb8dc8fd93e4ced0cab97"
+            }
+          ],
+          "description": "Baseline known file",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "0215428b1ddcb8dc8fd93e4ced0cab98"
+            },
+            {
+              "location": "path",
+              "value": "0215428b1ddcb8dc8fd93e4ced0cab96"
+            },
+            {
+              "location": "path",
+              "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "location": "path",
+              "value": "00000000000000000000000000000000"
+            }
+          ],
+          "description": "Adjacent and low-entropy IDs for IDOR",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200,206] for non-baseline identifiers",
+          "threshold": {
+            "expected_codes": [
+              200,
+              206
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "regex_search(response.body, '(forbidden|unauthorized)', flags='i') == False and response.status in [401,403] == False and response.status in [404] == False",
+          "threshold": {},
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "object_access",
+        "high_impact"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "plan-10-upload-validation",
+      "hypothesis_id": "hyp-POST-16-others-multipart",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "/upload_photo/",
+      "parameter": "multipart/form-data",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "------WebKitFormBoundaryUzCwPZQIC5FBFc1k\r\nContent-Disposition: form-data; name=\"file\"; filename=\"test.jpg\"\r\nContent-Type: image/jpeg\r\n\r\nJFIFDATA\r\n------WebKitFormBoundaryUzCwPZQIC5FBFc1k--"
+            }
+          ],
+          "description": "Valid minimal JPEG upload",
+          "content_type": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k",
+          "header": [
+            {
+              "header_name": "Expect",
+              "header_value": "100-continue"
+            }
+          ]
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "------WebKitFormBoundaryUzCwPZQIC5FBFc1k\r\nContent-Disposition: form-data; name=\"file\"; filename=\"x.php\"\r\nContent-Type: application/octet-stream\r\n\r\n<?php echo 1; ?>\r\n------WebKitFormBoundaryUzCwPZQIC5FBFc1k--"
+            }
+          ],
+          "description": "Executable extension to test server-side validation",
+          "content_type": "multipart/form-data; boundary=----WebKitFormBoundaryUzCwPZQIC5FBFc1k",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200,201,202,204]",
+          "threshold": {
+            "expected_codes": [
+              200,
+              201,
+              202,
+              204
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "regex_search(response.body, '(StackTrace|Traceback|IllegalState|Multipart|boundary|parser|exception)') or any(hv[0]==\"X-Powered-By\" for hv in response.headers)",
+          "threshold": {},
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 3
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "multipart",
+        "upload",
+        "validation",
+        "medium_side_effect"
+      ],
+      "estimated_duration": 2
+    },
+    {
+      "id": "plan-11-enum-users-social",
+      "hypothesis_id": "hyp-GET-5-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/user_likes/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Probe likes exposure",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "tags": [
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-12-enum-users-social-2",
+      "hypothesis_id": "hyp-GET-6-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/user_loves/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Probe loves exposure",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "tags": [
+        "sensitive_data_exposure"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "plan-13-enum-pictures-list",
+      "hypothesis_id": "hyp-GET-10-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "/pictures/",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Probe pictures listing",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response.status in [200]",
+          "threshold": {
+            "expected_codes": [
+              200
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 1
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "tags": [
+        "sensitive_data_exposure",
+        "listing"
+      ],
+      "estimated_duration": 1
+    }
+  ]
+}

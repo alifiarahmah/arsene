@@ -1,0 +1,16 @@
+### KNOWLEDGE BASE:
+{retrieved_context}
+
+### HTTP TRAFFIC TO ANALYZE:
+{har_text}
+
+### YOUR INSTRUCTIONS:
+1. Analyze EVERY SINGLE ENTRY in the traffic.
+2. For each entry, apply the 5 vulnerability checks from the framework.
+3. If a vulnerability EXISTS, create a finding with PoC.
+4. If a vulnerability DOES NOT EXIST, move to the next entry. DO NOT MAKE THINGS UP.
+5. Output ALL findings in strict JSON format.
+
+DO NOT GROUP FINDINGS. DO NOT SUMMARIZE. BE SPECIFIC.
+
+REMINDER: Your performance is measured by the NUMBER of valid findings. More granularity = Better analysis.

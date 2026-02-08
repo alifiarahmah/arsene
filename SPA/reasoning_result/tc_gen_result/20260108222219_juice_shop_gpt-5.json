@@ -1,0 +1,2468 @@
+{
+  "test_cases": [
+    {
+      "id": "TC-AV-3-sensitive_data_exposure",
+      "hypothesis_id": "AV-3-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "3",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Baseline unauthenticated vs authenticated compare",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Capture baseline authenticated session token from observed traffic",
+          "extract_from": "endpoints[2].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "abs(len(body_variant)-len(body_baseline))/len(body_baseline) >= 0.3",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "status_code_change",
+          "condition": "status_code not in [200,304] for unauthenticated vs 200 for authenticated",
+          "threshold": {
+            "expected_codes": [
+              200,
+              304
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "sde",
+        "compare_auth_states"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-4-idor",
+      "hypothesis_id": "AV-4-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "4",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "path",
+              "value": "8"
+            }
+          ],
+          "description": "Probe different Addresss ids",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Use valid authenticated session",
+          "extract_from": "endpoints[4].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "any(status_code in [200] for alt_ids) while owned_id returns 403/404/401",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "max_len_delta_pct >= 0.25 across ids",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-5-idor",
+      "hypothesis_id": "AV-5-idor",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "5",
+      "parameter": "country",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "Indonesia"
+            },
+            {
+              "location": "body",
+              "value": "home"
+            },
+            {
+              "location": "body",
+              "value": "6277711133"
+            },
+            {
+              "location": "body",
+              "value": "144444"
+            },
+            {
+              "location": "body",
+              "value": "Jl. Raya No. 1"
+            },
+            {
+              "location": "body",
+              "value": "Bandung"
+            },
+            {
+              "location": "body",
+              "value": "Jawa Barat"
+            }
+          ],
+          "description": "Create address with plausible other-user data",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session needed",
+          "extract_from": "endpoints[5].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "response_status in [200,201] unexpectedly when linking to unowned user context",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "create"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-6-idor",
+      "hypothesis_id": "AV-6-idor",
+      "base_url": "http",
+      "method": "PUT",
+      "endpoint": "6",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "8"
+            },
+            {
+              "location": "body",
+              "value": "Indonesia"
+            },
+            {
+              "location": "body",
+              "value": "homee"
+            },
+            {
+              "location": "body",
+              "value": "6277711133"
+            },
+            {
+              "location": "body",
+              "value": "144444"
+            },
+            {
+              "location": "body",
+              "value": "Jl. Raya No. 1"
+            },
+            {
+              "location": "body",
+              "value": "Bandung"
+            },
+            {
+              "location": "body",
+              "value": "Jawa Barat"
+            }
+          ],
+          "description": "Attempt update another user's address",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session",
+          "extract_from": "endpoints[6].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [200,204] for non-owned id",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "update"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-8-idor",
+      "hypothesis_id": "AV-8-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "8",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "path",
+              "value": "7"
+            },
+            {
+              "location": "path",
+              "value": "10"
+            }
+          ],
+          "description": "Read BasketItems by varying ids",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session required",
+          "extract_from": "endpoints[8].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "any(alt_status==200 for foreign_ids)",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "max_len_delta_pct >= 0.25 across ids",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "basket"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-9-idor",
+      "hypothesis_id": "AV-9-idor",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "9",
+      "parameter": "BasketId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "1"
+            },
+            {
+              "location": "body",
+              "value": "6"
+            },
+            {
+              "location": "body",
+              "value": "2"
+            }
+          ],
+          "description": "Try adding items to another user's basketId",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        },
+        {
+          "tier": "benign",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "1"
+            }
+          ],
+          "description": "Use valid ProductId and quantity 1",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session",
+          "extract_from": "endpoints[9].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "success for BasketId not owned",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "basket"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-10-idor",
+      "hypothesis_id": "AV-10-idor",
+      "base_url": "http",
+      "method": "PUT",
+      "endpoint": "10",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "10"
+            },
+            {
+              "location": "body",
+              "value": "2"
+            }
+          ],
+          "description": "Change quantity of another user's BasketItem",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session",
+          "extract_from": "endpoints[10].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [200,204] for foreign id",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "update"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-11-idor",
+      "hypothesis_id": "AV-11-idor",
+      "base_url": "http",
+      "method": "DELETE",
+      "endpoint": "11",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "10"
+            }
+          ],
+          "description": "Attempt delete BasketItem by foreign id",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session",
+          "extract_from": "endpoints[11].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "status_code in [200,204] for non-owned id",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "delete"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-13-idor",
+      "hypothesis_id": "AV-13-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "13",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "path",
+              "value": "7"
+            }
+          ],
+          "description": "Access card by varying id",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session",
+          "extract_from": "endpoints[13].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "foreign id returns 200",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "length delta >= 25% across ids",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "cards"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-14-sensitive_data_exposure",
+      "hypothesis_id": "AV-14-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "14",
+      "parameter": "fullName",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "Dummy"
+            },
+            {
+              "location": "body",
+              "value": "1111234455555555"
+            },
+            {
+              "location": "body",
+              "value": "4"
+            },
+            {
+              "location": "body",
+              "value": "2080"
+            }
+          ],
+          "description": "Submit card and compare masking/verbosity",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session for card submission",
+          "extract_from": "endpoints[14].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "variant responses differ by >=20% when altering PAN formatting/masking",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sde",
+        "pci"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-16-xss_reflected",
+      "hypothesis_id": "AV-16-xss_reflected",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "16",
+      "parameter": "name",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "Score Board"
+            },
+            {
+              "location": "query",
+              "value": "<img src=x onerror=alert(1)>"
+            }
+          ],
+          "description": "Test reflection in name parameter",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "payload string appears unescaped in response body",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "length delta >=15% between benign and xss payload",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss",
+        "reflected"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-19-idor",
+      "hypothesis_id": "AV-19-idor",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "19",
+      "parameter": "UserId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "24"
+            },
+            {
+              "location": "body",
+              "value": "cmoplaint"
+            }
+          ],
+          "description": "Post complaint as another user",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session",
+          "extract_from": "endpoints[19].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "success code when UserId != session user",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "complaints"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-21-idor",
+      "hypothesis_id": "AV-21-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "21",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "2"
+            },
+            {
+              "location": "path",
+              "value": "3"
+            }
+          ],
+          "description": "Check delivery by id across users",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session",
+          "extract_from": "endpoints[21].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "foreign id returns 200",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=25% across ids",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "delivery"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-24-xss_stored",
+      "hypothesis_id": "AV-24-xss_stored",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "24",
+      "parameter": "comment",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "23"
+            },
+            {
+              "location": "body",
+              "value": "0"
+            },
+            {
+              "location": "body",
+              "value": "17"
+            },
+            {
+              "location": "body",
+              "value": "<svg/onload=alert(1)>"
+            },
+            {
+              "location": "body",
+              "value": "5"
+            }
+          ],
+          "description": "Submit XSS payload in feedback comment (with captcha sample)",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated with token; captcha flow observed but not solved",
+          "extract_from": "endpoints[24].anti_automation",
+          "bind_to": "captcha_present"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "retrieval of feedback later shows unescaped payload string",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "store vs benign length delta >=10%",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "weight": 0.4
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "stored",
+        "feedback"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-25-xss_stored",
+      "hypothesis_id": "AV-25-xss_stored",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "25",
+      "parameter": "comment",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "23"
+            },
+            {
+              "location": "body",
+              "value": "1"
+            },
+            {
+              "location": "body",
+              "value": "5"
+            },
+            {
+              "location": "body",
+              "value": "<img src=x onerror=alert(2)>"
+            },
+            {
+              "location": "body",
+              "value": "1"
+            }
+          ],
+          "description": "Alternate captcha values with XSS comment",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated; captcha present",
+          "extract_from": "endpoints[25].anti_automation",
+          "bind_to": "captcha_present"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "feedback listing shows unescaped payload string",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=10% after storing payload",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "weight": 0.4
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "stored"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-28-idor",
+      "hypothesis_id": "AV-28-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "28",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "2"
+            }
+          ],
+          "description": "Access product with different id (with query d static)",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session",
+          "extract_from": "endpoints[28].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "unexpected 200 for unauthorized combo",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "products"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-29-idor",
+      "hypothesis_id": "AV-29-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "29",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "1"
+            }
+          ],
+          "description": "Access product variant 24 with static date",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated",
+          "extract_from": "endpoints[29].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "unexpected 200 for unauthorized combo",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-33-idor",
+      "hypothesis_id": "AV-33-idor",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "33",
+      "parameter": "UserId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "24"
+            },
+            {
+              "location": "body",
+              "value": "7"
+            },
+            {
+              "location": "body",
+              "value": "10"
+            }
+          ],
+          "description": "Recycle request using foreign UserId/AddressId",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session",
+          "extract_from": "endpoints[33].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "request accepted with foreign identifiers",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "order"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-35-idor",
+      "hypothesis_id": "AV-35-idor",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "35",
+      "parameter": "UserId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "24"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            },
+            {
+              "location": "body",
+              "value": "11"
+            }
+          ],
+          "description": "SecurityAnswers with foreign UserId",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "unexpected success without auth or as different user",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "account_recovery"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-39-sensitive_data_exposure",
+      "hypothesis_id": "AV-39-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "39",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "dummy"
+            },
+            {
+              "location": "body",
+              "value": "dummy"
+            },
+            {
+              "location": "body",
+              "value": "11"
+            },
+            {
+              "location": "body",
+              "value": "Your favorite book?"
+            },
+            {
+              "location": "body",
+              "value": "2025-12-02T07:01:52.877Z"
+            },
+            {
+              "location": "body",
+              "value": "2025-12-02T07:01:52.877Z"
+            },
+            {
+              "location": "body",
+              "value": "harry potter"
+            }
+          ],
+          "description": "Register and compare response verbosity",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "verbose registration response delta >=20% vs minimal/invalid run",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "sde",
+        "registration"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-49-idor",
+      "hypothesis_id": "AV-49-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "49",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "b783-167bf60f01c1a3bb"
+            },
+            {
+              "location": "path",
+              "value": "b783-aaaaaaaaaaaaaaaa"
+            }
+          ],
+          "description": "Track order PDF by varying GUID",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Session cookie context",
+          "extract_from": "endpoints[49].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "foreign GUID returns 200/200-like with PDF",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=25% across GUIDs indicating different orders",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "idor",
+        "documents"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-56-idor",
+      "hypothesis_id": "AV-56-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "56",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "path",
+              "value": "7"
+            }
+          ],
+          "description": "Order tracking by id across users",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated",
+          "extract_from": "endpoints[56].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "foreign id returns 200",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=25% across ids",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor",
+        "basket"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-57-idor",
+      "hypothesis_id": "AV-57-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "57",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            }
+          ],
+          "description": "Basket coupon access cross-user",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated",
+          "extract_from": "endpoints[57].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "foreign id returns 200",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "idor"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-58-idor",
+      "hypothesis_id": "AV-58-idor",
+      "base_url": "http",
+      "method": "PUT",
+      "endpoint": "58",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "6"
+            },
+            {
+              "location": "path",
+              "value": "6665434535"
+            }
+          ],
+          "description": "Apply coupon to another user's basket",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated",
+          "extract_from": "endpoints[58].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "coupon applied successfully on foreign basket",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "coupon"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-59-idor",
+      "hypothesis_id": "AV-59-idor",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "59",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "6"
+            },
+            {
+              "location": "body",
+              "value": "NjY2NTQzNDUzNS0xNzY0NjMwMDAwMDAw"
+            },
+            {
+              "location": "body",
+              "value": "7"
+            },
+            {
+              "location": "body",
+              "value": "7"
+            },
+            {
+              "location": "body",
+              "value": "1"
+            }
+          ],
+          "description": "Checkout using foreign payment/address within body",
+          "encoding": "json",
+          "content_type": "application/json",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated with basket",
+          "extract_from": "endpoints[59].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "success when payment/address do not belong to session user",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.4,
+      "tags": [
+        "idor",
+        "checkout"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-67-xss_stored",
+      "hypothesis_id": "AV-67-xss_stored",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "67",
+      "parameter": "caption",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "memory"
+            },
+            {
+              "location": "body",
+              "value": "<svg/onload=alert(3)>"
+            }
+          ],
+          "description": "Upload memory with XSS caption",
+          "encoding": "multipart/form-data",
+          "content_type": "multipart/form-data; boundary=----WebKitFormBoundarymFG6Y4SHgGWtrT7N",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session with token",
+          "extract_from": "endpoints[67].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "gallery/feed shows unescaped caption payload string on retrieval",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=10% vs benign caption",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "weight": 0.4
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "xss",
+        "stored",
+        "upload"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-72-xss_stored",
+      "hypothesis_id": "AV-72-xss_stored",
+      "base_url": "http",
+      "method": "PUT",
+      "endpoint": "72",
+      "parameter": "message",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "1"
+            },
+            {
+              "location": "body",
+              "value": "<img src=x onerror=alert(4)>"
+            },
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            }
+          ],
+          "description": "Update product review with XSS message",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated token",
+          "extract_from": "endpoints[72].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "subsequent GET reviews shows unescaped script tag contents",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=10% compared to benign review",
+          "threshold": {
+            "body_length_delta_pct": 10.0
+          },
+          "weight": 0.4
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.4,
+      "tags": [
+        "xss",
+        "stored",
+        "reviews"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-75-xss_reflected",
+      "hypothesis_id": "AV-75-xss_reflected",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "75",
+      "parameter": "q",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": ""
+            },
+            {
+              "location": "query",
+              "value": "<script>alert(5)</script>"
+            }
+          ],
+          "description": "Test search reflection",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "reflected_input",
+          "condition": "query value appears unescaped in results page/JSON",
+          "threshold": {},
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=15% between empty and xss query",
+          "threshold": {
+            "body_length_delta_pct": 15.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 10
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "xss",
+        "reflected",
+        "search"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-78-idor",
+      "hypothesis_id": "AV-78-idor",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "78",
+      "parameter": "id",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "b783-167bf60f01c1a3bb"
+            },
+            {
+              "location": "path",
+              "value": "b783-deadbeefdeadbeef"
+            }
+          ],
+          "description": "Track order by GUID via API",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated token",
+          "extract_from": "endpoints[78].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "foreign GUID returns 200/success",
+          "threshold": {
+            "expected_codes": [
+              403,
+              404,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=25% indicates access to different order data",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 0.6
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 8
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.4,
+      "tags": [
+        "idor",
+        "track-order"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-81-authn_bypass",
+      "hypothesis_id": "AV-81-authn_bypass",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "81",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "dummy"
+            }
+          ],
+          "description": "Baseline valid-like creds",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        },
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            },
+            {
+              "location": "body",
+              "value": "' OR '1'='1"
+            }
+          ],
+          "description": "SQLi-style password to test bypass patterns",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "manipulated creds yield 200/302 where invalid yields 401/403",
+          "threshold": {
+            "expected_codes": [
+              200,
+              302,
+              401,
+              403
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "error_signature",
+          "condition": "distinct error message/body pattern differs between invalid and manipulated",
+          "threshold": {
+            "string_value": "invalid|blocked|captcha|rate limit"
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.5,
+      "tags": [
+        "authn",
+        "bypass"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-82-sensitive_data_exposure",
+      "hypothesis_id": "AV-82-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "82",
+      "parameter": "current",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "query",
+              "value": "dummy"
+            },
+            {
+              "location": "query",
+              "value": "dummy"
+            },
+            {
+              "location": "query",
+              "value": "dummy"
+            }
+          ],
+          "description": "Passwords in querystring may echo or influence errors",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated session",
+          "extract_from": "endpoints[82].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=20% between variants of password values",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.6
+        },
+        {
+          "signal": "error_signature",
+          "condition": "response body contains sensitive echoes or hints of provided passwords",
+          "threshold": {
+            "string_value": "password|repeat|mismatch|current"
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "sde",
+        "password_in_url"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-83-authz_bypass",
+      "hypothesis_id": "AV-83-authz_bypass",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "83",
+      "parameter": "format",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "1"
+            }
+          ],
+          "description": "Attempt data export without elevated privilege",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated low-privilege session",
+          "extract_from": "endpoints[83].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "export returns 200 for low-privilege user",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "body size significantly large like export payload >=30% over baseline",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "authz",
+        "export"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-87-idor",
+      "hypothesis_id": "AV-87-idor",
+      "base_url": "http",
+      "method": "PUT",
+      "endpoint": "87",
+      "parameter": "paymentId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "555"
+            },
+            {
+              "location": "body",
+              "value": "7"
+            }
+          ],
+          "description": "Update wallet balance tied to foreign paymentId",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated",
+          "extract_from": "endpoints[87].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "success when paymentId not owned",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "wallet"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-88-sensitive_data_exposure",
+      "hypothesis_id": "AV-88-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "88",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Fetch application-version and compare body sizes across states",
+          "header": []
+        }
+      ],
+      "prerequisites": [],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=30% across repeated calls or states",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.1,
+      "tags": [
+        "sde",
+        "version"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-94-sensitive_data_exposure",
+      "hypothesis_id": "AV-94-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "94",
+      "parameter": "name",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "path",
+              "value": "%E1%93%9A%E1%98%8F%E1%97%A2-"
+            }
+          ],
+          "description": "Fetch upload with unicode name to check verbose leakage",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Session context (cookie/none)",
+          "extract_from": "endpoints[94].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=25% when requesting unusual name vs typical",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "sde",
+        "unicode"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-95-authz_bypass",
+      "hypothesis_id": "AV-95-authz_bypass",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "95",
+      "parameter": "email",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "dummy@mail.com"
+            },
+            {
+              "location": "body",
+              "value": ""
+            }
+          ],
+          "description": "Attempt data erasure/reset without proper auth using blank securityAnswer",
+          "encoding": "form",
+          "content_type": "application/x-www-form-urlencoded",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Unauthenticated vs authenticated comparison",
+          "extract_from": "endpoints[95].tokens_observed",
+          "bind_to": "continue_code"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "endpoint returns 200/302 despite missing/invalid securityAnswer",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        },
+        {
+          "signal": "response_length_diff",
+          "condition": "large response suggesting accepted flow (>=20%)",
+          "threshold": {
+            "body_length_delta_pct": 20.0
+          },
+          "weight": 0.5
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.4,
+      "tags": [
+        "authz",
+        "reset"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-96-idor",
+      "hypothesis_id": "AV-96-idor",
+      "base_url": "http",
+      "method": "POST",
+      "endpoint": "96",
+      "parameter": "paymentId",
+      "payloads": [
+        {
+          "tier": "probe",
+          "payloads": [
+            {
+              "location": "body",
+              "value": "card"
+            },
+            {
+              "location": "body",
+              "value": "7"
+            }
+          ],
+          "description": "Buy deluxe membership using foreign paymentId",
+          "encoding": "json",
+          "content_type": "application/json; charset=utf-8",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated",
+          "extract_from": "endpoints[96].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "status_code_change",
+          "condition": "success using paymentId not owned by user",
+          "threshold": {
+            "expected_codes": [
+              403,
+              401
+            ]
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": false,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.3,
+      "tags": [
+        "idor",
+        "payment"
+      ],
+      "estimated_duration": 1
+    },
+    {
+      "id": "TC-AV-97-sensitive_data_exposure",
+      "hypothesis_id": "AV-97-sensitive_data_exposure",
+      "base_url": "http",
+      "method": "GET",
+      "endpoint": "97",
+      "parameter": "",
+      "payloads": [
+        {
+          "tier": "benign",
+          "payloads": [],
+          "description": "Fetch deluxe-membership status and compare lengths across states",
+          "header": []
+        }
+      ],
+      "prerequisites": [
+        {
+          "type": "session_state",
+          "description": "Authenticated vs unauthenticated comparison",
+          "extract_from": "endpoints[97].tokens_observed",
+          "bind_to": "auth_token"
+        }
+      ],
+      "oracle_rules": [
+        {
+          "signal": "response_length_diff",
+          "condition": "delta >=30% across states indicating leakage of membership details",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "weight": 1.0
+        }
+      ],
+      "pass_logic": "any",
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 4
+      },
+      "max_retries": 1,
+      "delay_between_requests": 0.2,
+      "tags": [
+        "sde",
+        "membership"
+      ],
+      "estimated_duration": 1
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+No,Challenge,BLA_ID,Deskripsi_Sanitasi,Endpoint,URL
+1,Admin Section,BLA9: BAC,Mengakses fungsi administratif melalui tebakan URL tanpa otorisasi yang tepat.,/admin,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
+2,View Basket,BLA9: BAC,Mengakses keranjang belanja milik pengguna lain (Horizontal Privilege Escalation).,/rest/basket/{id},https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
+3,Manipulate Basket,BLA9: BAC,Menambahkan produk ke dalam keranjang belanja pengguna lain secara ilegal.,/api/BasketItems,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
+4,Forged Feedback,BLA9: BAC,Mengirimkan feedback menggunakan identitas (User ID) orang lain.,/api/Feedbacks,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
+5,Forged Review,BLA9: BAC,Mengedit atau memposting review produk atas nama pengguna lain.,/rest/products/reviews,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
+6,Admin Registration,BLA6: MTV,Memanipulasi body request saat registrasi untuk mendapatkan role 'admin'.,/api/Users,https://pwning.owasp-juice.shop/companion-guide/latest/part2/improper-input-validation.html
+7,Deluxe Fraud,BLA6: MTV,Memanipulasi parameter transaksi untuk mendapatkan status Deluxe tanpa membayar.,/rest/deluxe-membership,https://pwning.owasp-juice.shop/companion-guide/latest/part2/improper-input-validation.html
+8,Payback Time,BLA3: OSM,Memanipulasi kuantitas produk menjadi negatif agar saldo toko berkurang (user dibayar).,/api/BasketItems,https://pwning.owasp-juice.shop/companion-guide/latest/part2/improper-input-validation.html
+9,Expired Coupon,BLA3: OSM,Menggunakan kembali kupon yang sudah tidak berlaku melalui manipulasi state/waktu.,/rest/basket/{id}/checkout,https://pwning.owasp-juice.shop/companion-guide/latest/part2/improper-input-validation.html
+10,Zero Stars,BLA6: MTV,Mengirimkan rating 0 bintang yang seharusnya tidak diizinkan oleh logika bisnis UI.,/api/Feedbacks,https://pwning.owasp-juice.shop/companion-guide/latest/part2/improper-input-validation.html
+11,Multiple Likes,BLA3: OSM,Memanfaatkan Race Condition untuk memberikan 'like' berkali-kali pada satu review.,/rest/products/reviews,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-anti-automation.html
+12,CAPTCHA Bypass,BLA9: BAC,Melewati proteksi bot untuk mengirim feedback massal secara otomatis.,/api/Feedbacks,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-anti-automation.html
+13,Reset Morty's Password,BLA9: BAC,Melakukan brute force pada jawaban pertanyaan keamanan karena kurangnya rate limiting.,/rest/user/reset-password,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-anti-automation.html
+14,CSRF,BLA9: BAC,Mengubah nama pengguna melalui Cross-Site Request Forgery dari origin lain.,/profile,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
+15,Five-Star Feedback,BLA9: BAC,Menghapus feedback bintang 5 melalui akses admin yang tidak sah.,/admin/feedback,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
+16,Product Tampering,BLA9: BAC,Mengubah link deskripsi produk melalui celah pada fungsi admin atau API.,/product,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
+17,SSRF,BLA9: BAC,Memaksa server melakukan request ke resource internal yang tersembunyi.,/server,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
+18,Empty User Registration,BLA6: MTV,Mendaftar dengan email/password kosong melalui bypass validasi client-side.,/api/Users,https://pwning.owasp-juice.shop/companion-guide/latest/part2/improper-input-validation.html
+19,Upload Size,BLA6: MTV,Mengunggah file melebihi batas ukuran yang ditentukan logika bisnis.,/api/Complaints,https://pwning.owasp-juice.shop/companion-guide/latest/part2/improper-input-validation.html
+20,Upload Type,BLA6: MTV,Mengunggah tipe file yang tidak diizinkan dengan memanipulasi ekstensi/MIME.,/api/Complaints,https://pwning.owasp-juice.shop/companion-guide/latest/part2/improper-input-validation.html

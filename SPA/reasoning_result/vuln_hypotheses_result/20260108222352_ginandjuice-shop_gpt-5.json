@@ -1,0 +1,246 @@
+{
+  "hypotheses": [
+    {
+      "id": "H1",
+      "method": "GET",
+      "endpoint": "8",
+      "parameters": [
+        "productId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          },
+          "description": "Access control bypass indicated by status change when productId is altered"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 30.0
+          },
+          "description": "Substantial response size change when targeting different productId"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_if_required_by_endpoint"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.7,
+      "priority": 5
+    },
+    {
+      "id": "H2",
+      "method": "GET",
+      "endpoint": "12",
+      "parameters": [
+        "postId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          },
+          "description": "Status change when enumerating postId suggests BAC weakness"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Response body length variance across postId values"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_if_required_by_endpoint"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "H3",
+      "method": "GET",
+      "endpoint": "13",
+      "parameters": [
+        "postId"
+      ],
+      "param_locations": [
+        "query"
+      ],
+      "category": "insecure_direct_object_reference",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              401,
+              403,
+              404
+            ]
+          },
+          "description": "Status code differences across postId selections"
+        },
+        {
+          "signal": "response_length_diff",
+          "threshold": {
+            "body_length_delta_pct": 25.0
+          },
+          "description": "Body length deltas indicate different resource access"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_if_required_by_endpoint"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.6,
+      "priority": 4
+    },
+    {
+      "id": "H4",
+      "method": "POST",
+      "endpoint": "14",
+      "parameters": [
+        "email"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "others",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              401,
+              403,
+              422,
+              500
+            ]
+          },
+          "description": "Different status codes indicate input handling issues"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Server error patterns upon malformed email input"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "csrf_token_requirement",
+          "value": "unknown"
+        },
+        {
+          "key": "auth_context",
+          "value": "unknown"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 5
+      },
+      "confidence": 0.4,
+      "priority": 2
+    },
+    {
+      "id": "H5",
+      "method": "POST",
+      "endpoint": "14",
+      "parameters": [
+        "csrf"
+      ],
+      "param_locations": [
+        "body"
+      ],
+      "category": "csrf",
+      "oracles": [
+        {
+          "signal": "status_code_change",
+          "threshold": {
+            "expected_codes": [
+              200,
+              400,
+              401,
+              403
+            ]
+          },
+          "description": "Status change between valid vs missing/invalid CSRF token"
+        },
+        {
+          "signal": "error_signature",
+          "threshold": {},
+          "description": "Explicit CSRF or auth error message on invalid token"
+        },
+        {
+          "signal": "header_change",
+          "threshold": {},
+          "description": "Set-Cookie or anti-CSRF header differences after token reuse attempt"
+        }
+      ],
+      "pass_logic": "any",
+      "preconditions": [
+        {
+          "key": "auth_context",
+          "value": "authenticated_session_present"
+        }
+      ],
+      "safety": {
+        "idempotent_required": true,
+        "destructive_ok": false,
+        "max_requests": 6
+      },
+      "confidence": 0.7,
+      "priority": 5
+    }
+  ]
+}

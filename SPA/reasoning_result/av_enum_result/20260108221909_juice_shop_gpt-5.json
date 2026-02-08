@@ -1,0 +1,589 @@
+{
+  "attack_vectors": [
+    {
+      "method": "GET",
+      "endpoint": "3",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "4",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "7",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "5",
+      "parameter": [
+        "country",
+        "fullName",
+        "mobileNum",
+        "zipCode",
+        "streetAddress",
+        "city",
+        "state"
+      ],
+      "param_location": "body",
+      "sample_value": "home",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "PUT",
+      "endpoint": "6",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "7",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "8",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "9",
+      "parameter": [
+        "BasketId",
+        "ProductId",
+        "quantity"
+      ],
+      "param_location": "body",
+      "sample_value": "6",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "10",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "11",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "9",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "13",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "7",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "14",
+      "parameter": [
+        "fullName",
+        "cardNum",
+        "expMonth",
+        "expYear"
+      ],
+      "param_location": "body",
+      "sample_value": "1111234455555555",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "16",
+      "parameter": [
+        "name"
+      ],
+      "param_location": "query",
+      "sample_value": "Score Board",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "19",
+      "parameter": [
+        "UserId",
+        "message"
+      ],
+      "param_location": "body",
+      "sample_value": "23",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "21",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "1",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "24",
+      "parameter": [
+        "UserId",
+        "captchaId",
+        "captcha",
+        "comment",
+        "rating"
+      ],
+      "param_location": "body",
+      "sample_value": "wheskaldjfew (***my@mail.com)",
+      "category": "xss_stored",
+      "expected_signals": [
+        "state_change_observed",
+        "reflected_input"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "25",
+      "parameter": [
+        "UserId",
+        "captchaId",
+        "captcha",
+        "comment",
+        "rating"
+      ],
+      "param_location": "body",
+      "sample_value": "gggrerfre (***my@mail.com)",
+      "category": "xss_stored",
+      "expected_signals": [
+        "state_change_observed",
+        "reflected_input"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "28",
+      "parameter": [
+        "id",
+        "d"
+      ],
+      "param_location": "path",
+      "sample_value": "1",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "29",
+      "parameter": [
+        "id",
+        "d"
+      ],
+      "param_location": "path",
+      "sample_value": "24",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "33",
+      "parameter": [
+        "UserId",
+        "AddressId",
+        "quantity"
+      ],
+      "param_location": "body",
+      "sample_value": "23",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "35",
+      "parameter": [
+        "UserId",
+        "answer",
+        "SecurityQuestionId"
+      ],
+      "param_location": "body",
+      "sample_value": "23",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "39",
+      "parameter": [
+        "email",
+        "password",
+        "passwordRepeat",
+        "securityQuestion.id",
+        "securityQuestion.question",
+        "securityQuestion.createdAt",
+        "securityQuestion.updatedAt",
+        "securityAnswer"
+      ],
+      "param_location": "body",
+      "sample_value": "dummy@mail.com",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "49",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "b783-167bf60f01c1a3bb",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "56",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "6",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "57",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "6",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "PUT",
+      "endpoint": "58",
+      "parameter": [
+        "id",
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "6",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "59",
+      "parameter": [
+        "id",
+        "couponData",
+        "orderDetails.paymentId",
+        "orderDetails.addressId",
+        "orderDetails.deliveryMethodId"
+      ],
+      "param_location": "body",
+      "sample_value": "6",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "67",
+      "parameter": [
+        "image",
+        "caption"
+      ],
+      "param_location": "body",
+      "sample_value": "memory",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "PUT",
+      "endpoint": "72",
+      "parameter": [
+        "id",
+        "message",
+        "author"
+      ],
+      "param_location": "body",
+      "sample_value": "good",
+      "category": "xss_stored",
+      "expected_signals": [
+        "reflected_input",
+        "state_change_observed"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "75",
+      "parameter": [
+        "q"
+      ],
+      "param_location": "query",
+      "sample_value": "",
+      "category": "xss_reflected",
+      "expected_signals": [
+        "reflected_input",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "78",
+      "parameter": [
+        "id"
+      ],
+      "param_location": "path",
+      "sample_value": "b783-167bf60f01c1a3bb",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "POST",
+      "endpoint": "81",
+      "parameter": [
+        "email",
+        "password"
+      ],
+      "param_location": "body",
+      "sample_value": "dummy@mail.com",
+      "category": "authn_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "82",
+      "parameter": [
+        "current",
+        "new",
+        "repeat"
+      ],
+      "param_location": "query",
+      "sample_value": "dummy",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff",
+        "error_signature"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "83",
+      "parameter": [
+        "format"
+      ],
+      "param_location": "body",
+      "sample_value": "1",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "PUT",
+      "endpoint": "87",
+      "parameter": [
+        "balance",
+        "paymentId"
+      ],
+      "param_location": "body",
+      "sample_value": "555",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "88",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "94",
+      "parameter": [
+        "name"
+      ],
+      "param_location": "path",
+      "sample_value": "%E1%93%9A%E1%98%8F%E1%97%A2-",
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "95",
+      "parameter": [
+        "email",
+        "securityAnswer"
+      ],
+      "param_location": "body",
+      "sample_value": "dummy@mail.com",
+      "category": "authz_bypass",
+      "expected_signals": [
+        "status_code_change",
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    },
+    {
+      "method": "POST",
+      "endpoint": "96",
+      "parameter": [
+        "paymentMode",
+        "paymentId"
+      ],
+      "param_location": "body",
+      "sample_value": "card",
+      "category": "insecure_direct_object_reference",
+      "expected_signals": [
+        "status_code_change"
+      ],
+      "needs_observation": false
+    },
+    {
+      "method": "GET",
+      "endpoint": "97",
+      "parameter": [],
+      "category": "sensitive_data_exposure",
+      "expected_signals": [
+        "response_length_diff"
+      ],
+      "needs_observation": true
+    }
+  ]
+}
