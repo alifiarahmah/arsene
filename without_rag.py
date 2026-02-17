@@ -425,8 +425,8 @@ Examples:
   # Run with limited knowledge base chunks (for smaller context window)
   python without_rag.py juice_shop --max-kb-chunks 10
 
-  # Run without knowledge base
-  python without_rag.py juice_shop --no-kb
+  # Run with knowledge base (default is without)
+  python without_rag.py juice_shop --with-kb
         """
     )
     parser.add_argument(
@@ -451,9 +451,9 @@ Examples:
         help=f"Maximum number of knowledge base chunks to include (default: {MAX_KB_CHUNKS})"
     )
     parser.add_argument(
-        "--no-kb",
+        "--with-kb",
         action="store_true",
-        help="Run analysis without knowledge base context"
+        help="Include knowledge base context in analysis (default: disabled)"
     )
 
     args = parser.parse_args()
@@ -492,11 +492,11 @@ Examples:
 
     # Prepare knowledge base context
     kb_context = None
-    if args.no_kb:
-        print("\nRunning without knowledge base context...")
-        kb_context = "No knowledge base provided - analyzing based solely on HTTP traffic patterns."
-    else:
+    if args.with_kb:
         print(f"\nUsing knowledge base with max {args.max_kb_chunks} chunks...")
+    else:
+        print("\nRunning without knowledge base context (--with-kb not set)...")
+        kb_context = "No knowledge base provided - analyzing based solely on HTTP traffic patterns."
 
     # Run analysis
     print("\n[Step 2] Running direct LLM analysis...")
@@ -533,8 +533,11 @@ Examples:
             safe_print(f"      Mutation: {poc.payload_mutation}")
             safe_print(f"      cURL PoC: {poc.curl_command}")
 
-    # Save results
-    output_dir = Path("without_rag_results")
+    # Save results - different folder based on whether KB was used
+    if args.with_kb:
+        output_dir = Path("without_rag_with_kb_results")
+    else:
+        output_dir = Path("without_rag_results")
     output_dir.mkdir(exist_ok=True)
 
     import datetime

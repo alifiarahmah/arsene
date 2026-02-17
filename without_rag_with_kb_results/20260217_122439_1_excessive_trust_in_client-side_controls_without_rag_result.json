@@ -1,0 +1,64 @@
+{
+  "business_flow": "User browses a web application: visits root, views cart and product pages, adds items to cart (POST /cart), attempts login (GET/POST /login), accesses /my-account with an id parameter, and requests various /resources static endpoints. Sessions differ between entries (two session cookie values observed).",
+  "thought_process": [
+    "I inspected each of the 21 HTTP entries. For each entry I checked the five BLV checks: IDOR (BLA9), State Manipulation (BLA3), Sequence Bypass (BLA6), Shadow Endpoints (BLA10), and Internal Disclosure (BLA8).",
+    "I only report a finding when a vulnerability is reasonably indicated by the request/response data present. If an entry is a static resource (GET /resources/... etc.) with no indication of business logic, I report no finding.",
+    "I treat each endpoint separately. Only endpoints with actionable indicators (e.g., parameter that looks like an object id, modifiable fields in a POST, or an error code revealing internal state) are reported.",
+    "Where evidence is limited (e.g., response status 0 or missing body), I do not invent behavior — I only produce findings when the traffic shows a clear parameter that suggests a business logic flaw (for example, /my-account?id=wiener and POST /cart form submissions).",
+    "For every finding I include a reproduction_guide with exact payload mutation and a ready-to-run curl command using the required placeholders."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "GET /my-account?id=wiener includes an 'id' query parameter that appears to select an account. The presence of a user-controllable 'id' parameter on a user account page suggests a direct object reference (possible IDOR) if the server does not verify that the authenticated session is allowed to view the requested account. The request shows session cookie different from some other entries, indicating authenticated sessions are in use and an 'id' parameter is accepted by the server.",
+      "evidence_entry_ids": [
+        12
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change the 'id' query parameter from 'wiener' to another user's identifier (e.g., 'carlos' or numeric id) to attempt accessing another user's account (e.g., change '?id=wiener' to '?id={{target_id}}').",
+        "curl_command": "curl -i -s -k -X GET \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/my-account?id={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "POST /cart (entries 5 and 6) are form submissions that add items to the cart. The request content-type is form-urlencoded indicating client-supplied fields (likely product id, quantity). If the server relies solely on client-supplied fields like price, quantity, or discount without server-side enforcement, these fields can be manipulated to alter order price or quantities (object state manipulation). The 302 responses after POST indicate the server accepted the mutation, and GET /cart subsequently shows an INSUFFICIENT_FUNDS error in one response which confirms the flow ties to account funds and suggests prices/quantities matter.",
+      "evidence_entry_ids": [
+        5,
+        6,
+        7
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Modify form fields in the POST body: change 'productId' or 'quantity' to desired values, or change a 'price' or 'discount' field (if present) to a manipulated value. Example: change 'productId' from '{{target_id}}' to '{{target_id}}' and 'quantity' from 1 to 9999 or change 'price' from 100 to 0.",
+        "curl_command": "curl -i -s -k -X POST \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" --data-urlencode \"productId={{target_id}}\" --data-urlencode \"quantity=9999\" --data-urlencode \"price=0\""
+      }
+    },
+    {
+      "category": "BLA6",
+      "description": "The sequence shows POST /cart returns 302 and GET /cart?err=INSUFFICIENT_FUNDS is used to indicate failed purchase due to funds. This suggests the application has a purchase workflow. If the application separates adding to cart and completing purchase, and the cart endpoint accepts parameters that mark an item as 'purchased' or 'paid' (or there exists a separate endpoint to change order status), an attacker might bypass payment by manipulating state transitions or calling endpoints out of sequence. The traffic indicates a multi-step flow (add to cart -> attempt purchase -> error) which could be bypassed if server does not strictly validate payment state before granting goods.",
+      "evidence_entry_ids": [
+        5,
+        6,
+        7
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "After adding items to cart via POST /cart, attempt to change order state by calling cart endpoint with a state parameter or directly request a checkout/complete endpoint (if present) without completing payment. Example mutation: send 'status=paid' or 'checkout=1' in the cart POST to attempt skipping payment.",
+        "curl_command": "curl -i -s -k -X POST \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" --data-urlencode \"productId={{target_id}}\" --data-urlencode \"quantity=1\" --data-urlencode \"status=paid\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "GET /cart?err=INSUFFICIENT_FUNDS (entry 7) demonstrates an application error code in the query string and suggests the server communicates internal state (INSUFFICIENT_FUNDS) back to the client via URL parameter or page content. Exposing such internal state flags can aid an attacker in automating attacks or understanding application workflow and conditions (internal state disclosure).",
+      "evidence_entry_ids": [
+        7
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Reproduce the error by attempting an action that triggers the condition (e.g., add an item costing more than account balance), then observe the '?err=INSUFFICIENT_FUNDS' parameter or page content. No body mutation needed beyond attempting a purchase; ensure session corresponds to low-balance account.",
+        "curl_command": "curl -i -s -k -X GET \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart?err=INSUFFICIENT_FUNDS\" -H \"Cookie: session={{auth_token}}\""
+      }
+    }
+  ]
+}

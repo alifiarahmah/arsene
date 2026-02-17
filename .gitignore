@@ -12,3 +12,5 @@ scapegoat/
 
 # zap session and result
 zap_session/*
+
+SPA/*/**

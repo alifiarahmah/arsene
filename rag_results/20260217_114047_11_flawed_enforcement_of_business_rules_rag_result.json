@@ -1,0 +1,70 @@
+{
+  "business_flow": "User browses shop: visits homepage, cart, product pages; signs up / logs in; views account page (with ?id parameter); adds to cart via POST /cart; product viewed via productId parameter.",
+  "thought_process": [
+    "Examine each HAR entry and check 5 BLV types: IDOR (BLA9), State Manipulation (BLA3), Sequence Bypass (BLA6), Shadow Endpoints (BLA10), Internal Disclosure (BLA8).",
+    "Only report findings where the request/response shows indicators of a business logic weakness in the individual endpoint.",
+    "Generate one finding per endpoint where a vulnerability is supported by the traffic."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "GET /my-account?id=wiener exposes an account view that accepts an 'id' query parameter. The presence of an explicit 'id' parameter in the request URL suggests a direct object reference which may allow an attacker to view other users' account pages by changing the id value if server-side ownership validation is missing.",
+      "evidence_entry_ids": [
+        11
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'id' query parameter from 'wiener' to another username or identifier (e.g., 'carlos' or 'administrator') to attempt to view another user's account.",
+        "curl_command": "curl -i -s -k -X GET \"https://{{target_id}}.web-security-academy.net/my-account?id={{target_user}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "POST /cart is used to add items to the shopping cart. The POST is application/x-www-form-urlencoded and returns a 302 redirect. This indicates client-supplied cart data (likely product id, quantity, price) can be modified. If the server relies on client-provided price/quantity without authoritative validation, an attacker could alter price or quantity fields to change order value.",
+      "evidence_entry_ids": [
+        6
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Modify form parameters such as 'productId', 'quantity' or any 'price' parameter in the POST body (e.g., change 'price' from 100 to 1 or 'quantity' from 1 to 1000).",
+        "curl_command": "curl -i -s -k -X POST \"https://{{target_id}}.web-security-academy.net/cart\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" --data \"productId={{product_id}}&quantity={{quantity}}&price={{manipulated_price}}\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "GET /.well-known or other paths are not directly shown, but the presence of requests to atypical endpoints like /academyLabHeader (Entry #3, status 0) and /image (Entry #7 status 0) indicate potential shadow or debug endpoints. Specifically, GET /academyLabHeader was requested (response status 0 in capture) which suggests an internal/header endpoint used by the application for lab/debug purposes and may expose hidden functionality.",
+      "evidence_entry_ids": [
+        3
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Request the same endpoint path '/academyLabHeader' (or try adjacent debug-like endpoints such as '/adminHeader', '/labHeader') to probe for hidden responses or functionality.",
+        "curl_command": "curl -i -s -k -X GET \"https://{{target_id}}.web-security-academy.net/academyLabHeader\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "GET /image (Entry #7) appears to be an application resource endpoint accessed with a session cookie; it returned status 0 in the capture which may indicate an internal resource path or dynamic image generator that could accept parameters to reveal debug info or accept manipulated parameters. This can be a shadow function if it's undocumented and used for internal resources.",
+      "evidence_entry_ids": [
+        7
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Request '/image' with added query parameters (e.g., '?id=1' or '?debug=true') to probe for undocumented behavior.",
+        "curl_command": "curl -i -s -k -X GET \"https://{{target_id}}.web-security-academy.net/image?id={{image_id}}&debug=true\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "GET /product?productId=6 (Entry #12) uses a numeric productId in the URL. The response status 200 with productId visible indicates internal object identifiers are used in URLs and may be leaked. If response bodies include internal database IDs, stock levels, or supplier data, that's internal disclosure. The capture shows productId parameter in request which is an internal ID disclosure vector.",
+      "evidence_entry_ids": [
+        12
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'productId' from 6 to another numeric id (e.g., 1..n) to enumerate products and observe any internal details returned in responses.",
+        "curl_command": "curl -i -s -k -X GET \"https://{{target_id}}.web-security-academy.net/product?productId={{product_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    }
+  ]
+}

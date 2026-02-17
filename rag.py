@@ -373,8 +373,12 @@ def format_retrieved_context(results: List[Tuple[str, str, float]]) -> str:
 
     return "\n".join(context_parts)
 
-def construct_rag_prompt(retrieved_context: str, har_context: Optional[List[str]] = None) -> List[dict]:
+def construct_rag_prompt(retrieved_context: Optional[str] = None, har_context: Optional[List[str]] = None) -> List[dict]:
     har_text = "\n".join(har_context) if har_context else "No traffic provided."
+
+    # If no retrieved context provided, use a placeholder
+    if retrieved_context is None:
+        retrieved_context = "No knowledge base provided - analyzing based solely on HTTP traffic patterns."
 
     # Load prompts from files
     system_prompt = load_prompt("system_prompt")
@@ -445,9 +449,10 @@ def resolve_har_path(har_input: Optional[str], directory: str) -> Optional[str]:
 
 def run_rag_analysis(
     query: str,
-    vector_store: VectorStore,
+    vector_store: Optional[VectorStore],
     har_file: Optional[str] = None,
-    top_k: int = TOP_K
+    top_k: int = TOP_K,
+    use_kb: bool = True
 ) -> ReasoningOutput:
     """
     Run the complete RAG analysis pipeline.
@@ -457,18 +462,24 @@ def run_rag_analysis(
         vector_store: Initialized VectorStore
         har_file: Optional path to HAR file
         top_k: Number of chunks to retrieve
+        use_kb: Whether to use knowledge base (True) or skip it (False)
 
     Returns:
         ReasoningOutput with analysis results
     """
-    # Step 1: Retrieve relevant knowledge
-    print(f"\n[1/4] Retrieving relevant knowledge (top {top_k})...")
-    results = vector_store.search(query, top_k=top_k)
+    # Step 1: Retrieve relevant knowledge (if enabled)
+    if use_kb:
+        if vector_store is None:
+            raise ValueError("vector_store must be provided when use_kb=True")
+        print(f"\n[1/4] Retrieving relevant knowledge (top {top_k})...")
+        results = vector_store.search(query, top_k=top_k)
 
-    print(f"  Retrieved {len(results)} chunks:")
-    for source, _, score in results:
-        source_name = Path(source).name
-        print(f"    - {source_name}: {score:.3f}")
+        print(f"  Retrieved {len(results)} chunks:")
+        for source, _, score in results:
+            source_name = Path(source).name
+            print(f"    - {source_name}: {score:.3f}")
+    else:
+        print("\n[1/4] Skipping knowledge base retrieval (--no-kb flag set)...")
 
     # Step 2: Load HAR context if provided
     har_context = None
@@ -480,7 +491,10 @@ def run_rag_analysis(
 
     # Step 3: Construct RAG prompt
     print("\n[3/4] Constructing RAG prompt...")
-    retrieved_context = format_retrieved_context(results)
+    if use_kb:
+        retrieved_context = format_retrieved_context(results)
+    else:
+        retrieved_context = None
     messages = construct_rag_prompt(retrieved_context, har_context)
 
     # Step 4: Call LLM
@@ -516,6 +530,9 @@ Examples:
 
   # Run without HAR file
   python rag.py --no-har
+
+  # Run without knowledge base
+  python rag.py juice_shop --no-kb
         """
     )
     parser.add_argument(
@@ -549,6 +566,11 @@ Examples:
         type=str,
         default="you are a security researcher. find BLV potentials in these HTTP traffic request sequences",
         help="Custom query for retrieval"
+    )
+    parser.add_argument(
+        "--no-kb",
+        action="store_true",
+        help="Run analysis without knowledge base context"
     )
 
     args = parser.parse_args()
@@ -585,33 +607,39 @@ Examples:
     print("RAG Demo: Business Logic Vulnerability Analysis")
     print("=" * 70)
 
-    # Step 1: Load knowledge base
-    print("\n[Step 1] Loading knowledge base...")
-    documents = load_knowledge_base(KB_PATHS)
-    print(f"  Loaded {len(documents)} chunks from {len(KB_PATHS)} files")
+    # Prepare knowledge base and vector store
+    vector_store = None
 
-    # Step 2: Build or load FAISS index
-    print("\n[Step 2] Building vector index...")
-    vector_store = VectorStore()
+    if args.no_kb:
+        print("\nRunning without knowledge base (--no-kb flag set)...")
+    else:
+        # Step 1: Load knowledge base
+        print("\n[Step 1] Loading knowledge base...")
+        documents = load_knowledge_base(KB_PATHS)
+        print(f"  Loaded {len(documents)} chunks from {len(KB_PATHS)} files")
 
-    # Try to load existing index
-    index_path = "faiss_index.bin"
-    if os.path.exists(index_path) and not args.rebuild_index:
-        print(f"  Found existing index. Loading from {index_path}...")
-        try:
-            vector_store.load(index_path)
-        except Exception as e:
-            print(f"  Failed to load index: {e}")
-            print("  Building new index...")
+        # Step 2: Build or load FAISS index
+        print("\n[Step 2] Building vector index...")
+        vector_store = VectorStore()
+
+        # Try to load existing index
+        index_path = "faiss_index.bin"
+        if os.path.exists(index_path) and not args.rebuild_index:
+            print(f"  Found existing index. Loading from {index_path}...")
+            try:
+                vector_store.load(index_path)
+            except Exception as e:
+                print(f"  Failed to load index: {e}")
+                print("  Building new index...")
+                vector_store.build_index(documents)
+                vector_store.save(index_path)
+        else:
+            if args.rebuild_index:
+                print("  Rebuilding index (--rebuild-index flag set)...")
+            else:
+                print("  Building new index...")
             vector_store.build_index(documents)
             vector_store.save(index_path)
-    else:
-        if args.rebuild_index:
-            print("  Rebuilding index (--rebuild-index flag set)...")
-        else:
-            print("  Building new index...")
-        vector_store.build_index(documents)
-        vector_store.save(index_path)
 
     # Step 3: Confirm HAR file
     if har_file:
@@ -630,7 +658,8 @@ Examples:
         query=query,
         vector_store=vector_store,
         har_file=har_file,
-        top_k=args.top_k
+        top_k=args.top_k,
+        use_kb=not args.no_kb
     )
 
     # Step 6: Display results
@@ -659,7 +688,7 @@ Examples:
             safe_print(f"      cURL PoC: {poc.curl_command}")
 
     # Step 7: Save results
-    output_dir = Path("without_rag_results")
+    output_dir = Path("rag_results")
     output_dir.mkdir(exist_ok=True)
 
     import datetime

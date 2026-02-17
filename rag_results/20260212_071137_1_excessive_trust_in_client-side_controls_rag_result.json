@@ -1,0 +1,81 @@
+{
+  "business_flow": "User browses a web app, views products, uses cart, attempts purchase (insufficient funds), logs in, and accesses account and resource endpoints. Traffic contains mostly GETs to static resources and several POSTs to /cart and POST /login. No API-like object IDs in paths except product?productId=1 and my-account?id=wiener and image endpoint. Session cookies differ between entries indicating multiple sessions.",
+  "thought_process": [
+    "Review each HAR entry and apply five checks: IDOR (BLA9), State Manipulation (BLA3), Sequence Bypass (BLA6), Shadow Endpoints (BLA10), Internal Disclosure (BLA8).",
+    "Only report a finding when evidence in that specific HTTP request/response indicates a vulnerability per a check.",
+    "Produce one finding per endpoint when vulnerable, with payload mutation and a curl using placeholders."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA8",
+      "description": "Internal Disclosure: The GET /my-account?id=wiener endpoint exposes an internal identifier via a query parameter 'id' that appears to be a username or internal account reference. The application responds to /my-account?id=wiener (Entry #12) while other /my-account (Entry #11) triggered a redirect. This suggests the app may accept arbitrary 'id' parameters and reveal account pages by supplying a username, leaking guessable internal identifiers and enabling account enumeration/targeting.",
+      "evidence_entry_ids": [
+        12,
+        11
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Change query parameter 'id' value to another username or internal id (e.g., change 'id=wiener' to 'id={{target_id}}') to view other accounts or discover valid ids.",
+        "curl_command": "curl -i -s -k \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/my-account?id={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "IDOR / Broken Access Control: The GET /product?productId=1 endpoint (Entry #13) uses a direct object reference in the query string. There is no evidence in the traffic of any ownership checks or per-user access control around productId; while product pages are typically public, the presence of numeric productId query parameter indicates possibility to access or manipulate other product IDs (e.g., hidden or restricted products) by changing productId value. Given only this traffic, an attacker can enumerate productId values and access product resources that might be unpublished.",
+      "evidence_entry_ids": [
+        13
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'productId' from 1 to other values (e.g., 2, 3, 10) to enumerate and access other product pages, including potentially restricted product IDs: productId=2 or productId={{target_id}}.",
+        "curl_command": "curl -i -s -k \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/product?productId={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: POST /cart (Entry #5 and #6) accepts form submissions (Content-Type: application/x-www-form-urlencoded) and returns 302 redirects. There is an observed cart flow resulting in an error page with err=INSUFFICIENT_FUNDS (Entry #7). This indicates client-controlled cart operations can affect checkout state (e.g., adding items, quantities, maybe prices). Because requests are form-encoded and there is no evidence of server-side enforcement shown in the traffic capture, an attacker could manipulate form fields (quantity, price, productId) to change order state or attempt to set negative prices/quantities to influence total.",
+      "evidence_entry_ids": [
+        5,
+        6,
+        7
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Modify form parameters sent to /cart: change 'productId' to {{target_id}} and 'quantity' to an attacker-controlled value (e.g., 0, -1, 9999) or alter 'price' field if present to a lower value.",
+        "curl_command": "curl -i -s -k -X POST \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" --data \"productId={{target_id}}&quantity=1\""
+      }
+    },
+    {
+      "category": "BLA6",
+      "description": "Sequence Bypass: The cart flow shows a direct POST to /cart and later a GET to /cart?err=INSUFFICIENT_FUNDS (Entries #5-7). There is no evidence of a required payment verification step enforced in the captured flow — the cart endpoint accepts requests and redirects, and the application surfaces an 'INSUFFICIENT_FUNDS' error via query parameter rather than enforcing a server-side payment state. An attacker may be able to bypass payment by manipulating the sequence (e.g., directly triggering order confirmation endpoints or crafting requests to finalize orders without completing payment) if such endpoints exist adjacent to /cart.",
+      "evidence_entry_ids": [
+        5,
+        6,
+        7
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "After adding items via POST /cart, attempt to call the order/checkout confirmation endpoint directly (e.g., change target to /checkout or /order/confirm) or reuse /cart POST with parameters that indicate confirmed payment (if present). In absence of a known checkout endpoint in the trace, mutate sequence by reusing /cart POST with 'confirm=true' or similar flags.",
+        "curl_command": "curl -i -s -k -X POST \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" --data \"productId={{target_id}}&quantity=1&confirm=true\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Shadow Endpoint / Resource Discovery: Multiple GET requests to resource-like paths under /resources, /resources/labheader, /resources/labheader/css, /resources/images, /resources/labheader/js (Entries #14-20) indicate potential discovery of resource endpoints used for lab header and debugging. These endpoints appear non-standard and lab-specific, suggesting shadow or debug endpoints accessible without authentication that could leak internal functionality or debug assets.",
+      "evidence_entry_ids": [
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Request other related resource/debug endpoints by changing the path suffix, e.g., /resources/labheader/debug or /resources/admin or enumerate files under /resources/labheader/ (e.g., css, js, images) with different names: /resources/labheader/js/{{target_id}}. Attempt to access /resources or /resources/labheader paths directly.",
+        "curl_command": "curl -i -s -k \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/resources/labheader/{{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    }
+  ]
+}
