@@ -1,0 +1,89 @@
+{
+  "business_flow": "User browses the web app, visits login, authenticates, views my-account (with an id parameter), and views a post page. Several resource/static endpoints are requested. The only interactive endpoints with observable parameters/responses in the traffic are: GET /my-account?id=wiener (entry #8), GET /post?postId=4 (entry #9), and POST /login (entry #5). Other entries are static resources or root page loads without parameters or with server responses not shown.",
+  "thought_process": [
+    "Review each of the 17 entries and apply the five checks (IDOR/BLA9, State Manipulation/BLA3, Sequence Bypass/BLA6, Shadow Endpoints/BLA10, Internal Disclosure/BLA8).",
+    "Only entries that contain query parameters or actions that can reasonably present business logic issues are considered for findings: POST /login, GET /my-account?id=..., GET /post?postId=.... Static resource requests (resources/*, image, labheader, css, js) and root GETs with no parameters do not show evidence of business logic vulnerabilities in the captured traffic and so produce no findings.",
+    "For each finding we must produce a reproduction_guide with payload_mutation and an exact curl command using placeholders as required."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "In GET /my-account?id=wiener the application accepts an arbitrary 'id' query parameter and returns a 200 response for 'wiener'. This indicates the endpoint uses direct object references in the URL/query and may not enforce ownership/authorization checks. An attacker can modify the id parameter to access another user's account page (IDOR). Evidence: the traffic shows /my-account?id=wiener returned 200 while other my-account requests produced redirects depending on session — suggesting the id controls which account is viewed.",
+      "evidence_entry_ids": [
+        8,
+        6,
+        7
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'id' query parameter from 'wiener' to another user identifier (e.g., 'carlos' or numeric id) to view that user's account without being that user.",
+        "curl_command": "curl -i -s -k -H \"Cookie: session={{auth_token}}\" \"https://0adf005a03cb90eb82ff61a600f50040.web-security-academy.net/my-account?id={{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "GET /my-account?id=wiener apparently discloses internal user identifiers via the 'id' parameter and returns account data tied to that identifier. The presence of a predictable username/id in the query string and successful 200 response suggests internal user IDs (usernames) are accepted and returned, leaking mapping of identifiers to accounts. This can help enumerate users and internal state.",
+      "evidence_entry_ids": [
+        8
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Iteratively change 'id' from 'wiener' to other guessed usernames (e.g., 'carlos', 'admin', 'user1') to enumerate valid accounts disclosed by the endpoint.",
+        "curl_command": "curl -i -s -k -H \"Cookie: session={{auth_token}}\" \"https://0adf005a03cb90eb82ff61a600f50040.web-security-academy.net/my-account?id={{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Multiple resource paths (entries #10-16) reference /resources and nested paths (css, images, labheader, js). While most are static, the presence of /resources/labheader and /academyLabHeader (entry #2) could indicate debug or special endpoints for lab headers. Entry #2 (/academyLabHeader) returned in the log (status 0) but was queried, indicating an additional non-public endpoint used for lab header rendering — potentially a shadow or undocumented endpoint. Access to such endpoints may reveal debug or admin functionality.",
+      "evidence_entry_ids": [
+        2,
+        13,
+        15
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Attempt direct GET to suspected shadow endpoints such as '/academyLabHeader' or '/resources/labheader' to see if they return debug/header data or additional functionality.",
+        "curl_command": "curl -i -s -k -H \"Cookie: session={{auth_token}}\" \"https://0adf005a03cb90eb82ff61a600f50040.web-security-academy.net/academyLabHeader\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "GET /post?postId=4 takes a client-supplied 'postId' parameter and returns content. If the application allows editing or state changes via similar endpoints with postId, the parameter could be manipulated to affect content, but from the captured GET only read access is shown. However, accepting direct postId without proven access control can lead to manipulation of which post is acted on in subsequent flows. We flag the read endpoint for possible object state manipulation in related endpoints if combined with write actions.",
+      "evidence_entry_ids": [
+        9
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'postId' from '4' to another id (e.g., '5' or '1') to view different posts; if corresponding write endpoints exist, reuse this id to perform unauthorized edits.",
+        "curl_command": "curl -i -s -k -H \"Cookie: session={{auth_token}}\" \"https://0adf005a03cb90eb82ff61a600f50040.web-security-academy.net/post?postId={{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "GET /post?postId=4 reveals that post resources are addressed by predictable numeric ids (postId=4). This predictable identifier can be used to enumerate posts and discover internal resource mapping. The response was 200 indicating the id is valid and returned content — an internal state disclosure allowing enumeration.",
+      "evidence_entry_ids": [
+        9
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Iterate 'postId' across a range (e.g., 1..100) to identify accessible posts and infer internal post id allocation and existence.",
+        "curl_command": "curl -i -s -k -H \"Cookie: session={{auth_token}}\" \"https://0adf005a03cb90eb82ff61a600f50040.web-security-academy.net/post?postId={{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA6",
+      "description": "POST /login shows a form POST and then subsequent GET /my-account produced a 302 in one session (entry #6) and a 200 for another with id parameter (entry #8). This suggests differing flows based on login state; if the app relies solely on the id parameter to access accounts, it may allow workflow bypass (e.g., viewing account pages without proper login) by directly requesting /my-account?id=... with a session cookie that isn't tied to that user. The traffic indicates a session cookie is used but the earlier GET /my-account (entry #6) returned 302 when using a different session, while GET /my-account?id=wiener (entry #8) with session=4m0U... returned 200. This inconsistency suggests possible sequence or authentication checks can be bypassed by supplying id parameter directly after login or by manipulating session cookie.",
+      "evidence_entry_ids": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "After authenticating as your user (or using an unauthenticated session), directly GET '/my-account?id={{target_id}}' to attempt to access another user's account page, bypassing expected workflow or ownership checks.",
+        "curl_command": "curl -i -s -k -H \"Cookie: session={{auth_token}}\" -X GET \"https://0adf005a03cb90eb82ff61a600f50040.web-security-academy.net/my-account?id={{target_id}}\""
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "business_flow": "User visited site root, browsed pages (login, register, product), performed login/logout, accessed /my-account with and without id parameter, accessed admin (401). Several static resource and resource subpaths were requested. Traffic shows a GET to /my-account?id=attacker returning 200 while same endpoint without id redirected or different response based on session. No other parameterized object references in visible requests except /product?productId=20 and /product?productId=20 (duplicate).",
+  "thought_process": [
+    "I inspected each of the 22 entries and applied the five checks (IDOR/BLA9, State Manipulation/BLA3, Sequence Bypass/BLA6, Shadow Endpoints/BLA10, Internal Disclosure/BLA8) to each endpoint individually.",
+    "Only endpoints that exhibit evidence in the captured requests/responses are reported. If the traffic shows no parameters or no evidence of business-logic issues, no finding is generated per instruction.",
+    "Where an endpoint shows a parameter that could be abused (e.g., id or productId) and the captured response indicates differing behavior (200 vs 302) dependent on that parameter or session, I produced a separate finding for that endpoint with a PoC including payload mutation and a cURL using the required placeholders.",
+    "I did not invent or assume hidden API behaviors beyond what is present in the traffic.",
+    "All findings are one-per-endpoint and include the HAR entry id(s) that show the evidence."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "Insecure Direct Object Reference (IDOR) at /my-account via the 'id' query parameter. The traffic shows GET /my-account redirected (302) for one session but GET /my-account?id=attacker returned 200 for another session. This indicates the endpoint accepts an arbitrary 'id' parameter allowing a client to view other users' account pages without proper access control.",
+      "evidence_entry_ids": [
+        8,
+        10
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change the query parameter 'id' from the victim value (or omitted) to another user's identifier, e.g., change 'id' to 'attacker' or to the target user id.",
+        "curl_command": "curl -i -s -k -X GET \"https://0ae500ad0485b3ed804d3fc100ef0006.web-security-academy.net/my-account?id={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "Potential Insecure Direct Object Reference (IDOR) at /product via the 'productId' query parameter. The application accepts productId=20 and returns 200. If ownership or authorization were required for product access (e.g., seller-only product data), this parameter could allow unauthorized access to product objects. The request shows a direct object reference via productId.",
+      "evidence_entry_ids": [
+        11
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'productId' from 20 to another ID such as 21, 1, or any guessed product id to access different product records.",
+        "curl_command": "curl -i -s -k -X GET \"https://0ae500ad0485b3ed804d3fc100ef0006.web-security-academy.net/product?productId={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Shadow/undocumented endpoint access observed: /admin was directly requested and returned 401. Presence of this endpoint in production may indicate an administrative or shadow function that could be targeted or probed further for misconfigurations or access control weaknesses.",
+      "evidence_entry_ids": [
+        3
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Access the /admin endpoint directly to probe for functionality or different responses. No payload body change required; just request the endpoint and observe status codes or content differences.",
+        "curl_command": "curl -i -s -k -X GET \"https://0ae500ad0485b3ed804d3fc100ef0006.web-security-academy.net/admin\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "Internal state disclosure via query parameter in register flow: a GET request to /register includes a temp-registration-token query parameter (temp-registration-token=34skLmBGYpiK58iSgHVx74VD35gMPgSj) in Entry 14. Exposure of such tokens in URLs or in traffic indicates internal artifact (registration token) leakage which could be reused if not properly tied to a session or expired.",
+      "evidence_entry_ids": [
+        14
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Reuse the temp-registration-token value in the URL: set temp-registration-token to the observed token or to another guessed token to attempt account registration or activation.",
+        "curl_command": "curl -i -s -k -X GET \"https://0ae500ad0485b3ed804d3fc100ef0006.web-security-academy.net/register?temp-registration-token={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    }
+  ]
+}

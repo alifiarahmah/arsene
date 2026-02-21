@@ -1,182 +1,172 @@
-# OWASP Top 10 Business Logic Abuse
+OWASP Top 10 Business Logic Abuse
 
 Business Logic Abuse refers to vulnerabilities arising from flaws in the design and implementation of an application's business processes. Unlike traditional security bugs, these abuses exploit the intended functionality in unintended ways, often bypassing security controls by manipulating the application's logic.
 
-Source: [OWASP Top 10 for Business Logic Abuse](https://owasp.org/www-project-top-10-for-business-logic-abuse/#)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/#
 
 ---
 
-## 1. Action Limit Overrun
+1. Action Limit Overrun
 
-**Overview:**
 Attackers perform actions beyond the allowed limits, such as exceeding transaction counts, request rates, or usage quotas.
 
-**Root Causes:**
+Root Causes:
 - Lack of enforcement or improper enforcement of action limits.
 - Missing or weak rate limiting and throttling mechanisms.
 
-**Examples:**
+Examples:
 - Submitting more transactions than allowed in a billing cycle.
 - Excessive API calls bypassing rate limits.
 
-Source: [Action Limit Overrun](https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/action-limit-overrun.html)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/action-limit-overrun.html
 
 ---
 
-## 2. Workflow Order Bypass
+2. Workflow Order Bypass
 
-**Overview:**
 Attackers bypass or alter the intended sequence of steps in a business process.
 
-**Root Causes:**
+Root Causes:
 - Missing validation of workflow state transitions.
 - Trusting client-side controls for workflow enforcement.
 
-**Examples:**
+Examples:
 - Skipping payment step but still receiving goods.
 - Bypassing approval steps in a multi-step process.
 
-Source: [Workflow Order Bypass](https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/workflow-order-bypass.html)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/workflow-order-bypass.html
 
 ---
 
-## 3. Object State Manipulations
+3. Object State Manipulations
 
-**Overview:**
 Attackers manipulate the state of objects to cause unintended behavior.
 
-**Root Causes:**
+Root Causes:
 - Inadequate validation of object states.
 - Failure to enforce state transitions securely.
 
-**Examples:**
+Examples:
 - Changing order status from "pending" to "shipped" without authorization.
 - Modifying session or transaction states to escalate privileges.
 
-Source: [Object State Manipulations](https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/object-state-manipulations.html)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/object-state-manipulations.html
 
 ---
 
-## 4. Malicious Logic Loop
+4. Malicious Logic Loop
 
-**Overview:**
 Attackers exploit loops or repeated logic to cause denial of service or resource exhaustion.
 
-**Root Causes:**
+Root Causes:
 - Lack of checks on loop iterations or recursion depth.
 - Missing limits on repeated actions.
 
-**Examples:**
+Examples:
 - Triggering infinite loops in business logic causing system hang.
 - Repeatedly submitting requests to exhaust resources.
 
-Source: [Malicious Logic Loop](https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/malicious-logic-loop.html)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/malicious-logic-loop.html
 
 ---
 
-## 5. Artifact Lifetime Exploitation
+5. Artifact Lifetime Exploitation
 
-**Overview:**
 Attackers exploit artifacts (e.g., tokens, sessions) beyond their intended lifetime.
 
-**Root Causes:**
+Root Causes:
 - Failure to expire or revoke artifacts properly.
 - Reuse of stale or invalid artifacts.
 
-**Examples:**
+Examples:
 - Using expired session tokens to access resources.
 - Replaying old transaction tokens.
 
-Source: [Artifact Lifetime Exploitation](https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/artifact-lifetime-exploitation.html)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/artifact-lifetime-exploitation.html
 
 ---
 
-## 6. Missing Transition Validation
+6. Missing Transition Validation
 
-**Overview:**
 Attackers exploit missing validation on state or workflow transitions.
 
-**Root Causes:**
+Root Causes:
 - Lack of server-side validation for allowed transitions.
 - Trusting client-side state management.
 
-**Examples:**
+Examples:
 - Moving an order directly from "new" to "completed" without processing.
 - Skipping required intermediate states.
 
-Source: [Missing Transition Validation](https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/missing-transition-validation.html)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/missing-transition-validation.html
 
 ---
 
-## 7. Resource Quota Violation
+7. Resource Quota Violation
 
-**Overview:**
 Attackers exceed resource quotas allocated to users or processes.
 
-**Root Causes:**
+Root Causes:
 - Missing or ineffective quota enforcement.
 - Lack of monitoring and alerting on quota usage.
 
-**Examples:**
+Examples:
 - Consuming more storage or bandwidth than allowed.
 - Exceeding API call quotas.
 
-Source: [Resource Quota Violation](https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/resource-quota-violation.html)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/resource-quota-violation.html
 
 ---
 
-## 8. Internal State Disclosure
+8. Internal State Disclosure
 
-**Overview:**
 Attackers gain access to internal application state information that should be hidden.
 
-**Root Causes:**
+Root Causes:
 - Insufficient access controls on internal data.
 - Leakage through error messages or debug information.
 
-**Examples:**
+Examples:
 - Viewing internal workflow states or flags.
 - Accessing sensitive configuration or debug data.
 
-Source: [Internal State Disclosure](https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/internal-state-disclosure.html)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/internal-state-disclosure.html
 
 ---
 
-## 9. Broken Access Control
+9. Broken Access Control
 
-**Overview:**
 Attackers bypass access control mechanisms to perform unauthorized actions.
 
-**Root Causes:**
+Root Causes:
 - Improper or missing authorization checks.
 - Flaws in role or permission management.
 
-**Examples:**
+Examples:
 - Accessing admin functions as a regular user.
 - Modifying data without proper permissions.
 
-Source: [Broken Access Control](https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/broken-access-control.html)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/broken-access-control.html
 
 ---
 
-## 10. Shadow Function Abuse
+10. Shadow Function Abuse
 
-**Overview:**
 Attackers exploit hidden or undocumented functions in the application.
 
-**Root Causes:**
+Root Causes:
 - Presence of backdoor or debug functions left in production.
 - Lack of proper access restrictions on hidden features.
 
-**Examples:**
+Examples:
 - Using undocumented API endpoints to bypass security.
 - Exploiting debug commands to manipulate business logic.
 
-Source: [Shadow Function Abuse](https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/shadow-function-abuse.html)
+Source: https://owasp.org/www-project-top-10-for-business-logic-abuse/docs/the-top-10/shadow-function-abuse.html
 
 ---
 
-# References
+References
 
-- [OWASP Top 10 for Business Logic Abuse](https://owasp.org/www-project-top-10-for-business-logic-abuse/#)
+- OWASP Top 10 for Business Logic Abuse: https://owasp.org/www-project-top-10-for-business-logic-abuse/#
 - Individual category pages linked above.

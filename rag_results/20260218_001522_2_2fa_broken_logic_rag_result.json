@@ -1,0 +1,27 @@
+{
+  "business_flow": "A user browses the web app, views login pages, posts credentials to /login and /login2, visits /my-account with an id parameter, and requests various static resource endpoints. Several endpoints accept query parameters (notably /my-account?id=) and set cookies including a 'verify' cookie. Most other entries are GET requests for static resources or login pages.",
+  "thought_process": [
+    "Followed the mandated analysis framework for each of the 18 HAR entries.",
+    "Checked for IDOR (BLA9) where direct object references or identifiers are present (notably query parameters).",
+    "Checked for State Manipulation (BLA3) for endpoints accepting POST requests or client-modifiable fields.",
+    "Checked for Sequence Bypass (BLA6) to see if critical multi-step flows could be skipped in the observed requests.",
+    "Checked for Shadow Endpoints (BLA10) for access to undocumented or debug endpoints such as resources paths or unusual paths.",
+    "Checked for Internal Disclosure (BLA8) to spot internal IDs or system state leaked in responses (based on available request/response metadata).",
+    "Only produced findings where the observed request demonstrates a potential business logic vulnerability per the framework and traffic.",
+    "Generated a separate finding and PoC for each endpoint where a vulnerability was observed. No grouping of endpoints."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "GET /my-account?id= uses a client-supplied 'id' query parameter that appears to identify an account (e.g., id=wiener). This is a direct object reference via query parameter. There is no evidence in the captured traffic that ownership/authorization checks are enforced server-side. An attacker can change the id value to view other users' account pages (IDOR).",
+      "evidence_entry_ids": [
+        10
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change the 'id' query parameter from the legitimate value (e.g., 'wiener') to another target account identifier (e.g., 'carlos' or another username).",
+        "curl_command": "curl -i -s -k -X GET \"https://{{target_id}}.web-security-academy.net/my-account?id={{target_user}}\" -H \"Cookie: session={{auth_token}}; verify=wiener\""
+      }
+    }
+  ]
+}

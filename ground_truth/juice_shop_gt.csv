@@ -1,5 +1,5 @@
 No,Challenge,BLA_ID,Deskripsi_Sanitasi,Endpoint,URL
-1,Admin Section,BLA9: BAC,Mengakses fungsi administratif melalui tebakan URL tanpa otorisasi yang tepat.,/admin,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
+1,Admin Section,BLA9: BAC,Mengakses fungsi administratif melalui tebakan URL tanpa otorisasi yang tepat.,/administration,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
 2,View Basket,BLA9: BAC,Mengakses keranjang belanja milik pengguna lain (Horizontal Privilege Escalation).,/rest/basket/{id},https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
 3,Manipulate Basket,BLA9: BAC,Menambahkan produk ke dalam keranjang belanja pengguna lain secara ilegal.,/api/BasketItems,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html
 4,Forged Feedback,BLA9: BAC,Mengirimkan feedback menggunakan identitas (User ID) orang lain.,/api/Feedbacks,https://pwning.owasp-juice.shop/companion-guide/latest/part2/broken-access-control.html

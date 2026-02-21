@@ -1,0 +1,1285 @@
+[
+  {
+    "startedDateTime": "1970-01-01T00:00:00Z",
+    "time": 0,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        }
+      ],
+      "queryString": [],
+      "cookies": [],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "",
+      "httpVersion": "HTTP/1.0",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 0,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "2026-02-17T08:28:46.637Z",
+    "time": 1002,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/cart"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "name": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ],
+      "cookies": [],
+      "content": {
+        "size": 11067,
+        "mimeType": "text/html; charset=utf-8",
+        "text": "<a href='https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-high-level'>\n<a href=/>\n<a href=\"/my-account?id=wiener\">\n<a href=/cart>\n<a class=\"button\" href=\"/product?productId=1\">\n<a class=\"button\" href=\"/product?productId=2\">\n<a class=\"button\" href=\"/product?productId=3\">\n<a class=\"button\" href=\"/product?productId=4\">\n<a class=\"button\" href=\"/product?productId=5\">\n<a class=\"button\" href=\"/product?productId=6\">\n<a class=\"button\" href=\"/product?productId=7\">\n<a class=\"button\" href=\"/product?productId=8\">\n<a class=\"button\" href=\"/product?productId=9\">\n<a class=\"button\" href=\"/product?productId=10\">\n<a class=\"button\" href=\"/product?productId=11\">\n<a class=\"button\" href=\"/product?productId=12\">\n<a class=\"button\" href=\"/product?productId=13\">\n<a class=\"button\" href=\"/product?productId=14\">\n<a class=\"button\" href=\"/product?productId=15\">\n<a class=\"button\" href=\"/product?productId=16\">\n<a class=\"button\" href=\"/product?productId=17\">\n<a class=\"button\" href=\"/product?productId=18\">\n<a class=\"button\" href=\"/product?productId=19\">\n<a class=\"button\" href=\"/product?productId=20\">",
+        "_truncated": true,
+        "_originalSize": 11067
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 1002,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "2026-02-17T08:29:01.943Z",
+    "time": 1570,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/academyLabHeader",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "*/*"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Origin",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "Switching Protocol",
+      "httpVersion": "HTTP/1.1",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 1570,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "2026-02-17T08:28:57.603Z",
+    "time": 1094,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/cart",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/cart"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "name": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ],
+      "cookies": [],
+      "content": {
+        "size": 8418,
+        "mimeType": "text/html; charset=utf-8",
+        "text": "<form action=/cart method=POST style='display: inline'>\n<form action=/cart method=POST style='display: inline'>\n<form action=/cart method=POST style='display: inline'>\n<form action=/cart method=POST style='display: inline'>\n<form action=/cart method=POST style='display: inline'>\n<form action=/cart method=POST style='display: inline'>\n<form class=login-form id=coupon-form action=/cart/coupon method=POST >\n<form class=login-form action=/cart/checkout method=POST>\n<input required type=hidden name=productId value=17>\n<input required type=hidden name=quantity value=-1>\n<input required type=hidden name=redir value=CART>\n<input required type=hidden name=productId value=17>\n<input required type=hidden name=quantity value=1>\n<input required type=hidden name=redir value=CART>\n<input required type=hidden name=productId value=17>\n<input required type=hidden name=quantity value=-1>\n<input required type=hidden name=redir value=CART>\n<input required type=hidden name=productId value=8>\n<input required type=hidden name=quantity value=-1>\n<input required type=hidden name=redir value=CART>\n<input required type=hidden name=productId value=8>\n<input required type=hidden name=quantity value=1>\n<input required type=hidden name=redir value=CART>\n<input required type=hidden name=productId value=8>\n<input required type=hidden name=quantity value=-2>\n<input required type=hidden name=redir value=CART>\n<input required type=\"hidden\" name=\"csrf\" value=\"njLMLYBJnQLziW6BR03u9WEH3ZAEnTPO\">\n<input required placeholder=\"Add coupon\" type=text name=coupon>\n<input required type=\"hidden\" name=\"csrf\" value=\"njLMLYBJnQLziW6BR03u9WEH3ZAEnTPO\">\n<a href='https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-high-level'>\n<a href=/>\n<a href=\"/my-account?id=wiener\">\n<a href=/cart>\n<a href=/product?productId=17>\n<a href=/product?productId=8>\n<button type=submit class=button style='min-width: auto'>\n<button type=submit class=button style='min-width: auto'>\n<button type=submit class=button style='min-width: auto'>\n<button type=submit class=button style='min-width: auto'>\n<button type=submit class=button style='min-width: auto'>\n<button type=submit class=button style='min-width: auto'>\n<button class=button type=submit>\n<button class=button type=submit>",
+        "_truncated": true,
+        "_originalSize": 8418
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 1094,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "1970-01-01T00:00:00Z",
+    "time": 0,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/cart",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Origin",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/cart"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "",
+      "httpVersion": "HTTP/1.0",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 0,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "2026-02-17T08:28:56.637Z",
+    "time": 941,
+    "request": {
+      "method": "POST",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/cart",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "name": "Origin",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/cart"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "postData": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "params": [
+          {
+            "name": "productId",
+            "value": "8"
+          },
+          {
+            "name": "quantity",
+            "value": "1"
+          },
+          {
+            "name": "redir",
+            "value": "CART"
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 302,
+      "statusText": "Found",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Location",
+          "value": "/cart"
+        },
+        {
+          "name": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": "/cart"
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 941,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "1970-01-01T00:00:00Z",
+    "time": 0,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/image",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "",
+      "httpVersion": "HTTP/1.0",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 0,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "2026-02-17T08:27:21.949Z",
+    "time": 899,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/login",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "name": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ],
+      "cookies": [],
+      "content": {
+        "size": 3458,
+        "mimeType": "text/html; charset=utf-8",
+        "text": "<form action=\"/login\">\n<input required type=\"hidden\" name=\"csrf\" value=\"W1Mn79UstwMR1D6hfEbtm5Y91wqA6SwC\">\n<input required type=username name=\"username\" autofocus>\n<input required type=password name=\"password\">\n<a href='https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-high-level'>\n<a href=/>\n<a href=\"/my-account\">\n<a href=/cart>\n<button class=button type=submit>",
+        "_truncated": true,
+        "_originalSize": 3458
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 899,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "2026-02-17T08:27:32.254Z",
+    "time": 1141,
+    "request": {
+      "method": "POST",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/login",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/x-www-form-urlencoded"
+        },
+        {
+          "name": "Origin",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/login"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "params": [
+          {
+            "name": "csrf",
+            "value": "W1Mn79UstwMR1D6hfEbtm5Y91wqA6SwC"
+          },
+          {
+            "name": "password",
+            "value": "peter"
+          },
+          {
+            "name": "username",
+            "value": "wiener"
+          }
+        ]
+      }
+    },
+    "response": {
+      "status": 302,
+      "statusText": "Found",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Location",
+          "value": "/my-account?id=wiener"
+        },
+        {
+          "name": "Set-Cookie",
+          "value": "session=LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic; Secure; HttpOnly; SameSite=None"
+        },
+        {
+          "name": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic",
+          "domain": "0a39009c04666d5781cfb6330004002a.web-security-academy.net",
+          "expires": "2026-02-17T08:29:21.157Z",
+          "httpOnly": true,
+          "secure": true
+        }
+      ],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": "/my-account?id=wiener"
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 1141,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "2026-02-17T08:27:20.717Z",
+    "time": 1201,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/my-account",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 302,
+      "statusText": "Found",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Location",
+          "value": "/login"
+        },
+        {
+          "name": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": "/login"
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 1201,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "2026-02-17T08:27:33.419Z",
+    "time": 1114,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/my-account?id=wiener",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/login"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "queryString": [
+        {
+          "name": "id",
+          "value": "wiener"
+        }
+      ],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "name": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ],
+      "cookies": [],
+      "content": {
+        "size": 3598,
+        "mimeType": "text/html; charset=utf-8",
+        "text": "<form class=\"login-form\" name=\"change-email-form\" action=\"/my-account/change-email\" method=\"POST\">\n<input required type=\"email\" name=\"email\" value=\"\">\n<input required type=\"hidden\" name=\"csrf\" value=\"njLMLYBJnQLziW6BR03u9WEH3ZAEnTPO\">\n<a href='https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-high-level'>\n<a href=/>\n<a href=\"/my-account?id=wiener\">\n<a href=/cart>\n<a href=\"/logout\">\n<button class='button' type='submit'>",
+        "_truncated": true,
+        "_originalSize": 3598
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 1114,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "2026-02-17T08:28:52.581Z",
+    "time": 1152,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/product?productId=8",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/product?productId=8"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "queryString": [
+        {
+          "name": "productId",
+          "value": "8"
+        }
+      ],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "LbRkrT9TcmGKOGCb7ys6orptu5qZT7Ic"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "name": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ],
+      "cookies": [],
+      "content": {
+        "size": 4986,
+        "mimeType": "text/html; charset=utf-8",
+        "text": "<form id=addToCartForm action=/cart method=POST>\n<input required type=hidden name=productId value=8>\n<input required type=hidden name=redir value=PRODUCT>\n<input required type=number min=0 name=quantity value=1>\n<a href='https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-high-level'>\n<a href=/>\n<a href=\"/my-account?id=wiener\">\n<a href=/cart>\n<a href=\"/\">\n<button type=submit class=button>",
+        "_truncated": true,
+        "_originalSize": 4986
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 1152,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "1970-01-01T00:00:00Z",
+    "time": 0,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/resources",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/css,*/*;q=0.1"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "",
+      "httpVersion": "HTTP/1.0",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 0,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "1970-01-01T00:00:00Z",
+    "time": 0,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/resources/css",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/css,*/*;q=0.1"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "",
+      "httpVersion": "HTTP/1.0",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 0,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "1970-01-01T00:00:00Z",
+    "time": 0,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/resources/images",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "",
+      "httpVersion": "HTTP/1.0",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 0,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "1970-01-01T00:00:00Z",
+    "time": 0,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/resources/labheader",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/css,*/*;q=0.1"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "",
+      "httpVersion": "HTTP/1.0",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 0,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "1970-01-01T00:00:00Z",
+    "time": 0,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/resources/labheader/css",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "text/css,*/*;q=0.1"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "",
+      "httpVersion": "HTTP/1.0",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 0,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "1970-01-01T00:00:00Z",
+    "time": 0,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/resources/labheader/images",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/resources/labheader/css/academyLabHeader.css"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "",
+      "httpVersion": "HTTP/1.0",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 0,
+      "ssl": -1
+    }
+  },
+  {
+    "startedDateTime": "1970-01-01T00:00:00Z",
+    "time": 0,
+    "request": {
+      "method": "GET",
+      "url": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/resources/labheader/js",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "*/*"
+        },
+        {
+          "name": "Accept-Language",
+          "value": "en-US,en;q=0.9"
+        },
+        {
+          "name": "Referer",
+          "value": "https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/"
+        },
+        {
+          "name": "Cookie",
+          "value": "session=C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "queryString": [],
+      "cookies": [
+        {
+          "name": "session",
+          "value": "C6fnbijxLMZbYtWu63NEuqafjNl1DWLC"
+        }
+      ],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 0,
+      "statusText": "",
+      "httpVersion": "HTTP/1.0",
+      "headers": [],
+      "cookies": [],
+      "content": {
+        "size": 0,
+        "mimeType": ""
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": -1,
+      "dns": -1,
+      "connect": -1,
+      "send": 0,
+      "wait": 0,
+      "receive": 0,
+      "ssl": -1
+    }
+  }
+]

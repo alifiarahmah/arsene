@@ -1,0 +1,82 @@
+{
+  "business_flow": "User browses the web app: visits root, signup/login pages, product and cart endpoints. Sessions differ between requests (two session cookies observed). Cart and product endpoints used. Some requests include query params: my-account?id=wiener and product?productId=6. A POST to /cart occurs (form).",
+  "thought_process": [
+    "I will examine each of the 15 entries and apply the five checks (IDOR/BLA9, State Manipulation/BLA3, Sequence Bypass/BLA6, Shadow Endpoints/BLA10, Internal Disclosure/BLA8).",
+    "Only create findings when evidence in the traffic indicates a potential business logic vulnerability at that endpoint (based on URL patterns, parameters, request methods, and responses present).",
+    "Each finding must correspond to a single endpoint and include a reproduction_guide with exact payload_mutation and a curl_command using placeholders."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "GET /my-account?id=wiener includes a user identifier as a query parameter. The presence of a directly controllable 'id' parameter in the my-account endpoint indicates a likely Insecure Direct Object Reference (IDOR) if the server returns account pages for arbitrary ids without verifying that the requester owns the account. The traffic shows GET /my-account?id=wiener returned 200 — suggesting the parameter is accepted and content served. No evidence of ownership validation present in the captured traffic.",
+      "evidence_entry_ids": [
+        11
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change the 'id' query parameter from your username to another user's username (e.g., change 'id=wiener' to 'id=administrator' or 'id={{target_id}}').",
+        "curl_command": "curl -s -D - -o /dev/null -b \"session={{auth_token}}\" \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/my-account?id={{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "GET /product?productId=6 uses a direct object reference 'productId' in the query string. If product resources are expected to be access-controlled (e.g., admin-only or unpublished products), using a numeric productId without further checks can lead to IDOR-like access to unintended product data. The request returned 200 indicating the parameter is accepted.",
+      "evidence_entry_ids": [
+        12
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Change the 'productId' parameter to another numeric id (e.g., from 6 to {{target_id}}) to attempt accessing other product entries.",
+        "curl_command": "curl -s -D - -o /dev/null -b \"session={{auth_token}}\" \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/product?productId={{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "POST /cart (Content-Type: application/x-www-form-urlencoded) indicates client-supplied form data is used to add/update cart. Without seeing the exact POST body, such endpoints commonly accept modifiable fields like price, quantity, or productId. The response was a 302 (redirect), consistent with cart modification. If the server trusts client-provided price or quantity, an attacker could manipulate pricing or quantities in the request to alter order totals.",
+      "evidence_entry_ids": [
+        6
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Modify cart POST form fields — change 'productId' or 'quantity' (e.g., change 'quantity=1' to 'quantity=999' or change 'price' if present to '0'). Example: change 'productId' to {{target_id}} and 'quantity' to 999.",
+        "curl_command": "curl -s -D - -o /dev/null -X POST -b \"session={{auth_token}}\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"productId={{target_id}}&quantity=999\" \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/cart\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "GET /academyLabHeader appears to be a non-standard or debug/resource header endpoint. The request shows a Response Status: 0 in the capture, indicating it exists in traffic as a special resource likely used for lab UI or debug. Presence of such an endpoint suggests a shadow endpoint which could expose hidden functionality or internal info if accessible.",
+      "evidence_entry_ids": [
+        3
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Request the undocumented endpoint as-is; if additional query parameters are accepted, attempt accessing with different session tokens or parameters. Change no fields — simply access endpoint /academyLabHeader (or try /academyLabHeader?debug=1).",
+        "curl_command": "curl -s -D - -o /dev/null -b \"session={{auth_token}}\" \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/academyLabHeader\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "Multiple responses include session cookies and the my-account?id=... response indicates user identifiers are passed in URLs. The presence of usernames (e.g., 'wiener') in query parameters or other requests may leak internal identifiers. The traffic shows the 'id' parameter used explicitly; that is internal state information exposure enabling user enumeration or internal mapping.",
+      "evidence_entry_ids": [
+        11
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Request /my-account?id={{target_id}} and observe returned content for internal identifiers or state. Change 'id' to candidate usernames to enumerate accounts.",
+        "curl_command": "curl -s -D - -o /dev/null -b \"session={{auth_token}}\" \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/my-account?id={{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "GET /image appears in the traffic with Response Status: 0 and is referenced separately — often /image endpoints may serve arbitrary images or accept parameters to retrieve images by id. Such endpoints can be shadow/debug resources and could be used to access unintended files or internal images if not access-controlled.",
+      "evidence_entry_ids": [
+        7
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Access /image with different parameters or session tokens (e.g., try query or path parameter changes such as /image?img={{target_id}}).",
+        "curl_command": "curl -s -D - -o /dev/null -b \"session={{auth_token}}\" \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/image\""
+      }
+    }
+  ]
+}

@@ -425,8 +425,11 @@ Examples:
   # Run with limited knowledge base chunks (for smaller context window)
   python without_rag.py juice_shop --max-kb-chunks 10
 
-  # Run with knowledge base (default is without)
+  # Run with knowledge base (outputs to without_rag_with_kb_results/)
   python without_rag.py juice_shop --with-kb
+
+  # Run without knowledge base (outputs to without_rag_results/)
+  python without_rag.py juice_shop --no-kb
         """
     )
     parser.add_argument(
@@ -453,7 +456,12 @@ Examples:
     parser.add_argument(
         "--with-kb",
         action="store_true",
-        help="Include knowledge base context in analysis (default: disabled)"
+        help="Include knowledge base context in analysis"
+    )
+    parser.add_argument(
+        "--no-kb",
+        action="store_true",
+        help="Exclude knowledge base context from analysis"
     )
 
     args = parser.parse_args()
@@ -490,12 +498,15 @@ Examples:
     print("Non-RAG Demo: Direct LLM Business Logic Vulnerability Analysis")
     print("=" * 70)
 
+    # Determine if knowledge base should be used
+    use_kb = args.with_kb and not args.no_kb
+
     # Prepare knowledge base context
     kb_context = None
-    if args.with_kb:
+    if use_kb:
         print(f"\nUsing knowledge base with max {args.max_kb_chunks} chunks...")
     else:
-        print("\nRunning without knowledge base context (--with-kb not set)...")
+        print("\nRunning without knowledge base context (--no-kb flag set)...")
         kb_context = "No knowledge base provided - analyzing based solely on HTTP traffic patterns."
 
     # Run analysis
@@ -534,7 +545,7 @@ Examples:
             safe_print(f"      cURL PoC: {poc.curl_command}")
 
     # Save results - different folder based on whether KB was used
-    if args.with_kb:
+    if use_kb:
         output_dir = Path("without_rag_with_kb_results")
     else:
         output_dir = Path("without_rag_results")

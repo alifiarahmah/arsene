@@ -1,0 +1,93 @@
+{
+  "business_flow": "The traffic is a sequence of mostly GET requests to the root, login pages, resources, and a /my-account endpoint. Some requests include query parameters (my-account?id=wiener) and cookies (session, verify). No API style endpoints with object IDs or state-changing POST bodies are present except login POSTs. Many resource requests appear to be static assets. Analysis inspects each entry for the five checks (IDOR, state manipulation, sequence bypass, shadow endpoints, internal disclosure). Findings are only reported where evidence in the request/response indicates a likely business-logic weakness per the provided framework.",
+  "thought_process": [
+    "I will evaluate each of the 18 HAR entries against the five checks.",
+    "Only endpoints which show indications (query/object ids, modifiable fields, debug endpoints, or internal data in responses) will be reported.",
+    "For each finding I must produce a reproduction_guide with payload_mutation and curl_command using provided placeholders.",
+    "If no evidence of a BLV is present for an entry, it will be skipped per instructions."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA10",
+      "description": "Access to an undocumented or informational endpoint (/academyLabHeader) is observed. The GET to /academyLabHeader returned a response (status noted as 0 in the HAR but the request exists and includes session cookie). This looks like a lab/debug/header endpoint that may expose internal UI/header logic or provide additional functionality. Shadow endpoints can be abused if left accessible. Because the endpoint name suggests a non-public debugging/header interface, it qualifies as a shadow function exposure.",
+      "evidence_entry_ids": [
+        2
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Access the shadow endpoint /academyLabHeader with an authenticated session cookie (no parameter mutation required).",
+        "curl_command": "curl -i -s -k \"https://0a9300be03da5d2d82c560a0000900f8.web-security-academy.net/academyLabHeader\" -H \"Cookie: session={{auth_token}}; verify=wiener\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Multiple resource-like endpoints under /resources and its subpaths (e.g., /resources, /resources/css, /resources/images, /resources/labheader, /resources/labheader/css, /resources/labheader/images, /resources/labheader/js) are being requested. The presence of /resources/labheader and similar subpaths suggests shadow or debug assets that might leak internal headers or debug UI components. These are potential shadow functions or exposures if they reveal configuration or internal UI logic.",
+      "evidence_entry_ids": [
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Request the resource endpoints directly using an authenticated session cookie to enumerate potential hidden assets (no body mutation required).",
+        "curl_command": "curl -i -s -k \"https://0a9300be03da5d2d82c560a0000900f8.web-security-academy.net/resources/labheader\" -H \"Cookie: session={{auth_token}}; verify=wiener\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "The /my-account endpoint is accessed both without and with an 'id' query parameter. The request GET /my-account?id=wiener returned 200 and used a session cookie. Use of an explicit id parameter that contains a username (wiener) indicates the application may disclose or accept internal identifiers via query parameters. This may cause internal state disclosure or serve as a vector for IDOR if the parameter is used to fetch other users' accounts without proper authorization checks.",
+      "evidence_entry_ids": [
+        10,
+        9
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Change the 'id' parameter from 'wiener' to another user's identifier (e.g., 'carlos' or other guessed username) to attempt to view another user's account details. Example change: id=wiener -> id={{target_id}}",
+        "curl_command": "curl -i -s -k \"https://0a9300be03da5d2d82c560a0000900f8.web-security-academy.net/my-account?id={{target_id}}\" -H \"Cookie: session={{auth_token}}; verify=wiener\""
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "GET /my-account?id=wiener indicates an object (account) is referenced by a query parameter. If the application does not enforce ownership/authorization server-side, this is a direct object reference leading to IDOR: an attacker can change the 'id' query parameter to access other users' accounts.",
+      "evidence_entry_ids": [
+        10
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change the 'id' query parameter from 'wiener' to an arbitrary target identifier (e.g., 'carlos' or another guessed username) to attempt unauthorized access.",
+        "curl_command": "curl -i -s -k \"https://0a9300be03da5d2d82c560a0000900f8.web-security-academy.net/my-account?id={{target_id}}\" -H \"Cookie: session={{auth_token}}; verify=wiener\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "An endpoint named /image was requested (Entry 3) with session cookie but response status 0. The presence of a standalone /image endpoint (instead of static path) can indicate a dynamic image serving endpoint which may accept parameters or be used for debugging. Such endpoints are often shadow functions if not documented and could be abused to retrieve unexpected data.",
+      "evidence_entry_ids": [
+        3
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Request /image with a valid session cookie and experiment with query parameters or path variants to discover hidden functionality (no exact mutation available from HAR).",
+        "curl_command": "curl -i -s -k \"https://0a9300be03da5d2d82c560a0000900f8.web-security-academy.net/image\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Requests to /login and /login2 include POST actions (Entries 5 and 7) and GETs to /login2 (Entry 6). The existence of both /login and /login2 suggests alternative or legacy authentication endpoints; /login2 may be a debug or secondary auth flow (shadow function). Multiple auth endpoints increase attack surface and may have inconsistent validation.",
+      "evidence_entry_ids": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Submit credentials to /login2 (or /login) to compare behavior. Example: change POST target from /login to /login2 and observe differences. No body mutation specified in HAR; provide credentials in form data.",
+        "curl_command": "curl -i -s -k -X POST \"https://0a9300be03da5d2d82c560a0000900f8.web-security-academy.net/login2\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"username={{auth_token}}&password=unused\" -H \"Cookie: session={{auth_token}}; verify=wiener\""
+      }
+    }
+  ]
+}

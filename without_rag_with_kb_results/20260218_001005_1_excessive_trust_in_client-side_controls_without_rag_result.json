@@ -1,0 +1,67 @@
+{
+  "business_flow": "User browses the web app, views products, uses cart and login. Multiple GET/POST requests to endpoints: /, /cart (GET/POST), /product?productId=1, /my-account (with and without id param), /login (GET/POST), /image and /resources static endpoints. Sessions indicate two different session cookies observed.",
+  "thought_process": [
+    "Review each HAR entry and apply the 5 checks: IDOR (BLA9), State Manipulation (BLA3), Sequence Bypass (BLA6), Shadow Endpoints (BLA10), Internal Disclosure (BLA8).",
+    "Only create findings when the request/response in the traffic shows an indication of a vulnerability (e.g., direct object references, client-controllable critical fields, debug endpoints, leaked internal IDs).",
+    "Each finding must be per-endpoint and include a reproduction_guide with payload_mutation and curl_command placeholders as required."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "GET /my-account?id=wiener uses a client-supplied 'id' parameter to view an account without evidence of server-side authorization checks. The traffic shows /my-account accessed with an id parameter (entry #12) while sessions differ (two session cookies observed), indicating a possible IDOR allowing viewing other users' accounts by changing the 'id' parameter.",
+      "evidence_entry_ids": [
+        12,
+        1
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'id' query parameter from your username (e.g., 'wiener') to another target username (e.g., 'carlos').",
+        "curl_command": "curl -s -i -H \"Cookie: session={{auth_token}}\" \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/my-account?id={{target_id}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "POST /cart appears in the traffic (entries #5 and #6). Cart POST requests typically allow client to specify product and quantity. The application returned an INSUFFICIENT_FUNDS error (entry #7) indicating client-supplied cart/payment values affect processing. This suggests client-controlled fields (e.g., price/quantity) may be accepted, enabling state manipulation if price/quantity can be altered on the client request.",
+      "evidence_entry_ids": [
+        5,
+        6,
+        7
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Modify the cart POST body to change quantity or price fields (for example change 'quantity' from 1 to 1000 or tamper an included 'price' field if present).",
+        "curl_command": "curl -s -i -X POST -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" -d \"productId={{target_id}}&quantity=1000\" \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Multiple /resources/* and /resources/labheader/* endpoints are requested (entries #14-#20). The presence of 'labheader' and 'resources' paths suggests server exposes additional resource endpoints. These could be shadow/debug endpoints if they return unexpected data; traffic shows access to resources/labheader and subpaths indicating potential undocumented resources accessible without restriction.",
+      "evidence_entry_ids": [
+        14,
+        17,
+        18,
+        19,
+        20
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Browse additional resource paths under /resources and /resources/labheader, e.g., request /resources/labheader/debug or /resources/labheader/config to look for hidden endpoints.",
+        "curl_command": "curl -s -i -H \"Cookie: session={{auth_token}}\" \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/resources/labheader/debug\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "Responses and requests across the session show session cookie values and different session identifiers in traffic (e.g., session=OBShdYNW... and session=oB1YmHDU...). The presence of these session identifiers in request/response listing indicates internal session identifiers are present and could be disclosed. Additionally, the /cart?err=INSUFFICIENT_FUNDS response (entry #7) reveals an internal error code in query parameter indicating leakage of internal state/error conditions.",
+      "evidence_entry_ids": [
+        1,
+        7,
+        11
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Observe or capture session cookie values and trigger cart error flows to see internal error codes. For example, perform cart actions that result in errors to obtain error query strings containing internal state.",
+        "curl_command": "curl -s -i -H \"Cookie: session={{auth_token}}\" \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart?err=INSUFFICIENT_FUNDS\""
+      }
+    }
+  ]
+}

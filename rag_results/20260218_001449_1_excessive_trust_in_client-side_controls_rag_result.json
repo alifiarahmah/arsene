@@ -1,0 +1,79 @@
+{
+  "business_flow": "User browses the web application, views product and cart pages, attempts to add to cart which returns insufficient funds, then logs in and views account, product, and resource endpoints. Traffic contains mostly GET requests for static resources and a couple of POSTs to /cart and /login. No detailed API bodies or parameter values are present except query params: product?productId=1 and my-account?id=wiener and cart?err=INSUFFICIENT_FUNDS. Session cookies vary between requests.",
+  "thought_process": [
+    "I inspected every entry. For each endpoint I applied the five checks: IDOR (BLA9), State Manipulation (BLA3), Sequence Bypass (BLA6), Shadow Endpoints (BLA10), Internal Disclosure (BLA8).",
+    "Only endpoints with evidence of modifiable identifiers or parameters or shadow/debug nature or internal leaks are reported. If an entry lacks request/response bodies or parameters that suggest a business logic issue, it is skipped per instructions.",
+    "Entries that are identical endpoints but different requests (e.g., multiple /cart GETs or POSTs) are considered per entry; however, findings must be one per endpoint type when a vulnerability is demonstrable from observed parameters.",
+    "Where a vulnerable parameter was observed (productId, id, cart error param), I produced a reproduction_guide with payload_mutation and a curl command using placeholders as required."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "IDOR: /my-account endpoint accepts an 'id' query parameter (my-account?id=wiener) which indicates the application may fetch account details based on a client-supplied identifier. If there is no server-side ownership check, an attacker could supply other usernames/IDs to view other users' account pages.",
+      "evidence_entry_ids": [
+        12
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'id' query parameter from 'wiener' to another username or user id, e.g., 'administrator' or 'victim'.",
+        "curl_command": "curl -s -i -k \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/my-account?id={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "State Manipulation: /product endpoint uses a 'productId' query parameter (product?productId=1). If client can also specify or manipulate price/quantity fields in subsequent add-to-cart or purchase requests (not shown), the presence of direct productId parameter suggests potential for changing product-related parameters client-side. From observed traffic the productId is directly controllable which could be used to select different product states (e.g., promotional items).",
+      "evidence_entry_ids": [
+        13
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'productId' from 1 to another id (e.g., 2 or a promotional product id) when requesting the product page or when submitting cart actions to attempt selecting different product states or prices.",
+        "curl_command": "curl -s -i -k \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/product?productId={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA6",
+      "description": "Sequence Bypass: POST to /cart returns a redirect and later a GET to /cart?err=INSUFFICIENT_FUNDS. The observed flow suggests the client can POST to /cart directly; without seeing server-side checks it is possible the application allows adding items or progressing order state without completing payment if an attacker forges subsequent requests. The presence of an error code in query string indicates the cart flow relies on client-visible state that could be modified to bypass steps.",
+      "evidence_entry_ids": [
+        5,
+        6,
+        7
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Resend the POST to /cart with manipulated form parameters (e.g., change quantity or price parameters if present) or directly follow the redirect to attempt advancing order state without performing payment. Example: attempt to POST with form data copied from a prior /cart request but change any payment state fields to 'paid' or remove payment fields to see if server trusts client-side state.",
+        "curl_command": "curl -s -i -k -X POST \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" --data \"productId={{target_id}}&quantity=1\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Shadow Endpoint: Several requests target '/resources', '/resources/css', '/resources/images', '/resources/labheader' and related subpaths (entries 14-20). The presence of 'labheader' and multiple resource subpaths suggests application exposes internal lab/debug resources. These may be shadow/debug endpoints that reveal internal UI components or test-only functionality and could allow discovery of hidden parameters or functionality.",
+      "evidence_entry_ids": [
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Request resource endpoints and attempt directory-style or variant paths (e.g., /resources/labheader/debug or /resources/labheader/js) to discover additional hidden or debug assets.",
+        "curl_command": "curl -s -i -k \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/resources/labheader/js\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "Internal Disclosure: The cart GET response includes an error code in the query string (/cart?err=INSUFFICIENT_FUNDS). Exposing internal error/state codes in URLs may reveal application logic and states that attackers can use to manipulate flows or craft attacks. The presence of session cookie values in traffic headers supports that internal session identifiers are client-controllable; while not a direct secret leak in responses, the error code in URL is an information leak about internal state handling.",
+      "evidence_entry_ids": [
+        7
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Access /cart with different err query parameter values (e.g., err=PAID or err=INVALID_ITEM) to probe for other internal states or messages exposed by the application.",
+        "curl_command": "curl -s -i -k \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart?err={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    }
+  ]
+}

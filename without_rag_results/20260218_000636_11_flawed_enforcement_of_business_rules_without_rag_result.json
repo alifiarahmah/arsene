@@ -1,0 +1,84 @@
+{
+  "business_flow": "User browses the site, views product pages, accesses cart, logs in, signs up, and views account pages. Requests include GETs to root, cart, login, product, my-account (with id param), and POSTs to cart, login, sign-up. Responses show some 200/302 and some entries with Response Status 0 (likely blocked or non-HTTP resources).",
+  "thought_process": [
+    "I will examine each of the 15 entries in order and apply the five checks: IDOR (BLA9), State Manipulation (BLA3), Sequence Bypass (BLA6), Shadow Endpoints (BLA10), Internal Disclosure (BLA8).",
+    "Only produce a finding if the entry demonstrates an actual vulnerability based on visible request/response metadata and parameters. Do not invent endpoints or parameters not present.",
+    "For endpoints with query parameters or resource identifiers I will check for direct-object references (e.g., productId, id) and whether client-controlled fields exist in requests (POST form data) to assess state manipulation or sequence bypass opportunities.",
+    "Entries with Response Status 0 often indicate failed/blocked fetches or static assets. If they do not expose parameters or server behavior, they will not produce findings.",
+    "Each finding must be a single endpoint with a single PoC including payload_mutation and a cURL using placeholders {{auth_token}} and {{target_id}} where appropriate."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "GET /my-account?id=wiener uses a client-controlled 'id' query parameter to view account details. The presence of an 'id' parameter suggests direct object references. No evidence in the traffic shows ownership checks (e.g., the request uses only a session cookie and a query 'id' to fetch the account). This is potentially an Insecure Direct Object Reference (IDOR) if an attacker can change 'id' to another username to view another user's account.",
+      "evidence_entry_ids": [
+        11
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change query parameter 'id' from 'wiener' to another username you want to access, e.g., 'carlos' (or any target username).",
+        "curl_command": "curl -i -s -k -X GET \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/my-account?id={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "GET /product?productId=6 uses a client-controlled 'productId' query parameter to fetch product details. While product data is typically public, this is a direct object reference and could be abused if certain product IDs correspond to sensitive resources (e.g., unpublished items, admin-only offers). No evidence of access restrictions is present in the traffic.",
+      "evidence_entry_ids": [
+        12
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'productId' from 6 to another ID (e.g., 1..n or a high/negative value) to access different product records.",
+        "curl_command": "curl -i -s -k -X GET \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/product?productId={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "POST /cart is used to add items to cart (Content-Type: application/x-www-form-urlencoded). The request likely contains client-controlled fields such as product ID, quantity, or price. Because the POST to /cart returned 302 (redirect) and no body shown, and the request is form-encoded, there is an opportunity to manipulate fields like price or quantity client-side. If the server trusts client-supplied price/total or allows modifying quantity beyond intended limits, that is a state manipulation vulnerability.",
+      "evidence_entry_ids": [
+        6
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change the form field for 'productId' or 'quantity' (e.g., set 'productId' to another product or 'quantity' to a large/negative value). Also attempt adding a 'price' parameter or modifying an existing 'price' parameter to a lower value if present.",
+        "curl_command": "curl -i -s -k -X POST \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/cart\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" --data-urlencode \"productId={{target_id}}\" --data-urlencode \"quantity=1\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "GET /academyLabHeader appears to be a non-standard or internal path (Response Status: 0 in the traffic), indicating it may be an internal/debug or shadow endpoint used by the application. Accessing such a header/debug endpoint could disclose internal application details or enable privileged actions if reachable.",
+      "evidence_entry_ids": [
+        3
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Request the /academyLabHeader endpoint (no parameters) using your session cookie to see if it returns additional debug or internal information.",
+        "curl_command": "curl -i -s -k -X GET \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/academyLabHeader\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "GET /image returned Response Status 0 in the traffic. The presence of a plain '/image' endpoint without parameters may indicate an image-serving or debug endpoint that could be abused to fetch internal images or cause information disclosure (shadow endpoint).",
+      "evidence_entry_ids": [
+        7
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Request /image directly (no parameters) with your session cookie; also try adding path or id parameters to discover hidden image resources.",
+        "curl_command": "curl -i -s -k -X GET \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/image\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "GET /my-account?id=wiener includes the account identifier 'wiener' in the URL. This leaks internal usernames in a predictable manner via query parameters. The URL itself reveals internal account identifiers which may facilitate targeted attacks like IDOR or account enumeration.",
+      "evidence_entry_ids": [
+        11
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Observe that the account name appears in the 'id' query parameter; change it to other potential usernames to enumerate accounts (e.g., 'carlos', 'administrator').",
+        "curl_command": "curl -i -s -k -X GET \"https://0af700cc0450355081464e2c003f003d.web-security-academy.net/my-account?id={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "business_flow": "User browses site, views products, accesses cart, attempts to add items (POST /cart resulting in 302 and INSFFICIENT_FUNDS error), logs in (POST /login 302), and views account via /my-account?id=wiener and product via /product?productId=1. Several /resources and /academyLabHeader endpoints fetched. Sessions shown in cookies.",
+  "thought_process": [
+    "I reviewed each of the 21 HAR entries and applied the five checks (IDOR BLA9, State Manipulation BLA3, Sequence Bypass BLA6, Shadow Endpoints BLA10, Internal Disclosure BLA8) to every endpoint.",
+    "I only report a finding when evidence in the traffic indicates a possible business logic vulnerability for that specific endpoint. If request/response details lacked payloads or parameters or the response status was 0 with no body, I do not assume a vulnerability.",
+    "I treat each endpoint separately and generate a reproduction_guide for every reported finding, using the required placeholders."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "IDOR-like behavior: /my-account?id=wiener reveals that account data can be retrieved by supplying an arbitrary 'id' query parameter. The presence of a GET to /my-account?id=wiener returning 200 suggests the endpoint accepts an 'id' parameter to view account pages. This indicates potential insecure direct object reference if no ownership check is enforced server-side (an attacker could supply other usernames/IDs to view other accounts). Evidence shows session cookies and a 200 response for that request.",
+      "evidence_entry_ids": [
+        12
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change the 'id' parameter from 'wiener' to another username or target account identifier (e.g., 'carlos' or '{{target_id}}').",
+        "curl_command": "curl -i -s -k -X GET \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/my-account?id={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "Client-controllable purchase flow: POST /cart returns 302 and a subsequent GET /cart?err=INSUFFICIENT_FUNDS indicates the cart endpoint accepts client-supplied form data for cart operations (add/remove). While specific form fields are not shown in the HAR, the POST /cart entries with Content-Type application/x-www-form-urlencoded imply the client can send parameters that affect cart state (quantity, productId, price). If server trusts client input for critical fields (price, quantity) this would allow manipulation (e.g., setting price to 0 or negative). The observed INSUCFFICIENT_FUNDS error also suggests server-side balance checks can be influenced by payloads. Because POST /cart was used and resulted in cart state changes and errors, this endpoint is a candidate for state manipulation.",
+      "evidence_entry_ids": [
+        5,
+        6,
+        7
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Modify POST body fields to change price/quantity/productId. Example: change 'productId' to '{{target_id}}' and 'quantity' to 100 or change 'price' to 0 if present in form. (e.g., set 'productId={{target_id}}&quantity=100' or 'productId={{target_id}}&price=0').",
+        "curl_command": "curl -i -s -k -X POST \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" --data \"productId={{target_id}}&quantity=100\" -L"
+      }
+    },
+    {
+      "category": "BLA6",
+      "description": "Sequence bypass potential at /cart: The traffic shows a POST to /cart followed by an error indicating INSUFFICIENT_FUNDS. This suggests a multi-step purchase flow where payment or funds authorization must occur. If the cart endpoint or related endpoints accept a 'status' or 'paid' flag in requests, an attacker might bypass payment by toggling that flag. The HAR doesn't show explicit 'payment' endpoint calls, so POST /cart may be relied upon to advance order state — supplying crafted parameters could skip required payment steps.",
+      "evidence_entry_ids": [
+        5,
+        6,
+        7
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Add or modify a status/paid parameter in the POST /cart body, e.g., set 'paid=true' or 'status=paid' or 'checkout_step=complete'.",
+        "curl_command": "curl -i -s -k -X POST \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/cart\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" --data \"productId={{target_id}}&quantity=1&paid=true\" -L"
+      }
+    },
+    {
+      "category": "BLA8",
+      "description": "Internal disclosure via cookies/session identifiers: Multiple entries show session cookie values in requests/responses (e.g., session=OBShdYNWuISLz1P5vZSfd5IYavGCaQ0R and session=oB1YmHDUpA2pTgHKgYqTsve2HZGNmbq7). The exposure of two distinct session values across requests indicates possible leak of internal session tokens in responses or logs. Although session cookies are normal, their presence in multiple static-resource requests and the visibility in the HAR suggests session identifiers are being transmitted without additional flags shown (e.g., HttpOnly/Secure not visible). This may allow session fixation or disclosure if other controls are absent.",
+      "evidence_entry_ids": [
+        1,
+        3,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14,
+        16,
+        18,
+        20
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Reuse observed session cookie value; set Cookie header to session={{auth_token}} to test reuse or fixation against another flow.",
+        "curl_command": "curl -i -s -k -X GET \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA10",
+      "description": "Shadow/auxiliary endpoints: Multiple resource-like endpoints under /resources and /resources/labheader (e.g., /resources, /resources/css, /resources/images, /resources/labheader, /resources/labheader/css, /resources/labheader/images, /resources/labheader/js) are being accessed. While many are static assets, their presence in requests suggests possible undocumented debug or lab helper endpoints. These could expose internal content or be leveraged to discover hidden functionality. The HAR shows GETs to these specific resource endpoints returning (status 0 for some) — existence implies potential shadow endpoints to enumerate further.",
+      "evidence_entry_ids": [
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "severity": "Low",
+      "reproduction_guide": {
+        "payload_mutation": "Probe resource endpoints for additional files or directories, e.g., request /resources/labheader/debug or try fetching /resources/.git/config or other predictable paths. Change path to target specific file: '/resources/labheader/debug' or '/resources/secret.txt'.",
+        "curl_command": "curl -i -s -k -X GET \"https://0a5700c10419afbf809c49d100380054.web-security-academy.net/resources/labheader/debug\" -H \"Cookie: session={{auth_token}}\""
+      }
+    }
+  ]
+}

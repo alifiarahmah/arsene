@@ -1,0 +1,46 @@
+{
+  "business_flow": "User browses the web app, views product and cart pages, logs in, and accesses account and resource endpoints. Traffic contains mostly GET requests for static resources and a couple of POSTs (cart, login). No API calls exposing numeric object IDs aside from product?productId=8 and my-account?id=wiener. Session cookie present.",
+  "thought_process": [
+    "I must examine each HAR entry and apply five checks: IDOR (BLA9), State Manipulation (BLA3), Sequence Bypass (BLA6), Shadow Endpoints (BLA10), Internal Disclosure (BLA8).",
+    "Only endpoints that show data that could indicate vulnerabilities will be reported. If no vulnerability is supported by the request/response details provided, no finding is created for that entry.",
+    "Each finding must be one endpoint-specific and include a reproduction_guide with payload_mutation and curl_command using provided placeholders."
+  ],
+  "potential_vulnerabilities": [
+    {
+      "category": "BLA9",
+      "description": "GET /my-account?id=wiener uses a direct object reference via an 'id' query parameter. The request indicates the account is identified by a supplied id value (username). There is potential for IDOR if the application does not enforce that the session user owns/authorized to view the requested account. The traffic shows a GET with id=wiener while session cookie belongs to another session value observed earlier, suggesting this parameter may allow viewing other users' accounts.",
+      "evidence_entry_ids": [
+        10
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Change query parameter 'id' from 'wiener' to another username or target id (e.g., 'carlos' or '{{target_id}}') to attempt to access another user's account.",
+        "curl_command": "curl -i -s -k \"https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/my-account?id={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA9",
+      "description": "GET /product?productId=8 exposes a direct object reference via 'productId' query parameter. If the product endpoint returns sensitive or user-specific data without proper access control (for example, drafts or restricted items), this could be abused. At minimum this is a predictable reference that could be iterated for IDs to discover other products or test for access control issues (IDOR enumeration).",
+      "evidence_entry_ids": [
+        11
+      ],
+      "severity": "Medium",
+      "reproduction_guide": {
+        "payload_mutation": "Change 'productId' from 8 to another ID (e.g., 7, 9 or '{{target_id}}') to enumerate or access other product records.",
+        "curl_command": "curl -i -s -k \"https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/product?productId={{target_id}}\" -H \"Cookie: session={{auth_token}}\""
+      }
+    },
+    {
+      "category": "BLA3",
+      "description": "POST /cart accepts client-supplied form data (content-type application/x-www-form-urlencoded). Because cart additions are performed via POST and the response was a 302 redirect, there is a risk that client-controlled parameters (price/quantity/product id) could be modified by the client to manipulate order state, e.g., setting quantity or price to unexpected values. The request metadata indicates form POST but request body isn't shown — typical carts often trust client-sent price/quantity fields.",
+      "evidence_entry_ids": [
+        5
+      ],
+      "severity": "High",
+      "reproduction_guide": {
+        "payload_mutation": "Modify cart POST form fields to set 'quantity' to a high value or change 'price' param (if present) from its normal value to a lower value (e.g., change 'quantity=1' to 'quantity=999' or 'price=100' to 'price=0').",
+        "curl_command": "curl -i -s -k -X POST \"https://0a39009c04666d5781cfb6330004002a.web-security-academy.net/cart\" -H \"Content-Type: application/x-www-form-urlencoded\" -H \"Cookie: session={{auth_token}}\" --data \"productId={{target_id}}&quantity=999&price=0\""
+      }
+    }
+  ]
+}
