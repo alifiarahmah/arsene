@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(done)",
+      "Bash(python3:*)",
+      "Bash(grep -n '\"\"_comment\"\".*more items truncated' parsed_hars/*.json)",
+      "Bash(grep -l '\"\"_truncated\"\": true' parsed_hars/*.json)",
+      "Bash(grep -n '\"\"_comment\"\"' parsed_hars/*.json)",
+      "Bash(py -c \":*)",
+      "Bash(py parser.py hars/test_truncation.har parsed_hars/)",
+      "WebSearch"
+    ]
+  }
+}

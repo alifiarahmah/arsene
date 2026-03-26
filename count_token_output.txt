@@ -1,0 +1,22 @@
+Counting tokens using tiktoken (o200k_base encoding for GPT-4o/GPT-5-mini)...
+
+
+====================================================================================================
+File Name                                                Before (hars/)      After (parsed_hars/)
+====================================================================================================
+1_excessive_trust_in_client-side_controls                        45,126                    12,489 ( 72.3% reduction)
+2_2fa_broken_logic                                               37,084                    10,279 ( 72.3% reduction)
+3_inconsistent-security-controls                                 44,136                    12,605 ( 71.4% reduction)
+4_weak-isolation-on-dual-use-endpoint                            36,795                     9,126 ( 75.2% reduction)
+5_password-reset-broken-logic                                    43,039                    12,167 ( 71.7% reduction)
+6_insufficient-workflow-validation                               39,408                    10,521 ( 73.3% reduction)
+7_authentication-bypass-via-flawed-state-machine                 32,619                     8,611 ( 73.6% reduction)
+8_logic-flaws-high-level                                         39,863                    10,773 ( 73.0% reduction)
+9_flawed_enforcement_of_business_rules                           37,670                     9,437 ( 74.9% reduction)
+juice_shop                                                      989,555                   224,456 ( 77.3% reduction)
+----------------------------------------------------------------------------------------------------
+TOTAL                                                         1,345,295                   320,464 ( 76.2% reduction)
+====================================================================================================
+
+Grand Total: 1,665,759 tokens | Saved: 1,024,831 tokens (76.2%)
+====================================================================================================

@@ -1,0 +1,102 @@
+[
+  {
+    "startedDateTime": "2025-01-01T00:00:00Z",
+    "time": 100,
+    "request": {
+      "method": "GET",
+      "url": "http://example.com/api/colors",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "queryString": [],
+      "cookies": [],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "cookies": [],
+      "content": {
+        "size": 500,
+        "mimeType": "application/json",
+        "text": "{\n  \"data\": {\n    \"colors\": [\n      \"red\",\n      \"blue\",\n      {\n        \"_comment\": \"... (8 more items truncated)\"\n      }\n    ]\n  },\n  \"meta\": {\n    \"total\": 10\n  }\n}"
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": 0,
+      "dns": 0,
+      "connect": 0,
+      "send": 0,
+      "wait": 100,
+      "receive": 0,
+      "ssl": 0
+    }
+  },
+  {
+    "startedDateTime": "2025-01-01T00:00:01Z",
+    "time": 100,
+    "request": {
+      "method": "GET",
+      "url": "http://example.com/api/categories",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "queryString": [],
+      "cookies": [],
+      "postData": {
+        "mimeType": "",
+        "params": []
+      }
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "httpVersion": "HTTP/1.1",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "cookies": [],
+      "content": {
+        "size": 800,
+        "mimeType": "application/json",
+        "text": "{\n  \"data\": {\n    \"categories\": [\n      {\n        \"label\": \"Electronics\",\n        \"description\": \"Gadgets and devices\"\n      },\n      {\n        \"label\": \"Clothing\",\n        \"description\": \"Apparel and accessories\"\n      },\n      {\n        \"_comment\": \"... (3 more items truncated)\"\n      }\n    ]\n  }\n}",
+        "_truncated": true,
+        "_originalSize": 327
+      },
+      "redirectURL": ""
+    },
+    "cache": {},
+    "timings": {
+      "blocked": 0,
+      "dns": 0,
+      "connect": 0,
+      "send": 0,
+      "wait": 100,
+      "receive": 0,
+      "ssl": 0
+    }
+  }
+]
